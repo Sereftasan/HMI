@@ -605,20 +605,20 @@ terminal = klemens
 {{^IsSwitch}}
 <div class="step" id="{{Key}}" data-part="C" data-role="target"><div class="num"></div><div class="body">
 <h3>{{Name}} silindiri görüyor mu?</h3>
-<div class="pics">{{>DrawSensor}}{{>DrawMagnet}}{{>DrawPlug}}</div>
+<div class="pics">{{>DrawSensor}}{{>DrawMagnet}}{{>DrawLeads}}</div>
 <ul>
 <li>{{Name}}{{Where}}{{#Text}} &ndash; çizimde: {{Text}}{{/Text}}.</li>
 <li>{{>Look}} Silindir <b>{{Move}}</b> hareketinin sonundayken: sensörün kendi <b>LED</b>'i yanar{{#InHasLed}}, <b>{{InCardTag}}</b> kartında <b>IN</b> sırasındaki <b>{{InLed}}</b> numaralı LED yanar{{/InHasLed}}{{#Io}}, {{Io}} <i>Girişler / Çıkışlar</i> sayfasında <b>AÇIK</b>{{/Io}}.{{#CopiedTo}} PLC bu sinyali {{Dev}} adresine kopyalar.{{/CopiedTo}}</li>
 <li>{{>Hand}} LED'i sönük mü? {{^F3}}Sensörün üzerine bir mıknatıs tutun (yedek bir sensörün test mıknatısı ya da herhangi küçük bir mıknatıs){{/F3}}{{#F3}}Sensörün yüzüne birkaç milimetre mesafede çelik bir alet tutun{{/F3}}: LED'i yanmalı.</li>
-<li>{{>Measure}} Yine de yanmıyor mu? Soketini sökün: <b>+24 V</b> (kahverengi) ile <b>0 V</b> (mavi) arası = 24 V.</li>
-<li>{{>Hand}} LED yanıyor ama giriş gelmiyor mu? Soketi çıkarıp yeniden sıkıca takın; girişi izlerken kabloyu yolu boyunca hafifçe oynatın.</li>
+<li>{{>Measure}} Yine de yanmıyor mu? Kablosunun bağlandığı klemenslerde: <b>+24 V</b> (kahverengi{{#SensorWire}}, kablo {{SensorWire}}{{/SensorWire}}) ile <b>0 V</b> (mavi{{#ZeroWire}}, kablo {{ZeroWire}}{{/ZeroWire}}) arası = 24 V.</li>
+<li>{{>Hand}} LED yanıyor ama giriş gelmiyor mu? Tellerini klemenslerinde sıkın{{#Wire}} (sinyali: siyah, kablo {{Wire}}){{/Wire}}; girişi izlerken kabloyu yolu boyunca hafifçe oynatın.</li>
 </ul>
 <table class="out">
 <tr class="fault"><td class="when">{{^F3}}Mıknatısla{{/F3}}{{#F3}}Çelik aletle{{/F3}} yanıyor, silindirle yanmıyor.</td><td>Sensör sağlam, yeri yanlış. {{#F3}}Metal hedefle arasındaki mesafeyi ayarlayın (hedef eğilmemiş olmalı).{{/F3}}{{^F3}}Gevşetin, hareketin sonunda LED'inin güvenilir şekilde yandığı yere kaydırın, sıkın (silindirin mıknatısı da zayıflamış olabilir).{{/F3}} {{>AgainNext}}</td></tr>
-<tr class="fault"><td class="when">Soketinde 24 V yok.</td><td>Besleme sensöre ulaşmıyor: kablo, soket{{#SensorWire}}, sensörlerin +24 V beslemesi (kablo {{SensorWire}}){{/SensorWire}}, sigortası. Onarın. {{>AgainNext}}</td></tr>
+<tr class="fault"><td class="when">Klemenslerinde 24 V yok.</td><td>Besleme sensöre ulaşmıyor: kablo, gevşek bir klemens{{#SensorWire}}, sensörlerin +24 V beslemesi (kablo {{SensorWire}}){{/SensorWire}}, sigortası. Onarın. {{>AgainNext}}</td></tr>
 <tr class="fault"><td class="when">24 V var, LED {{^F3}}mıknatısla{{/F3}}{{#F3}}çelik aletle{{/F3}} bile yanmıyor.</td><td>Sensör arızalı: aynı tipte yenisiyle değiştirin ve hareketin sonuna ayarlayın. {{>AgainNext}}</td></tr>
-<tr class="fault"><td class="when">LED yanıyor, HMI'da {{#Io}}{{Io}}{{/Io}}{{^Io}}giriş{{/Io}} KAPALI kalıyor.</td><td>Sinyal PLC'ye ulaşmıyor: soket (gevşek, eğik pin), kablo (kesik, ezik){{#Wire}}, kablo {{Wire}}{{/Wire}}{{#Card}}, giriş kartı {{Card}}{{/Card}}. Kopuk olanı onarın. {{>AgainNext}}</td></tr>
-<tr class="fault"><td class="when">Kablo oynayınca giriş gidip geliyor.</td><td>Gevşek soket ya da içten kopuk kablo: soketi sıkın, kabloyu değiştirin. {{>AgainNext}}</td></tr>
+<tr class="fault"><td class="when">LED yanıyor, HMI'da {{#Io}}{{Io}}{{/Io}}{{^Io}}giriş{{/Io}} KAPALI kalıyor.</td><td>Sinyal PLC'ye ulaşmıyor: gevşek bir klemens, kablo (kesik, ezik){{#Wire}}, kablo {{Wire}}{{/Wire}}{{#Card}}, giriş kartı {{Card}}{{/Card}}. Kopuk olanı onarın. {{>AgainNext}}</td></tr>
+<tr class="fault"><td class="when">Kablo oynayınca giriş gidip geliyor.</td><td>Gevşek bir klemens ya da içten kopuk kablo: klemenslerini sıkın, kabloyu değiştirin. {{>AgainNext}}</td></tr>
 <tr class="good"><td class="when">AÇIK.</td><td>&rarr; <a class="go" href="#{{Next}}"></a></td></tr>
 </table>
 <p class="man">kılavuz 1.7 (1)</p>
@@ -636,7 +636,7 @@ terminal = klemens
 <li><b>{{Move}}</b> hareketinin sonunda sensör yok: PLC, sensörün KAPANMASINI ve sürenin dolmasını varış sayar. Silindirin gerçekten sona ulaştığından emin olun (1. adım).</li>
 {{/EndNotSensed}}
 {{#HasStart}}
-<li>{{>Hand}} Silindir ayrıldığı hâlde AÇIK mı? Soketini çekin: giriş KAPANIRSA sensör, AÇIK kalırsa kablo.</li>
+<li>{{>Hand}} Silindir ayrıldığı hâlde AÇIK mı? Kablosunun bağlandığı klemensten siyah (sinyal) telini çıkarın: giriş KAPANIRSA sensör, AÇIK kalırsa PLC'ye giden kablo.</li>
 {{/HasStart}}
 </ul>
 <table class="out">
@@ -646,8 +646,8 @@ terminal = klemens
 {{/OffSwitch}}
 {{/F5}}
 {{#HasStart}}
-<tr class="fault"><td class="when">Silindir ayrıldığı hâlde {{StartNames}} AÇIK kalıyor; soketi çekilince giriş KAPANIYOR.</td><td>Sensör arızalı (hep AÇIK){{#MagneticFb}} ya da kısa bir silindirde mıknatıs onu öbür uçtan da etkiliyor &ndash; sensörü biraz kaydırın{{/MagneticFb}}. Sensörü değiştirin. {{>AgainEnd}}</td></tr>
-<tr class="fault"><td class="when">Soket çekiliyken de giriş AÇIK kalıyor.</td><td>PLC'ye giden kablo +24 V ile kısa devre: kabloyu onarın. {{>AgainEnd}}</td></tr>
+<tr class="fault"><td class="when">Silindir ayrıldığı hâlde {{StartNames}} AÇIK kalıyor; sinyal teli çıkarılınca giriş KAPANIYOR.</td><td>Sensör arızalı (hep AÇIK){{#MagneticFb}} ya da kısa bir silindirde mıknatıs onu öbür uçtan da etkiliyor &ndash; sensörü biraz kaydırın{{/MagneticFb}}. Sensörü değiştirin. {{>AgainEnd}}</td></tr>
+<tr class="fault"><td class="when">Sinyal teli çıkarılmışken de giriş AÇIK kalıyor.</td><td>PLC'ye giden kablo +24 V ile kısa devre: kabloyu onarın. {{>AgainEnd}}</td></tr>
 {{/HasStart}}
 <tr class="good"><td class="when">KAPALI.</td><td>&rarr; <a class="go" href="#{{TimeKey}}"></a></td></tr>
 </table>

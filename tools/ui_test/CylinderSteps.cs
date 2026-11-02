@@ -340,6 +340,12 @@ class CS {
               StepNo(html, "Does relay K75 drop out?") != "?" && StepNo(html, "Is coil Y.91 without power?") != "?" &&
               StepText(html, "Does the valve spring back?").Contains("locked"));
         Check("  towards the sensor: SN91 must come ON", StepText(html, "Does sensor SN91").Contains("LED lit"));
+        // (2 November: "change the second image (voltmeter connection) to the cable numbers as well instead because we don't use connector much")
+        var sensorStep = Regex.Match(html, "<div class=\"step[^\"]*\" id=\"[^\"]+\"><div class=\"num\">\\d+</div><div class=\"body\">\\s*<h3>Does sensor <b>SN91</b>.*?</div></div>", RegexOptions.Singleline).Value;
+        Check("  the 24 V measured at the terminals its cable is connected to: brown on wire 20, black on wire 144, blue on wire 21 - no plug",
+              sensorStep.Contains(">20</text>") && sensorStep.Contains(">144</text>") && sensorStep.Contains(">21</text>") && sensorStep.Contains(">+24 V</text>") &&
+              Text(sensorStep).Contains("At the terminals its cable is connected to") && Text(sensorStep).Contains("wire 20") && !Text(sensorStep).ToLowerInvariant().Contains("plug"),
+              Text(sensorStep));
 
         Console.WriteLine("--- an encoder; an analogue sensor ---");
         var u2 = new CylinderUnitHMI {

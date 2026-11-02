@@ -559,20 +559,20 @@
 {{^IsSwitch}}
 <div class="step" id="{{Key}}" data-part="C" data-role="target"><div class="num"></div><div class="body">
 <h3>Does {{Name}} see it?</h3>
-<div class="pics">{{>DrawSensor}}{{>DrawMagnet}}{{>DrawPlug}}</div>
+<div class="pics">{{>DrawSensor}}{{>DrawMagnet}}{{>DrawLeads}}</div>
 <ul>
 <li>{{Name}}{{Where}}{{#Text}} &ndash; {{Text}}{{/Text}}.</li>
 <li>{{>Look}} At the end of <b>{{Move}}</b>: the sensor's own <b>LED</b> lit{{#InHasLed}}, LED <b>{{InLed}}</b> in the <b>IN</b> row of card <b>{{InCardTag}}</b> lit{{/InHasLed}}{{#Io}}, {{Io}} <b>ON</b> on the <i>Inputs / Outputs</i> page{{/Io}}.{{#CopiedTo}} The PLC copies it into {{Dev}}.{{/CopiedTo}}</li>
 <li>{{>Hand}} Its LED off? {{^F3}}Hold a magnet on the sensor (a spare sensor's test magnet, any small magnet){{/F3}}{{#F3}}Hold a steel tool a few millimetres in front of its face{{/F3}}: its LED must light.</li>
-<li>{{>Measure}} Not even then? Unscrew its plug: <b>+24 V</b> (brown) against <b>0 V</b> (blue) = 24 V.</li>
-<li>{{>Hand}} Its LED on, the input not? Pull the plug and screw it back firmly; move the cable gently along its way while you watch the input.</li>
+<li>{{>Measure}} Not even then? At the terminals its cable is connected to: <b>+24 V</b> (brown{{#SensorWire}}, wire {{SensorWire}}{{/SensorWire}}) against <b>0 V</b> (blue{{#ZeroWire}}, wire {{ZeroWire}}{{/ZeroWire}}) = 24 V.</li>
+<li>{{>Hand}} Its LED on, the input not? Tighten its wires in their terminals{{#Wire}} (its signal: black, wire {{Wire}}){{/Wire}}; move the cable gently along its way while you watch the input.</li>
 </ul>
 <table class="out">
 <tr class="fault"><td class="when">It lights with the {{^F3}}magnet{{/F3}}{{#F3}}steel{{/F3}}, not with the cylinder.</td><td>The sensor works, it is in the wrong place. {{#F3}}Set the gap to its metal flag (flag not bent).{{/F3}}{{^F3}}Loosen it, slide it to where its LED lights reliably at the end, tighten it (the cylinder's magnet may also be weak).{{/F3}} {{>AgainNext}}</td></tr>
-<tr class="fault"><td class="when">No 24 V at its plug.</td><td>The supply does not reach it: the cable, the plug{{#SensorWire}}, the sensors' +24 V (wire {{SensorWire}}){{/SensorWire}}, its fuse. Repair it. {{>AgainNext}}</td></tr>
+<tr class="fault"><td class="when">No 24 V at its terminals.</td><td>The supply does not reach it: the cable, a loose terminal{{#SensorWire}}, the sensors' +24 V (wire {{SensorWire}}){{/SensorWire}}, its fuse. Repair it. {{>AgainNext}}</td></tr>
 <tr class="fault"><td class="when">24 V there, the LED stays off even with the {{^F3}}magnet{{/F3}}{{#F3}}steel{{/F3}}.</td><td>The sensor is broken: replace it with the same type and set it at the end. {{>AgainNext}}</td></tr>
-<tr class="fault"><td class="when">LED on, {{#Io}}{{Io}}{{/Io}}{{^Io}}the input{{/Io}} stays OFF on the HMI.</td><td>The signal does not reach the PLC: the plug (loose, a bent pin), the cable (cut, crushed){{#Wire}}, wire {{Wire}}{{/Wire}}{{#Card}}, the input {{Card}}{{/Card}}. Repair what is broken. {{>AgainNext}}</td></tr>
-<tr class="fault"><td class="when">The input comes and goes when the cable moves.</td><td>A loose plug or a cable broken inside: tighten the plug, replace the cable. {{>AgainNext}}</td></tr>
+<tr class="fault"><td class="when">LED on, {{#Io}}{{Io}}{{/Io}}{{^Io}}the input{{/Io}} stays OFF on the HMI.</td><td>The signal does not reach the PLC: a loose terminal, the cable (cut, crushed){{#Wire}}, wire {{Wire}}{{/Wire}}{{#Card}}, the input {{Card}}{{/Card}}. Repair what is broken. {{>AgainNext}}</td></tr>
+<tr class="fault"><td class="when">The input comes and goes when the cable moves.</td><td>A loose terminal or a cable broken inside: tighten its terminals, replace the cable. {{>AgainNext}}</td></tr>
 <tr class="good"><td class="when">It is ON.</td><td>&rarr; <a class="go" href="#{{Next}}"></a></td></tr>
 </table>
 <p class="man">manual 1.7 (1)</p>
@@ -590,7 +590,7 @@
 <li>Nothing sees the end of <b>{{Move}}</b>: the PLC takes the sensor going OFF, and the time, as arrived. Make sure it really reached its end (step 1).</li>
 {{/EndNotSensed}}
 {{#HasStart}}
-<li>{{>Hand}} ON although it has left? Pull its plug: the input goes OFF &ndash; the sensor; it stays ON &ndash; the cable.</li>
+<li>{{>Hand}} ON although it has left? Take its black (signal) wire out of its terminal where its cable is connected: the input goes OFF &ndash; the sensor; it stays ON &ndash; the cable to the PLC.</li>
 {{/HasStart}}
 </ul>
 <table class="out">
@@ -600,8 +600,8 @@
 {{/OffSwitch}}
 {{/F5}}
 {{#HasStart}}
-<tr class="fault"><td class="when">{{StartNames}} stays ON although it has left; its plug pulled, the input goes OFF.</td><td>The sensor is stuck{{#MagneticFb}}, or on a short cylinder the magnet reaches it from the far end &ndash; move it a little{{/MagneticFb}}. Replace the sensor. {{>AgainEnd}}</td></tr>
-<tr class="fault"><td class="when">The input stays ON with the plug pulled.</td><td>The cable to the PLC is shorted to +24 V: repair it. {{>AgainEnd}}</td></tr>
+<tr class="fault"><td class="when">{{StartNames}} stays ON although it has left; its signal wire out, the input goes OFF.</td><td>The sensor is stuck{{#MagneticFb}}, or on a short cylinder the magnet reaches it from the far end &ndash; move it a little{{/MagneticFb}}. Replace the sensor. {{>AgainEnd}}</td></tr>
+<tr class="fault"><td class="when">The input stays ON with its signal wire out.</td><td>The cable to the PLC is shorted to +24 V: repair it. {{>AgainEnd}}</td></tr>
 {{/HasStart}}
 <tr class="good"><td class="when">It is OFF.</td><td>&rarr; <a class="go" href="#{{TimeKey}}"></a></td></tr>
 </table>
