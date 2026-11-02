@@ -193,6 +193,8 @@ namespace Kaban.UI.Forms
                 BeginInvoke(new Action(FitSidePanel));
             };
             Kaban.UI.Controls.UiStyle.SetTip(_sideTips, _sideSplitter, T("Tip_SideSplitter", "Drag to size the side page. Double-click: just wide enough for all of it."));
+            // a finger: a wider border with three grips on it (2 November: "holding the border of the pages ... is quite hard")
+            _sideSplitter.ParentChanged += (s, e) => { if (_sideSplitter.Parent != null && SizeGrips.Of(_sideSplitter).Count == 0) SizeGrips.ForSplitter(_sideSplitter, 6); };
             // The width kept: back to it when the window has room again (it opens
             // narrower before the window is maximised).
             SizeChanged += (s, e) => KeepSideWidth();
@@ -852,6 +854,9 @@ namespace Kaban.UI.Forms
             KeyboardRoom.Changed += keyboard;
             Disposed += (s, e) => KeyboardRoom.Changed -= keyboard;
 
+            // a finger: a wider frame with a grip at each corner and the middle of each side
+            SizeGrips.ForWindow(this, Frame, null);
+
             // Scaled first, then placed where it was: a kept size is not scaled again.
             UiScale.ApplyOnLoad(this);
             WindowLayout.Apply(this, LayoutName, WindowLayout.Read(Kaban.UI.Forms.SimulationMonitorForm.WindowsPath));
@@ -972,7 +977,7 @@ namespace Kaban.UI.Forms
         protected override void OnResize(EventArgs e)
         {
             // Maximised: no frame to size from, and none to draw.
-            var want = WindowState == FormWindowState.Maximized ? new Padding(0) : new Padding(UiScale.For(this, Frame));
+            var want = new Padding(SizeGrips.FrameOf(this, Frame));
             if (Padding != want) Padding = want;
             base.OnResize(e);
         }
