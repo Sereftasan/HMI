@@ -77,8 +77,9 @@
 - A finger (2 November, a real touch screen): Windows gave a finger's mouse press only at its lift. In touch mode every
   window has all of Windows' gestures off (SetGestureConfig, id 0), and a hold-to-run ButtonHMI takes the finger's own
   pointer messages (TouchInput.Fingers: WM_POINTERDOWN ... UP) - pressed at the touch, released at the lift.
-  Windows still held some presses back (the log: 304 ms), so the long press (tooltip, menu) is timed from the finger's
-  WM_POINTERDOWN too, and its lift kept from Windows when shown so. Two fingers zoom a control that is
+  Windows still held some presses back (the log: 304 ms), so the long press for a MENU is timed from the finger's
+  WM_POINTERDOWN too, and its lift kept from Windows when shown so. No tooltip for a press, ever (2 November: pressing a
+  hold-to-run button to see its tip would run it) - a tap on something greyed says why; tooltips: Notes and feedback. Two fingers zoom a control that is
   TouchInput.IPinchZoom (the dashboard's time line, which also has - / + / whole-range buttons). In touch mode a splitter
   given SizeGrips (the side page's border) is wider with one grip at its middle (a border sizing one way needs no corner
   grips); a box sized from its frame (SizeGrips.ForBox: a side page's own window, a FloatingPaneHMI) gets a wider frame with

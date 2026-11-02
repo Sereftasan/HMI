@@ -26,11 +26,12 @@ namespace Kaban.UI.Helpers
     //     press of that finger then (a pointer message the program takes is not turned into one).
     // A mouse - and a finger on anything else - goes the way it went.
     //
-    // A FINGER HELD STILL (2 November, the real touch screen again: "the tooltip doesn't" - the log had a finger's press
-    // given 304 ms late, so Windows still held some presses back): the long press - a tooltip, a menu - is timed from the
-    // finger's own WM_POINTERDOWN too. When Windows has given the press by then (TouchInput.Gestures times it from that), it
-    // goes as it went; when it still holds it back, the finger's own timer shows the tooltip or opens the menu, and the
-    // finger's lift is kept from Windows - it makes no click, no right-click of it.
+    // A FINGER HELD STILL (2 November, the real touch screen again: the log had a finger's press given 304 ms late, so
+    // Windows still held some presses back): the long press for a menu is timed from the finger's own WM_POINTERDOWN too.
+    // When Windows has given the press by then (TouchInput.Gestures times it from that), it goes as it went; when it still
+    // holds it back, the finger's own timer opens the menu, and the finger's lift is kept from Windows - it makes no click,
+    // no right-click of it. No tooltip is shown for a press (2 November: "we should never press the control for the
+    // tooltip") - a tap on something greyed says why; the tooltips are read on the Notes and feedback page.
     // ======================================================================
     public static partial class TouchInput
     {
@@ -289,34 +290,15 @@ namespace Kaban.UI.Helpers
             if (owner == null || owner.IsDisposed || IsOwnWindow(owner)) return;
             var at = window ?? owner;
             var client = at.PointToClient(t.Screen);
-            string tip = null;
-            var strip = window as ToolStrip;
-            if (strip != null)
-            {
-                var item = strip.GetItemAt(client);
-                if (item != null && item.Available && item.Enabled && strip.ShowItemToolTips) tip = item.ToolTipText;
-                if (string.IsNullOrWhiteSpace(tip)) return;
-            }
-            else
-            {
-                var target = window != null ? Deepest(window, client) : owner;
-                if (CanHold(target, ToClient(target, t.Screen)))
-                {
-                    t.Done = true;
-                    LastHeld = target;
-                    LastFingerHold = "menu";
-                    FingerHolds++;
-                    RightClick(t.Hwnd, at, client, false);
-                    return;
-                }
-                tip = TipOf(target);
-                if (string.IsNullOrWhiteSpace(tip)) return;       // nothing to show: the lift goes as Windows makes it
-            }
+            if (window is ToolStrip) return;                       // a tool bar: no menu to hold for (and no tooltip by a press)
+            var target = window != null ? Deepest(window, client) : owner;
+            // a menu only - never a tooltip: a press is a press (the lift goes as Windows makes it)
+            if (!CanHold(target, ToClient(target, t.Screen))) return;
             t.Done = true;
-            LastTip = tip;
-            LastFingerHold = "tip";
+            LastHeld = target;
+            LastFingerHold = "menu";
             FingerHolds++;
-            Toast.ShowAt(at, tip, t.Screen);
+            RightClick(t.Hwnd, at, client, false);
         }
 
         /// <summary>A pointer message's point (screen) on the button.</summary>

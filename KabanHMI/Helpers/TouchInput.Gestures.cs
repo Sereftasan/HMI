@@ -23,10 +23,12 @@ namespace Kaban.UI.Helpers
     //     the menu opens under the finger; lifting the finger then chooses
     //     nothing. A jog button, a slider, a splitter, a chart are not held
     //     for a menu: there the press is the work.
-    //   - HELD STILL 0.6 s on something with a tooltip and no menu (30 October:
-    //     "Is there any solution for the tooltips function for the touch mode"):
-    //     its tooltip beside the finger, as the greyed tap's reason; the press
-    //     let go where it does nothing - lifting the finger clicks nothing.
+    //   - NO TOOLTIP FOR A PRESS (2 November: "the user might press on the momentary
+    //     action button to see the tooltip which might cause a dangerous unintended
+    //     action so we should never press the control for the tooltip ... just open
+    //     disenabling tooltips when pressed ... They can open the other tooltips from
+    //     'Notes and feedback' pages"): a held finger shows no tooltip - a press is a
+    //     press; a control's tooltip is read on the Notes and feedback page.
     //   - A TAP on something greyed: why it is greyed, beside the finger (a
     //     finger has no tooltip) - a greyed menu entry, a control the program
     //     holds back (IExplainsDisabled), a disabled one (its tooltip).
@@ -68,8 +70,6 @@ namespace Kaban.UI.Helpers
             public bool Deferred;        // a list's press kept back: a tap is given it on the lift, a drag scrolls instead
             public int DownMsg;
             public ToolStripItem GreyItem;
-            public bool ForTip;          // held for its tooltip (no menu here)
-            public ToolStripItem TipItem;
             public ComboBox List;
             public object Scroller;      // what a drag scrolls (TouchInput.Scroll)
         }
@@ -175,20 +175,13 @@ namespace Kaban.UI.Helpers
             if (strip != null)
             {
                 var item = strip.GetItemAt(client);
-                if (item != null && !item.Enabled && item.Available) p.GreyItem = item;
-                else if (item != null && item.Available && !string.IsNullOrWhiteSpace(item.ToolTipText) && strip.ShowItemToolTips)
-                {
-                    p.TipItem = item;           // a tool bar's button: its tip when held
-                    p.ForTip = true;
-                    _hold.Start();
-                }
+                if (item != null && !item.Enabled && item.Available) p.GreyItem = item;     // greyed: a tap says why
                 return false;
             }
             var combo = owner as ComboBox;
             if (combo != null && UsesTouchList(combo)) { p.List = combo; return true; }    // the list a finger's size, on the tap
-            bool hold = CanHold(target, ToClient(target, screen));
-            if (!hold && TipOf(target) != null) { p.ForTip = true; hold = true; }       // no menu: its tooltip
-            if (hold) _hold.Start();
+            // held for a menu only - never for a tooltip (a press is a press)
+            if (CanHold(target, ToClient(target, screen))) _hold.Start();
             // a table's or a list's row is chosen on the lift, not at the touch: a drag scrolls it
             // without choosing the row it started on (the press is given it as it was, on a tap)
             if (window != null && Defers(window, client)) { p.Deferred = true; return true; }
@@ -329,16 +322,6 @@ namespace Kaban.UI.Helpers
             var p = _press;
             if (p == null || p.Moved || p.Panning || p.Held) return;
             p.Held = true;
-            if (p.ForTip)
-            {
-                string tip = p.TipItem != null ? p.TipItem.ToolTipText : TipOf(p.Target);
-                // the press let go where it does nothing: lifting the finger clicks nothing
-                if (!p.Deferred) Send(p.Hwnd, p.Window ?? p.Owner, WmLButtonUp, 0, Far);
-                if (string.IsNullOrWhiteSpace(tip)) return;
-                LastTip = tip;
-                Toast.ShowAt(p.Window ?? p.Owner ?? p.Target, tip, p.Screen);
-                return;
-            }
             LastHeld = p.Target;
             RightClick(p.Hwnd, p.Window ?? p.Owner, p.Client, !p.Deferred);
         }

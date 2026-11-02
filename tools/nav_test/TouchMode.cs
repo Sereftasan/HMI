@@ -453,15 +453,16 @@ class TM {
         gf.Controls.Add(tipped); Pump(50);
         UiStyle.SetTip(UiStyle.Tips(), tipped, "Starts the cycle from the first profile");
         Check("touch mode: no tooltip comes by resting the pointer (a finger rests nowhere)", UiStyle.HoverTipsOff);
+        // 2 November: "we should never press the control for the tooltip ... just open disenabling tooltips when pressed"
+        int toastsAtHold = Toast.Shown;
         Down(tipped, new Point(20, 20)); Pump(TouchInput.LongPressMs + 200);
         bool tipUpTaken = Up(tipped, new Point(20, 20)); Pump(50);
-        Check("held on a button with a tooltip (no menu): its tooltip beside the finger - lifting clicks nothing",
-              TouchInput.LastTip == "Starts the cycle from the first profile" && Toast.LastText == TouchInput.LastTip && tipUpTaken && tippedClicks == 0,
-              TouchInput.LastTip + " / " + tippedClicks + " clicks");
+        Check("held on a button with a tooltip (no menu): NO tooltip - a press is a press, lifting clicks it",
+              Toast.Shown == toastsAtHold && !tipUpTaken && tippedClicks == 1, (Toast.Shown - toastsAtHold) + " toasts, " + tippedClicks + " clicks");
         Tap(tipped, new Point(20, 20)); Pump(50);
-        Check("  a tap on it: a click, as always", tippedClicks == 1, tippedClicks + " clicks");
+        Check("  a tap on it: a click, as always", tippedClicks == 2, tippedClicks + " clicks");
         Down(jog, new Point(20, 20)); Pump(TouchInput.LongPressMs + 200); Up(jog, new Point(20, 20));
-        Check("  a jog button held: no tooltip either - held is held", TouchInput.LastTip == "Starts the cycle from the first profile");
+        Check("  a jog button held: no tooltip either - held is held", Toast.Shown == toastsAtHold);
         Down(own, new Point(20, 20)); Pump(TouchInput.LongPressMs + 200); Up(own, new Point(20, 20)); Pump(50);
         Check("held on a control whose right-click makes its own menu (a side bar button, a motion value): its right-click given", TouchInput.LastHeld == own && ownRight == 1, ownRight + "");
         Down(rowGrid, press); MoveTo(rowGrid, new Point(press.X, press.Y + 60)); Pump(TouchInput.LongPressMs + 200); Up(rowGrid, new Point(press.X, press.Y + 60));
@@ -520,10 +521,10 @@ class TM {
         bool fDown = finger(tipped, new Point(20, 20), 0x0246, 120);
         finger(tipped, new Point(23, 21), 0x0245, 120);                       // a finger trembles a little
         Pump(TouchInput.LongPressMs + 250);
+        int toastsHeld = Toast.Shown;
         bool fUp = finger(tipped, new Point(23, 21), 0x0247, 120); Pump(50);
-        Check("no press from Windows: held 0.6 s, its tooltip beside the finger all the same; the lift kept from Windows (no click)",
-              !fDown && TouchInput.FingerHolds == holdsBefore + 1 && TouchInput.LastFingerHold == "tip" && TouchInput.LastTip == "Starts the cycle from the first profile" &&
-              Toast.LastText == TouchInput.LastTip && fUp && tippedClicks == 0, TouchInput.LastFingerHold + " / " + TouchInput.LastTip + " / up taken " + fUp);
+        Check("no press from Windows, held 0.6 s on a button: no tooltip (never for a press), the lift goes to Windows (its press)",
+              !fDown && TouchInput.FingerHolds == holdsBefore && Toast.Shown == toastsHeld && !fUp, "holds " + (TouchInput.FingerHolds - holdsBefore) + " / up taken " + fUp);
         Toast.HideNow(); rightRow = -1;
         var rowAt = rowGrid.GetCellDisplayRectangle(0, 7, true); var rowPoint = new Point(rowAt.Left + 30, rowAt.Top + rowAt.Height / 2);
         finger(rowGrid, rowPoint, 0x0246, 121); Pump(TouchInput.LongPressMs + 250);
@@ -542,8 +543,8 @@ class TM {
         finger(tipped, new Point(20, 20), 0x0246, 123);
         Down(tipped, new Point(20, 20)); Pump(TouchInput.LongPressMs + 250);
         bool givenUp = finger(tipped, new Point(20, 20), 0x0247, 123); bool mouseUp = Up(tipped, new Point(20, 20)); Pump(50);
-        Check("  the press given at the touch: its long press as before, the tooltip shown once; the finger's lift to Windows",
-              TouchInput.FingerHolds == holdsBefore && Toast.Shown == toastsBefore + 1 && !givenUp && mouseUp && tippedClicks == 0,
+        Check("  the press given at the touch: a press as before, no tooltip; the finger's lift to Windows",
+              TouchInput.FingerHolds == holdsBefore && Toast.Shown == toastsBefore && !givenUp && !mouseUp,
               (TouchInput.FingerHolds - holdsBefore) + " finger holds, " + (Toast.Shown - toastsBefore) + " toasts");
         // 2 November: "zoom in / out function does not work on Dashboard / Machine Performance / Timeline chart"
         Console.WriteLine("--- two fingers zoom the time line ---");
