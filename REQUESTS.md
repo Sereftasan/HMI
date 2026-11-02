@@ -6,6 +6,13 @@ Claude reads this file at the start of every batch, does the items, and moves ea
 ## To do
 
 ## Done
+- 2 November, later (the meter on the sensor's signal; the axis page):
+  - 8927ba4 - A sensor's check: the meter measures its signal - the red lead on the black (signal) wire's terminal,
+    the black lead on 0 V: 24 V while it sees the cylinder, 0 V when not; its supply (+24 V against 0 V) a line of
+    its own. A lit LED with no 24 V on the signal wire: the sensor's output is broken (replace it).
+  - ad8cfed - The axis step-by-step page: no "Where to start" either. What it read from the moment is now in the
+    checks themselves: the reference sensor never seen (OFF) or seen, moved away from it, stood still pushing,
+    stood at a limit, a cycle's target past the limits; the jog's way in "What the HMI saw".
 - 2 November, late (the parts' drawings; the sensor's wires):
   - a0df5e3 - The parts' drawings upright: the PLC's card on top, the part under it; a narrow picture, a wider table;
     the title block says the sheet's page only ("sheet 18") - the column is lit on the ruler above it.
