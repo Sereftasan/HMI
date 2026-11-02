@@ -66,13 +66,30 @@ namespace Kaban.UI.Forms
         /// <summary>No keyboard on the screen: a keyboard of keys is used.</summary>
         public static bool Off { get { return Choice == "Off"; } }
 
-        /// <summary>The top bar's choice: the keyboard shown now put away, the next tap on a text box brings the new one (or none).</summary>
+        /// <summary>
+        /// The top bar's choice: kept as the signed-in user's own when they keep one (Users and Preferences; else choosing would
+        /// change nothing on their screen), otherwise as the panel's. The keyboard shown now put away, the next tap on a text box
+        /// brings the new one (or none).
+        /// </summary>
         public static void Choose(string value)
         {
             if (Choice == value) return;
             HideNow();
-            ViewPreferences.SetPanel(ViewPreferences.ScreenKeyboard, value);
-            AuditLogger.Log("On-Screen Keyboard: " + (value == "Own" ? "the HMI's" : value == "Off" ? "off (a keyboard of keys)" : "Windows'") + ".");
+            bool own = ChoiceIsOwn;
+            if (own) ViewPreferences.SetUser(ViewPreferences.ActiveUser, ViewPreferences.ScreenKeyboard, value);
+            else ViewPreferences.SetPanel(ViewPreferences.ScreenKeyboard, value);
+            AuditLogger.Log("On-Screen Keyboard: " + (value == "Own" ? "the HMI's" : value == "Off" ? "off (a keyboard of keys)" : "Windows'") +
+                            (own ? " (" + ViewPreferences.ActiveUser + "'s own)" : " (the panel's)") + ".");
+        }
+
+        /// <summary>The keyboard chosen is the signed-in user's own (Users and Preferences), not the panel's.</summary>
+        public static bool ChoiceIsOwn
+        {
+            get
+            {
+                var user = ViewPreferences.ActiveUser;
+                return user != null && ViewPreferences.UserValue(user, ViewPreferences.ScreenKeyboard) != null;
+            }
         }
 
         /// <summary>

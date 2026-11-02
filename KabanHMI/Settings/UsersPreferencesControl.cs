@@ -82,11 +82,14 @@ namespace Kaban.UI.Settings
         public ComboBox ComboOf(string key) { ComboBox c; return _combos.TryGetValue(key, out c) && RowShown(key) ? c : null; }
 
         /// <summary>
-        /// A preference's row on the page now: "Screen used with" only while the touch screen is switched on
-        /// (HMI Settings > Options) - shown or taken away as it is switched, no restart (30 October: "'Screen used
+        /// A preference's row on the page now: "Screen used with" and "On-Screen Keyboard" only while the touch screen is
+        /// switched on (HMI Settings > Options) - shown or taken away as it is switched, no restart (30 October: "'Screen used
         /// with' selection needs restart to appear, it should be activated by just the option selection").
         /// </summary>
-        private static bool RowShown(string key) { return key != ViewPreferences.InputMode || HmiFeatures.TouchOn; }
+        private static bool RowShown(string key)
+        {
+            return (key != ViewPreferences.InputMode && key != ViewPreferences.ScreenKeyboard) || HmiFeatures.TouchOn;
+        }
 
         /// <summary>The preference a row's field is for ("vp" + its key); "" for another field.</summary>
         private static string KeyOf(Control field)
@@ -1057,6 +1060,7 @@ namespace Kaban.UI.Settings
                 case ViewPreferences.AiPaste: return T("VP_AiPaste", "Paste into the chat");
                 case ViewPreferences.Language: return T("VP_Language", "Language");
                 case ViewPreferences.InputMode: return T("VP_InputMode", "Screen used with");
+                case ViewPreferences.ScreenKeyboard: return T("VP_Keyboard", "On-Screen Keyboard");
                 case UsersPreferencesControl.ScaleKey: return T("Usr_FactorOwn", "Screen scale");
                 default:
                     // a unit family: "Unit_Length" -> Length
@@ -1110,6 +1114,9 @@ namespace Kaban.UI.Settings
                 case "AiPaste.Off": return T("VP_AiPasteOff", "I paste it myself");
                 case "InputMode.Mouse": return T("VP_InputMouse", "Mouse");
                 case "InputMode.Touch": return T("VP_InputTouch", "Touch");
+                case "ScreenKeyboard.Windows": return T("VP_KeyboardWindows", "Windows'");
+                case "ScreenKeyboard.Own": return T("VP_KeyboardOwn", "HMI's");
+                case "ScreenKeyboard.Off": return T("VP_Off", "Off");
                 default: return value;
             }
         }

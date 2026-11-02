@@ -95,7 +95,7 @@ namespace Kaban.Core.Helpers
         /// The keyboard on the screen in touch mode (2 November: "The original windows on screen keyboard is very nice btw ...
         /// is it possible to just use it instead of creating a personal one"): Windows' On-Screen Keyboard, the HMI's own, or
         /// none (Off: "to remove automatic keyboard opening (when the keyboard hardware used)") - chosen in the top bar's
-        /// mouse / finger menu.
+        /// mouse / finger menu, and in Users and Preferences (everyone's, or a user's own).
         /// </summary>
         public const string ScreenKeyboard = "ScreenKeyboard";      // Windows | Own | Off
 
@@ -104,6 +104,7 @@ namespace Kaban.Core.Helpers
             // the languages are the translations loaded (LanguageManager.AvailableLanguages)
             new Preference { Key = Language, Group = "Screen", Default = "EN" },
             P(InputMode, "Screen", "Mouse", "Touch"),
+            P(ScreenKeyboard, "Screen", "Windows", "Own", "Off"),
             P(CaptionAlign, "Captions", "Right", "Left"),
             P(DecimalSeparator, "Numbers", "Windows", "Point", "Comma"),
             P(DateFormat, "Numbers", "Iso", "European", "Us"),
@@ -127,7 +128,6 @@ namespace Kaban.Core.Helpers
             new Preference { Key = IoShown, Group = "", Hidden = true },
             new Preference { Key = NoteLanguages, Group = "", Hidden = true },
             new Preference { Key = BackupInput, Group = "", Hidden = true, Values = new[] { "Points", "Range" }, Default = "Points" },
-            new Preference { Key = ScreenKeyboard, Group = "", Hidden = true, Values = new[] { "Windows", "Own", "Off" }, Default = "Windows" },
             // A user's own units of measure ("Unit_Length" = inch): taken at sign-in by
             // UnitManager. Everyone's are UnitManager's own (Units.cfg), not kept here.
             new Preference { Key = "Unit_" + Enums.UnitType.Length, Group = "Units", Hidden = true },

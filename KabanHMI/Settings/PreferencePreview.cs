@@ -170,6 +170,8 @@ namespace Kaban.UI.Settings
                     return T("PV_Tooltip", "How long the pointer rests on a control before its tooltip shows - played out above.");
                 case ViewPreferences.Language:
                     return T("PV_Language", "Every page, menu and message in this language - taken at once when this user signs in. The flag on the top bar sets everyone's (this panel's).");
+                case ViewPreferences.ScreenKeyboard:
+                    return T("PV_Keyboard", "A tap on a text box in touch mode brings it along the bottom of the screen, the page above it. Windows': a whole PC keyboard, closed by its own button. HMI's: Turkish Q. Off: none (a keyboard of keys).");
                 case ViewPreferences.InputMode:
                     return T("PV_Input", "Touch: menus, table rows, tick boxes, tabs and buttons larger - a long press opens a menu (as a right-click), a finger drag scrolls, a tap on a text box brings the keyboard (on a number cell the keypad), a tap on something greyed says why. The mouse / finger button on the top bar switches it.");
                 case ViewPreferences.AiPromptAs:
@@ -310,6 +312,71 @@ namespace Kaban.UI.Settings
                 case ViewPreferences.TooltipDelay: DrawTooltip(g, r); break;
                 case ViewPreferences.Language: DrawLanguage(g, r); break;
                 case ViewPreferences.InputMode: DrawInput(g, r); break;
+                case ViewPreferences.ScreenKeyboard: DrawKeyboard(g, r); break;
+            }
+        }
+
+        /// <summary>
+        /// The On-Screen Keyboard: a screen with the keyboard along its bottom and the page above it, scrolling there (Windows'
+        /// with its caption and a row of PC keys - Esc, Tab, Ctrl; the HMI's with ı ğ ü ş ö ç); Off - the screen whole, a
+        /// keyboard of keys before it.
+        /// </summary>
+        private void DrawKeyboard(Graphics g, Rectangle r)
+        {
+            string way = _valueOf(ViewPreferences.ScreenKeyboard);
+            bool off = way == "Off", windows = way != "Own" && !off;
+            var screen = new Rectangle(r.Left, r.Top, Math.Min(r.Width, S(240)), Math.Max(S(60), Math.Min(S(150), r.Height - (off ? S(52) : S(4)))));
+            using (var back = new SolidBrush(Color.White)) g.FillRectangle(back, screen);
+            using (var pen = new Pen(Ink, 1.5f)) g.DrawRectangle(pen, screen);
+            int barH = off ? 0 : S(62);
+            var page = new Rectangle(screen.Left + S(1), screen.Top + S(1), screen.Width - S(2), screen.Height - S(2) - barH);
+            // the page: its lines, and its scroll bar ending where it ends
+            using (var line = new SolidBrush(Rule))
+                for (int y = page.Top + S(10); y < page.Bottom - S(8); y += S(14))
+                    g.FillRectangle(line, page.Left + S(10), y, page.Width - S(34), S(6));
+            var bar = new Rectangle(page.Right - S(10), page.Top + S(3), S(6), page.Height - S(6));
+            using (var track = new SolidBrush(Color.FromArgb(232, 234, 238))) g.FillRectangle(track, bar);
+            using (var thumb = new SolidBrush(Grey)) g.FillRectangle(thumb, bar.Left, bar.Top, bar.Width, Math.Max(S(10), bar.Height / 3));
+            if (!off)
+            {
+                var kb = new Rectangle(screen.Left + S(1), page.Bottom, screen.Width - S(2), barH);
+                using (var back = new SolidBrush(Color.FromArgb(232, 234, 238))) g.FillRectangle(back, kb);
+                using (var pen = new Pen(Rule)) g.DrawLine(pen, kb.Left, kb.Top, kb.Right, kb.Top);
+                int top = kb.Top + S(3);
+                if (windows)
+                {
+                    // Windows' window: its caption, then the keys of a PC keyboard
+                    using (var cap = new SolidBrush(Color.FromArgb(214, 218, 224))) g.FillRectangle(cap, kb.Left, kb.Top + S(1), kb.Width, S(9));
+                    top = kb.Top + S(12);
+                }
+                string[][] rows = windows
+                    ? new[] { new[] { "Esc", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "*", "-" }, new[] { "Tab", "q", "w", "e", "r", "t", "y", "u", "ı", "o", "p", "ğ", "ü" },
+                              new[] { "Caps", "a", "s", "d", "f", "g", "h", "j", "k", "l", "ş", "i", "," }, new[] { "Ctrl", "Alt", "", "", "", "", "", "", "", "Alt", "Ctrl", "◀", "▶" } }
+                    : new[] { new[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "*", "-" }, new[] { "q", "w", "e", "r", "t", "y", "u", "ı", "o", "p", "ğ", "ü" },
+                              new[] { "a", "s", "d", "f", "g", "h", "j", "k", "l", "ş", "i", "," }, new[] { "?123", "", "", "", "", "", "", "", "", "◀", "▶", "✕" } };
+                int n = rows[0].Length, gap = S(2);
+                float kw = (kb.Width - S(6) - (n - 1) * gap) / (float)n, kh = (kb.Bottom - top - S(3) - 3 * gap) / 4f;
+                using (var f = new Font("Segoe UI", 4.5f * K))
+                using (var key = new SolidBrush(Color.White))
+                using (var edge = new Pen(Rule))
+                    for (int i = 0; i < rows.Length; i++)
+                        for (int j = 0; j < rows[i].Length; j++)
+                        {
+                            var k = new RectangleF(kb.Left + S(3) + j * (kw + gap), top + i * (kh + gap), kw, kh);
+                            g.FillRectangle(key, k); g.DrawRectangle(edge, k.X, k.Y, k.Width, k.Height);
+                            if (rows[i][j].Length > 0)
+                                TextRenderer.DrawText(g, rows[i][j], f, Rectangle.Round(k), Ink, TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPadding);
+                        }
+            }
+            else
+            {
+                // a keyboard of keys before the screen
+                var hw = new Rectangle(screen.Left + S(20), screen.Bottom + S(8), screen.Width - S(40), S(40));
+                using (var body = new SolidBrush(Color.FromArgb(70, 74, 82))) g.FillRectangle(body, hw);
+                using (var key = new SolidBrush(Color.FromArgb(205, 209, 216)))
+                    for (int i = 0; i < 3; i++)
+                        for (int j = 0; j < 12; j++)
+                            g.FillRectangle(key, hw.Left + S(5) + j * ((hw.Width - S(10)) / 12f), hw.Top + S(5) + i * S(11), (hw.Width - S(10)) / 12f - S(2), S(9));
             }
         }
 

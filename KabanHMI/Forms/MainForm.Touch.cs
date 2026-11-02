@@ -135,6 +135,12 @@ namespace Kaban.UI.Forms
                 item.Click += (s, e) => TouchKeyboard.Choose(value);
                 menu.Items.Add(item);
             }
+            // a user's own (Users and Preferences): said so, as for the way the screen is used
+            if (TouchKeyboard.ChoiceIsOwn)
+                menu.Items.Add(new ToolStripLabel(string.Format(LanguageManager.GetString("Inp_OwnNote", "Kept as {0}'s own (Users and Preferences)"), ViewPreferences.ActiveUser))
+                {
+                    Name = "keyboardWhose", ForeColor = Color.FromArgb(110, 116, 124), Font = UiStyle.Small
+                });
             return menu;
         }
 

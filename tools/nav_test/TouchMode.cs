@@ -112,8 +112,9 @@ class TM {
         offPage.Dock = DockStyle.Fill; ohost.Controls.Add(offPage); ohost.Show(); Pump(150);
         Func<List<Control>> prefFields = () => All(offPage).Where(c => c.Name.StartsWith("vp") && c.Visible).ToList();
         int fieldsOff = prefFields().Count;
-        Check("  Users and Preferences: no 'Screen used with' row", offPage.ComboOf(ViewPreferences.InputMode) == null &&
-              !prefFields().Any(c => c.Name == "vp" + ViewPreferences.InputMode));
+        Check("  Users and Preferences: no 'Screen used with' row, no 'On-Screen Keyboard' row", offPage.ComboOf(ViewPreferences.InputMode) == null &&
+              offPage.ComboOf(ViewPreferences.ScreenKeyboard) == null &&
+              !prefFields().Any(c => c.Name == "vp" + ViewPreferences.InputMode || c.Name == "vp" + ViewPreferences.ScreenKeyboard));
         ViewPreferences.SetPanel(ViewPreferences.InputMode, null); Pump(50);
         var hmiTabs = (SettingsScreen)new HmiSettingsPage().GetControl();
         // (30 October: "rename 'Features' page name in 'HMI setting' to 'Options' to match to the one on machine settings
@@ -155,9 +156,11 @@ class TM {
         Pump(150);
         var usedWith = offPage.ComboOf(ViewPreferences.InputMode);
         var fieldsOn = prefFields();
-        Check("  Users and Preferences, open meanwhile: 'Screen used with' there at once - no restart - in a row of its own",
-              usedWith != null && usedWith.Visible && fieldsOn.Count == fieldsOff + 1 &&
-              !fieldsOn.Any(c => c != usedWith && c.Bounds.IntersectsWith(usedWith.Bounds)), fieldsOff + " -> " + fieldsOn.Count);
+        var keyboardRow = offPage.ComboOf(ViewPreferences.ScreenKeyboard);
+        Check("  Users and Preferences, open meanwhile: 'Screen used with' and 'On-Screen Keyboard' there at once - no restart - each in a row of its own",
+              usedWith != null && usedWith.Visible && keyboardRow != null && keyboardRow.Visible && fieldsOn.Count == fieldsOff + 2 &&
+              !fieldsOn.Any(c => c != usedWith && c.Bounds.IntersectsWith(usedWith.Bounds)) &&
+              !fieldsOn.Any(c => c != keyboardRow && c.Bounds.IntersectsWith(keyboardRow.Bounds)), fieldsOff + " -> " + fieldsOn.Count);
         ohost.Close(); ohost.Dispose();
         Shot(fhost, "features_touch_on");
         fhost.Close(); fhost.Dispose();
@@ -183,6 +186,30 @@ class TM {
         var preview = new PreferencePreview();
         preview.ShowPreference(ViewPreferences.InputMode, k => k == ViewPreferences.InputMode ? "Touch" : ViewPreferences.PanelValue(k), false);
         Check("  its preview says what touch changes", preview.Description.Contains("long press") && preview.Description.Contains("keyboard"), preview.Description);
+        // (2 November: "This keyboard selection should be added to the user preferences as well")
+        var kpref = ViewPreferences.Find(ViewPreferences.ScreenKeyboard);
+        var kcombo = page.ComboOf(ViewPreferences.ScreenKeyboard);
+        Check("On-Screen Keyboard: Windows' (the default), HMI's or Off - a preference of the Screen group, its row under 'Screen used with'",
+              kpref != null && kpref.Group == "Screen" && !kpref.Hidden && string.Join(",", kpref.Values) == "Windows,Own,Off" && kpref.Default == "Windows" &&
+              kcombo != null && kcombo.Top > combo.Top && PT("NameOf", ViewPreferences.ScreenKeyboard) == "On-Screen Keyboard" &&
+              string.Join(",", kcombo.Items.Cast<object>().Select(o => o.ToString())).Contains("Windows',HMI's,Off"),
+              kcombo == null ? "no row" : string.Join(" | ", kcombo.Items.Cast<object>()));
+        var phost = new Form { ClientSize = new Size(940, 380), StartPosition = FormStartPosition.Manual, Location = new Point(0, 0) };
+        phost.Show();
+        int px = 10;
+        foreach (var way in new[] { "Windows", "Own", "Off" })
+        {
+            var pv = new PreferencePreview { Bounds = new Rectangle(px, 10, 300, 360) };
+            phost.Controls.Add(pv);
+            pv.ShowPreference(ViewPreferences.ScreenKeyboard, k => k == ViewPreferences.ScreenKeyboard ? way : ViewPreferences.PanelValue(k), false);
+            px += 310;
+        }
+        Pump(150);
+        Shot(phost, "keyboard_previews");
+        var kpv = phost.Controls.OfType<PreferencePreview>().First();
+        Check("  its preview: where it comes, what it does, and Off for a keyboard of keys", kpv.Key == ViewPreferences.ScreenKeyboard && kpv.Value == "Windows" &&
+              kpv.Description.Contains("along the bottom of the screen") && kpv.Description.Contains("Off"), kpv.Description);
+        phost.Close(); phost.Dispose();
         host.Close(); host.Dispose();
 
         Console.WriteLine("--- the button on the caption bar ---");
@@ -223,7 +250,7 @@ class TM {
         menu = form.BuildInputMenu();
         Check("    the HMI's own chosen: the panel's, ticked, written in the log", !WindowsKeyboard.Chosen && ViewPreferences.PanelChosen(ViewPreferences.ScreenKeyboard) == "Own" &&
               Item(menu, "keyboardOwn").Checked && !Item(menu, "keyboardWindows").Checked &&
-              Directory.GetFiles(dir, "HmiAudit_*.txt").Any(f => File.ReadAllText(f).Contains("On-Screen Keyboard: the HMI's.")));
+              Directory.GetFiles(dir, "HmiAudit_*.txt").Any(f => File.ReadAllText(f).Contains("On-Screen Keyboard: the HMI's (the panel's).")));
         Item(menu, "keyboardOff").PerformClick(); Pump(30);
         menu = form.BuildInputMenu();
         Check("    Off chosen: ticked, none of the others", TouchKeyboard.Off && !WindowsKeyboard.Chosen && Item(menu, "keyboardOff").Checked &&
@@ -257,8 +284,16 @@ class TM {
         Item(form.BuildInputMenu(), "inputMouse").PerformClick(); Pump(50);
         Check("  and back: tmop's own a mouse, the panel's touch", ViewPreferences.UserValue("tmop", ViewPreferences.InputMode) == "Mouse" &&
               ViewPreferences.PanelChosen(ViewPreferences.InputMode) == "Touch" && !TouchInput.On);
+        ViewPreferences.SetUser("tmop", ViewPreferences.ScreenKeyboard, "Own"); Pump(30);
+        menu = form.BuildInputMenu();
+        Check("tmop keeps the HMI's keyboard of their own: ticked, said so under it", TouchKeyboard.Choice == "Own" && Item(menu, "keyboardOwn").Checked &&
+              menu.Items.OfType<ToolStripLabel>().Any(l => l.Name == "keyboardWhose" && l.Text.StartsWith("Kept as tmop's own")));
+        Item(menu, "keyboardOff").PerformClick(); Pump(30);
+        Check("  Off chosen on the bar: tmop's own changed, the panel's stays Windows'", ViewPreferences.UserValue("tmop", ViewPreferences.ScreenKeyboard) == "Off" &&
+              ViewPreferences.PanelChosen(ViewPreferences.ScreenKeyboard) == "Windows" && TouchKeyboard.Off);
+        ViewPreferences.SetUser("tmop", ViewPreferences.ScreenKeyboard, null);
         SecurityManager.Logout(); Pump(50);
-        Check("signed out: the panel's - touch", TouchInput.On && TouchInput.IsPreparedForTouch(form));
+        Check("signed out: the panel's - touch", TouchInput.On && TouchInput.IsPreparedForTouch(form) && TouchKeyboard.Choice == "Windows");
         SecurityManager.Login("admin", SecurityLevel.Admin); Pump(50);
 
         TouchInput.ModeChanged -= counted;
