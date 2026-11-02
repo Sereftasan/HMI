@@ -59,6 +59,7 @@
             // 
             this.optCooling.Address = "L6";
             this.optCooling.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.optCooling.ConfirmWrite = true;
             this.optCooling.CornerRadius = 4;
             this.optCooling.DescriptionSide = Kaban.Core.Enums.DescriptionSide.Left;
             this.optCooling.DescriptionText = "Cooling";
@@ -84,6 +85,7 @@
             // 
             this.optProfile_Carrying_Roller_Sensor.Address = "L3";
             this.optProfile_Carrying_Roller_Sensor.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.optProfile_Carrying_Roller_Sensor.ConfirmWrite = true;
             this.optProfile_Carrying_Roller_Sensor.CornerRadius = 4;
             this.optProfile_Carrying_Roller_Sensor.DescriptionSide = Kaban.Core.Enums.DescriptionSide.Left;
             this.optProfile_Carrying_Roller_Sensor.DescriptionText = "Profile Carrying Roller Sensor";
@@ -109,6 +111,7 @@
             // 
             this.optProfile_Recog_Carrying_Roller.Address = "L13";
             this.optProfile_Recog_Carrying_Roller.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.optProfile_Recog_Carrying_Roller.ConfirmWrite = true;
             this.optProfile_Recog_Carrying_Roller.CornerRadius = 4;
             this.optProfile_Recog_Carrying_Roller.DescriptionSide = Kaban.Core.Enums.DescriptionSide.Left;
             this.optProfile_Recog_Carrying_Roller.DescriptionText = "Profile Recog. Carrying Roller";
@@ -134,6 +137,7 @@
             // 
             this.optMilling_Carrying_Roller.Address = "L14";
             this.optMilling_Carrying_Roller.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.optMilling_Carrying_Roller.ConfirmWrite = true;
             this.optMilling_Carrying_Roller.CornerRadius = 4;
             this.optMilling_Carrying_Roller.DescriptionSide = Kaban.Core.Enums.DescriptionSide.Left;
             this.optMilling_Carrying_Roller.DescriptionText = "Milling Carrying Roller";
@@ -159,6 +163,7 @@
             // 
             this.optExit_Carrying_Roller.Address = "L15";
             this.optExit_Carrying_Roller.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.optExit_Carrying_Roller.ConfirmWrite = true;
             this.optExit_Carrying_Roller.CornerRadius = 4;
             this.optExit_Carrying_Roller.DescriptionSide = Kaban.Core.Enums.DescriptionSide.Left;
             this.optExit_Carrying_Roller.DescriptionText = "Exit Carrying Roller";
@@ -184,6 +189,7 @@
             // 
             this.optLeft_Profile_Recognition.Address = "L19";
             this.optLeft_Profile_Recognition.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.optLeft_Profile_Recognition.ConfirmWrite = true;
             this.optLeft_Profile_Recognition.CornerRadius = 4;
             this.optLeft_Profile_Recognition.DescriptionSide = Kaban.Core.Enums.DescriptionSide.Left;
             this.optLeft_Profile_Recognition.DescriptionText = "Left Profile Recognition";
@@ -209,6 +215,7 @@
             // 
             this.optSliding_Conveyor_Rollers.Address = "L18";
             this.optSliding_Conveyor_Rollers.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.optSliding_Conveyor_Rollers.ConfirmWrite = true;
             this.optSliding_Conveyor_Rollers.CornerRadius = 4;
             this.optSliding_Conveyor_Rollers.DescriptionSide = Kaban.Core.Enums.DescriptionSide.Left;
             this.optSliding_Conveyor_Rollers.DescriptionText = "Sliding Conveyor Rollers";
@@ -234,6 +241,7 @@
             // 
             this.optReverse_Machine.Address = "L37";
             this.optReverse_Machine.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.optReverse_Machine.ConfirmWrite = true;
             this.optReverse_Machine.CornerRadius = 4;
             this.optReverse_Machine.DescriptionSide = Kaban.Core.Enums.DescriptionSide.Left;
             this.optReverse_Machine.DescriptionText = "Reverse Machine";
@@ -259,6 +267,7 @@
             // 
             this.optSpecial_Reverse_Machine.Address = "L25";
             this.optSpecial_Reverse_Machine.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.optSpecial_Reverse_Machine.ConfirmWrite = true;
             this.optSpecial_Reverse_Machine.CornerRadius = 4;
             this.optSpecial_Reverse_Machine.DescriptionSide = Kaban.Core.Enums.DescriptionSide.Left;
             this.optSpecial_Reverse_Machine.DescriptionText = "Special Reverse Machine";
@@ -284,6 +293,7 @@
             // 
             this.optCutting_Right_Top_Clamping_Long.Address = "L28";
             this.optCutting_Right_Top_Clamping_Long.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.optCutting_Right_Top_Clamping_Long.ConfirmWrite = true;
             this.optCutting_Right_Top_Clamping_Long.CornerRadius = 4;
             this.optCutting_Right_Top_Clamping_Long.DescriptionSide = Kaban.Core.Enums.DescriptionSide.Left;
             this.optCutting_Right_Top_Clamping_Long.DescriptionText = "Cutting Right Top Clamping Long";
@@ -309,6 +319,7 @@
             // 
             this.optMajor_Profile_Ejection_Tray_Operates_Individually.Address = "L29";
             this.optMajor_Profile_Ejection_Tray_Operates_Individually.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.optMajor_Profile_Ejection_Tray_Operates_Individually.ConfirmWrite = true;
             this.optMajor_Profile_Ejection_Tray_Operates_Individually.CornerRadius = 4;
             this.optMajor_Profile_Ejection_Tray_Operates_Individually.DescriptionSide = Kaban.Core.Enums.DescriptionSide.Left;
             this.optMajor_Profile_Ejection_Tray_Operates_Individually.DescriptionText = "Major Profile Ejection Tray Operates Individually";
@@ -334,6 +345,7 @@
             // 
             this.optTop_Clamping_Reclamp.Address = "L30";
             this.optTop_Clamping_Reclamp.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.optTop_Clamping_Reclamp.ConfirmWrite = true;
             this.optTop_Clamping_Reclamp.CornerRadius = 4;
             this.optTop_Clamping_Reclamp.DescriptionSide = Kaban.Core.Enums.DescriptionSide.Left;
             this.optTop_Clamping_Reclamp.DescriptionText = "Top Clamping Reclamp";
@@ -359,6 +371,7 @@
             // 
             this.optGripper_0_90_Degree_Turn.Address = "L31";
             this.optGripper_0_90_Degree_Turn.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.optGripper_0_90_Degree_Turn.ConfirmWrite = true;
             this.optGripper_0_90_Degree_Turn.CornerRadius = 4;
             this.optGripper_0_90_Degree_Turn.DescriptionSide = Kaban.Core.Enums.DescriptionSide.Left;
             this.optGripper_0_90_Degree_Turn.DescriptionText = "Gripper 0/90 Degree Turn";
@@ -384,6 +397,7 @@
             // 
             this.optClamping_Mould.Address = "L27";
             this.optClamping_Mould.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.optClamping_Mould.ConfirmWrite = true;
             this.optClamping_Mould.CornerRadius = 4;
             this.optClamping_Mould.DescriptionSide = Kaban.Core.Enums.DescriptionSide.Left;
             this.optClamping_Mould.DescriptionText = "Clamping Mould";
@@ -409,6 +423,7 @@
             // 
             this.optCross_Roller.Address = "L32";
             this.optCross_Roller.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.optCross_Roller.ConfirmWrite = true;
             this.optCross_Roller.CornerRadius = 4;
             this.optCross_Roller.DescriptionSide = Kaban.Core.Enums.DescriptionSide.Left;
             this.optCross_Roller.DescriptionText = "Cross Roller";
@@ -434,6 +449,7 @@
             // 
             this.optCutting_Left_Front_Encoder.Address = "L33";
             this.optCutting_Left_Front_Encoder.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.optCutting_Left_Front_Encoder.ConfirmWrite = true;
             this.optCutting_Left_Front_Encoder.CornerRadius = 4;
             this.optCutting_Left_Front_Encoder.DescriptionSide = Kaban.Core.Enums.DescriptionSide.Left;
             this.optCutting_Left_Front_Encoder.DescriptionText = "Cutting Left Front with Encoder";
@@ -459,6 +475,7 @@
             // 
             this.optCutting_Right_Front_Vertical_Without_Encoder.Address = "L34";
             this.optCutting_Right_Front_Vertical_Without_Encoder.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.optCutting_Right_Front_Vertical_Without_Encoder.ConfirmWrite = true;
             this.optCutting_Right_Front_Vertical_Without_Encoder.CornerRadius = 4;
             this.optCutting_Right_Front_Vertical_Without_Encoder.DescriptionSide = Kaban.Core.Enums.DescriptionSide.Left;
             this.optCutting_Right_Front_Vertical_Without_Encoder.DescriptionText = "Cutting Right Front Vertical without Encoder";
@@ -484,6 +501,7 @@
             // 
             this.optCutting_Left_Front_Air_Exhaust.Address = "L35";
             this.optCutting_Left_Front_Air_Exhaust.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.optCutting_Left_Front_Air_Exhaust.ConfirmWrite = true;
             this.optCutting_Left_Front_Air_Exhaust.CornerRadius = 4;
             this.optCutting_Left_Front_Air_Exhaust.DescriptionSide = Kaban.Core.Enums.DescriptionSide.Left;
             this.optCutting_Left_Front_Air_Exhaust.DescriptionText = "Cutting Left Front with Air Exhaust";
@@ -532,6 +550,7 @@
             // 
             this.checkBoxWithBladeBackFinishCut.Address = "L47";
             this.checkBoxWithBladeBackFinishCut.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.checkBoxWithBladeBackFinishCut.ConfirmWrite = true;
             this.checkBoxWithBladeBackFinishCut.CornerRadius = 4;
             this.checkBoxWithBladeBackFinishCut.DescriptionSide = Kaban.Core.Enums.DescriptionSide.Left;
             this.checkBoxWithBladeBackFinishCut.DescriptionText = "with Blade Back Finish Cut";
@@ -557,6 +576,7 @@
             // 
             this.checkBoxWithBladeLeftBackFinishCut.Address = "L48";
             this.checkBoxWithBladeLeftBackFinishCut.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.checkBoxWithBladeLeftBackFinishCut.ConfirmWrite = true;
             this.checkBoxWithBladeLeftBackFinishCut.CornerRadius = 4;
             this.checkBoxWithBladeLeftBackFinishCut.DescriptionSide = Kaban.Core.Enums.DescriptionSide.Left;
             this.checkBoxWithBladeLeftBackFinishCut.DescriptionText = "with Blade Left Back Finish Cut";
@@ -582,6 +602,7 @@
             // 
             this.checkBoxWithBladeSingleSideCut.Address = "L49";
             this.checkBoxWithBladeSingleSideCut.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.checkBoxWithBladeSingleSideCut.ConfirmWrite = true;
             this.checkBoxWithBladeSingleSideCut.CornerRadius = 4;
             this.checkBoxWithBladeSingleSideCut.DescriptionSide = Kaban.Core.Enums.DescriptionSide.Left;
             this.checkBoxWithBladeSingleSideCut.DescriptionText = "with Blade Single Side Cut";
@@ -607,6 +628,7 @@
             // 
             this.optVithBlade.Address = "L46";
             this.optVithBlade.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.optVithBlade.ConfirmWrite = true;
             this.optVithBlade.CornerRadius = 4;
             this.optVithBlade.DescriptionSide = Kaban.Core.Enums.DescriptionSide.Left;
             this.optVithBlade.DescriptionText = "with Blade";
@@ -633,6 +655,7 @@
             // 
             this.optMullionNotching.Address = "L5";
             this.optMullionNotching.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.optMullionNotching.ConfirmWrite = true;
             this.optMullionNotching.CornerRadius = 4;
             this.optMullionNotching.DescriptionSide = Kaban.Core.Enums.DescriptionSide.Left;
             this.optMullionNotching.DescriptionText = "Mullion Notching";

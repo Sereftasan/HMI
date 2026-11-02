@@ -233,6 +233,8 @@ class LP {
               opts.Count == 23 && opts.Any(o => o.Address == "L5") && opts.Any(o => o.Address == "L27") &&
               new[] { "L33", "L34", "L35" }.All(a => opts.Any(o => o.Address == a)) && !All(other).OfType<CheckBoxHMI>().Any(),
               opts.Count + ": " + string.Join(",", opts.Select(o => o.Address)));
+        Check("  each of them asks before it is changed by a tap (ConfirmWrite; a slide does not ask)", opts.All(o => o.ConfirmWrite),
+              string.Join(",", opts.Where(o => !o.ConfirmWrite).Select(o => o.Name)));
         Check("Middle Register Notch Parameters (D840...)", at(other, "D840") != null && at(other, "D850") != null);
         // 2 November: "I think we should use it at all the parted pages (... 'Machine Setting / Others' pages)"
         var otherGroups = All(other).OfType<GroupBoxHMI>().ToList();

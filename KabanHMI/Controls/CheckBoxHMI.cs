@@ -30,7 +30,7 @@ namespace Kaban.UI.Controls
     /// </summary>
     // The Properties window in the order of the work (see PropertyOrder).
     [System.ComponentModel.TypeDescriptionProvider(typeof(Kaban.UI.Design.PropertyOrder.Provider))]
-    public class CheckBoxHMI : CheckBox, UiStyle.IExplainsDisabled
+    public class CheckBoxHMI : CheckBox, UiStyle.IExplainsDisabled, Kaban.UI.Helpers.TouchInput.ISwipes
     {
         // 30 October: the user chose the rows ("this one look nice on your photo, you can make all the checkbox and the
         // checkbox HMI default render this way as well") - a row by default; one too narrow for its name (a tick box in a
@@ -98,6 +98,87 @@ namespace Kaban.UI.Controls
         [Category("   Data")] public string Address { get; set; } = "";
         [Category("   Behavior")] public SecurityLevel RequiredSecurity { get; set; } = SecurityLevel.Operator;
         [Category("   Behavior")] public bool LogAction { get; set; } = true;
+
+        // ---- a change asked for (2 November: "We should add 'ConfirmWrite' property to 'CheckBoxHMI' controls and turn all
+        // true at the ones on 'Machine Setting / Options' page because it might be dangerous to change their value accidently.
+        // Is it possible if the confirming requirement gets cancelled when the checkbox value changed dragging to left to turn
+        // OFF or right to turn ON btw, it confirms the deliberate action as well") ----
+
+        /// <summary>
+        /// A tap or a click asks first ("Switch "Cooling" ON?"); the switch SLID across - right to ON, left to OFF, by a finger
+        /// or the mouse - changes it at once: sliding it is deliberate already.
+        /// </summary>
+        [Category("  System"), DefaultValue(false)]
+        [Description("A tap or click asks before the bit is written. Sliding the switch across (right: ON, left: OFF) changes it without asking - " +
+                     "the slide is the deliberate action.")]
+        public bool ConfirmWrite { get; set; }
+
+        /// <summary>How far, at factor 1, the switch is slid before it changes.</summary>
+        public const int SwipeDistance = 18;
+
+        /// <summary>The question before a tap's change: the box, and the state it would get - true: changed (tests answer it themselves).</summary>
+        public static Func<CheckBoxHMI, bool, bool> Confirm = (box, on) => box.AskToChange(on);
+
+        /// <summary>How the last change was made: "tap" (asked), "slide" (not asked), "refused" (tests).</summary>
+        [Browsable(false)]
+        public string LastChange { get; private set; }
+
+        private bool _down, _slid;
+        private Point _downAt;
+
+        /// <summary>A sideways drag on it is its own while it can be changed (TouchInput: no page scrolls under it then).</summary>
+        bool Kaban.UI.Helpers.TouchInput.ISwipes.SwipesNow { get { return Swipeable; } }
+
+        private bool Swipeable
+        {
+            get { return _look != CheckBoxLook.Box && Enabled && !IsStale && !DisplayOnly && _softEnabled && !string.IsNullOrWhiteSpace(Address); }
+        }
+
+        /// <summary>The question itself: its name and the state it would get; an Admin also reads the bit and the value.</summary>
+        private bool AskToChange(bool on)
+        {
+            string name = CaptionShown;
+            if (string.IsNullOrWhiteSpace(name)) name = string.IsNullOrWhiteSpace(ToolTipCaption) ? Address : LanguageManager.GetString(ToolTipCaption, ToolTipCaption);
+            string q = string.Format(on ? LanguageManager.GetString("Chk_ConfirmOn", "Switch \u201C{0}\u201D ON?")
+                                        : LanguageManager.GetString("Chk_ConfirmOff", "Switch \u201C{0}\u201D OFF?"), name);
+            if (SecurityManager.HasAccess(SecurityLevel.Admin))
+                q += "\r\n" + string.Format(LanguageManager.GetString("Chk_ConfirmWrites", "It writes {0} to {1}."), on ? 1 : 0, Address);
+            q += "\r\n\r\n" + LanguageManager.GetString("Chk_ConfirmSlide", "Sliding the switch across changes it without this question.");
+            var answer = MessageBox.Show(FindForm(), q, LanguageManager.GetString("Sys_ConfirmTitle", "Confirm"),
+                                         MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2);
+            return answer == DialogResult.Yes;
+        }
+
+        protected override void OnMouseDown(MouseEventArgs e)
+        {
+            base.OnMouseDown(e);
+            if (e.Button != MouseButtons.Left) return;
+            _down = true;
+            _slid = false;
+            _downAt = e.Location;
+        }
+
+        protected override void OnMouseMove(MouseEventArgs e)
+        {
+            base.OnMouseMove(e);
+            if (!_down || _slid || (e.Button & MouseButtons.Left) == 0 || !Swipeable) return;
+            int dx = e.X - _downAt.X, dy = e.Y - _downAt.Y;
+            if (Math.Abs(dx) < UiScale.Px(SwipeDistance) || Math.Abs(dx) <= 2 * Math.Abs(dy)) return;
+            // slid across: right ON, left OFF - no question (the click its lift makes changes nothing more)
+            _slid = true;
+            bool want = dx > 0;
+            if (want == Checked) return;
+            LastChange = "slide";
+            Checked = want;
+        }
+
+        protected override void OnMouseUp(MouseEventArgs e)
+        {
+            base.OnMouseUp(e);
+            _down = false;
+            // the click of this lift (before or after this, as the framework has it) is the slide's: then it is over
+            if (_slid && IsHandleCreated) BeginInvoke(new Action(() => _slid = false));
+        }
 
         // ---- conditions and trigger, as a ButtonHMI's (14 October: "CheckBoxHMI should
         // have visibility condition, enabling condition and trigger as well") ----
@@ -399,6 +480,13 @@ namespace Kaban.UI.Controls
         protected override void OnClick(EventArgs e)
         {
             if (IsStale || DisplayOnly || !_softEnabled) return;          // not ticked: nothing can be written
+            if (_slid) return;                                            // the switch was slid: changed already, no question
+            if (ConfirmWrite && !string.IsNullOrWhiteSpace(Address) && AutoCheck &&
+                SecurityManager.HasAccess(RequiredSecurity) && PlcManager.Instance.CheckPermission(PlcNumber))
+            {
+                if (!Confirm(this, !Checked)) { LastChange = "refused"; return; }
+                LastChange = "tap";
+            }
             base.OnClick(e);
         }
 

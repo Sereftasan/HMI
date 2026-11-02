@@ -94,7 +94,7 @@ namespace Kaban.UI.Design
                 C("Device", "PlcNumber", "Address", "AlertAddress"),
                 C("Display", "Look", "DescriptionText", "DescriptionSide", "CornerRadius"),
                 C("Conditions", "VisibilityConditions", "EnableConditions", "EnableTrigger"),
-                C("Security", "RequiredSecurity", "LogAction"),
+                C("Security", "RequiredSecurity", "ConfirmWrite", "LogAction"),
                 C("Help", "ToolTipCaption")),
 
             ["CheckListHMI"] = L(

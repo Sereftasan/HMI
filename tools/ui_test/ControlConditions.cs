@@ -86,6 +86,48 @@ class CN {
         sim.Write("L27", 0); Pump(800);
         Check("  Option A off: hidden", !cb.Visible);
 
+        // 2 November: "We should add 'ConfirmWrite' property to 'CheckBoxHMI' controls ... Is it possible if the confirming requirement
+        // gets cancelled when the checkbox value changed dragging to left to turn OFF or right to turn ON"
+        Console.WriteLine("--- CheckBoxHMI.ConfirmWrite: a tap asks, a slide does not ---");
+        var confirmProp = System.ComponentModel.TypeDescriptor.GetProperties(typeof(CheckBoxHMI))["ConfirmWrite"];
+        Check("ConfirmWrite: a property of its own, off by default, in the designer's Security part", confirmProp != null && confirmProp.IsBrowsable &&
+              confirmProp.Category.TrimStart('\t') == "Security" && !new CheckBoxHMI().ConfirmWrite, confirmProp == null ? "none" : confirmProp.Category);
+        var sw = new CheckBoxHMI { Name = "sw", Address = "M60", DescriptionText = "Cooling", ConfirmWrite = true, Location = new Point(500, 300), Size = new Size(400, 40) };
+        page.Controls.Add(sw); scanner.RefreshTags(); sim.Write("M60", 0); Pump(600);
+        int asked = 0; bool answer = false, askedOn = false;
+        var confirmWas = CheckBoxHMI.Confirm;
+        CheckBoxHMI.Confirm = (b, on) => { asked++; askedOn = on; return answer; };
+        Action<string, object[]> call = (m, a) => typeof(CheckBoxHMI).GetMethod(m, Any).Invoke(sw, a);
+        Func<int, int, MouseEventArgs> at = (x, y) => new MouseEventArgs(MouseButtons.Left, 1, x, y, 0);
+        // a press, moves, a lift and its click - in either order the framework may give them
+        Action<int[], bool> gesture = (xs, clickFirst) =>
+        {
+            call("OnMouseDown", new object[] { at(xs[0], 20) });
+            for (int i = 1; i < xs.Length; i++) call("OnMouseMove", new object[] { at(xs[i], 20) });
+            if (clickFirst) { call("OnClick", new object[] { EventArgs.Empty }); call("OnMouseUp", new object[] { at(xs[xs.Length - 1], 20) }); }
+            else { call("OnMouseUp", new object[] { at(xs[xs.Length - 1], 20) }); call("OnClick", new object[] { EventArgs.Empty }); }
+            Pump(300);
+        };
+        gesture(new[] { 360 }, false);
+        Check("a tap: asked first (Switch ON?) - answered No: nothing written", asked == 1 && askedOn && sim.Read("M60") == 0 && !sw.Checked && sw.LastChange == "refused");
+        answer = true;
+        gesture(new[] { 360 }, true);
+        Check("  answered Yes: ON, written", asked == 2 && sw.Checked && sim.Read("M60") == 1 && sw.LastChange == "tap");
+        gesture(new[] { 370, 355, 330, 300 }, false);
+        Check("slid to the left: OFF at once, nothing asked", asked == 2 && !sw.Checked && sim.Read("M60") == 0 && sw.LastChange == "slide");
+        gesture(new[] { 300, 320, 340, 360 }, true);
+        Check("  slid to the right: ON at once, nothing asked (the lift's click changes nothing more)", asked == 2 && sw.Checked && sim.Read("M60") == 1);
+        gesture(new[] { 300, 340, 380 }, false);
+        Check("  slid to the right while ON: stays ON, nothing asked", asked == 2 && sw.Checked && sim.Read("M60") == 1);
+        gesture(new[] { 360, 364, 366 }, false);
+        Check("  moved a little (less than a slide): a tap - asked", asked == 3 && !askedOn && !sw.Checked && sim.Read("M60") == 0);
+        Check("  a sideways drag on it is its own (no page scrolls under a switch that can change)",
+              ((Kaban.UI.Helpers.TouchInput.ISwipes)sw).SwipesNow && !((Kaban.UI.Helpers.TouchInput.ISwipes)new CheckBoxHMI { Look = CheckBoxLook.Box, Address = "M1" }).SwipesNow);
+        sw.ConfirmWrite = false; answer = false;
+        gesture(new[] { 360 }, false);
+        Check("ConfirmWrite off: a tap changes it at once", asked == 3 && sw.Checked && sim.Read("M60") == 1);
+        CheckBoxHMI.Confirm = confirmWas;
+
         Console.WriteLine("--- AxisSettingHMI: the row's and each button's own conditions and triggers ---");
         sim.Write("L27", 1); sim.Write("M100", 0); sim.Write("M53", 1); Pump(900);
         var back = (ButtonHMI)Get(row, "_back"); var fwd = (ButtonHMI)Get(row, "_forward"); var cal = (ButtonHMI)Get(row, "_calibrate");

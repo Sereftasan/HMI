@@ -4,6 +4,10 @@ Btn_Stop;Stop Machine;Makineyi Durdur;Stop Станок;Stop Maschine;Stop Macch
 Sys_ConfirmTitle;Confirm;Onay;Подтвердить;Bestätigen;Conferma;Confirmar
 Sys_ConfirmAction;Confirm Action?;İşlemi Onaylıyor musunuz?;Подтвердить действие?;Aktion bestätigen?;Confermare l'azione?;¿Confirmar la acción?
 Sys_ConfirmChange;Are you sure you want to change this value to {0}?;Bu değeri {0} olarak değiştirmek istediğinize emin misiniz?;Изменить это значение на {0}?;Diesen Wert wirklich auf {0} ändern?;Cambiare questo valore in {0}?;¿Cambiar este valor a {0}?
+Chk_ConfirmOn;Switch “{0}” ON?;“{0}” AÇILSIN mı?;;;;
+Chk_ConfirmOff;Switch “{0}” OFF?;“{0}” KAPATILSIN mı?;;;;
+Chk_ConfirmWrites;It writes {0} to {1}.;{1} adresine {0} yazar.;;;;
+Chk_ConfirmSlide;Sliding the switch across changes it without this question.;Anahtarı kaydırmak onu bu soru sorulmadan değiştirir.;;;;
 Sys_InputTitle;Input;Giriş;Ввод;Eingabe;Immissione;Entrada
 Sys_InputMsg;Enter ({0} - {1}):;Girin ({0} - {1}):;Введите ({0} - {1}):;Eingabe ({0} - {1}):;Inserire ({0} - {1}):;Introducir ({0} - {1}):
 Sys_Disabled;Action Disabled.;İşlem Devre Dışı.;Действие отключено.;Aktion deaktiviert.;Azione disabilitata.;Acción deshabilitada.

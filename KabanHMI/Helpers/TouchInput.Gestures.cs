@@ -48,6 +48,12 @@ namespace Kaban.UI.Helpers
         /// <summary>A control that handles a finger itself: never held for a menu, never scrolled under (a drawing, a dragger).</summary>
         public interface IHandlesTouch { }
 
+        /// <summary>
+        /// A control whose SIDEWAYS drag is its own (a switch slid on or off, CheckBoxHMI): a finger drawn sideways on it scrolls
+        /// nothing; drawn up or down it scrolls the page as anywhere else.
+        /// </summary>
+        public interface ISwipes { bool SwipesNow { get; } }
+
         internal const int WmMouseMove = 0x0200, WmLButtonDown = 0x0201, WmLButtonUp = 0x0202, WmLButtonDblClk = 0x0203,
                            WmRButtonDown = 0x0204, WmRButtonUp = 0x0205, MkLButton = 0x0001, MkRButton = 0x0002;
 
