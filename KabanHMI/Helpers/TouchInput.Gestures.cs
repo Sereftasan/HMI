@@ -132,8 +132,16 @@ namespace Kaban.UI.Helpers
             {
                 switch (m.Msg)
                 {
+                    case WmPointerEnter:
+                    case WmPointerDown:
+                    case WmPointerUpdate:
+                    case WmPointerUp:
+                    case WmPointerLeave:
+                    case WmPointerCaptureChanged:
+                        PointerTouched(ref m);
+                        return Pointer(ref m);         // a finger on a hold-to-run button (TouchInput.Fingers)
                     case WmLButtonDown:
-                    case WmLButtonDblClk: return Down(ref m);
+                    case WmLButtonDblClk: NoteLatePress(); return Down(ref m);
                     case WmMouseMove: return Moved(ref m);
                     case WmLButtonUp: return Up(ref m);
                 }

@@ -110,6 +110,7 @@
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Helpers\TouchInput.Sizes.cs" />
+    <Compile Include="Helpers\TouchInput.Fingers.cs" />
     <Compile Include="Helpers\TouchInput.Gestures.cs" />
     <Compile Include="Helpers\TouchInput.Typing.cs" />
     <Compile Include="Helpers\TouchInput.Scroll.cs" />

@@ -667,6 +667,54 @@ class TM {
         TouchInput.AskNumber = (pad, owner) => pad.ShowDialog(owner);
         kf.Close(); kf.Dispose();
 
+        Console.WriteLine("--- a hold-to-run button by a finger ---");
+        // (2 November, on a real touch screen: "the momentary action buttons ... rarely reacts, mostly no action" - Windows made a
+        // finger's mouse press only at its lift; the button now takes the finger's own pointer messages, which come at the touch)
+        Mode("Touch");
+        var sim = new Kaban.Drivers.Simulation.SimulationDriver(9);
+        sim.Connect();
+        PlcManager.Instance.RegisterDriver(9, sim);
+        Func<string, int> rd = a => { int v; return sim.TryRead(a, out v) ? v : -1; };
+        var hf = new Form { StartPosition = FormStartPosition.Manual, Location = new Point(30, 30), ClientSize = new Size(500, 300), Text = "holdBtn" };
+        var holdBtn = new ButtonHMI { Name = "jogForward", Text = "Forward", PlcNumber = 9, Location = new Point(20, 20), Size = new Size(160, 60) };
+        holdBtn.BitActions.Add(new Kaban.Core.Models.BitAction { Address = "M700", Action = BitActionType.Momentary });
+        var setter = new ButtonHMI { Name = "setButton", Text = "Set", PlcNumber = 9, Location = new Point(220, 20), Size = new Size(160, 60) };
+        setter.BitActions.Add(new Kaban.Core.Models.BitAction { Address = "M701", Action = BitActionType.SET });
+        hf.Controls.Add(holdBtn); hf.Controls.Add(setter);
+        hf.Show(); Pump(100); TouchInput.Sweep();
+        holdBtn.UpdateState(rd, c => true); setter.UpdateState(rd, c => true); Pump(50);
+        var fingerWas = TouchInput.FingerPointer;
+        TouchInput.FingerPointer = id => id >= 100;          // ids from 100: a finger; below: the mouse
+        Func<Control, int, int, bool> pointer = (c, msg, id) =>
+        {
+            var at = c.PointToScreen(new Point(c.Width / 2, c.Height / 2));
+            var fm = Message.Create(c.Handle, msg, (IntPtr)(id | (0x0004 << 16)), LP(at));
+            return TouchInput.Handle(ref fm);
+        };
+        bool enterTaken = pointer(holdBtn, 0x0249, 101), downTaken = pointer(holdBtn, 0x0246, 101);
+        Pump(50);
+        Check("a finger touches a hold-to-run button: taken at the touch - its bit ON at once, the button drawn held",
+              enterTaken && downTaken && rd("M700") == 1 && holdBtn.HeldByFinger && TouchInput.FingersHolding == 1, "M700=" + rd("M700"));
+        bool moveTaken = pointer(holdBtn, 0x0245, 101);
+        Pump(700);                                           // longer than a long press
+        Check("  held (the finger trembles, longer than a long press): still ON, no tooltip, no menu", moveTaken && rd("M700") == 1 && holdBtn.HeldByFinger);
+        bool upTaken = pointer(holdBtn, 0x0247, 101), leaveTaken = pointer(holdBtn, 0x024A, 101);
+        Pump(50);
+        Check("  lifted: OFF, the finger's last message (it leaves) the button's too", upTaken && leaveTaken && rd("M700") == 0 && !holdBtn.HeldByFinger &&
+              TouchInput.FingersHolding == 0, "M700=" + rd("M700"));
+        Check("the mouse's pointer, a finger on a button that is no hold-to-run: as before (Windows makes them the mouse's messages)",
+              !pointer(holdBtn, 0x0246, 5) && !pointer(setter, 0x0249, 102) && !pointer(setter, 0x0246, 102) && rd("M701") != 1);
+        pointer(holdBtn, 0x0247, 5);
+        pointer(holdBtn, 0x0249, 103); pointer(holdBtn, 0x0246, 103); Pump(30);
+        holdBtn.Visible = false; Pump(30);
+        Check("  a held button hidden (a page left): its bit OFF", rd("M700") == 0);
+        holdBtn.Visible = true; Pump(30);
+        pointer(holdBtn, 0x0247, 103); pointer(holdBtn, 0x024A, 103);
+        Mode("Mouse");
+        Check("a mouse again: a finger's pointer goes as Windows makes it", !pointer(holdBtn, 0x0246, 104) && rd("M700") == 0);
+        TouchInput.FingerPointer = fingerWas;
+        hf.Close(); hf.Dispose();
+
         Console.WriteLine("--- a finger drag scrolls, a tap chooses ---");
         Mode("Touch");
         var pf = new Form { StartPosition = FormStartPosition.Manual, Location = new Point(10, 10), ClientSize = new Size(1200, 900), Text = "scrolling" };

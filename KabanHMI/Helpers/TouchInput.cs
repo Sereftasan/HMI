@@ -173,13 +173,19 @@ namespace Kaban.UI.Helpers
         // PAN: Windows turns a finger drag into its pan gesture - scroll messages to a window with
         // scroll bars, nothing for the program's tables. Blocked (SetGestureConfig), the drag comes
         // as a mouse drag, and the program scrolls what is under the finger itself.
+        //
+        // 2 November, on a real touch screen ("the momentary action buttons ... rarely reacts, mostly no
+        // action"; the long press showed no tooltip): the property alone did not end the wait - since
+        // Windows 7 a window's press-and-hold goes with its gestures, so ALL of them are blocked
+        // (SetGestureConfig: id 0, every gesture - Raymond Chen, "How do I disable the press-and-hold
+        // gesture for my window?"), and a hold-to-run button takes the finger itself (TouchInput.Fingers).
 
         internal static readonly bool IsWindows = Environment.OSVersion.Platform == PlatformID.Win32NT;
 
         private const string TabletProperty = "MicrosoftTabletPenServiceProperty";
         private const int TabletDisablePressAndHold = 0x00000001, TabletDisablePenTapFeedback = 0x00000008,
                           TabletDisablePenBarrelFeedback = 0x00000010, TabletDisableFlicks = 0x00010000;
-        private const int GidPan = 4, GcPan = 0x01, GcPanSingleFingerVertically = 0x02, GcPanSingleFingerHorizontally = 0x04,
+        private const int GidAll = 0, GcAllGestures = 0x01, GidPan = 4, GcPan = 0x01, GcPanSingleFingerVertically = 0x02, GcPanSingleFingerHorizontally = 0x04,
                           GcPanWithGutter = 0x08, GcPanWithInertia = 0x10;
         private const int FeedbackTouchPressAndHold = 9, FeedbackTouchRightTap = 10;
 
@@ -214,9 +220,18 @@ namespace Kaban.UI.Helpers
             {
                 try
                 {
-                    var pan = on ? new GestureConfig { Id = GidPan, Want = 0, Block = GcPan | GcPanSingleFingerVertically | GcPanSingleFingerHorizontally | GcPanWithGutter | GcPanWithInertia }
-                                 : new GestureConfig { Id = GidPan, Want = GcPanSingleFingerVertically | GcPanWithGutter | GcPanWithInertia, Block = GcPanSingleFingerHorizontally };
-                    SetGestureConfig(h, 0, 1, new[] { pan }, Marshal.SizeOf(typeof(GestureConfig)));
+                    int size = Marshal.SizeOf(typeof(GestureConfig));
+                    if (on)
+                    {
+                        // every gesture off - the press-and-hold wait with them: a finger's press comes at the touch
+                        SetGestureConfig(h, 0, 1, new[] { new GestureConfig { Id = GidAll, Want = 0, Block = GcAllGestures } }, size);
+                    }
+                    else
+                    {
+                        // Windows' own again: every gesture, the pan as Windows has it for a window
+                        SetGestureConfig(h, 0, 1, new[] { new GestureConfig { Id = GidAll, Want = GcAllGestures, Block = 0 } }, size);
+                        SetGestureConfig(h, 0, 1, new[] { new GestureConfig { Id = GidPan, Want = GcPanSingleFingerVertically | GcPanWithGutter | GcPanWithInertia, Block = GcPanSingleFingerHorizontally } }, size);
+                    }
                 }
                 catch (EntryPointNotFoundException) { _noGestures = true; }
                 catch { }

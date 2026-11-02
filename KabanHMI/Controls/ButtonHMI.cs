@@ -1679,6 +1679,44 @@ namespace Kaban.UI.Controls
             ReleaseMomentary();
         }
 
+        // ---- held by a finger (touch mode: TouchInput takes the finger's pointer messages) -------------
+        // (2 November: "the momentary action buttons ... rarely reacts, mostly no action" - Windows gave a
+        // finger's mouse press only at its lift)
+
+        private bool _fingerDown;
+
+        /// <summary>A finger may hold it: a hold-to-run button that can act now (else the finger goes as a mouse - a tap says why it cannot).</summary>
+        internal bool TakesFinger { get { return IsMomentary && Enabled && CanAct; } }
+
+        /// <summary>A finger on it: its momentary bits on, as a left press; drawn held (the hover frame).</summary>
+        internal void FingerDown()
+        {
+            if (_fingerDown) return;
+            _fingerDown = true;
+            _hovering = true;
+            Invalidate();
+            if (!_softEnabled || _heldMomentary.Count > 0) return;
+            if (PlcManager.Instance.GetDriver(PlcNumber) == null) return;
+            if (Intercepted(UserAction.Press)) return;
+            _userHeld = true;
+            RaiseUserActed(UserAction.Press);
+            PressMomentary();
+        }
+
+        /// <summary>The finger lifted (<paramref name="inside"/>: on the button - its click, as a tap's), or gone: the bits off.</summary>
+        internal void FingerUp(bool inside)
+        {
+            bool was = _fingerDown;
+            _fingerDown = false;
+            _hovering = false;
+            Invalidate();
+            ReleaseMomentary();
+            if (was && inside && !IsDisposed) OnClick(EventArgs.Empty);
+        }
+
+        /// <summary>A finger holds it now (tests).</summary>
+        public bool HeldByFinger { get { return _fingerDown; } }
+
         protected override void OnMouseCaptureChanged(EventArgs e)
         {
             base.OnMouseCaptureChanged(e);
