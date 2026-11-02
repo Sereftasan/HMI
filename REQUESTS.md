@@ -6,6 +6,14 @@ Claude reads this file at the start of every batch, does the items, and moves ea
 ## To do
 
 ## Done
+- 2 November, evening (the menu's words; Off; the keyboard in Users and Preferences; the preview):
+  - fdf631a - The mouse / finger menu's words: Mouse, Touch; On-Screen Keyboard: Windows', HMI's (Turkish too).
+  - fb40541 - On-Screen Keyboard: Off - a tap on a text box brings no keyboard (a keyboard of keys used); a number still
+    brings the keypad.
+  - 371177c - Users and Preferences > Screen: On-Screen Keyboard (Windows', HMI's, Off) with its preview - everyone's or
+    a user's own; the top bar's menu keeps a user's own and says so.
+  - 6ea195e - The preview beside a list again when its entries are pointed at: in touch mode a list opens as a finger's
+    menu, which did not tell the page which entry was under the pointer.
 - 2 November, later (the keyboard's letters; the program above it; Windows' own keyboard):
   - af035ea - The letters on their keys again (on Windows they stood at the left end, away from the keys); the keys across
     the whole bar.

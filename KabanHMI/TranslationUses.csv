@@ -21,11 +21,11 @@ AiC_Twice;KabanHMI\Settings\AiChatsEditor.cs;219;Text;return Fail(string.Format(
 AiC_Up;KabanHMI\Settings\AiChatsEditor.cs;64;Tooltip;_up = UiStyle.ToolButton("▲", T("AiC_Up", "Up the list"), tips, (s, e) => Move(-1));
 AiC_Usual;KabanHMI\Settings\AiChatsEditor.cs;66;Tooltip;_usual = UiStyle.ToolButton("↻", T("AiC_Usual", "The usual list"), tips, (s, e) => { Fill(AiChats.Defaults); _dirty.MarkDirty(); });
 Alarm_Col_Description;KabanHMI\Settings\AlarmSettingsControl.cs;156;Heading;{ Name = "Text", HeaderText = LanguageManager.GetString("Alarm_Col_Description", "Alarm"), FillWeight = 42, ReadOnly = true });
-Alarm_Col_Description;KabanHMI\Settings\PreferencePreview.cs;447;Text;TextRenderer.DrawText(g, T("Alarm_Col_Description", "Alarm"), hf, new Rectangle(r.Left + timeW + S(4), y, r.Width - timeW, S(22)), Ink, TextFormatFlags.VerticalCenter);
+Alarm_Col_Description;KabanHMI\Settings\PreferencePreview.cs;514;Text;TextRenderer.DrawText(g, T("Alarm_Col_Description", "Alarm"), hf, new Rectangle(r.Left + timeW + S(4), y, r.Width - timeW, S(22)), Ink, TextFormatFlags.VerticalCenter);
 Alarm_Col_Help;KabanHMI\Helpers\AlarmHelpLinks.cs;855;Text;LanguageManager.GetString("Alarm_Col_Help", "Help"),
 Alarm_Col_Help;KabanHMI\Screens\MachineAlarmScreen.cs;416;Heading;HeaderText = LanguageManager.GetString("Alarm_Col_Help", "Help"),
 Alarm_Col_Severity;KabanHMI\Settings\AlarmSettingsControl.cs;159;Heading;{ Name = "Severity", HeaderText = LanguageManager.GetString("Alarm_Col_Severity", "Severity"), FillWeight = 12 };
-Alarm_Col_TriggerTime;KabanHMI\Settings\PreferencePreview.cs;446;Text;TextRenderer.DrawText(g, T("Alarm_Col_TriggerTime", "Time"), hf, new Rectangle(r.Left + S(4), y, timeW, S(22)), Ink, TextFormatFlags.VerticalCenter);
+Alarm_Col_TriggerTime;KabanHMI\Settings\PreferencePreview.cs;513;Text;TextRenderer.DrawText(g, T("Alarm_Col_TriggerTime", "Time"), hf, new Rectangle(r.Left + S(4), y, timeW, S(22)), Ink, TextFormatFlags.VerticalCenter);
 Alarm_HistoryFromLog;KabanHMI\Screens\MachineAlarmScreen.cs;252;Text;source.Text = LanguageManager.GetString("Alarm_HistoryFromLog", "From the machine's log - kept across restarts - with the alarms the HMI raised itself.");
 Alarm_HistorySinceStart;KabanHMI\Screens\MachineAlarmScreen.cs;258;Text;source.Text = LanguageManager.GetString("Alarm_HistorySinceStart", "Since the HMI started (the machine keeps no log database).");
 Alarm_NoHistory;KabanHMI\Screens\MachineAlarmScreen.cs;223;Text;Text = LanguageManager.GetString("Alarm_NoHistory", "No alarms have been recorded yet.")
@@ -144,7 +144,7 @@ Btn_Alarms;KabanHMI\Helpers\DeviceCollector.cs;449;Text;PageTitle = LanguageMana
 Btn_Alarms;KabanHMI\Helpers\TextUses.cs;87;Text;list.Add(new Use { Kind = KindAlarm, Place = LanguageManager.GetString("Btn_Alarms", "Alarms"),
 Btn_Alarms;KabanHMI\Helpers\TextUses.cs;131;Text;uses.Add(new Use { Kind = KindAlarm, Place = LanguageManager.GetString("Btn_Alarms", "Alarms"),
 Btn_Alarms;KabanHMI\Screens\StandardScreens.cs;95;Text;TitleKey = "Btn_Alarms",
-Btn_Alarms;KabanHMI\Settings\PreferencePreview.cs;354;Text;new[] { "Btn_MachineParameters", "Machine Parameters" }, new[] { "Btn_Alarms", "Alarms" }
+Btn_Alarms;KabanHMI\Settings\PreferencePreview.cs;421;Text;new[] { "Btn_MachineParameters", "Machine Parameters" }, new[] { "Btn_Alarms", "Alarms" }
 Btn_BakChooseOk;KabanHMI\Settings\PlcBackupSelection.cs;395;Text;_ok = UiStyle.TextButton(T("Btn_BakChooseOk", "Write from it..."), 0, (s, e) => Take());
 Btn_BakDeselectAll;KabanHMI\Settings\PlcBackupForms.cs;443;Text;var none = UiStyle.TextButton(T("Btn_BakDeselectAll", "Deselect all"), 0, (s, e) => SetAll(false));
 Btn_BakDeselectAll;KabanHMI\Settings\PlcBackupSelection.cs;204;Text;var none = UiStyle.TextButton(T("Btn_BakDeselectAll", "Deselect all"), 0, (s, e) => SetAll(false));
@@ -202,7 +202,7 @@ Btn_HmiSettings;KabanHMI\Screens\StandardScreens.cs;194;Text;TitleKey = "Btn_Hmi
 Btn_Home;Kaban.Machines.SB3012\Program.cs;69;Text;shell.AddMenuButton("Btn_Home", "Home", null, new Screens.HomeScreen());
 Btn_Home;Kaban.Machines.SB3015\Program.cs;62;Text;shell.AddMenuButton("Btn_Home", "Home", null, new Screens.HomeScreen());
 Btn_Home;KabanHMI\Screens\StandardScreens.cs;83;Text;TitleKey = "Btn_Home",
-Btn_Home;KabanHMI\Settings\PreferencePreview.cs;353;Text;new[] { "Btn_Home", "Home" }, new[] { "Btn_ManualMovement", "Manual Movement" },
+Btn_Home;KabanHMI\Settings\PreferencePreview.cs;420;Text;new[] { "Btn_Home", "Home" }, new[] { "Btn_ManualMovement", "Manual Movement" },
 Btn_HomePause;Kaban.Machines.FA2010\Screens\HomeScreen.Designer.cs;181;Text;this.btnPause.TranslationKey = "Btn_HomePause";
 Btn_HomePause;Kaban.Machines.H500\Screens\HomeScreen.Designer.cs;63;Text;this.btnPause.TranslationKey = "Btn_HomePause";
 Btn_HomeStart;Kaban.Machines.FA2010\Screens\HomeScreen.Designer.cs;109;Text;this.btnStart.TranslationKey = "Btn_HomeStart";
@@ -218,9 +218,9 @@ Btn_Logout;KabanHMI\Forms\MainForm.cs;1674;Menu;var logout = new ToolStripMenuIt
 Btn_Logout;KabanHMI\Forms\MainForm.cs;2528;Text;Helpers.Shortcuts.Set(_btnLogin, Keys.Control | Keys.L, _topTips, LanguageManager.GetString("Btn_Logout", "Logout"));
 Btn_MachineParameters;KabanHMI\Screens\StandardScreens.cs;167;Text;TitleKey = "Btn_MachineParameters",
 Btn_MachineParameters;KabanHMI\Screens\StandardScreens.cs;243;Text;return new PlaceholderControl("Btn_MachineParameters", "Machine Parameters",
-Btn_MachineParameters;KabanHMI\Settings\PreferencePreview.cs;354;Text;new[] { "Btn_MachineParameters", "Machine Parameters" }, new[] { "Btn_Alarms", "Alarms" }
+Btn_MachineParameters;KabanHMI\Settings\PreferencePreview.cs;421;Text;new[] { "Btn_MachineParameters", "Machine Parameters" }, new[] { "Btn_Alarms", "Alarms" }
 Btn_ManualMovement;KabanHMI\Screens\StandardScreens.cs;109;Text;TitleKey = "Btn_ManualMovement",
-Btn_ManualMovement;KabanHMI\Settings\PreferencePreview.cs;353;Text;new[] { "Btn_Home", "Home" }, new[] { "Btn_ManualMovement", "Manual Movement" },
+Btn_ManualMovement;KabanHMI\Settings\PreferencePreview.cs;420;Text;new[] { "Btn_Home", "Home" }, new[] { "Btn_ManualMovement", "Manual Movement" },
 Btn_MonPickCancel;KabanHMI\Forms\SimulationMonitorForm.cs;2774;Text;_pickCancel = UiStyle.TextButton("✖  " + T("Btn_MonPickCancel", "Cancel adding (Esc)"), 0, (s, e) => { var sh = Shell; if (sh != null) sh.CancelDevicePick(); else PickEnded(true...
 Btn_MonTableAdd;KabanHMI\Forms\SimulationMonitorForm.Table.cs;765;Text;b.Add = UiStyle.Round(new Button { Text = T("Btn_MonTableAdd", "Add an array..."), AutoSize = true, Margin = new Padding(0, 0, 6, 0), Name = "tableAdd" });
 Btn_MonTableAdd;KabanHMI\Forms\SimulationMonitorForm.Table.cs;961;Menu;menu.Items.Add(Item(T("Btn_MonTableAdd", "Add an array..."), (s2, e2) => ShowMenu(b.Add, TableAddMenu(mon, sh, b.Head))));
@@ -714,7 +714,7 @@ Hlp_ManualBoxDetails;Kaban.Core\Helpers\TroubleshootingCatalog.Steps.cs;218;Text
 Hlp_ManualInside;Kaban.Core\Helpers\TroubleshootingCatalog.Steps.cs;177;Text;var summary = System.Net.WebUtility.HtmlEncode(LanguageManager.GetString("Hlp_ManualInside", "The cylinder manual for this cylinder")) +
 Hlp_ManualInsideSub;Kaban.Core\Helpers\TroubleshootingCatalog.Steps.cs;178;Text;" <span class=\"sub\">&ndash; " + System.Net.WebUtility.HtmlEncode(LanguageManager.GetString("Hlp_ManualInsideSub",
 Hlp_Servo;KabanHMI\Helpers\AlarmHelpLinks.cs;730;Text;: LanguageManager.GetString("Hlp_Servo", "Servo drive troubleshooting"))
-Home;Kaban.Core\Helpers\ViewPreferences.cs;112;Text;P(StartPage, "SignIn", "Stay", "Home", "Last"),
+Home;Kaban.Core\Helpers\ViewPreferences.cs;114;Text;P(StartPage, "SignIn", "Stay", "Home", "Last"),
 Home;Kaban.Core\Machines\IMachineModule.cs;91;Text;public const string Home = "Home";
 Home;Kaban.Machines.H500\Screens\Manual\ManualEntry_Conveyor.Designer.cs;397;Text;this.btnHome.TranslationKey = "Home";
 Home;Kaban.Machines.H500\Screens\Manual\ManualEntry_Conveyor.Designer.cs;398;Text;this.btnHome.FallbackText = "Home";
@@ -722,10 +722,10 @@ Home;Kaban.Machines.SB3012\Program.cs;69;Text;shell.AddMenuButton("Btn_Home", "H
 Home;Kaban.Machines.SB3015\Program.cs;62;Text;shell.AddMenuButton("Btn_Home", "Home", null, new Screens.HomeScreen());
 Home;KabanHMI\Forms\MainForm.LastPlace.cs;240;Text;if (start == "Home")
 Home;KabanHMI\Screens\StandardScreens.cs;84;Text;TitleFallback = "Home",
-Home;KabanHMI\Settings\PreferencePreview.cs;353;Text;new[] { "Btn_Home", "Home" }, new[] { "Btn_ManualMovement", "Manual Movement" },
-Home;KabanHMI\Settings\PreferencePreview.cs;514;Text;string to = v == "Home" ? T("VP_Home", "Home")
-Home;KabanHMI\Settings\PreferencePreview.cs;520;Text;: v == "Home" ? T("PV_HomeNote", "The first page of the menu.")
-Home;KabanHMI\Settings\UsersPreferencesControl.cs;1098;Text;case "StartPage.Home": return T("VP_Home", "Home");
+Home;KabanHMI\Settings\PreferencePreview.cs;420;Text;new[] { "Btn_Home", "Home" }, new[] { "Btn_ManualMovement", "Manual Movement" },
+Home;KabanHMI\Settings\PreferencePreview.cs;581;Text;string to = v == "Home" ? T("VP_Home", "Home")
+Home;KabanHMI\Settings\PreferencePreview.cs;587;Text;: v == "Home" ? T("PV_HomeNote", "The first page of the menu.")
+Home;KabanHMI\Settings\UsersPreferencesControl.cs;1117;Text;case "StartPage.Home": return T("VP_Home", "Home");
 Horn;Kaban.Machines.FA2010\Screens\Manual\ManualOther.Designer.cs;191;Text;this.btnHorn.ButtonText = "Horn";
 Horn;Kaban.Machines.FA2010\Screens\Manual\ManualOther.Designer.cs;216;Text;this.btnHorn.FallbackText = "Horn";
 Horn;Kaban.Machines.FA2010\Screens\Manual\ManualOther.Designer.cs;245;Text;this.btnHorn.TranslationKey = "Horn";
@@ -759,6 +759,7 @@ Imp_SourceTipList;KabanHMI\Settings\ImportSettingsControl.cs;170;Tooltip;Kaban.U
 Imp_Use;KabanHMI\Settings\ImportSettingsControl.cs;139;Heading;{ Name = "Use", HeaderText = T("Imp_Use", "Import"), FillWeight = 8 });
 Imp_Version;KabanHMI\Settings\ImportSettingsControl.cs;147;Heading;{ Name = "Ver", HeaderText = T("Imp_Version", "Format"), FillWeight = 8, ReadOnly = true });
 Inp_OwnNote;KabanHMI\Forms\MainForm.Touch.cs;111;Text;? string.Format(LanguageManager.GetString("Inp_OwnNote", "Kept as {0}'s own (Users and Preferences)"), ViewPreferences.ActiveUser)
+Inp_OwnNote;KabanHMI\Forms\MainForm.Touch.cs;140;Text;menu.Items.Add(new ToolStripLabel(string.Format(LanguageManager.GetString("Inp_OwnNote", "Kept as {0}'s own (Users and Preferences)"), ViewPreferences.ActiveUser))
 Inp_PanelNote;KabanHMI\Forms\MainForm.Touch.cs;112;Text;: LanguageManager.GetString("Inp_PanelNote", "Kept for everyone on this panel"))
 IoShow_All;KabanHMI\Screens\IoMonitorPage.cs;66;Text;_show.AllText = T("IoShow_All", "All lists");
 IoShow_Inputs;KabanHMI\Screens\IoMonitorPage.cs;195;Menu;if (sec.Inputs != null) items.Add(new Kaban.UI.Dashboard.PickList.Item(sec.Station + ":I", sec.Heading.Text + " - " + T("IoShow_Inputs", "inputs")));
@@ -1116,9 +1117,9 @@ Lubrication;Kaban.Machines.FA2010\Screens\Manual\ManualOther.Designer.cs;105;Tex
 Lubrication;Kaban.Machines.H800\Screens\MachineStatus.Designer.cs;128;Text;this.lLubrication.DescriptionText = "Lubrication";
 Lubrication;Kaban.Machines.H800\Screens\ManualAxes.Designer.cs;98;Text;this.bLubrication.FallbackText = "Lubrication";
 Lubrication;Kaban.Machines.MD3020\Screens\ManualAxes.Designer.cs;63;Text;this.bLubrication.FallbackText = "Lubrication";
-Lvl_Admin;KabanHMI\Settings\UsersPreferencesControl.cs;1037;Text;case SecurityLevel.Admin: return T("Lvl_Admin", "Admin");
-Lvl_Maintenance;KabanHMI\Settings\UsersPreferencesControl.cs;1036;Text;case SecurityLevel.Maintenance: return T("Lvl_Maintenance", "Maintenance");
-Lvl_Operator;KabanHMI\Settings\UsersPreferencesControl.cs;1035;Text;case SecurityLevel.Operator: return T("Lvl_Operator", "Operator");
+Lvl_Admin;KabanHMI\Settings\UsersPreferencesControl.cs;1055;Text;case SecurityLevel.Admin: return T("Lvl_Admin", "Admin");
+Lvl_Maintenance;KabanHMI\Settings\UsersPreferencesControl.cs;1054;Text;case SecurityLevel.Maintenance: return T("Lvl_Maintenance", "Maintenance");
+Lvl_Operator;KabanHMI\Settings\UsersPreferencesControl.cs;1053;Text;case SecurityLevel.Operator: return T("Lvl_Operator", "Operator");
 Machine_FA2010;Kaban.Machines.FA2010\FA2010Module.cs;23;Text;public string DisplayNameKey => "Machine_FA2010";
 Machine_H500;Kaban.Machines.H500\H500Module.cs;20;Text;public string DisplayNameKey { get { return "Machine_H500"; } }
 Machine_H800;Kaban.Machines.H800\H800Module.cs;19;Text;public string DisplayNameKey { get { return "Machine_H800"; } }
@@ -1219,7 +1220,7 @@ Mnu_MonTablePlc;KabanHMI\Forms\SimulationMonitorForm.Table.cs;962;Menu;menu.Item
 Mnu_MonTableRemove;KabanHMI\Forms\SimulationMonitorForm.Table.cs;959;Menu;menu.Items.Add(Item(string.Format(T("Mnu_MonTableRemove", "Take '{0}' off the table"), NameOf(label)), (s2, e2) => TakeOffTable(mon, sh, label)));
 Mnu_MonTableUp;KabanHMI\Forms\SimulationMonitorForm.Table.cs;483;Menu;items.Add(Item(T("Mnu_MonTableUp", "Move up"), (s, e) => MoveTable(mon, sh, head, -1), i > 0, keyText: "Ctrl+Up"));
 Mnu_MotionChange;KabanHMI\Controls\MotionValueHMI.cs;205;Menu;m.Items.Add(UiStyle.Unavailable(new ToolStripMenuItem(T("Mnu_MotionChange", "Change..."), null, (s, e) => Edit()), Editable, WhyNotEditable()));
-Mnu_MotionChange;KabanHMI\Settings\PreferencePreview.cs;331;Text;string[] entries = { T("Mnu_MotionChange", "Change..."), T("PV_Copy", "Copy"), T("PV_Paste", "Paste") };
+Mnu_MotionChange;KabanHMI\Settings\PreferencePreview.cs;398;Text;string[] entries = { T("Mnu_MotionChange", "Change..."), T("PV_Copy", "Copy"), T("PV_Paste", "Paste") };
 Mnu_MotionFlash;KabanHMI\Controls\MotionValueHMI.cs;207;Menu;m.Items.Add(UiStyle.Unavailable(new ToolStripMenuItem(string.Format(T("Mnu_MotionFlash", "Write module {0}'s flash ROM..."), _module), null,
 Mnu_RemoveRow;KabanHMI\Forms\SimulationMonitorForm.cs;1430;Menu;rowMenu.Items.Add(Item(T("Mnu_RemoveRow", "Remove from this list"), (s2, e2) => RemoveSelected(), sel, Keys.Delete));
 Mnu_RestoreRows;KabanHMI\Forms\SimulationMonitorForm.cs;1431;Menu;rowMenu.Items.Add(Item(T("Mnu_RestoreRows", "Show removed devices again"), (s2, e2) => RestoreHidden(), mon.IsSimulated && mon.Hidden.Count > 0,
@@ -1342,7 +1343,7 @@ Msg_DelAllTabs;KabanHMI\Forms\SimulationMonitorForm.cs;782;Text;? string.Format(
 Msg_DelEverything;KabanHMI\Forms\SimulationMonitorForm.cs;783;Text;: string.Format(T("Msg_DelEverything", "Delete all {0} tab(s) of {1} controllers, with their {2} row(s)?"), tabs, mons.Length, rows);
 Msg_ExportFailed;KabanHMI\Forms\SimulationMonitorForm.cs;3769;Message;MessageBox.Show(DialogOwner, T("Msg_ExportFailed", "Could not write the file:") + "\r\n" + ex.Message,
 Msg_FactorRestartNow;KabanHMI\Forms\MainForm.Magnifier.cs;233;Text;string question = string.Format(LanguageManager.GetString("Msg_FactorRestartNow",
-Msg_FactorRestartNow;KabanHMI\Settings\UsersPreferencesControl.cs;997;Text;string question = string.Format(T("Msg_FactorRestartNow",
+Msg_FactorRestartNow;KabanHMI\Settings\UsersPreferencesControl.cs;1015;Text;string question = string.Format(T("Msg_FactorRestartNow",
 Msg_FindAlarm;KabanHMI\Forms\DeviceFindForm.cs;416;Status;_status.Text = T("Msg_FindAlarm", "An alarm definition's bit - see Machine Parameters > Alarms.");
 Msg_FindCount;KabanHMI\Forms\DeviceFindForm.cs;338;Status;: string.Format(T("Msg_FindCount", "{0} use(s) on {1} page(s). Click a line to open its page."), _found.Count, pages);
 Msg_FindGone;KabanHMI\Forms\MainForm.cs;288;Text;if (found == null) why = LanguageManager.GetString("Msg_FindGone", "The page has changed - find again.");
@@ -2132,48 +2133,49 @@ Prf_UseSize;Kaban.Machines.FA2010\Screens\ProfilesScreen.Details.cs;360;Text;Siz
 Prf_ViewReset;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;905;Status;Status(T("Prf_ViewReset", "Grouping, sorting and filters cleared."));
 Prf_WholeAccessory;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;130;Text;_chkWholeAccessory = new CheckBox { Text = T("Prf_WholeAccessory", "all its operations"), AutoSize = true, Font = UiStyle.Small, Margin = new Padding(6, 6, 3, 3) };
 Prf_Width;Kaban.Machines.FA2010\Screens\ProfilesScreen.Details.cs;109;Text;_txtWidth = (TextBox)line(T("Prf_Width", "Width (mm) :"), new TextBox { Font = UiStyle.Small, TextAlign = HorizontalAlignment.Right }, _lblWidthCue);
-PV_AiAs;KabanHMI\Settings\PreferencePreview.cs;176;Text;return T("PV_AiAs", "How 'Create AI prompt' and 'Ask <AI>' put the prompt on the clipboard: as a file - pasted into the chat (Ctrl+V) it is attached, however long - or as its te...
-PV_AiPaste;KabanHMI\Settings\PreferencePreview.cs;178;Text;return T("PV_AiPaste", "'Ask <AI>' opens the chat and, a few seconds later, presses Ctrl+V in it: the prompt goes in by itself - you check it and send it (Enter).");
+PV_AiAs;KabanHMI\Settings\PreferencePreview.cs;178;Text;return T("PV_AiAs", "How 'Create AI prompt' and 'Ask <AI>' put the prompt on the clipboard: as a file - pasted into the chat (Ctrl+V) it is attached, however long - or as its te...
+PV_AiPaste;KabanHMI\Settings\PreferencePreview.cs;180;Text;return T("PV_AiPaste", "'Ask <AI>' opens the chat and, a few seconds later, presses Ctrl+V in it: the prompt goes in by itself - you check it and send it (Enter).");
 PV_Blink;KabanHMI\Settings\PreferencePreview.cs;168;Text;return T("PV_Blink", "Codes, lamps, borders, the alarm and connection marks on the top bar, the sign-in reminder.");
-PV_CapDiameter;KabanHMI\Settings\PreferencePreview.cs;382;Text;string[] caps = { T("PV_CapDiameter", "Saw diameter:"), T("PV_CapSpeed", "Speed:"), T("PV_CapFeed", "Feed rate:") };
-PV_CapFeed;KabanHMI\Settings\PreferencePreview.cs;382;Text;string[] caps = { T("PV_CapDiameter", "Saw diameter:"), T("PV_CapSpeed", "Speed:"), T("PV_CapFeed", "Feed rate:") };
-PV_CapSpeed;KabanHMI\Settings\PreferencePreview.cs;382;Text;string[] caps = { T("PV_CapDiameter", "Saw diameter:"), T("PV_CapSpeed", "Speed:"), T("PV_CapFeed", "Feed rate:") };
-PV_CapSpeed;KabanHMI\Settings\PreferencePreview.cs;626;Text;TextRenderer.DrawText(g, T("PV_CapSpeed", "Speed:"), font, cap, Ink, TextFormatFlags.VerticalCenter | TextFormatFlags.Right);
+PV_CapDiameter;KabanHMI\Settings\PreferencePreview.cs;449;Text;string[] caps = { T("PV_CapDiameter", "Saw diameter:"), T("PV_CapSpeed", "Speed:"), T("PV_CapFeed", "Feed rate:") };
+PV_CapFeed;KabanHMI\Settings\PreferencePreview.cs;449;Text;string[] caps = { T("PV_CapDiameter", "Saw diameter:"), T("PV_CapSpeed", "Speed:"), T("PV_CapFeed", "Feed rate:") };
+PV_CapSpeed;KabanHMI\Settings\PreferencePreview.cs;449;Text;string[] caps = { T("PV_CapDiameter", "Saw diameter:"), T("PV_CapSpeed", "Speed:"), T("PV_CapFeed", "Feed rate:") };
+PV_CapSpeed;KabanHMI\Settings\PreferencePreview.cs;693;Text;TextRenderer.DrawText(g, T("PV_CapSpeed", "Speed:"), font, cap, Ink, TextFormatFlags.VerticalCenter | TextFormatFlags.Right);
 PV_Captions;KabanHMI\Settings\PreferencePreview.cs;154;Text;return T("PV_Captions", "The captions of number fields, combos and buttons, the axis names on Axis Settings and on the Axis Monitor.");
-PV_Copy;KabanHMI\Settings\PreferencePreview.cs;331;Text;string[] entries = { T("Mnu_MotionChange", "Change..."), T("PV_Copy", "Copy"), T("PV_Paste", "Paste") };
+PV_Copy;KabanHMI\Settings\PreferencePreview.cs;398;Text;string[] entries = { T("Mnu_MotionChange", "Change..."), T("PV_Copy", "Copy"), T("PV_Paste", "Paste") };
 PV_Dates;KabanHMI\Settings\PreferencePreview.cs;159;Text;return T("PV_Dates", "Alarm lists and history, the logs, the Dashboard (its pickers, shifts and timeline), the shifts in Logs and Reports, the step-by-step pages.");
 PV_Decimal;KabanHMI\Settings\PreferencePreview.cs;156;Text;return T("PV_Decimal", "Every number on screen and the keypad's key. The keypad takes a point or a comma either way.");
-PV_HomeNote;KabanHMI\Settings\PreferencePreview.cs;520;Text;: v == "Home" ? T("PV_HomeNote", "The first page of the menu.")
-PV_Input;KabanHMI\Settings\PreferencePreview.cs;174;Text;return T("PV_Input", "Touch: menus, table rows, tick boxes, tabs and buttons larger - a long press opens a menu (as a right-click), a finger drag scrolls, a tap on a text box br...
+PV_HomeNote;KabanHMI\Settings\PreferencePreview.cs;587;Text;: v == "Home" ? T("PV_HomeNote", "The first page of the menu.")
+PV_Input;KabanHMI\Settings\PreferencePreview.cs;176;Text;return T("PV_Input", "Touch: menus, table rows, tick boxes, tabs and buttons larger - a long press opens a menu (as a right-click), a finger drag scrolls, a tap on a text box br...
+PV_Keyboard;KabanHMI\Settings\PreferencePreview.cs;174;Text;return T("PV_Keyboard", "A tap on a text box in touch mode brings it along the bottom of the screen, the page above it. Windows': a whole PC keyboard, closed by its own button. ...
 PV_Language;KabanHMI\Settings\PreferencePreview.cs;172;Text;return T("PV_Language", "Every page, menu and message in this language - taken at once when this user signs in. The flag on the top bar sets everyone's (this panel's).");
-PV_LastExample;KabanHMI\Settings\PreferencePreview.cs;515;Text;: v == "Last" ? T("PV_LastExample", "Alarms (where I was)")
-PV_LastNote;KabanHMI\Settings\PreferencePreview.cs;519;Text;TextRenderer.DrawText(g, v == "Last" ? T("PV_LastNote", "Kept for each user as they move about; a page above their level is not opened.")
-PV_Minutes;KabanHMI\Settings\PreferencePreview.cs;479;Text;TextRenderer.DrawText(g, T("PV_Minutes", "Minutes"), hf, new Rectangle(r.Left + c2, y, r.Width - c2 - S(4), h), Ink, TextFormatFlags.VerticalCenter | TextFormatFlags.Right);
-PV_Paste;KabanHMI\Settings\PreferencePreview.cs;331;Text;string[] entries = { T("Mnu_MotionChange", "Change..."), T("PV_Copy", "Copy"), T("PV_Paste", "Paste") };
+PV_LastExample;KabanHMI\Settings\PreferencePreview.cs;582;Text;: v == "Last" ? T("PV_LastExample", "Alarms (where I was)")
+PV_LastNote;KabanHMI\Settings\PreferencePreview.cs;586;Text;TextRenderer.DrawText(g, v == "Last" ? T("PV_LastNote", "Kept for each user as they move about; a page above their level is not opened.")
+PV_Minutes;KabanHMI\Settings\PreferencePreview.cs;546;Text;TextRenderer.DrawText(g, T("PV_Minutes", "Minutes"), hf, new Rectangle(r.Left + c2, y, r.Width - c2 - S(4), h), Ink, TextFormatFlags.VerticalCenter | TextFormatFlags.Right);
+PV_Paste;KabanHMI\Settings\PreferencePreview.cs;398;Text;string[] entries = { T("Mnu_MotionChange", "Change..."), T("PV_Copy", "Copy"), T("PV_Paste", "Paste") };
 PV_Scale;KabanHMI\Settings\PreferencePreview.cs;152;Text;return T("PV_Scale", "Text, fields, buttons, menus and pages drawn this much larger or smaller. Taken after a restart - offered at once for your own, and when you sign in.");
-PV_Shift;KabanHMI\Settings\PreferencePreview.cs;459;Text;TextRenderer.DrawText(g, T("PV_Shift", "Shift") + ":  " + shift, f, new Rectangle(r.Left, y, r.Width, S(20)), Ink, TextFormatFlags.Left);
-PV_SignedIn;KabanHMI\Settings\PreferencePreview.cs;461;Text;TextRenderer.DrawText(g, "[" + dt(t2) + "]  admin: " + T("PV_SignedIn", "signed in"), f, new Rectangle(r.Left, y, r.Width, S(20)), Grey,
-PV_SignIn;KabanHMI\Settings\PreferencePreview.cs;513;Text;string signIn = T("PV_SignIn", "Sign in");
+PV_Shift;KabanHMI\Settings\PreferencePreview.cs;526;Text;TextRenderer.DrawText(g, T("PV_Shift", "Shift") + ":  " + shift, f, new Rectangle(r.Left, y, r.Width, S(20)), Ink, TextFormatFlags.Left);
+PV_SignedIn;KabanHMI\Settings\PreferencePreview.cs;528;Text;TextRenderer.DrawText(g, "[" + dt(t2) + "]  admin: " + T("PV_SignedIn", "signed in"), f, new Rectangle(r.Left, y, r.Width, S(20)), Grey,
+PV_SignIn;KabanHMI\Settings\PreferencePreview.cs;580;Text;string signIn = T("PV_SignIn", "Sign in");
 PV_Sound;KabanHMI\Settings\PreferencePreview.cs;166;Text;return T("PV_Sound", "Windows' alert sound, once for each alarm that comes onto the list - not again while it stays.");
-PV_SoundHeard;KabanHMI\Settings\PreferencePreview.cs;550;Text;TextRenderer.DrawText(g, on ? T("PV_SoundHeard", "Heard once as the pointer comes onto On.") : "", f,
-PV_StAlarm;KabanHMI\Settings\PreferencePreview.cs;481;Text;string[] states = { T("PV_StRunning", "Running"), T("PV_StWaiting", "Waiting for material"), T("PV_StAlarm", "Alarm"), T("PV_StRunning", "Running"), T("PV_StStopped", "Stopped") };
+PV_SoundHeard;KabanHMI\Settings\PreferencePreview.cs;617;Text;TextRenderer.DrawText(g, on ? T("PV_SoundHeard", "Heard once as the pointer comes onto On.") : "", f,
+PV_StAlarm;KabanHMI\Settings\PreferencePreview.cs;548;Text;string[] states = { T("PV_StRunning", "Running"), T("PV_StWaiting", "Waiting for material"), T("PV_StAlarm", "Alarm"), T("PV_StRunning", "Running"), T("PV_StStopped", "Stopped") };
 PV_Start;KabanHMI\Settings\PreferencePreview.cs;164;Text;return T("PV_Start", "Where the screen goes when this user signs in. 'My last page' is the page they were on last.");
-PV_State;KabanHMI\Settings\PreferencePreview.cs;478;Text;TextRenderer.DrawText(g, T("PV_State", "State"), hf, new Rectangle(r.Left + c1, y, c2 - c1, h), Ink, TextFormatFlags.VerticalCenter);
-PV_StayExample;KabanHMI\Settings\PreferencePreview.cs;516;Text;: T("PV_StayExample", "the page on show");
-PV_StayNote;KabanHMI\Settings\PreferencePreview.cs;521;Text;: T("PV_StayNote", "Nothing moves: as the program has always been."),
-PV_StRunning;KabanHMI\Settings\PreferencePreview.cs;481;Text;string[] states = { T("PV_StRunning", "Running"), T("PV_StWaiting", "Waiting for material"), T("PV_StAlarm", "Alarm"), T("PV_StRunning", "Running"), T("PV_StStopped", "Stopped") };
-PV_StStopped;KabanHMI\Settings\PreferencePreview.cs;481;Text;string[] states = { T("PV_StRunning", "Running"), T("PV_StWaiting", "Waiting for material"), T("PV_StAlarm", "Alarm"), T("PV_StRunning", "Running"), T("PV_StStopped", "Stopped") };
-PV_StWaiting;KabanHMI\Settings\PreferencePreview.cs;481;Text;string[] states = { T("PV_StRunning", "Running"), T("PV_StWaiting", "Waiting for material"), T("PV_StAlarm", "Alarm"), T("PV_StRunning", "Running"), T("PV_StStopped", "Stopped") };
+PV_State;KabanHMI\Settings\PreferencePreview.cs;545;Text;TextRenderer.DrawText(g, T("PV_State", "State"), hf, new Rectangle(r.Left + c1, y, c2 - c1, h), Ink, TextFormatFlags.VerticalCenter);
+PV_StayExample;KabanHMI\Settings\PreferencePreview.cs;583;Text;: T("PV_StayExample", "the page on show");
+PV_StayNote;KabanHMI\Settings\PreferencePreview.cs;588;Text;: T("PV_StayNote", "Nothing moves: as the program has always been."),
+PV_StRunning;KabanHMI\Settings\PreferencePreview.cs;548;Text;string[] states = { T("PV_StRunning", "Running"), T("PV_StWaiting", "Waiting for material"), T("PV_StAlarm", "Alarm"), T("PV_StRunning", "Running"), T("PV_StStopped", "Stopped") };
+PV_StStopped;KabanHMI\Settings\PreferencePreview.cs;548;Text;string[] states = { T("PV_StRunning", "Running"), T("PV_StWaiting", "Waiting for material"), T("PV_StAlarm", "Alarm"), T("PV_StRunning", "Running"), T("PV_StStopped", "Stopped") };
+PV_StWaiting;KabanHMI\Settings\PreferencePreview.cs;548;Text;string[] states = { T("PV_StRunning", "Running"), T("PV_StWaiting", "Waiting for material"), T("PV_StAlarm", "Alarm"), T("PV_StRunning", "Running"), T("PV_StStopped", "Stopped") };
 PV_SummaryHint;KabanHMI\Settings\PreferencePreview.cs;135;Text;if (_key == SummaryKey) return T("PV_SummaryHint", "Choose to take these into the page - nothing is kept until Save.");
-PV_SummaryTitle;KabanHMI\Settings\PreferencePreview.cs;229;Text;using (var f = F(8.5f)) TextRenderer.DrawText(g, T("PV_SummaryTitle", "Their preferences"), f, new Rectangle(x, S(10), w, S(18)), Grey, TextFormatFlags.Left);
+PV_SummaryTitle;KabanHMI\Settings\PreferencePreview.cs;231;Text;using (var f = F(8.5f)) TextRenderer.DrawText(g, T("PV_SummaryTitle", "Their preferences"), f, new Rectangle(x, S(10), w, S(18)), Grey, TextFormatFlags.Left);
 PV_Tables;KabanHMI\Settings\PreferencePreview.cs;162;Text;return T("PV_Tables", "Every table of the program, the open ones at once.");
-PV_TipText;KabanHMI\Settings\PreferencePreview.cs;604;Text;TextRenderer.DrawText(g, T("PV_TipText", "Speed of the saw"), f, tip, Ink, TextFormatFlags.VerticalCenter | TextFormatFlags.HorizontalCenter | TextFormatFlags.EndEllipsis);
-PV_Title;KabanHMI\Settings\PreferencePreview.cs;206;Text;using (var f = F(8.5f)) TextRenderer.DrawText(g, T("PV_Title", "Preview"), f, new Rectangle(x, S(10), w, S(18)), Grey, TextFormatFlags.Left);
+PV_TipText;KabanHMI\Settings\PreferencePreview.cs;671;Text;TextRenderer.DrawText(g, T("PV_TipText", "Speed of the saw"), f, tip, Ink, TextFormatFlags.VerticalCenter | TextFormatFlags.HorizontalCenter | TextFormatFlags.EndEllipsis);
+PV_Title;KabanHMI\Settings\PreferencePreview.cs;208;Text;using (var f = F(8.5f)) TextRenderer.DrawText(g, T("PV_Title", "Preview"), f, new Rectangle(x, S(10), w, S(18)), Grey, TextFormatFlags.Left);
 PV_Tooltip;KabanHMI\Settings\PreferencePreview.cs;170;Text;return T("PV_Tooltip", "How long the pointer rests on a control before its tooltip shows - played out above.");
-PV_TopBar;KabanHMI\Settings\PreferencePreview.cs;575;Text;TextRenderer.DrawText(g, T("PV_TopBar", "the top bar"), f, new Rectangle(bar.Left + S(110), bar.Top, bar.Width - S(110), bar.Height), Color.White, TextFormatFlags.VerticalCenter);
-PV_Unit;KabanHMI\Settings\PreferencePreview.cs;183;Text;return T("PV_Unit", "Every value of this kind on screen, and what is typed into it - the PLC keeps its own unit, converted both ways.");
-PV_UnitOf;KabanHMI\Settings\UsersPreferencesControl.cs;792;Text;if (UnitOf(kv.Key) != UnitType.None) name = string.Format(T("PV_UnitOf", "{0} unit"), name);
-PV_UnitPlc;KabanHMI\Settings\PreferencePreview.cs;291;Text;TextRenderer.DrawText(g, T("PV_UnitPlc", "The PLC keeps") + ":  " + refText, f, new Rectangle(r.Left, r.Top + S(82), r.Width, S(20)), Grey, TextFormatFlags.Left);
+PV_TopBar;KabanHMI\Settings\PreferencePreview.cs;642;Text;TextRenderer.DrawText(g, T("PV_TopBar", "the top bar"), f, new Rectangle(bar.Left + S(110), bar.Top, bar.Width - S(110), bar.Height), Color.White, TextFormatFlags.VerticalCenter);
+PV_Unit;KabanHMI\Settings\PreferencePreview.cs;185;Text;return T("PV_Unit", "Every value of this kind on screen, and what is typed into it - the PLC keeps its own unit, converted both ways.");
+PV_UnitOf;KabanHMI\Settings\UsersPreferencesControl.cs;810;Text;if (UnitOf(kv.Key) != UnitType.None) name = string.Format(T("PV_UnitOf", "{0} unit"), name);
+PV_UnitPlc;KabanHMI\Settings\PreferencePreview.cs;293;Text;TextRenderer.DrawText(g, T("PV_UnitPlc", "The PLC keeps") + ":  " + refText, f, new Rectangle(r.Left, r.Top + S(82), r.Width, S(20)), Grey, TextFormatFlags.Left);
 Ref_Bed;Kaban.Machines.FA2010\Screens\ProfilesScreen.Details.cs;587;Text;case "BED_DATUM": return T("Ref_Bed", "Bed datum");
 Ref_Center;Kaban.Machines.FA2010\Screens\ProfilesScreen.Details.cs;583;Text;case "CENTER": return T("Ref_Center", "Profile centre");
 Ref_Chamber;Kaban.Machines.FA2010\Screens\ProfilesScreen.Details.cs;588;Text;case "CHAMBER_CENTRE": return T("Ref_Chamber", "Chamber centre");
@@ -2347,8 +2349,8 @@ Tbl_Save;KabanHMI\Profiles\TableEditor.cs;79;Tooltip;_save = UiStyle.ToolButton(
 Tbl_Saved;KabanHMI\Profiles\LibraryEditorForm.cs;503;Text;status.Text = T("Tbl_Saved", "Saved.");
 Tbl_Saved;KabanHMI\Profiles\TableEditor.cs;457;Status;_status.Text = T("Tbl_Saved", "Saved.");
 Tbl_Unsaved;KabanHMI\Profiles\TableEditor.cs;153;Status;_status.Text = T("Tbl_Unsaved", "changed - not saved yet");
-Tch_NotNow;KabanHMI\Helpers\TouchInput.Gestures.cs;236;Tooltip;return !string.IsNullOrWhiteSpace(item.ToolTipText) ? item.ToolTipText : LanguageManager.GetString("Tch_NotNow", "Not available now.");
-Tch_NotNow;KabanHMI\Helpers\TouchInput.Gestures.cs;249;Text;return LanguageManager.GetString("Tch_NotNow", "Not available now.");
+Tch_NotNow;KabanHMI\Helpers\TouchInput.Gestures.cs;258;Tooltip;return !string.IsNullOrWhiteSpace(item.ToolTipText) ? item.ToolTipText : LanguageManager.GetString("Tch_NotNow", "Not available now.");
+Tch_NotNow;KabanHMI\Helpers\TouchInput.Gestures.cs;271;Text;return LanguageManager.GetString("Tch_NotNow", "Not available now.");
 Tip_AiAsk;KabanHMI\Helpers\AiMenu.cs;70;Tooltip;ask.ToolTipText = string.Format(T("Tip_AiAsk", "Opens {0} in the browser and pastes the briefing into it by itself (Ctrl+V) - you check it and send it."), chat.Name);
 Tip_AiPrompt;KabanHMI\Helpers\AiMenu.cs;59;Tooltip;? T("Tip_AiPrompt", "Copies a briefing for an AI chat (Claude, ChatGPT, Gemini, Grok...) with everything about this alarm, its unit, its devices and the machine, and the HMI's o...
 Tip_AlarmBit;KabanHMI\Controls\ButtonHMI.cs;1438;Tooltip;lines.Add(LanguageManager.GetString("Tip_AlarmBit", "Alarm bit") + ": " + address +
@@ -2499,7 +2501,7 @@ Tip_PpDirectionRef;KabanHMI\Controls\PneumaticPositioningHMI.cs;57;Tooltip;AddSe
 Tip_PpStart;KabanHMI\Controls\PneumaticPositioningHMI.cs;54;Tooltip;AddSection("Target", "Col_PpTarget", "Target position", "Target", "Tip_PpTarget", "Start", "Tip_PpStart", operatorLevel: true);
 Tip_PpTarget;KabanHMI\Controls\PneumaticPositioningHMI.cs;54;Tooltip;AddSection("Target", "Col_PpTarget", "Target position", "Target", "Tip_PpTarget", "Start", "Tip_PpStart", operatorLevel: true);
 Tip_PpTolerance;KabanHMI\Controls\PneumaticPositioningHMI.cs;56;Tooltip;AddSection("Tolerance", "Col_PpTolerance", "Positioning tolerance", "Tolerance", "Tip_PpTolerance");
-Tip_ReadFrom;KabanHMI\Settings\UsersPreferencesControl.cs;319;Tooltip;Kaban.UI.Controls.UiStyle.SetTip(UiStyle.Tips(), _readFrom, T("Tip_ReadFrom", "Copies another user's screen scale and preferences (or everyone's) into this page, \uD83D\uDCBE ke...
+Tip_ReadFrom;KabanHMI\Settings\UsersPreferencesControl.cs;331;Tooltip;Kaban.UI.Controls.UiStyle.SetTip(UiStyle.Tips(), _readFrom, T("Tip_ReadFrom", "Copies another user's screen scale and preferences (or everyone's) into this page, \uD83D\uDCBE ke...
 Tip_RealPosition;KabanHMI\Controls\BaseNumericHMI.cs;347;Tooltip;public string ComparedCaptionKey { get; set; } = "Tip_RealPosition";
 Tip_ReloadConnections;KabanHMI\Settings\StationConnectionControl.cs;147;Tooltip;"Tip_ReloadConnections", "Discard changes and re-read the saved file"), tips, (s, e) => Reload());
 Tip_RowCountLocked;KabanHMI\Forms\PlcRowEditorForm.cs;233;Tooltip;UiStyle.SetTip(UiStyle.Tips(), _count, LanguageManager.GetString("Tip_RowCountLocked", "As many elements as the table has lines - a label of a table is as long as it"));
@@ -2568,11 +2570,11 @@ Tip_TrnUndo;KabanHMI\Settings\TranslationsControl.cs;127;Tooltip;_btnUndo = UiSt
 Tip_TrnUndo;KabanHMI\Settings\TranslationsControl.Undo.cs;85;Tooltip;: T("Tip_TrnUndo", "Undo the last change: a text typed, an import, a Save"));
 Tip_TrnUndoWhat;KabanHMI\Settings\TranslationsControl.Undo.cs;84;Tooltip;? string.Format(T("Tip_TrnUndoWhat", "Undo: {0}"), Describe(_undoSteps[_undoSteps.Count - 1]))
 Tip_UnitHelp;KabanHMI\Controls\CylinderUnitHMI.cs;1779;Tooltip;tip = LanguageManager.GetString("Tip_UnitHelp", "Help for this unit") + "\r\n" +
-Tip_UsrDelete;KabanHMI\Settings\UsersPreferencesControl.cs;127;Tooltip;_delete = UiStyle.ToolButton("\uD83D\uDDD1", T("Tip_UsrDelete", "Delete the selected user"), tips, (s, e) => DeleteUser());
-Tip_UsrNew;KabanHMI\Settings\UsersPreferencesControl.cs;126;Tooltip;_new = UiStyle.ToolButton("\u2795", T("Tip_UsrNew", "A new user: at your level or lower"), tips, (s, e) => StartNew());
-Tip_UsrPass;KabanHMI\Settings\UsersPreferencesControl.cs;278;Tooltip;Kaban.UI.Controls.UiStyle.SetTip(UiStyle.Tips(), _pass, T("Tip_UsrPass", "A new password, empty keeps the one it has"));
-Tip_UsrPrefSave;KabanHMI\Settings\UsersPreferencesControl.cs;124;Tooltip;_save = UiStyle.ToolButton("\uD83D\uDCBE", T("Tip_UsrPrefSave", "Keep the account, its screen scale and its preferences"), tips, (s, e) => Save());
-Tip_ViewRevert;KabanHMI\Settings\UsersPreferencesControl.cs;125;Tooltip;_revert = UiStyle.ToolButton("\u21BA", T("Tip_ViewRevert", "Throw the changes away and show the kept preferences"), tips, (s, e) => Fill());
+Tip_UsrDelete;KabanHMI\Settings\UsersPreferencesControl.cs;130;Tooltip;_delete = UiStyle.ToolButton("\uD83D\uDDD1", T("Tip_UsrDelete", "Delete the selected user"), tips, (s, e) => DeleteUser());
+Tip_UsrNew;KabanHMI\Settings\UsersPreferencesControl.cs;129;Tooltip;_new = UiStyle.ToolButton("\u2795", T("Tip_UsrNew", "A new user: at your level or lower"), tips, (s, e) => StartNew());
+Tip_UsrPass;KabanHMI\Settings\UsersPreferencesControl.cs;290;Tooltip;Kaban.UI.Controls.UiStyle.SetTip(UiStyle.Tips(), _pass, T("Tip_UsrPass", "A new password, empty keeps the one it has"));
+Tip_UsrPrefSave;KabanHMI\Settings\UsersPreferencesControl.cs;127;Tooltip;_save = UiStyle.ToolButton("\uD83D\uDCBE", T("Tip_UsrPrefSave", "Keep the account, its screen scale and its preferences"), tips, (s, e) => Save());
+Tip_ViewRevert;KabanHMI\Settings\UsersPreferencesControl.cs;128;Tooltip;_revert = UiStyle.ToolButton("\u21BA", T("Tip_ViewRevert", "Throw the changes away and show the kept preferences"), tips, (s, e) => Fill());
 Tip_WinMaximize;KabanHMI\Forms\MainForm.SidePanel.cs;829;Tooltip;"Maximize", LanguageManager.GetString("Tip_WinMaximize", "Maximize / Restore"), (s, e) => ToggleMaximize());
 Tip_WinMinimize;KabanHMI\Forms\MainForm.SidePanel.cs;826;Tooltip;_btnMin = CaptionButton(DrawMinimize, "Minimize", LanguageManager.GetString("Tip_WinMinimize", "Minimize"),
 Tip_Zoom;KabanHMI\Forms\MainForm.Magnifier.cs;131;Tooltip;Kaban.UI.Controls.UiStyle.SetTip(_topTips, _btnZoom, LanguageManager.GetString("Tip_Zoom",
@@ -2623,7 +2625,7 @@ Ttl_Magnifier;KabanHMI\Controls\ScaleSlider.cs;126;Text;return LanguageManager.G
 Ttl_Magnifier;KabanHMI\Forms\MainForm.Magnifier.cs;61;Message;if (MessageBox.Show(this, question, LanguageManager.GetString("Ttl_Magnifier", "Screen scale"),
 Ttl_Magnifier;KabanHMI\Forms\MainForm.Magnifier.cs;169;Text;return BuildScaleMenu(LanguageManager.GetString("Ttl_Magnifier", "Screen scale") + " (" + DisplaySettings.Percent(UiScale.Factor) + ")",
 Ttl_Magnifier;KabanHMI\Forms\MainForm.Magnifier.cs;237;Message;MessageBox.Show(this, q, LanguageManager.GetString("Ttl_Magnifier", "Screen scale"),
-Ttl_Magnifier;KabanHMI\Settings\UsersPreferencesControl.cs;1001;Message;MessageBox.Show(this, question, T("Ttl_Magnifier", "Screen scale"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) return;
+Ttl_Magnifier;KabanHMI\Settings\UsersPreferencesControl.cs;1019;Message;MessageBox.Show(this, question, T("Ttl_Magnifier", "Screen scale"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) return;
 Ttl_MotionFlash;KabanHMI\Controls\MotionValueHMI.cs;325;Message;MessageBox.Show(FindForm(), text, LanguageManager.GetString("Ttl_MotionFlash", "Simple motion module"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
 Ttl_MotionFlash;KabanHMI\Helpers\MotionFlash.cs;39;Message;return MessageBox.Show(owner, text, T("Ttl_MotionFlash", "Simple motion module"), buttons, icon);
 Ttl_MotionFlash;KabanHMI\Helpers\MotionFlash.cs;135;Text;var result = WorkForm.Run(owner, T("Ttl_MotionFlash", "Simple motion module"),
@@ -2694,104 +2696,109 @@ Undo_TrnFiles;KabanHMI\Settings\TranslationsControl.Import.cs;328;Text;T("Undo_T
 Undo_TrnOld;KabanHMI\Settings\TranslationsControl.Import.cs;263;Text;T("Undo_TrnOld", "the older installation's translations"),
 Undo_TrnSave;KabanHMI\Settings\TranslationsControl.cs;612;Text;PushWritten(T("Undo_TrnSave", "the Save"), done);
 Undo_TrnTyped;KabanHMI\Settings\TranslationsControl.cs;456;Text;var step = new UndoStep { What = string.Format(T("Undo_TrnTyped", "the text typed in {0} {1}"), row.Key, lang) };
-Usr_CreatedBy;KabanHMI\Settings\UsersPreferencesControl.cs;607;Text;_createdBy.Text = creator.Length > 0 ? string.Format(T("Usr_CreatedBy", "created by {0}"), creator) : "";
-Usr_Factor;KabanHMI\Settings\UsersPreferencesControl.cs;145;Text;_grid.Columns.Add("factor", T("Usr_Factor", "Screen scale"));
-Usr_FactorOwn;KabanHMI\Settings\UsersPreferencesControl.cs;321;Text;Row("Screen", ScaleKey, T("Usr_FactorOwn", "Screen scale"), _scale);
-Usr_FactorOwn;KabanHMI\Settings\UsersPreferencesControl.cs;1060;Text;case UsersPreferencesControl.ScaleKey: return T("Usr_FactorOwn", "Screen scale");
-Usr_InfoEveryone;KabanHMI\Settings\UsersPreferencesControl.cs;583;Text;_info.Text = IsEveryone ? T("Usr_InfoEveryone", "In force while nobody is signed in, and followed by every user's 'As for everyone'.") : "";
-Usr_Level;KabanHMI\Settings\UsersPreferencesControl.cs;144;Text;_grid.Columns.Add("level", T("Usr_Level", "Level"));
-Usr_Level;KabanHMI\Settings\UsersPreferencesControl.cs;265;Text;new { Caption = T("Usr_Level", "Level"), Field = (Control)_level } })
-Usr_MsgCannotDelete;KabanHMI\Settings\UsersPreferencesControl.cs;1011;Text;if (!UserRights.CanDelete(user)) return Fail(T("Usr_MsgCannotDelete", "Only a higher level, or the one who created it, can delete this user."));
-Usr_MsgConfirmDelete;KabanHMI\Settings\UsersPreferencesControl.cs;1012;Text;string q = string.Format(T("Usr_MsgConfirmDelete", "Delete user '{0}'?"), user);
-Usr_MsgCreated;KabanHMI\Settings\UsersPreferencesControl.cs;891;Text;Say(string.Format(T("Usr_MsgCreated", "User '{0}' created."), name));
-Usr_MsgDeleted;KabanHMI\Settings\UsersPreferencesControl.cs;1021;Text;Say(string.Format(T("Usr_MsgDeleted", "User '{0}' deleted."), user));
-Usr_MsgEveryoneSaved;KabanHMI\Settings\UsersPreferencesControl.cs;909;Text;Say(T("Usr_MsgEveryoneSaved", "Everyone's preferences kept."));
-Usr_MsgExists;KabanHMI\Settings\UsersPreferencesControl.cs;878;Text;if (AccountOf(name) != null) return Fail(string.Format(T("Usr_MsgExists", "There is already a user '{0}'."), name));
-Usr_MsgLastAdmin;KabanHMI\Settings\UsersPreferencesControl.cs;927;Text;return Fail(UserStore.WouldRemoveLastAdmin(user, level) ? T("Usr_MsgLastAdmin", "The last Admin account cannot be given a lower level.")
-Usr_MsgLastAdminDelete;KabanHMI\Settings\UsersPreferencesControl.cs;1010;Text;if (UserStore.WouldRemoveLastAdmin(user, null)) return Fail(T("Usr_MsgLastAdminDelete", "The last Admin account cannot be deleted."));
-Usr_MsgLevel;KabanHMI\Settings\UsersPreferencesControl.cs;880;Text;if (levelChoice == null || !UserRights.CanCreate(levelChoice.Level)) return Fail(T("Usr_MsgLevel", "You cannot give that level."));
-Usr_MsgLevel;KabanHMI\Settings\UsersPreferencesControl.cs;928;Text;: T("Usr_MsgLevel", "You cannot give that level."));
-Usr_MsgName;KabanHMI\Settings\UsersPreferencesControl.cs;876;Text;if (name.Length == 0) return Fail(T("Usr_MsgName", "Enter a user name."));
-Usr_MsgNoUser;KabanHMI\Settings\UsersPreferencesControl.cs;924;Text;if (account == null) return Fail(string.Format(T("Usr_MsgNoUser", "No user '{0}'."), user));
-Usr_MsgPassword;KabanHMI\Settings\UsersPreferencesControl.cs;879;Text;if (_pass.Text.Length == 0) return Fail(T("Usr_MsgPassword", "A new user needs a password."));
-Usr_MsgSaved;KabanHMI\Settings\UsersPreferencesControl.cs;955;Text;Say(string.Format(T("Usr_MsgSaved", "User '{0}' saved."), account.Username));
-Usr_MsgSelf;KabanHMI\Settings\UsersPreferencesControl.cs;1009;Text;if (UserRights.IsSelf(UserRights.Actor, user)) return Fail(T("Usr_MsgSelf", "You cannot delete the account you are signed in with."));
-Usr_MsgSemicolon;KabanHMI\Settings\UsersPreferencesControl.cs;877;Text;if (!UserStore.IsValidUsername(name)) return Fail(T("Usr_MsgSemicolon", "A user name may not contain a semicolon."));
-Usr_Name;KabanHMI\Settings\UsersPreferencesControl.cs;143;Text;_grid.Columns.Add("user", T("Usr_Name", "User"));
-Usr_Name;KabanHMI\Settings\UsersPreferencesControl.cs;263;Text;foreach (var pair in new[] { new { Caption = T("Usr_Name", "User"), Field = (Control)_name },
-Usr_NewHint;KabanHMI\Settings\UsersPreferencesControl.cs;846;Text;Say(T("Usr_NewHint", "Name, password and level, then \uD83D\uDCBE."));
-Usr_NewUser;KabanHMI\Settings\UsersPreferencesControl.cs;580;Text;_who.Text = _creating ? T("Usr_NewUser", "New user")
+Usr_CreatedBy;KabanHMI\Settings\UsersPreferencesControl.cs;619;Text;_createdBy.Text = creator.Length > 0 ? string.Format(T("Usr_CreatedBy", "created by {0}"), creator) : "";
+Usr_Factor;KabanHMI\Settings\UsersPreferencesControl.cs;148;Text;_grid.Columns.Add("factor", T("Usr_Factor", "Screen scale"));
+Usr_FactorOwn;KabanHMI\Settings\UsersPreferencesControl.cs;333;Text;Row("Screen", ScaleKey, T("Usr_FactorOwn", "Screen scale"), _scale);
+Usr_FactorOwn;KabanHMI\Settings\UsersPreferencesControl.cs;1079;Text;case UsersPreferencesControl.ScaleKey: return T("Usr_FactorOwn", "Screen scale");
+Usr_InfoEveryone;KabanHMI\Settings\UsersPreferencesControl.cs;595;Text;_info.Text = IsEveryone ? T("Usr_InfoEveryone", "In force while nobody is signed in, and followed by every user's 'As for everyone'.") : "";
+Usr_Level;KabanHMI\Settings\UsersPreferencesControl.cs;147;Text;_grid.Columns.Add("level", T("Usr_Level", "Level"));
+Usr_Level;KabanHMI\Settings\UsersPreferencesControl.cs;277;Text;new { Caption = T("Usr_Level", "Level"), Field = (Control)_level } })
+Usr_MsgCannotDelete;KabanHMI\Settings\UsersPreferencesControl.cs;1029;Text;if (!UserRights.CanDelete(user)) return Fail(T("Usr_MsgCannotDelete", "Only a higher level, or the one who created it, can delete this user."));
+Usr_MsgConfirmDelete;KabanHMI\Settings\UsersPreferencesControl.cs;1030;Text;string q = string.Format(T("Usr_MsgConfirmDelete", "Delete user '{0}'?"), user);
+Usr_MsgCreated;KabanHMI\Settings\UsersPreferencesControl.cs;909;Text;Say(string.Format(T("Usr_MsgCreated", "User '{0}' created."), name));
+Usr_MsgDeleted;KabanHMI\Settings\UsersPreferencesControl.cs;1039;Text;Say(string.Format(T("Usr_MsgDeleted", "User '{0}' deleted."), user));
+Usr_MsgEveryoneSaved;KabanHMI\Settings\UsersPreferencesControl.cs;927;Text;Say(T("Usr_MsgEveryoneSaved", "Everyone's preferences kept."));
+Usr_MsgExists;KabanHMI\Settings\UsersPreferencesControl.cs;896;Text;if (AccountOf(name) != null) return Fail(string.Format(T("Usr_MsgExists", "There is already a user '{0}'."), name));
+Usr_MsgLastAdmin;KabanHMI\Settings\UsersPreferencesControl.cs;945;Text;return Fail(UserStore.WouldRemoveLastAdmin(user, level) ? T("Usr_MsgLastAdmin", "The last Admin account cannot be given a lower level.")
+Usr_MsgLastAdminDelete;KabanHMI\Settings\UsersPreferencesControl.cs;1028;Text;if (UserStore.WouldRemoveLastAdmin(user, null)) return Fail(T("Usr_MsgLastAdminDelete", "The last Admin account cannot be deleted."));
+Usr_MsgLevel;KabanHMI\Settings\UsersPreferencesControl.cs;898;Text;if (levelChoice == null || !UserRights.CanCreate(levelChoice.Level)) return Fail(T("Usr_MsgLevel", "You cannot give that level."));
+Usr_MsgLevel;KabanHMI\Settings\UsersPreferencesControl.cs;946;Text;: T("Usr_MsgLevel", "You cannot give that level."));
+Usr_MsgName;KabanHMI\Settings\UsersPreferencesControl.cs;894;Text;if (name.Length == 0) return Fail(T("Usr_MsgName", "Enter a user name."));
+Usr_MsgNoUser;KabanHMI\Settings\UsersPreferencesControl.cs;942;Text;if (account == null) return Fail(string.Format(T("Usr_MsgNoUser", "No user '{0}'."), user));
+Usr_MsgPassword;KabanHMI\Settings\UsersPreferencesControl.cs;897;Text;if (_pass.Text.Length == 0) return Fail(T("Usr_MsgPassword", "A new user needs a password."));
+Usr_MsgSaved;KabanHMI\Settings\UsersPreferencesControl.cs;973;Text;Say(string.Format(T("Usr_MsgSaved", "User '{0}' saved."), account.Username));
+Usr_MsgSelf;KabanHMI\Settings\UsersPreferencesControl.cs;1027;Text;if (UserRights.IsSelf(UserRights.Actor, user)) return Fail(T("Usr_MsgSelf", "You cannot delete the account you are signed in with."));
+Usr_MsgSemicolon;KabanHMI\Settings\UsersPreferencesControl.cs;895;Text;if (!UserStore.IsValidUsername(name)) return Fail(T("Usr_MsgSemicolon", "A user name may not contain a semicolon."));
+Usr_Name;KabanHMI\Settings\UsersPreferencesControl.cs;146;Text;_grid.Columns.Add("user", T("Usr_Name", "User"));
+Usr_Name;KabanHMI\Settings\UsersPreferencesControl.cs;275;Text;foreach (var pair in new[] { new { Caption = T("Usr_Name", "User"), Field = (Control)_name },
+Usr_NewHint;KabanHMI\Settings\UsersPreferencesControl.cs;864;Text;Say(T("Usr_NewHint", "Name, password and level, then \uD83D\uDCBE."));
+Usr_NewUser;KabanHMI\Settings\UsersPreferencesControl.cs;592;Text;_who.Text = _creating ? T("Usr_NewUser", "New user")
 Usr_NoScaleRequest;KabanHMI\Forms\MainForm.Magnifier.cs;209;Text;get { return LanguageManager.GetString("Usr_NoScaleRequest", "No specific request"); }
-Usr_NoteEveryone;KabanHMI\Settings\UsersPreferencesControl.cs;586;Text;? T("Usr_NoteEveryone", "Everyone's preferences are changed from Maintenance up.")
-Usr_NoteNotYours;KabanHMI\Settings\UsersPreferencesControl.cs;587;Text;: string.Format(T("Usr_NoteNotYours", "You can see {0}'s settings. Only a higher level, or the one who created the account, can change them."), user);
-Usr_PageNote;KabanHMI\Settings\UsersPreferencesControl.cs;353;Text;Text = T("Usr_PageNote", "A user's own values are taken when they sign in, 'As for everyone' follows the panel's. A new screen scale needs a restart (offered at once for your ow...
-Usr_Pass;KabanHMI\Settings\UsersPreferencesControl.cs;264;Text;new { Caption = T("Usr_Pass", "Password"), Field = (Control)_pass },
-Usr_ReadDone;KabanHMI\Settings\UsersPreferencesControl.cs;832;Text;Say(string.Format(T("Usr_ReadDone", "{0}'s preferences read: \uD83D\uDCBE keeps them."), src.Text));
-Usr_SecPrefs;KabanHMI\Settings\UsersPreferencesControl.cs;360;Text;{ "Prefs", new[] { "Usr_SecPrefs", "Preferences" } },
-Usr_TtlDelete;KabanHMI\Settings\UsersPreferencesControl.cs;1014;Message;: MessageBox.Show(this, q, T("Usr_TtlDelete", "Delete user"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes;
-VP_AiAsFile;KabanHMI\Settings\UsersPreferencesControl.cs;1107;Text;case "AiPromptAs.File": return T("VP_AiAsFile", "A file (Ctrl+V attaches it)");
-VP_AiAsText;KabanHMI\Settings\UsersPreferencesControl.cs;1108;Text;case "AiPromptAs.Text": return T("VP_AiAsText", "Its text");
-VP_AiPaste;KabanHMI\Settings\UsersPreferencesControl.cs;1057;Text;case ViewPreferences.AiPaste: return T("VP_AiPaste", "Paste into the chat");
-VP_AiPasteOff;KabanHMI\Settings\UsersPreferencesControl.cs;1110;Text;case "AiPaste.Off": return T("VP_AiPasteOff", "I paste it myself");
-VP_AiPasteOn;KabanHMI\Settings\UsersPreferencesControl.cs;1109;Text;case "AiPaste.On": return T("VP_AiPasteOn", "By itself (Ctrl+V)");
-VP_AiPromptAs;KabanHMI\Settings\UsersPreferencesControl.cs;1056;Text;case ViewPreferences.AiPromptAs: return T("VP_AiPromptAs", "AI prompt copied as");
-VP_AlarmSound;KabanHMI\Settings\UsersPreferencesControl.cs;1053;Text;case ViewPreferences.AlarmSound: return T("VP_AlarmSound", "Sound for a new alarm");
+Usr_NoteEveryone;KabanHMI\Settings\UsersPreferencesControl.cs;598;Text;? T("Usr_NoteEveryone", "Everyone's preferences are changed from Maintenance up.")
+Usr_NoteNotYours;KabanHMI\Settings\UsersPreferencesControl.cs;599;Text;: string.Format(T("Usr_NoteNotYours", "You can see {0}'s settings. Only a higher level, or the one who created the account, can change them."), user);
+Usr_PageNote;KabanHMI\Settings\UsersPreferencesControl.cs;365;Text;Text = T("Usr_PageNote", "A user's own values are taken when they sign in, 'As for everyone' follows the panel's. A new screen scale needs a restart (offered at once for your ow...
+Usr_Pass;KabanHMI\Settings\UsersPreferencesControl.cs;276;Text;new { Caption = T("Usr_Pass", "Password"), Field = (Control)_pass },
+Usr_ReadDone;KabanHMI\Settings\UsersPreferencesControl.cs;850;Text;Say(string.Format(T("Usr_ReadDone", "{0}'s preferences read: \uD83D\uDCBE keeps them."), src.Text));
+Usr_SecPrefs;KabanHMI\Settings\UsersPreferencesControl.cs;372;Text;{ "Prefs", new[] { "Usr_SecPrefs", "Preferences" } },
+Usr_TtlDelete;KabanHMI\Settings\UsersPreferencesControl.cs;1032;Message;: MessageBox.Show(this, q, T("Usr_TtlDelete", "Delete user"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes;
+VP_AiAsFile;KabanHMI\Settings\UsersPreferencesControl.cs;1126;Text;case "AiPromptAs.File": return T("VP_AiAsFile", "A file (Ctrl+V attaches it)");
+VP_AiAsText;KabanHMI\Settings\UsersPreferencesControl.cs;1127;Text;case "AiPromptAs.Text": return T("VP_AiAsText", "Its text");
+VP_AiPaste;KabanHMI\Settings\UsersPreferencesControl.cs;1075;Text;case ViewPreferences.AiPaste: return T("VP_AiPaste", "Paste into the chat");
+VP_AiPasteOff;KabanHMI\Settings\UsersPreferencesControl.cs;1129;Text;case "AiPaste.Off": return T("VP_AiPasteOff", "I paste it myself");
+VP_AiPasteOn;KabanHMI\Settings\UsersPreferencesControl.cs;1128;Text;case "AiPaste.On": return T("VP_AiPasteOn", "By itself (Ctrl+V)");
+VP_AiPromptAs;KabanHMI\Settings\UsersPreferencesControl.cs;1074;Text;case ViewPreferences.AiPromptAs: return T("VP_AiPromptAs", "AI prompt copied as");
+VP_AlarmSound;KabanHMI\Settings\UsersPreferencesControl.cs;1071;Text;case ViewPreferences.AlarmSound: return T("VP_AlarmSound", "Sound for a new alarm");
 VP_AsEveryone;KabanHMI\Settings\PreferencePreview.cs;142;Text;if (_asEveryone) v = T("VP_AsEveryone", "As for everyone") + ":  " + v;
-VP_AsEveryone;KabanHMI\Settings\UsersPreferencesControl.cs;634;Text;Text = T("VP_AsEveryone", "As for everyone") + "  (" + PrefTexts.ValueText(kv.Key, PanelOf(kv.Key)) + ")"
-VP_AsEveryone;KabanHMI\Settings\UsersPreferencesControl.cs;796;Text;Value = own != null ? PrefTexts.ValueText(kv.Key, own) : T("VP_AsEveryone", "As for everyone")
-VP_Blink;KabanHMI\Settings\UsersPreferencesControl.cs;1102;Text;case "Blinking.On": return T("VP_Blink", "Blink");
-VP_Blinking;KabanHMI\Settings\UsersPreferencesControl.cs;1054;Text;case ViewPreferences.Blinking: return T("VP_Blinking", "Attention marks");
-VP_CapLeft;KabanHMI\Settings\UsersPreferencesControl.cs;1084;Text;case "CaptionAlign.Left": return T("VP_CapLeft", "Left, in a column");
-VP_CapRight;KabanHMI\Settings\UsersPreferencesControl.cs;1083;Text;case "CaptionAlign.Right": return T("VP_CapRight", "Right, against the field");
-VP_CaptionAlign;KabanHMI\Settings\UsersPreferencesControl.cs;1046;Text;case ViewPreferences.CaptionAlign: return T("VP_CaptionAlign", "Captions and axis names");
-VP_Compact;KabanHMI\Settings\UsersPreferencesControl.cs;1093;Text;case "TableRows.Compact": return T("VP_Compact", "Compact");
-VP_DateFormat;KabanHMI\Settings\UsersPreferencesControl.cs;1048;Text;case ViewPreferences.DateFormat: return T("VP_DateFormat", "Date");
-VP_DecComma;KabanHMI\Settings\UsersPreferencesControl.cs;1087;Text;case "DecimalSeparator.Comma": return T("VP_DecComma", "Comma") + "  (1234,56)";
-VP_DecimalSeparator;KabanHMI\Settings\UsersPreferencesControl.cs;1047;Text;case ViewPreferences.DecimalSeparator: return T("VP_DecimalSeparator", "Decimal separator");
-VP_DecPoint;KabanHMI\Settings\UsersPreferencesControl.cs;1086;Text;case "DecimalSeparator.Point": return T("VP_DecPoint", "Point") + "  (1234.56)";
-VP_DecWindows;KabanHMI\Settings\UsersPreferencesControl.cs;1085;Text;case "DecimalSeparator.Windows": return T("VP_DecWindows", "As Windows");
-VP_Everyone;KabanHMI\Settings\UsersPreferencesControl.cs;434;Text;int i = _grid.Rows.Add(T("VP_Everyone", "Everyone (this panel)"), "", DisplaySettings.Percent(DisplaySettings.PanelFactor));
-VP_Everyone;KabanHMI\Settings\UsersPreferencesControl.cs;581;Text;: _selected == Everyone ? T("VP_Everyone", "Everyone (this panel)")
-VP_Everyone;KabanHMI\Settings\UsersPreferencesControl.cs;612;Text;if (_selected != Everyone || _creating) _readFrom.Items.Add(new Choice { Value = Everyone, Text = T("VP_Everyone", "Everyone (this panel)") });
-VP_H12;KabanHMI\Settings\UsersPreferencesControl.cs;1092;Text;case "TimeFormat.H12": return T("VP_H12", "12 hours") + "  (2:31 PM)";
-VP_H24;KabanHMI\Settings\UsersPreferencesControl.cs;1091;Text;case "TimeFormat.H24": return T("VP_H24", "24 hours") + "  (14:31)";
-VP_Home;KabanHMI\Settings\PreferencePreview.cs;514;Text;string to = v == "Home" ? T("VP_Home", "Home")
-VP_Home;KabanHMI\Settings\UsersPreferencesControl.cs;1098;Text;case "StartPage.Home": return T("VP_Home", "Home");
+VP_AsEveryone;KabanHMI\Settings\UsersPreferencesControl.cs;646;Text;Text = T("VP_AsEveryone", "As for everyone") + "  (" + PrefTexts.ValueText(kv.Key, PanelOf(kv.Key)) + ")"
+VP_AsEveryone;KabanHMI\Settings\UsersPreferencesControl.cs;814;Text;Value = own != null ? PrefTexts.ValueText(kv.Key, own) : T("VP_AsEveryone", "As for everyone")
+VP_Blink;KabanHMI\Settings\UsersPreferencesControl.cs;1121;Text;case "Blinking.On": return T("VP_Blink", "Blink");
+VP_Blinking;KabanHMI\Settings\UsersPreferencesControl.cs;1072;Text;case ViewPreferences.Blinking: return T("VP_Blinking", "Attention marks");
+VP_CapLeft;KabanHMI\Settings\UsersPreferencesControl.cs;1103;Text;case "CaptionAlign.Left": return T("VP_CapLeft", "Left, in a column");
+VP_CapRight;KabanHMI\Settings\UsersPreferencesControl.cs;1102;Text;case "CaptionAlign.Right": return T("VP_CapRight", "Right, against the field");
+VP_CaptionAlign;KabanHMI\Settings\UsersPreferencesControl.cs;1064;Text;case ViewPreferences.CaptionAlign: return T("VP_CaptionAlign", "Captions and axis names");
+VP_Compact;KabanHMI\Settings\UsersPreferencesControl.cs;1112;Text;case "TableRows.Compact": return T("VP_Compact", "Compact");
+VP_DateFormat;KabanHMI\Settings\UsersPreferencesControl.cs;1066;Text;case ViewPreferences.DateFormat: return T("VP_DateFormat", "Date");
+VP_DecComma;KabanHMI\Settings\UsersPreferencesControl.cs;1106;Text;case "DecimalSeparator.Comma": return T("VP_DecComma", "Comma") + "  (1234,56)";
+VP_DecimalSeparator;KabanHMI\Settings\UsersPreferencesControl.cs;1065;Text;case ViewPreferences.DecimalSeparator: return T("VP_DecimalSeparator", "Decimal separator");
+VP_DecPoint;KabanHMI\Settings\UsersPreferencesControl.cs;1105;Text;case "DecimalSeparator.Point": return T("VP_DecPoint", "Point") + "  (1234.56)";
+VP_DecWindows;KabanHMI\Settings\UsersPreferencesControl.cs;1104;Text;case "DecimalSeparator.Windows": return T("VP_DecWindows", "As Windows");
+VP_Everyone;KabanHMI\Settings\UsersPreferencesControl.cs;446;Text;int i = _grid.Rows.Add(T("VP_Everyone", "Everyone (this panel)"), "", DisplaySettings.Percent(DisplaySettings.PanelFactor));
+VP_Everyone;KabanHMI\Settings\UsersPreferencesControl.cs;593;Text;: _selected == Everyone ? T("VP_Everyone", "Everyone (this panel)")
+VP_Everyone;KabanHMI\Settings\UsersPreferencesControl.cs;624;Text;if (_selected != Everyone || _creating) _readFrom.Items.Add(new Choice { Value = Everyone, Text = T("VP_Everyone", "Everyone (this panel)") });
+VP_H12;KabanHMI\Settings\UsersPreferencesControl.cs;1111;Text;case "TimeFormat.H12": return T("VP_H12", "12 hours") + "  (2:31 PM)";
+VP_H24;KabanHMI\Settings\UsersPreferencesControl.cs;1110;Text;case "TimeFormat.H24": return T("VP_H24", "24 hours") + "  (14:31)";
+VP_Home;KabanHMI\Settings\PreferencePreview.cs;581;Text;string to = v == "Home" ? T("VP_Home", "Home")
+VP_Home;KabanHMI\Settings\UsersPreferencesControl.cs;1117;Text;case "StartPage.Home": return T("VP_Home", "Home");
 VP_InputMode;KabanHMI\Forms\MainForm.Touch.cs;89;Text;menu.Items.Add(new ToolStripLabel(LanguageManager.GetString("VP_InputMode", "Screen used with"))
-VP_InputMode;KabanHMI\Settings\UsersPreferencesControl.cs;1059;Text;case ViewPreferences.InputMode: return T("VP_InputMode", "Screen used with");
-VP_InputMouse;KabanHMI\Forms\MainForm.Touch.cs;96;Menu;var mouse = new ToolStripMenuItem(LanguageManager.GetString("VP_InputMouse", "A mouse"), MenuGlyphs.Mouse())
-VP_InputMouse;KabanHMI\Settings\UsersPreferencesControl.cs;1111;Text;case "InputMode.Mouse": return T("VP_InputMouse", "A mouse");
-VP_InputTouch;KabanHMI\Forms\MainForm.Touch.cs;101;Menu;var touch = new ToolStripMenuItem(LanguageManager.GetString("VP_InputTouch", "Touch (a finger)"), MenuGlyphs.Touch())
-VP_InputTouch;KabanHMI\Settings\UsersPreferencesControl.cs;1112;Text;case "InputMode.Touch": return T("VP_InputTouch", "Touch (a finger)");
-VP_Keyboard;KabanHMI\Forms\MainForm.Touch.cs;118;Text;menu.Items.Add(new ToolStripLabel(LanguageManager.GetString("VP_Keyboard", "Keyboard on the screen"))
-VP_KeyboardOwn;KabanHMI\Forms\MainForm.Touch.cs;127;Menu;var own = new ToolStripMenuItem(LanguageManager.GetString("VP_KeyboardOwn", "The HMI's own")) { Name = "keyboardOwn", Checked = !windows };
-VP_KeyboardWindows;KabanHMI\Forms\MainForm.Touch.cs;125;Menu;var osk = new ToolStripMenuItem(LanguageManager.GetString("VP_KeyboardWindows", "Windows' On-Screen Keyboard")) { Name = "keyboardWindows", Checked = windows };
-VP_Language;KabanHMI\Settings\UsersPreferencesControl.cs;1058;Text;case ViewPreferences.Language: return T("VP_Language", "Language");
-VP_Large;KabanHMI\Settings\UsersPreferencesControl.cs;1096;Text;case "TableRows.Large": case "TableFont.Large": return T("VP_Large", "Large");
-VP_Last;KabanHMI\Settings\UsersPreferencesControl.cs;1099;Text;case "StartPage.Last": return T("VP_Last", "My last page");
-VP_Long;KabanHMI\Settings\UsersPreferencesControl.cs;1106;Text;case "TooltipDelay.Long": return T("VP_Long", "Long") + "  (2 s)";
-VP_Me;KabanHMI\Settings\UsersPreferencesControl.cs;582;Text;: user + (account != null ? "  \u00B7  " + PrefTexts.LevelText(account.Level) : "") + (self ? "  " + T("VP_Me", "(me)") : "");
-VP_Normal;KabanHMI\Settings\UsersPreferencesControl.cs;1095;Text;case "TableRows.Normal": case "TableFont.Normal": return T("VP_Normal", "Normal");
-VP_Normal;KabanHMI\Settings\UsersPreferencesControl.cs;1105;Text;case "TooltipDelay.Normal": return T("VP_Normal", "Normal") + "  (1 s)";
-VP_Off;KabanHMI\Settings\UsersPreferencesControl.cs;1100;Text;case "AlarmSound.Off": return T("VP_Off", "Off");
-VP_On;KabanHMI\Settings\UsersPreferencesControl.cs;1101;Text;case "AlarmSound.On": return T("VP_On", "On");
-VP_ReadFrom;KabanHMI\Settings\UsersPreferencesControl.cs;312;Text;Row("Prefs", null, T("VP_ReadFrom", "Read from"), _readFrom);
-VP_SecCaptions;KabanHMI\Settings\UsersPreferencesControl.cs;362;Text;{ "Captions", new[] { "VP_SecCaptions", "Captions" } },
-VP_SecHelp;KabanHMI\Settings\UsersPreferencesControl.cs;367;Text;{ "Help", new[] { "VP_SecHelp", "Help and AI" } }
-VP_SecNumbers;KabanHMI\Settings\UsersPreferencesControl.cs;363;Text;{ "Numbers", new[] { "VP_SecNumbers", "Numbers and dates" } },
-VP_SecScreen;KabanHMI\Settings\UsersPreferencesControl.cs;361;Text;{ "Screen", new[] { "VP_SecScreen", "Screen" } },
-VP_SecSignIn;KabanHMI\Settings\UsersPreferencesControl.cs;366;Text;{ "SignIn", new[] { "VP_SecSignIn", "Sign-in and alerts" } },
-VP_SecTables;KabanHMI\Settings\UsersPreferencesControl.cs;365;Text;{ "Tables", new[] { "VP_SecTables", "Tables" } },
-VP_SecUnits;KabanHMI\Settings\UsersPreferencesControl.cs;364;Text;{ "Units", new[] { "VP_SecUnits", "Units of measure" } },
-VP_Short;KabanHMI\Settings\UsersPreferencesControl.cs;1104;Text;case "TooltipDelay.Short": return T("VP_Short", "Short") + "  (0.4 s)";
-VP_Small;KabanHMI\Settings\UsersPreferencesControl.cs;1094;Text;case "TableFont.Small": return T("VP_Small", "Small");
-VP_StartPage;KabanHMI\Settings\UsersPreferencesControl.cs;1052;Text;case ViewPreferences.StartPage: return T("VP_StartPage", "After sign-in");
-VP_Stay;KabanHMI\Settings\UsersPreferencesControl.cs;1097;Text;case "StartPage.Stay": return T("VP_Stay", "Stay where the screen is");
-VP_Steady;KabanHMI\Settings\UsersPreferencesControl.cs;1103;Text;case "Blinking.Off": return T("VP_Steady", "Steady");
-VP_TableFont;KabanHMI\Settings\UsersPreferencesControl.cs;1051;Text;case ViewPreferences.TableFont: return T("VP_TableFont", "Table text");
-VP_TableRows;KabanHMI\Settings\UsersPreferencesControl.cs;1050;Text;case ViewPreferences.TableRows: return T("VP_TableRows", "Table rows");
-VP_TimeFormat;KabanHMI\Settings\UsersPreferencesControl.cs;1049;Text;case ViewPreferences.TimeFormat: return T("VP_TimeFormat", "Time");
-VP_TooltipDelay;KabanHMI\Settings\UsersPreferencesControl.cs;1055;Text;case ViewPreferences.TooltipDelay: return T("VP_TooltipDelay", "Tooltips appear after");
+VP_InputMode;KabanHMI\Settings\UsersPreferencesControl.cs;1077;Text;case ViewPreferences.InputMode: return T("VP_InputMode", "Screen used with");
+VP_InputMouse;KabanHMI\Forms\MainForm.Touch.cs;96;Menu;var mouse = new ToolStripMenuItem(LanguageManager.GetString("VP_InputMouse", "Mouse"), MenuGlyphs.Mouse())
+VP_InputMouse;KabanHMI\Settings\UsersPreferencesControl.cs;1130;Text;case "InputMode.Mouse": return T("VP_InputMouse", "Mouse");
+VP_InputTouch;KabanHMI\Forms\MainForm.Touch.cs;101;Menu;var touch = new ToolStripMenuItem(LanguageManager.GetString("VP_InputTouch", "Touch"), MenuGlyphs.Touch())
+VP_InputTouch;KabanHMI\Settings\UsersPreferencesControl.cs;1131;Text;case "InputMode.Touch": return T("VP_InputTouch", "Touch");
+VP_Keyboard;KabanHMI\Forms\MainForm.Touch.cs;119;Text;menu.Items.Add(new ToolStripLabel(LanguageManager.GetString("VP_Keyboard", "On-Screen Keyboard"))
+VP_Keyboard;KabanHMI\Settings\UsersPreferencesControl.cs;1078;Text;case ViewPreferences.ScreenKeyboard: return T("VP_Keyboard", "On-Screen Keyboard");
+VP_KeyboardOwn;KabanHMI\Forms\MainForm.Touch.cs;129;Text;new[] { "Own", "keyboardOwn", LanguageManager.GetString("VP_KeyboardOwn", "HMI's") },
+VP_KeyboardOwn;KabanHMI\Settings\UsersPreferencesControl.cs;1133;Text;case "ScreenKeyboard.Own": return T("VP_KeyboardOwn", "HMI's");
+VP_KeyboardWindows;KabanHMI\Forms\MainForm.Touch.cs;128;Text;new[] { "Windows", "keyboardWindows", LanguageManager.GetString("VP_KeyboardWindows", "Windows'") },
+VP_KeyboardWindows;KabanHMI\Settings\UsersPreferencesControl.cs;1132;Text;case "ScreenKeyboard.Windows": return T("VP_KeyboardWindows", "Windows'");
+VP_Language;KabanHMI\Settings\UsersPreferencesControl.cs;1076;Text;case ViewPreferences.Language: return T("VP_Language", "Language");
+VP_Large;KabanHMI\Settings\UsersPreferencesControl.cs;1115;Text;case "TableRows.Large": case "TableFont.Large": return T("VP_Large", "Large");
+VP_Last;KabanHMI\Settings\UsersPreferencesControl.cs;1118;Text;case "StartPage.Last": return T("VP_Last", "My last page");
+VP_Long;KabanHMI\Settings\UsersPreferencesControl.cs;1125;Text;case "TooltipDelay.Long": return T("VP_Long", "Long") + "  (2 s)";
+VP_Me;KabanHMI\Settings\UsersPreferencesControl.cs;594;Text;: user + (account != null ? "  \u00B7  " + PrefTexts.LevelText(account.Level) : "") + (self ? "  " + T("VP_Me", "(me)") : "");
+VP_Normal;KabanHMI\Settings\UsersPreferencesControl.cs;1114;Text;case "TableRows.Normal": case "TableFont.Normal": return T("VP_Normal", "Normal");
+VP_Normal;KabanHMI\Settings\UsersPreferencesControl.cs;1124;Text;case "TooltipDelay.Normal": return T("VP_Normal", "Normal") + "  (1 s)";
+VP_Off;KabanHMI\Forms\MainForm.Touch.cs;130;Text;new[] { "Off", "keyboardOff", LanguageManager.GetString("VP_Off", "Off") }
+VP_Off;KabanHMI\Settings\UsersPreferencesControl.cs;1119;Text;case "AlarmSound.Off": return T("VP_Off", "Off");
+VP_Off;KabanHMI\Settings\UsersPreferencesControl.cs;1134;Text;case "ScreenKeyboard.Off": return T("VP_Off", "Off");
+VP_On;KabanHMI\Settings\UsersPreferencesControl.cs;1120;Text;case "AlarmSound.On": return T("VP_On", "On");
+VP_ReadFrom;KabanHMI\Settings\UsersPreferencesControl.cs;324;Text;Row("Prefs", null, T("VP_ReadFrom", "Read from"), _readFrom);
+VP_SecCaptions;KabanHMI\Settings\UsersPreferencesControl.cs;374;Text;{ "Captions", new[] { "VP_SecCaptions", "Captions" } },
+VP_SecHelp;KabanHMI\Settings\UsersPreferencesControl.cs;379;Text;{ "Help", new[] { "VP_SecHelp", "Help and AI" } }
+VP_SecNumbers;KabanHMI\Settings\UsersPreferencesControl.cs;375;Text;{ "Numbers", new[] { "VP_SecNumbers", "Numbers and dates" } },
+VP_SecScreen;KabanHMI\Settings\UsersPreferencesControl.cs;373;Text;{ "Screen", new[] { "VP_SecScreen", "Screen" } },
+VP_SecSignIn;KabanHMI\Settings\UsersPreferencesControl.cs;378;Text;{ "SignIn", new[] { "VP_SecSignIn", "Sign-in and alerts" } },
+VP_SecTables;KabanHMI\Settings\UsersPreferencesControl.cs;377;Text;{ "Tables", new[] { "VP_SecTables", "Tables" } },
+VP_SecUnits;KabanHMI\Settings\UsersPreferencesControl.cs;376;Text;{ "Units", new[] { "VP_SecUnits", "Units of measure" } },
+VP_Short;KabanHMI\Settings\UsersPreferencesControl.cs;1123;Text;case "TooltipDelay.Short": return T("VP_Short", "Short") + "  (0.4 s)";
+VP_Small;KabanHMI\Settings\UsersPreferencesControl.cs;1113;Text;case "TableFont.Small": return T("VP_Small", "Small");
+VP_StartPage;KabanHMI\Settings\UsersPreferencesControl.cs;1070;Text;case ViewPreferences.StartPage: return T("VP_StartPage", "After sign-in");
+VP_Stay;KabanHMI\Settings\UsersPreferencesControl.cs;1116;Text;case "StartPage.Stay": return T("VP_Stay", "Stay where the screen is");
+VP_Steady;KabanHMI\Settings\UsersPreferencesControl.cs;1122;Text;case "Blinking.Off": return T("VP_Steady", "Steady");
+VP_TableFont;KabanHMI\Settings\UsersPreferencesControl.cs;1069;Text;case ViewPreferences.TableFont: return T("VP_TableFont", "Table text");
+VP_TableRows;KabanHMI\Settings\UsersPreferencesControl.cs;1068;Text;case ViewPreferences.TableRows: return T("VP_TableRows", "Table rows");
+VP_TimeFormat;KabanHMI\Settings\UsersPreferencesControl.cs;1067;Text;case ViewPreferences.TimeFormat: return T("VP_TimeFormat", "Time");
+VP_TooltipDelay;KabanHMI\Settings\UsersPreferencesControl.cs;1073;Text;case ViewPreferences.TooltipDelay: return T("VP_TooltipDelay", "Tooltips appear after");
 Why_AdminOnly;KabanHMI\Controls\MotionValueHMI.cs;210;Text;down ? T("Why_PlcDown", "The PLC is not answering") : T("Why_AdminOnly", "For an Admin (sign in as one)")));
 Why_AdminOnly;KabanHMI\Controls\MotionValueHMI.cs;222;Text;if (!SecurityManager.HasAccess(SecurityLevel.Admin)) return T("Why_AdminOnly", "For an Admin (sign in as one)");
 Why_AdminOnly;KabanHMI\Forms\MainForm.cs;2108;Text;LanguageManager.GetString("Why_AdminOnly", "For an Admin (sign in as one)"));
