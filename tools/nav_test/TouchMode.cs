@@ -477,9 +477,17 @@ class TM {
         var work = Screen.FromControl(kf).WorkingArea;
         // (2 November: "we should open the control at the fixed position in the bottom of the screen (not like the numerical
         // input pop-up) and move the page down until the edited control gets to the above of it (using the vertical scrolling function)")
-        Check("  along the bottom of the screen, as wide as it, its keys in the middle; the box seen above it",
+        Check("  along the bottom of the screen, as wide as it; the box seen above it",
               kbBounds.Bottom == work.Bottom && kbBounds.Left == work.Left && kbBounds.Width == Math.Max(work.Width, kb.KeysSize.Width) &&
               kb.CoversTarget == 0 && kpage.AutoScrollPosition.Y == 0, kbBounds + " in " + work);
+        // (2 November: "The description letters shown on the left end instead of the actual button keys" - the keys were moved to the
+        // middle by the picture's transform, which Windows' text drawing does not follow; "It should cover the bottom side of the screen totally")
+        var key1 = kb.KeyOnScreen("1"); var keyBack = kb.KeyOnScreen("Back"); var keySpace = kb.KeyOnScreen("Space");
+        int leftGap = key1.Left - kbBounds.Left, rightGap = kbBounds.Right - keyBack.Right;
+        Check("  its keys across the bar, each where it is drawn and tapped: as far from the left end as from the right, as wide as the bar lets them",
+              kbBounds.Contains(key1) && kbBounds.Contains(keyBack) && kbBounds.Contains(keySpace) && Math.Abs(leftGap - rightGap) <= 2 &&
+              (leftGap <= UiScale.Px(12) || key1.Width >= (int)(UiScale.Px(64) * 1.8f) - 1) && key1.Width > UiScale.Px(64) - 1,
+              "1 " + key1 + " Back " + keyBack + " bar " + kbBounds);
         int lowTopBefore = low.PointToScreen(Point.Empty).Y;
         Tap(low, new Point(30, 8)); Pump(120);
         var lowBox = new Rectangle(low.PointToScreen(Point.Empty), low.Size);

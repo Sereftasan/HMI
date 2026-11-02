@@ -117,7 +117,7 @@ namespace Kaban.UI.Forms
         }
 
         /// <summary>
-        /// ALWAYS IN ONE PLACE: along the bottom of the screen, as wide as it, the keys in its middle (2 November: "The user's
+        /// ALWAYS IN ONE PLACE: along the bottom of the screen, as wide as it, the keys across it (2 November: "The user's
         /// fingers can't get used to the keyboard which appears at the different part of the screen each time ... we should
         /// open the control at the fixed position in the bottom of the screen (not like the numerical input pop-up) and move
         /// the page down until the edited control gets to the above of it (using the vertical scrolling function)"). It
@@ -409,6 +409,7 @@ namespace Kaban.UI.Forms
 
             private readonly TouchKeyboard _kb;
             private readonly List<K> _letters = new List<K>(), _signs = new List<K>();
+            private readonly List<List<K>> _letterRows = new List<List<K>>(), _signRows = new List<List<K>>();
             private K _down;
             private readonly Timer _repeat = new Timer();
             private DateTime _shiftAt = DateTime.MinValue;
@@ -417,6 +418,9 @@ namespace Kaban.UI.Forms
             const int Unit = 64, Tall = 58, Gap = 5, Pad = 8;
             const float Columns = 13.5f;
 
+            /// <summary>How much wider than its own width a key is made to fill the bar (a very wide screen: the rows in its middle).</summary>
+            public const float MostStretch = 1.8f;
+
             public KeyPad(TouchKeyboard kb)
             {
                 _kb = kb;
@@ -424,8 +428,9 @@ namespace Kaban.UI.Forms
                 SetStyle(ControlStyles.Selectable, false);
                 SetStyle(ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint | ControlStyles.OptimizedDoubleBuffer | ControlStyles.ResizeRedraw, true);
                 BackColor = Color.FromArgb(232, 234, 238);
-                Build(_letters, false);
-                Build(_signs, true);
+                Build(_letters, _letterRows, false);
+                Build(_signs, _signRows, true);
+                Arrange();
                 _repeat.Tick += (s, e) => { _repeat.Interval = 70; if (_down != null && _down.Word == "Back") _kb.Key(KeyBack); };
             }
 
@@ -436,9 +441,8 @@ namespace Kaban.UI.Forms
                 get { return new Size(S(Pad) * 2 + (int)(Columns * S(Unit) + (Columns - 1) * S(Gap)), S(Pad) * 2 + 5 * S(Tall) + 4 * S(Gap)); }
             }
 
-            private void Build(List<K> keys, bool signs)
+            private void Build(List<K> keys, List<List<K>> rows, bool signs)
             {
-                var rows = new List<List<K>>();
                 Func<string, List<K>> chars = s => { var l = new List<K>(); foreach (var part in s.Split(' ')) l.Add(new K { Face = part, Units = 1 }); return l; };
                 var r0 = chars("1 2 3 4 5 6 7 8 9 0 * -"); r0.Add(new K { Word = "Back", Units = 1.5f });
                 var r1 = chars(signs ? "! \" # $ % & / ( ) = ? _" : "q w e r t y u ı o p ğ ü");
@@ -451,33 +455,60 @@ namespace Kaban.UI.Forms
                     new K { Word = "Left", Units = 1f }, new K { Word = "Right", Units = 1f }, new K { Word = "Hide", Units = 2f }
                 };
                 rows.Add(r0); rows.Add(r1); rows.Add(r2); rows.Add(r3); rows.Add(r4);
-                float unit = S(Unit), gap = S(Gap), pad = S(Pad), tall = S(Tall);
+                foreach (var row in rows) keys.AddRange(row);
+            }
+
+            /// <summary>
+            /// THE KEYS ACROSS THE WHOLE BAR (2 November: "It should cover the bottom side of the screen totally"): as wide as the
+            /// bar lets them - up to MostStretch times their own width, the rows in the middle of a wider screen - each key placed
+            /// where it is drawn and tapped. (They were laid out at their own width and the picture moved to the middle of the bar
+            /// by the Graphics' transform; Windows' text drawing - TextRenderer - does not follow that transform, so on the panel
+            /// the letters stood at the left end, away from their keys.)
+            /// </summary>
+            private void Arrange()
+            {
+                float gap = S(Gap), pad = S(Pad), tall = S(Tall);
+                int width = ClientSize.Width > 0 ? ClientSize.Width : WantedSize.Width;
+                float unit = Math.Min(S(Unit) * MostStretch, (width - 2 * pad - (Columns - 1) * gap) / Columns);
+                if (unit < S(Unit) / 3f) unit = S(Unit) / 3f;
                 float full = Columns * unit + (Columns - 1) * gap;
-                for (int r = 0; r < rows.Count; r++)
-                {
-                    float units = 0; foreach (var k in rows[r]) units += k.Units;
-                    float w = units * unit + (units - 1) * gap;
-                    float x = pad + (full - w) / 2f, y = pad + r * (tall + gap);
-                    foreach (var k in rows[r])
+                float left = (width - full) / 2f;
+                foreach (var rows in new[] { _letterRows, _signRows })
+                    for (int r = 0; r < rows.Count; r++)
                     {
-                        float kw = k.Units * unit + (k.Units - 1) * gap;
-                        k.Bounds = new RectangleF(x, y, kw, tall);
-                        x += kw + gap;
-                        keys.Add(k);
+                        float units = 0; foreach (var k in rows[r]) units += k.Units;
+                        float w = units * unit + (units - 1) * gap;
+                        float x = left + (full - w) / 2f, y = pad + r * (tall + gap);
+                        foreach (var k in rows[r])
+                        {
+                            float kw = k.Units * unit + (k.Units - 1) * gap;
+                            k.Bounds = new RectangleF(x, y, kw, tall);
+                            x += kw + gap;
+                        }
                     }
-                }
+                Invalidate();
+            }
+
+            protected override void OnResize(EventArgs e)
+            {
+                base.OnResize(e);
+                Arrange();
+            }
+
+            /// <summary>A key's place in the bar, by what it types or its word (tests).</summary>
+            public Rectangle KeyRect(string faceOrWord)
+            {
+                foreach (var k in Shown)
+                    if (k.Face == faceOrWord || k.Word == faceOrWord) return Rectangle.Round(k.Bounds);
+                return Rectangle.Empty;
             }
 
             private List<K> Shown { get { return SignsOn ? _signs : _letters; } }
-
-            /// <summary>The keys' left edge in the bar (they are laid out from 0): the bar as wide as the screen, they in its middle.</summary>
-            private int Dx { get { return Math.Max(0, (ClientSize.Width - WantedSize.Width) / 2); } }
 
             public void Reset() { ShiftOn = Caps = SignsOn = false; _down = null; _repeat.Stop(); Invalidate(); }
 
             private K At(Point p)
             {
-                p = new Point(p.X - Dx, p.Y);
                 foreach (var k in Shown) if (k.Bounds.Contains(p)) return k;
                 return null;
             }
@@ -506,7 +537,7 @@ namespace Kaban.UI.Forms
                 var k = _down;
                 _down = null;
                 Invalidate();
-                if (k == null || e.Button != MouseButtons.Left || !k.Bounds.Contains(new Point(e.X - Dx, e.Y))) return;
+                if (k == null || e.Button != MouseButtons.Left || !k.Bounds.Contains(e.Location)) return;
                 if (k.Word == "Back") return;                         // typed as it went down
                 Act(k);
             }
@@ -564,8 +595,6 @@ namespace Kaban.UI.Forms
                 var g = e.Graphics;
                 g.Clear(BackColor);
                 using (var top = new Pen(Color.FromArgb(196, 201, 209))) g.DrawLine(top, 0, 0, ClientSize.Width, 0);   // the page's edge above it
-                // the keys in the middle of the bar along the bottom of the screen
-                g.TranslateTransform(Dx, 0);
                 g.SmoothingMode = SmoothingMode.AntiAlias;
                 g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
                 using (var big = new Font("Segoe UI", 17f * (float)UiScale.Factor, GraphicsUnit.Point))
@@ -612,7 +641,14 @@ namespace Kaban.UI.Forms
         /// <summary>A key pressed by what it types or its word: "a", "ş", "Shift", "Back", "Enter", "Signs", "Space", "Hide" (tests).</summary>
         public bool Press(string faceOrWord) { return _pad.Press(faceOrWord); }
 
-        /// <summary>The keys' place on the screen, by what they show (tests, pictures).</summary>
+        /// <summary>The keys' own size, at their own width (the bar's height; tests, pictures).</summary>
         public Size KeysSize { get { return _pad.WantedSize; } }
+
+        /// <summary>A key's place on the screen, by what it types or its word (tests).</summary>
+        public Rectangle KeyOnScreen(string faceOrWord)
+        {
+            var r = _pad.KeyRect(faceOrWord);
+            return r.IsEmpty ? r : _pad.RectangleToScreen(r);
+        }
     }
 }
