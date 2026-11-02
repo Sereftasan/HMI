@@ -210,6 +210,21 @@ class TM {
         Shot(form, "caption_touch", new Rectangle(input.Left - 200, 0, form.Width - input.Left + 200, 32));
         menu = form.BuildInputMenu();
         Check("  the menu ticks touch now", Item(menu, "inputTouch").Checked && !Item(menu, "inputMouse").Checked);
+        // (2 November: "The original windows on screen keyboard is very nice btw ... is it possible to just use it instead of creating a
+        // personal one (we would just need to land it to the bottom of our screen instead if it is possible)")
+        Check("  then the keyboard on the screen: Windows' On-Screen Keyboard ticked (the default), the HMI's own",
+              menu.Items.OfType<ToolStripLabel>().Any(l => l.Text == "Keyboard on the screen") && Item(menu, "keyboardWindows") != null &&
+              Item(menu, "keyboardWindows").Checked && !Item(menu, "keyboardOwn").Checked && WindowsKeyboard.Chosen,
+              string.Join(" | ", menu.Items.Cast<ToolStripItem>().Select(i => i.Text)));
+        Item(menu, "keyboardOwn").PerformClick(); Pump(30);
+        menu = form.BuildInputMenu();
+        Check("    the HMI's own chosen: the panel's, ticked, written in the log", !WindowsKeyboard.Chosen && ViewPreferences.PanelChosen(ViewPreferences.ScreenKeyboard) == "Own" &&
+              Item(menu, "keyboardOwn").Checked && !Item(menu, "keyboardWindows").Checked &&
+              Directory.GetFiles(dir, "HmiAudit_*.txt").Any(f => File.ReadAllText(f).Contains("Keyboard on the screen: the HMI's own")));
+        Item(menu, "keyboardWindows").PerformClick(); Pump(30);
+        Check("    Windows' again", WindowsKeyboard.Chosen && ViewPreferences.PanelChosen(ViewPreferences.ScreenKeyboard) == "Windows");
+        Check("    Windows' On-Screen Keyboard is osk.exe; on the test bench (not Windows) it cannot be started: the HMI's own comes instead",
+              WindowsKeyboard.ProgramPath.EndsWith("osk.exe") && !WindowsKeyboard.Available && !WindowsKeyboard.IsShown, WindowsKeyboard.ProgramPath);
 
         Console.WriteLine("--- Windows' press-and-hold and pan: off in touch mode ---");
         var someButton = All(form).OfType<ButtonHMI>().FirstOrDefault(b => b.IsHandleCreated);
@@ -538,6 +553,10 @@ class TM {
               "window " + full.WindowState + " " + full.Bounds + " keyboard " + kb.Bounds + " nav " + navView + " page " + mainView + " box " + deepBox + " scrolled " + main.AutoScrollPosition.Y);
         Check("  the area left above it: the screen's working area ending at the keyboard", KeyboardRoom.WorkArea(Screen.FromControl(full)) ==
               new Rectangle(work.X, work.Y, work.Width, kb.Top - work.Y), KeyboardRoom.WorkArea(Screen.FromControl(full)) + "");
+        var area = new Rectangle(0, 0, 1920, 1040);
+        Check("  (a keyboard taller than two thirds of the screen: a third left; one on another screen: the whole of this one)",
+              KeyboardRoom.WorkArea(area, new Rectangle(0, 300, 1920, 740)) == new Rectangle(0, 0, 1920, 346) &&
+              KeyboardRoom.WorkArea(area, new Rectangle(1920, 700, 1920, 340)) == area && KeyboardRoom.WorkArea(area, Rectangle.Empty) == area);
         Shot(full, "above_keyboard");
         kb.Press("Hide"); Pump(100);
         Check("  the keyboard put away: the whole screen again, the page scrolled back", !TouchKeyboard.IsShown && full.Bounds == fullAt &&

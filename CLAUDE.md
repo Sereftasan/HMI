@@ -68,6 +68,11 @@
 - Tick boxes (30 October, the user's choice): on / off switches. CheckBoxHMI is a switch row by default (Look; narrower
   than 120 px: the switch alone, its caption beside it); every plain CheckBox is drawn as a switch (TouchInput.Sizes,
   PaintSwitchBox). Lay a list of options out as rows: as wide as the column, 38 - 46 high, touching.
+- The keyboard on the screen (2 November): along the bottom of the screen, across its width; while it is there KeyboardRoom
+  fits the maximised windows above it (the side panel, the page, the side page scroll there), scrolls the box into sight and
+  moves a dialog above it. Windows' On-Screen Keyboard (WindowsKeyboard, osk.exe; the default) or the HMI's own
+  (TouchKeyboard) - the top bar's mouse / finger menu. osk is placed by HKCU\Software\Microsoft\Osk before it starts;
+  once open, Windows lets no ordinary program move or close it (uiAccess) - it stays until its own close button.
 - An encoder the machine has only with an option, or one input switched between two encoders (30 October):
   CylinderEncoderSettingHMI.EncoderConditions (FA2010: L33, L34) and MeasuredConditions (Y120 / M450, the left or the
   right profile recognition unit). New machine conditions go after the last one (FA2010: bits 22 - 26 now), never between.

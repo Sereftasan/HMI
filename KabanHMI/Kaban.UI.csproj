@@ -113,6 +113,7 @@
     <Compile Include="Helpers\TouchInput.Gestures.cs" />
     <Compile Include="Helpers\TouchInput.Typing.cs" />
     <Compile Include="Helpers\TouchInput.Scroll.cs" />
+    <Compile Include="Forms\WindowsKeyboard.cs" />
     <Compile Include="Forms\TouchKeyboard.cs">
       <SubType>Form</SubType>
     </Compile>

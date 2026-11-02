@@ -49,10 +49,18 @@ namespace Kaban.UI.Forms
         public bool CapsLock { get { return _pad.Caps; } }
         public bool Signs { get { return _pad.SignsOn; } }
 
-        /// <summary>The keyboard for a text control: shown (or moved to it), never activated.</summary>
+        /// <summary>
+        /// The keyboard for a text control: shown (or moved to it), never activated. Windows' On-Screen Keyboard instead when it
+        /// is chosen and can be started (WindowsKeyboard; null returned then).
+        /// </summary>
         public static TouchKeyboard ShowFor(Control target)
         {
             if (target == null || target.IsDisposed) return null;
+            if (WindowsKeyboard.Chosen && WindowsKeyboard.ShowFor(target))
+            {
+                HideOwn();
+                return null;
+            }
             var k = Current;
             if (k == null) _current = k = new TouchKeyboard();
             k._target = target;
@@ -68,8 +76,14 @@ namespace Kaban.UI.Forms
             return k;
         }
 
-        /// <summary>Puts it away (✕, the focus gone from the text boxes).</summary>
+        /// <summary>Puts it away (✕, the focus gone from the text boxes, a number tapped) - Windows' On-Screen Keyboard asked to close.</summary>
         public static void HideNow()
+        {
+            WindowsKeyboard.HideNow();
+            HideOwn();
+        }
+
+        private static void HideOwn()
         {
             var k = Current;
             if (k == null) return;
@@ -325,7 +339,9 @@ namespace Kaban.UI.Forms
 
             private static int S(int v) { return UiScale.Px(v); }
 
-            public Size WantedSize
+            public Size WantedSize { get { return Wanted; } }
+
+            public static Size Wanted
             {
                 get { return new Size(S(Pad) * 2 + (int)(Columns * S(Unit) + (Columns - 1) * S(Gap)), S(Pad) * 2 + 5 * S(Tall) + 4 * S(Gap)); }
             }
@@ -532,6 +548,9 @@ namespace Kaban.UI.Forms
 
         /// <summary>The keys' own size, at their own width (the bar's height; tests, pictures).</summary>
         public Size KeysSize { get { return _pad.WantedSize; } }
+
+        /// <summary>How tall the keyboard is along the bottom of the screen (Windows' On-Screen Keyboard made as tall).</summary>
+        public static int BarHeight { get { return KeyPad.Wanted.Height; } }
 
         /// <summary>A key's place on the screen, by what it types or its word (tests).</summary>
         public Rectangle KeyOnScreen(string faceOrWord)
