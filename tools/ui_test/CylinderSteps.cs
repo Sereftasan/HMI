@@ -173,10 +173,13 @@ class CS {
         // the HMI creates the alarms itself"
         var hmiPages = Enumerable.Range(1, 6).Select(f => Text(TC.BuildSteps(u1.MovementFor("B"), TC.ValveType.OpenCentre,
                            (TC.FeedbackType)TC.CanonicalFeedback((int)u1.FeedbackType), f, "EN"))).ToList();
-        Check("  too slow, the PLC's alarm: its time is in the PLC program - support, not \"have it raised\"; the HMI's own alarm: its delay in Alarm Settings",
-              openPage.Contains("its time is set in the PLC program, not on the HMI: request support to have it reviewed there.") &&
-              !openPage.Contains("monitoring time raised") && hmiPages.Any(p => p.Contains("give this alarm a longer delay in Alarm Settings.")) &&
-              !hmiPages.Any(p => p.Contains("set in the PLC program")), Regex.Match(openPage, "if only the time is short.{0,140}").Value);
+        // ... "Just ask the user to faster the cylinder, don't mention about extending the monitoring time on the PLC, it should only be
+        // mentioned if the HMI creates the alarms because the user could set it themselves"
+        Check("  too slow, the PLC's alarm: only the cylinder faster (its time is not the user's); the HMI's own alarm: or its delay in Alarm Settings",
+              openPage.Contains("Open the flow controls: the cylinder must move faster.") && !Regex.Replace(openPage, "Remedies for cylinder movement failure.*", "", RegexOptions.Singleline).Contains("monitoring time") &&
+              !Regex.Match(openPage, "Open the flow controls.{0,160}").Value.Contains("PLC") && !openPage.Contains("longer delay") && !openPage.Contains("if only the time is short") &&
+              hmiPages.Any(p => p.Contains("Open the flow controls: the cylinder must move faster; if only the time is short, give this alarm a longer delay in Alarm Settings.")),
+              Regex.Match(openPage, "Open the flow controls.{0,140}").Value);
         Check("  the two kinds named apart", TC.Describe(TC.ValveType.ClosedCentre).Contains("closed center") && TC.Describe(TC.ValveType.OpenCentre).Contains("open center") &&
               TC.CanonicalValve(4) == 4 && TC.ManualValve(4) == 3 && TC.Parameter1(TC.ErrorType.CylinderMovement).Values.Contains(4));
         // 2 November: "The safety notice should be moved to the top of the page", "Valve states should be removed from the alarm

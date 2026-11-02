@@ -104,7 +104,7 @@
 <!--def TimeAllowed-->{{#HmiAlarm}}HMI'nin izin verdiği süre (Alarm Ayarları: alarmın gecikmesi){{/HmiAlarm}}{{^HmiAlarm}}PLC'nin izin verdiği süre{{/HmiAlarm}}<!--/def-->
 <!--def TimeAllowedIn-->{{#HmiAlarm}}HMI'nin izin verdiği süre (Alarm Ayarları: alarmın gecikmesi) içinde{{/HmiAlarm}}{{^HmiAlarm}}PLC'nin izin verdiği süre içinde{{/HmiAlarm}}<!--/def-->
 <!--def TimeAllowedWith-->{{#HmiAlarm}}HMI'nin izin verdiği süreyle (Alarm Ayarları: alarmın gecikmesi){{/HmiAlarm}}{{^HmiAlarm}}PLC'nin izin verdiği süreyle{{/HmiAlarm}}<!--/def-->
-<!--def LongerTime-->{{#HmiAlarm}}Alarm Ayarları'nda bu alarma daha uzun bir gecikme verin.{{/HmiAlarm}}{{^HmiAlarm}}süresi HMI'da değil, PLC programında ayarlıdır: orada gözden geçirilmesi için destek isteyin.{{/HmiAlarm}}<!--/def-->
+<!--def LongerTime-->Alarm Ayarları'nda bu alarma daha uzun bir gecikme verin<!--/def-->
 <!--def StartOrSensor-->{{#HasMustOff}}{{OffNames}}{{/HasMustOff}}{{^HasMustOff}}sensör{{/HasMustOff}}<!--/def-->
 <!--def LookBySensors-->{{[; }}{{#HasStart}}{{StartSlash}} hâlâ AÇIK = hareket etmedi{{/HasStart}}{{|}}{{#HasMustOn}}{{OnSlash}} AÇIK = sona ulaştı{{/HasMustOn}}{{|}}{{#StartAndOn}}ikisi de KAPALI = yolda (ilerliyor ya da durdu){{/StartAndOn}}{{|}}{{#EndNotSensed}}{{#HasMustOff}}{{OffSlash}} KAPALI = başlangıçtan ayrıldı (öbür uçta sensör yok){{/HasMustOff}}{{/EndNotSensed}}{{]}}<!--/def-->
 <!--def SensorName-->{{#Tag}}<b>{{Tag}}</b>{{#Io}} ({{Io}}){{/Io}}{{/Tag}}{{^Tag}}{{#Dev}}{{Dev}}{{/Dev}}{{/Tag}}{{#Switch}} basınç anahtarı{{/Switch}}{{^Switch}}{{#SensorWord}} sensörü{{/SensorWord}}{{^SensorWord}}{{^Tag}}{{^Dev}}sensör{{/Dev}}{{/Tag}}{{/SensorWord}}{{/Switch}}<!--/def-->
@@ -480,7 +480,7 @@ terminal = klemens
 <li>{{>Look}} Bunu {{>TimeAllowedWith}} karşılaştırın.</li>
 </ul>
 <table class="out">
-<tr class="fault"><td class="when">İzin verilen süre kadar ya da daha uzun.</td><td>Hız ayar valflerini doğru hıza açın; hız doğru ama süre yetmiyorsa, {{>LongerTime}} {{>AgainEnd}}</td></tr>
+<tr class="fault"><td class="when">İzin verilen süre kadar ya da daha uzun.</td><td>Hız ayar valflerini açın: silindir daha hızlı hareket etmeli{{#HmiAlarm}}; hız doğru ama süre yetmiyorsa, {{>LongerTime}}{{/HmiAlarm}}. {{>AgainEnd}}</td></tr>
 <tr class="go"><td class="when">Süre sınırının rahatça altında.</td><td>&rarr; <a class="go" href="#end"></a></td></tr>
 </table>
 <p class="man">kılavuz 1.8</p>
@@ -547,7 +547,7 @@ terminal = klemens
 <li>{{>Look}} Strok süresini {{>OutCode}} çıkışının değişmesinden sonun onaylanmasına kadar ölçün (PLC Monitörü'ndeki <i>Değiştirilme</i> sütunu).</li>
 </ul>
 <table class="out">
-<tr class="fault"><td class="when">İzin verilen süre kadar ya da daha uzun.</td><td>Hız ayar valflerini doğru hıza getirin; hareket tasarımı gereği yavaşsa, {{>LongerTime}} {{>AgainEnd}}</td></tr>
+<tr class="fault"><td class="when">İzin verilen süre kadar ya da daha uzun.</td><td>Hız ayar valflerini açın: silindir daha hızlı hareket etmeli{{#HmiAlarm}}; hareket tasarımı gereği yavaşsa, {{>LongerTime}}{{/HmiAlarm}}. {{>AgainEnd}}</td></tr>
 <tr class="go"><td class="when">Süre sınırının rahatça altında.</td><td>&rarr; <a class="go" href="#end"></a></td></tr>
 </table>
 <p class="man">kılavuz 1.8</p>

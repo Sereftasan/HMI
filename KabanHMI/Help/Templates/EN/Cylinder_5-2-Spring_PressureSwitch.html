@@ -92,7 +92,7 @@
 <!--def ZeroVolt-->0 V{{#ZeroWire}} (wire {{ZeroWire}}){{/ZeroWire}}<!--/def-->
 <!--def CardLed-->{{#OutHasLed}}LED <b>{{OutLed}}</b> in the <b>OUT</b> row of card <b>{{OutCardTag}}</b>{{/OutHasLed}}{{^OutHasLed}}{{#OutCard}}the LED of {{>OutCode}} on PLC card <b>{{OutCard}}</b>{{/OutCard}}{{^OutCard}}the LED of {{>OutCode}} on the PLC's output card{{/OutCard}}{{/OutHasLed}}<!--/def-->
 <!--def TimeAllowed-->{{#HmiAlarm}}the time the HMI allows (Alarm Settings: the alarm's delay){{/HmiAlarm}}{{^HmiAlarm}}the time the PLC allows{{/HmiAlarm}}<!--/def-->
-<!--def LongerTime-->{{#HmiAlarm}}give this alarm a longer delay in Alarm Settings.{{/HmiAlarm}}{{^HmiAlarm}}its time is set in the PLC program, not on the HMI: request support to have it reviewed there.{{/HmiAlarm}}<!--/def-->
+<!--def LongerTime-->give this alarm a longer delay in Alarm Settings<!--/def-->
 <!--def StartOrSensor-->{{#HasMustOff}}{{OffNames}}{{/HasMustOff}}{{^HasMustOff}}the start sensor{{/HasMustOff}}<!--/def-->
 <!--def LookBySensors-->{{[; }}{{#HasStart}}{{StartSlash}} still ON = not moved{{/HasStart}}{{|}}{{#HasMustOn}}{{OnSlash}} ON = arrived{{/HasMustOn}}{{|}}{{#StartAndOn}}both OFF = on the way (or stopped){{/StartAndOn}}{{|}}{{#EndNotSensed}}{{#HasMustOff}}{{OffSlash}} OFF = it has left; nothing sees the far end{{/HasMustOff}}{{/EndNotSensed}}{{]}}<!--/def-->
 <!--def SensorName-->{{#Switch}}pressure switch {{/Switch}}{{^Switch}}{{#SensorWord}}sensor {{/SensorWord}}{{/Switch}}{{#Tag}}<b>{{Tag}}</b>{{#Io}} ({{Io}}){{/Io}}{{/Tag}}{{^Tag}}{{#Dev}}{{Dev}}{{/Dev}}{{^Dev}}{{^Switch}}the sensor{{/Switch}}{{/Dev}}{{/Tag}}<!--/def-->
@@ -522,7 +522,7 @@
 <li>{{>Look}} Compare it with {{>TimeAllowed}}.</li>
 </ul>
 <table class="out">
-<tr class="fault"><td class="when">About as long as allowed, or longer.</td><td>Open the flow controls to the right speed; if only the time is short, {{>LongerTime}} {{>AgainEnd}}</td></tr>
+<tr class="fault"><td class="when">About as long as allowed, or longer.</td><td>Open the flow controls: the cylinder must move faster{{#HmiAlarm}}; if only the time is short, {{>LongerTime}}{{/HmiAlarm}}. {{>AgainEnd}}</td></tr>
 <tr class="go"><td class="when">Well within the time.</td><td>&rarr; <a class="go" href="#end"></a></td></tr>
 </table>
 <p class="man">manual 1.8</p>
@@ -624,7 +624,7 @@
 <li>{{>Look}} Time the stroke from {{>OutCode}} switching to the end confirmed (the PLC Monitor's <i>Modified</i> column).</li>
 </ul>
 <table class="out">
-<tr class="fault"><td class="when">About as long as allowed, or longer.</td><td>Set the flow controls back to the right speed; if it is slow by design, {{>LongerTime}} {{>AgainEnd}}</td></tr>
+<tr class="fault"><td class="when">About as long as allowed, or longer.</td><td>Open the flow controls: the cylinder must move faster{{#HmiAlarm}}; if it is slow by design, {{>LongerTime}}{{/HmiAlarm}}. {{>AgainEnd}}</td></tr>
 <tr class="go"><td class="when">Well within the time.</td><td>&rarr; <a class="go" href="#end"></a></td></tr>
 </table>
 <p class="man">manual 1.8</p>
