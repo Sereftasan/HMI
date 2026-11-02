@@ -61,7 +61,7 @@ namespace Kaban.UI.Forms
         static WindowsKeyboard() { _watch.Tick += (s, e) => Tick(); }
 
         /// <summary>Windows' keyboard chosen for the screen (the HMI's own: "Own").</summary>
-        public static bool Chosen { get { return ViewPreferences.Get(ViewPreferences.ScreenKeyboard) != "Own"; } }
+        public static bool Chosen { get { return TouchKeyboard.Choice == "Windows"; } }
 
         /// <summary>
         /// osk.exe on this computer. The program runs 32-bit (MX Component): on a 64-bit Windows its System32 is SysWOW64,

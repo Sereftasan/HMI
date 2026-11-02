@@ -113,7 +113,8 @@ namespace Kaban.UI.Forms
             {
                 Name = "inputWhose", ForeColor = Color.FromArgb(110, 116, 124), Font = UiStyle.Small
             });
-            // the keyboard a tap on a text box brings (2 November): Windows' On-Screen Keyboard, or the HMI's own - the panel's
+            // the keyboard a tap on a text box brings (2 November): Windows' On-Screen Keyboard, the HMI's own, or none (Off: a keyboard
+            // of keys is used)
             menu.Items.Add(new ToolStripSeparator());
             menu.Items.Add(new ToolStripLabel(LanguageManager.GetString("VP_Keyboard", "On-Screen Keyboard"))
             {
@@ -121,23 +122,20 @@ namespace Kaban.UI.Forms
                 ForeColor = Color.FromArgb(40, 46, 56),
                 Margin = new Padding(-34, 2, 2, 2)
             });
-            bool windows = WindowsKeyboard.Chosen;
-            var osk = new ToolStripMenuItem(LanguageManager.GetString("VP_KeyboardWindows", "Windows'")) { Name = "keyboardWindows", Checked = windows };
-            osk.Click += (s, e) => ChooseKeyboard("Windows");
-            var own = new ToolStripMenuItem(LanguageManager.GetString("VP_KeyboardOwn", "HMI's")) { Name = "keyboardOwn", Checked = !windows };
-            own.Click += (s, e) => ChooseKeyboard("Own");
-            menu.Items.Add(osk);
-            menu.Items.Add(own);
+            string chosen = TouchKeyboard.Choice;
+            foreach (var way in new[]
+            {
+                new[] { "Windows", "keyboardWindows", LanguageManager.GetString("VP_KeyboardWindows", "Windows'") },
+                new[] { "Own", "keyboardOwn", LanguageManager.GetString("VP_KeyboardOwn", "HMI's") },
+                new[] { "Off", "keyboardOff", LanguageManager.GetString("VP_Off", "Off") }
+            })
+            {
+                string value = way[0];
+                var item = new ToolStripMenuItem(way[2]) { Name = way[1], Checked = chosen == value };
+                item.Click += (s, e) => TouchKeyboard.Choose(value);
+                menu.Items.Add(item);
+            }
             return menu;
-        }
-
-        /// <summary>The keyboard on the screen chosen for this panel: the one shown now put away, the next tap on a text box brings the new one.</summary>
-        internal static void ChooseKeyboard(string value)
-        {
-            if (ViewPreferences.Get(ViewPreferences.ScreenKeyboard) == value) return;
-            TouchKeyboard.HideNow();
-            ViewPreferences.SetPanel(ViewPreferences.ScreenKeyboard, value);
-            AuditLogger.Log("Keyboard on the screen: " + (value == "Own" ? "the HMI's own" : "Windows' On-Screen Keyboard") + ".");
         }
 
         private void ShowInputMenu()

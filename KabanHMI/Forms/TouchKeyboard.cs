@@ -50,12 +50,39 @@ namespace Kaban.UI.Forms
         public bool Signs { get { return _pad.SignsOn; } }
 
         /// <summary>
+        /// The keyboard a tap on a text box brings in touch mode (ViewPreferences.ScreenKeyboard): "Windows" - Windows' On-Screen
+        /// Keyboard (the default), "Own" - this one, "Off" - none (2 November: "there should be another selection as 'OFF' to
+        /// remove automatic keyboard opening (when the keyboard hardware used)"). A number still brings the keypad.
+        /// </summary>
+        public static string Choice
+        {
+            get
+            {
+                var v = ViewPreferences.Get(ViewPreferences.ScreenKeyboard);
+                return v == "Own" || v == "Off" ? v : "Windows";
+            }
+        }
+
+        /// <summary>No keyboard on the screen: a keyboard of keys is used.</summary>
+        public static bool Off { get { return Choice == "Off"; } }
+
+        /// <summary>The top bar's choice: the keyboard shown now put away, the next tap on a text box brings the new one (or none).</summary>
+        public static void Choose(string value)
+        {
+            if (Choice == value) return;
+            HideNow();
+            ViewPreferences.SetPanel(ViewPreferences.ScreenKeyboard, value);
+            AuditLogger.Log("On-Screen Keyboard: " + (value == "Own" ? "the HMI's" : value == "Off" ? "off (a keyboard of keys)" : "Windows'") + ".");
+        }
+
+        /// <summary>
         /// The keyboard for a text control: shown (or moved to it), never activated. Windows' On-Screen Keyboard instead when it
-        /// is chosen and can be started (WindowsKeyboard; null returned then).
+        /// is chosen and can be started (WindowsKeyboard; null returned then); none when it is Off.
         /// </summary>
         public static TouchKeyboard ShowFor(Control target)
         {
             if (target == null || target.IsDisposed) return null;
+            if (Off) { HideNow(); return null; }
             if (WindowsKeyboard.Chosen && WindowsKeyboard.ShowFor(target))
             {
                 HideOwn();

@@ -212,15 +212,22 @@ class TM {
         Check("  the menu ticks touch now", Item(menu, "inputTouch").Checked && !Item(menu, "inputMouse").Checked);
         // (2 November: "The original windows on screen keyboard is very nice btw ... is it possible to just use it instead of creating a
         // personal one (we would just need to land it to the bottom of our screen instead if it is possible)")
-        Check("  then the keyboard on the screen: Windows' On-Screen Keyboard ticked (the default), the HMI's own",
+        // (2 November, later: "Keyboard on the screen -> On-Screen Keyboard, Windows' On-Screen Keyboard -> Windows', The HMI's own -> HMI's
+        // ... And there should be another selection as 'OFF' to remove automatic keyboard opening (when the keyboard hardware used)")
+        Check("  then the On-Screen Keyboard: Windows' ticked (the default), HMI's, Off",
               menu.Items.OfType<ToolStripLabel>().Any(l => l.Text == "On-Screen Keyboard") && Item(menu, "keyboardWindows") != null &&
-              Item(menu, "keyboardWindows").Checked && !Item(menu, "keyboardOwn").Checked && WindowsKeyboard.Chosen,
+              Item(menu, "keyboardWindows").Text == "Windows'" && Item(menu, "keyboardOwn").Text == "HMI's" && Item(menu, "keyboardOff").Text == "Off" &&
+              Item(menu, "keyboardWindows").Checked && !Item(menu, "keyboardOwn").Checked && !Item(menu, "keyboardOff").Checked && WindowsKeyboard.Chosen,
               string.Join(" | ", menu.Items.Cast<ToolStripItem>().Select(i => i.Text)));
         Item(menu, "keyboardOwn").PerformClick(); Pump(30);
         menu = form.BuildInputMenu();
         Check("    the HMI's own chosen: the panel's, ticked, written in the log", !WindowsKeyboard.Chosen && ViewPreferences.PanelChosen(ViewPreferences.ScreenKeyboard) == "Own" &&
               Item(menu, "keyboardOwn").Checked && !Item(menu, "keyboardWindows").Checked &&
-              Directory.GetFiles(dir, "HmiAudit_*.txt").Any(f => File.ReadAllText(f).Contains("Keyboard on the screen: the HMI's own")));
+              Directory.GetFiles(dir, "HmiAudit_*.txt").Any(f => File.ReadAllText(f).Contains("On-Screen Keyboard: the HMI's.")));
+        Item(menu, "keyboardOff").PerformClick(); Pump(30);
+        menu = form.BuildInputMenu();
+        Check("    Off chosen: ticked, none of the others", TouchKeyboard.Off && !WindowsKeyboard.Chosen && Item(menu, "keyboardOff").Checked &&
+              !Item(menu, "keyboardOwn").Checked && !Item(menu, "keyboardWindows").Checked);
         Item(menu, "keyboardWindows").PerformClick(); Pump(30);
         Check("    Windows' again", WindowsKeyboard.Chosen && ViewPreferences.PanelChosen(ViewPreferences.ScreenKeyboard) == "Windows");
         Check("    Windows' On-Screen Keyboard is osk.exe; on the test bench (not Windows) it cannot be started: the HMI's own comes instead",
@@ -569,6 +576,13 @@ class TM {
         Tap(name, new Point(30, 8)); Pump(80);
         kb.Press("Hide"); Pump(30);
         Check("✕ puts it away", !TouchKeyboard.IsShown);
+        ViewPreferences.SetPanel(ViewPreferences.ScreenKeyboard, "Off");
+        Tap(name, new Point(30, 8)); Pump(120);
+        Check("the On-Screen Keyboard Off (a keyboard of keys used): a tap on a text box brings none", !TouchKeyboard.IsShown && TouchKeyboard.Off);
+        ViewPreferences.SetPanel(ViewPreferences.ScreenKeyboard, "Windows");
+        Tap(name, new Point(30, 8)); Pump(120);
+        Check("  Windows' again (on the test bench: the HMI's comes instead)", TouchKeyboard.IsShown);
+        kb.Press("Hide"); Pump(30);
 
         NumpadForm asked = null;
         string answer = "12.5";
