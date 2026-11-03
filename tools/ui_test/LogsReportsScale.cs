@@ -76,6 +76,11 @@ class LRS {
         Check("  the switches end where the time zone's list ends", switches.All(c => Math.Abs(Screen(c).Right - Screen(zone).Right) <= 2),
               Screen(zone).Right + " / " + string.Join(" ", switches.Select(c => Screen(c).Right)));
 
+        var auditSwitch = (Control)typeof(LogSettingsControl).GetField("_chkEnabled", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).GetValue(ls);
+        var reportRow = settings.SectionBox("state_timeline");
+        Check("  the audit log's switch a row as the reports' (its words where the fields start, the switch at the right end)",
+              Math.Abs(Screen(auditSwitch).Left - Screen(reportRow).Left) <= 2 && Math.Abs(Screen(auditSwitch).Right - Screen(reportRow).Right) <= 2,
+              Screen(auditSwitch).Left + ".." + Screen(auditSwitch).Right + " / " + Screen(reportRow).Left + ".." + Screen(reportRow).Right);
         var shotDir = Environment.GetEnvironmentVariable("PAGE_SHOTS");
         if (!string.IsNullOrEmpty(shotDir)) {
             Directory.CreateDirectory(shotDir); Pump(300);

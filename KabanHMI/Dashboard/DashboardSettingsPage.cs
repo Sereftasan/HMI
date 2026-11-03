@@ -58,7 +58,8 @@ namespace Kaban.UI.Dashboard
 
         private static string T(string key, string text) { return LanguageManager.GetString(key, text); }
 
-        private const int Caption = 220, Field = 420, RowW = Caption + Field + 70;
+        /// <summary>The settings rows' columns: the caption's, the field's (from Caption + 8) and a row's width.</summary>
+        public const int Caption = 220, Field = 420, RowW = Caption + Field + 70;
 
         /// <summary>The page's frames: all as wide (their rows, their margins, the frame's own sides), from this far left.</summary>
         public const int GroupWidth = RowW + 6 + 20, GroupLeft = 16;
@@ -240,45 +241,77 @@ namespace Kaban.UI.Dashboard
         /// <summary>A part of the page: a frame with its title (its picture and words) on the top line; the rows after it go in it.</summary>
         private void Heading(string key, string icon, string text)
         {
-            var group = new GroupBoxHMI
-            {
-                TitleTextKey = T(key, text), Emoji = icon, Name = "group_" + key,
-                Margin = new Padding(0, 10, 0, 6), Width = GroupWidth
-            };
-            var rows = new FlowLayoutPanel
+            FlowLayoutPanel rows;
+            var group = NewGroup(T(key, text), icon, "group_" + key, out rows);
+            group.Margin = new Padding(0, 10, 0, 6);
+            _flow.Controls.Add(group);
+            _groups.Add(group);
+            _into = rows;
+        }
+
+        // ---- the settings rows, for Logs and Reports' audit log too (3 November: "make 'Audit logging enabled' checkbox just
+        // like the ones in the bottom") ----
+
+        /// <summary>A frame, GroupWidth wide, its title on its top line; <paramref name="rows"/>: where its rows go.</summary>
+        public static GroupBoxHMI NewGroup(string title, string icon, string name, out FlowLayoutPanel rows)
+        {
+            var group = new GroupBoxHMI { TitleTextKey = title, Emoji = icon, Name = name, Width = GroupWidth };
+            var into = new FlowLayoutPanel
             {
                 FlowDirection = FlowDirection.TopDown, WrapContents = false, AutoSize = true, AutoSizeMode = AutoSizeMode.GrowAndShrink,
                 Location = new Point(group.Padding.Left, group.Padding.Top + 4), BackColor = Color.White, Margin = Padding.Empty
             };
             // as tall as its rows (a row shown or hidden: the frame follows) - its width left as it is: GroupWidth, scaled with
             // the page (3 November: at 120% the frames stayed GroupWidth wide, their rows scaled past them - the switches cut off)
-            rows.SizeChanged += (s, e) => group.Height = rows.Bottom + group.Padding.Bottom;
-            group.Controls.Add(rows);
-            _flow.Controls.Add(group);
-            _groups.Add(group);
-            _into = rows;
+            into.SizeChanged += (s, e) => group.Height = into.Bottom + group.Padding.Bottom;
+            group.Controls.Add(into);
+            rows = into;
+            return group;
         }
 
-        private void Note(string key, string text)
+        /// <summary>Words under the fields, grey.</summary>
+        public static Label NewNote(string text)
         {
-            Add(new Label
+            return new Label
             {
-                Text = T(key, text), AutoSize = false, Width = RowW, Height = 22, ForeColor = Color.DimGray,
+                Text = text, AutoSize = false, Width = RowW, Height = 22, ForeColor = Color.DimGray,
                 Padding = new Padding(Caption + 8, 0, 0, 0)
-            });
+            };
         }
 
-        private Panel FieldRow(string key, string text, Control field, Control extra = null)
+        /// <summary>A field's row: its caption at the left (right-aligned), the field from Caption + 8, a button beside it -
+        /// the three on one middle line, the row as tall as the tallest and 3 more above and below.</summary>
+        public static Panel NewFieldRow(string caption, Control field, Control extra = null)
         {
             var row = new Panel { Width = RowW, Height = Math.Max(32, field.Height + 6), Margin = new Padding(0, 2, 0, 2) };
-            row.Controls.Add(UiStyle.CaptionLabel(T(key, text), 0, 3, Caption));
+            var label = UiStyle.CaptionLabel(caption, 0, 3, Caption);
+            row.Controls.Add(label);
             field.Location = new Point(Caption + 8, 3);
             row.Controls.Add(field);
+            var parts = new List<Control> { label, field };
             if (extra != null)
             {
                 extra.Location = new Point(Caption + 8 + field.Width + 6, 0);
                 row.Controls.Add(extra);
+                parts.Add(extra);
             }
+            // laid out as the row is (a part's size changed: as the page is scaled, as a button is sized for a finger) - not while
+            // the parts are scaled one by one: a part moved then was scaled again, out of the row
+            row.Layout += (s, e) =>
+            {
+                int pad = UiScale.For(row, 3), h = parts.Max(c => c.Height);
+                foreach (var c in parts) { int top = pad + (h - c.Height) / 2; if (c.Top != top) c.Top = top; }
+                int want = Math.Max(UiScale.For(row, 32), h + 2 * pad);
+                if (row.Height < want) row.Height = want;
+            };
+            return row;
+        }
+
+        private void Note(string key, string text) { Add(NewNote(T(key, text))); }
+
+        private Panel FieldRow(string key, string text, Control field, Control extra = null)
+        {
+            var row = NewFieldRow(T(key, text), field, extra);
             Add(row);
             return row;
         }
@@ -288,17 +321,20 @@ namespace Kaban.UI.Dashboard
         /// As wide as the fields: its switch (drawn at its right end) ends where the time zone's list and the folder
         /// buttons end (2 November: the switches stood out past them).
         /// </remarks>
-        private void CheckRow(CheckBox cb, string key, string text, string group = null)
+        private void CheckRow(CheckBox cb, string key, string text, string group = null) { Add(NewCheckRow(cb, T(key, text), group)); }
+
+        /// <summary>A switch's row: its words from Caption + 8, the switch at the right end of the field column;
+        /// <paramref name="group"/>: a caption at the row's left (null: none). The switch itself, or the row holding it.</summary>
+        public static Control NewCheckRow(CheckBox cb, string text, string group = null)
         {
-            cb.Text = T(key, text);
+            cb.Text = text;
             cb.AutoSize = false;
             cb.Width = Field;
             cb.Height = 26;
             if (group == null)
             {
                 cb.Margin = new Padding(Caption + 8, 1, 0, 1);
-                Add(cb);
-                return;
+                return cb;
             }
             // a group's first row: its caption, then the box where the others are
             var row = new Panel { Width = RowW, Height = 26, Margin = new Padding(0, 8, 0, 1) };
@@ -306,7 +342,7 @@ namespace Kaban.UI.Dashboard
             cb.Location = new Point(Caption + 8, 0);
             cb.Margin = Padding.Empty;
             row.Controls.Add(cb);
-            Add(row);
+            return row;
         }
 
         private void ShowScheduleRows()

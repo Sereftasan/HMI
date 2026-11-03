@@ -133,11 +133,19 @@ class LR {
         Func<string, Control> named = n => ls.Controls.Find(n, true).FirstOrDefault();
         var auditSwitch = (Control)typeof(LogSettingsControl).GetField("_chkEnabled", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).GetValue(ls);
         var retainBox = (Control)typeof(LogSettingsControl).GetField("_numRetain", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).GetValue(ls);
-        Check("the audit log's row: its switch, 'Keep logs (days)', the number and the folder on one middle line",
-              new[] { named("retainCaption"), retainBox, named("logFolder") }.All(c => c != null && Math.Abs(mid(c) - mid(auditSwitch)) <= 1),
-              string.Join(" ", new[] { auditSwitch, named("retainCaption"), retainBox, named("logFolder") }.Select(c => c == null ? "?" : mid(c).ToString())));
+        Check("the audit log: 'Keep logs (days)', the number and the folder on one middle line",
+              new[] { named("retainCaption"), retainBox, named("logFolder") }.All(c => c != null && Math.Abs(mid(c) - mid(retainBox)) <= 1),
+              string.Join(" ", new[] { named("retainCaption"), retainBox, named("logFolder") }.Select(c => c == null ? "?" : mid(c).ToString())));
         Func<Control, int> right = c => c.Parent.RectangleToScreen(c.Bounds).Right;
+        Func<Control, int> left = c => c.Parent.RectangleToScreen(c.Bounds).Left;
         var settings = ls.MachineSettings;
+        // 3 November: "make 'Audit logging enabled' checkbox just like the ones in the bottom (e.g 'Create event logs') (the checkbox
+        // control on the right side and the description on the left"
+        var reportRow = settings.SectionBox("state_timeline");
+        Check("  its switch a row as the log database's: the words where the fields start, the switch at the right end - above the days",
+              auditSwitch.Width == reportRow.Width && Math.Abs(left(auditSwitch) - left(reportRow)) <= 1 && Math.Abs(right(auditSwitch) - right(reportRow)) <= 1 &&
+              !((CheckBox)auditSwitch).AutoSize && auditSwitch.Parent.RectangleToScreen(auditSwitch.Bounds).Bottom <= retainBox.Parent.RectangleToScreen(retainBox.Bounds).Top,
+              left(auditSwitch) + ".." + right(auditSwitch) + " / " + left(reportRow) + ".." + right(reportRow));
         var switches = new[] { "state_pie", "state_timeline", "state_logs", "event_quantity", "cutting_details", "event_logs", "alarm_logs" }.Select(settings.SectionBox).ToList();
         Check("  the switches end where the time zone's list ends (and the folder button)",
               switches.All(c => Math.Abs(right(c) - right(settings.ZoneBox)) <= 1), right(settings.ZoneBox) + " / " + string.Join(" ", switches.Select(right)));
