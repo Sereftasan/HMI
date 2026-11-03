@@ -81,6 +81,10 @@ class LRS {
         Check("  the audit log's switch a row as the reports' (its words where the fields start, the switch at the right end)",
               Math.Abs(Screen(auditSwitch).Left - Screen(reportRow).Left) <= 2 && Math.Abs(Screen(auditSwitch).Right - Screen(reportRow).Right) <= 2,
               Screen(auditSwitch).Left + ".." + Screen(auditSwitch).Right + " / " + Screen(reportRow).Left + ".." + Screen(reportRow).Right);
+        var folder = ls.Controls.Find("logFolder", true).First();
+        Check("  the days and the folder at the right end, under the switch; the History days too",
+              Math.Abs(Screen(folder).Right - Screen(auditSwitch).Right) <= 2 && Math.Abs(Screen(settings.HistoryDaysBox).Right - Screen(reportRow).Right) <= 2,
+              Screen(folder).Right + " / " + Screen(auditSwitch).Right + "; " + Screen(settings.HistoryDaysBox).Right + " / " + Screen(reportRow).Right);
         var shotDir = Environment.GetEnvironmentVariable("PAGE_SHOTS");
         if (!string.IsNullOrEmpty(shotDir)) {
             Directory.CreateDirectory(shotDir); Pump(300);

@@ -280,7 +280,9 @@ namespace Kaban.UI.Dashboard
         }
 
         /// <summary>A field's row: its caption at the left (right-aligned), the field from Caption + 8, a button beside it -
-        /// the three on one middle line, the row as tall as the tallest and 3 more above and below.</summary>
+        /// the three on one middle line, the row as tall as the tallest and 3 more above and below. A field (with its button)
+        /// narrower than the field column ends where the column ends - under the switches' right end (3 November: "Keep logs
+        /// (days)" under "Audit logging enabled"'s switch).</summary>
         public static Panel NewFieldRow(string caption, Control field, Control extra = null)
         {
             var row = new Panel { Width = RowW, Height = Math.Max(32, field.Height + 6), Margin = new Padding(0, 2, 0, 2) };
@@ -303,6 +305,12 @@ namespace Kaban.UI.Dashboard
                 foreach (var c in parts) { int top = pad + (h - c.Height) / 2; if (c.Top != top) c.Top = top; }
                 int want = Math.Max(UiScale.For(row, 32), h + 2 * pad);
                 if (row.Height < want) row.Height = want;
+                // across: from Caption + 8, or - narrower than the column - ending at its end
+                int start = UiScale.For(row, Caption + 8), end = start + UiScale.For(row, Field), gap = UiScale.For(row, 6);
+                int width = field.Width + (extra != null ? gap + extra.Width : 0);
+                int x = width < end - start ? end - width : start;
+                if (field.Left != x) field.Left = x;
+                if (extra != null && extra.Left != x + field.Width + gap) extra.Left = x + field.Width + gap;
             };
             return row;
         }
@@ -632,6 +640,7 @@ namespace Kaban.UI.Dashboard
         public ComboBox PeriodBox { get { return _period; } }
         public TextBox TimesBox { get { return _times; } }
         public TextBox TimeBox { get { return _time; } }
+        public NumericUpDown HistoryDaysBox { get { return _historyDays; } }
         public CheckedListBox WeekdaysBox { get { return _weekdays; } }
         public CheckBox AutoBox { get { return _auto; } }
         public CheckBox SectionBox(string key) { return _sections[key]; }

@@ -146,6 +146,12 @@ class LR {
               auditSwitch.Width == reportRow.Width && Math.Abs(left(auditSwitch) - left(reportRow)) <= 1 && Math.Abs(right(auditSwitch) - right(reportRow)) <= 1 &&
               !((CheckBox)auditSwitch).AutoSize && auditSwitch.Parent.RectangleToScreen(auditSwitch.Bounds).Bottom <= retainBox.Parent.RectangleToScreen(retainBox.Bounds).Top,
               left(auditSwitch) + ".." + right(auditSwitch) + " / " + left(reportRow) + ".." + right(reportRow));
+        // 3 November: the days and the folder at the right end, under the switch (a narrow field's row: the History rows too)
+        Check("  the days and the folder button at the right end, under the switch; the History rows' fields too",
+              Math.Abs(right(named("logFolder")) - right(auditSwitch)) <= 1 && right(retainBox) < left(named("logFolder")) &&
+              Math.Abs(right(settings.HistoryDaysBox) - right(reportRow)) <= 1 && Math.Abs(right(settings.ZoneBox) - right(reportRow)) <= 1 &&
+              left(settings.ZoneBox) == left(settings.DatabaseBox),
+              right(named("logFolder")) + " / " + right(auditSwitch) + "; " + right(settings.HistoryDaysBox) + " / " + right(reportRow));
         var switches = new[] { "state_pie", "state_timeline", "state_logs", "event_quantity", "cutting_details", "event_logs", "alarm_logs" }.Select(settings.SectionBox).ToList();
         Check("  the switches end where the time zone's list ends (and the folder button)",
               switches.All(c => Math.Abs(right(c) - right(settings.ZoneBox)) <= 1), right(settings.ZoneBox) + " / " + string.Join(" ", switches.Select(right)));
