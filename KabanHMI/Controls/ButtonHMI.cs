@@ -1714,7 +1714,8 @@ namespace Kaban.UI.Controls
             if (was && inside && !IsDisposed) OnClick(EventArgs.Empty);
         }
 
-        /// <summary>A finger holds it now (tests).</summary>
+        /// <summary>A finger holds it now (tests) - not a designer's property.</summary>
+        [Browsable(false)]
         public bool HeldByFinger { get { return _fingerDown; } }
 
         protected override void OnMouseCaptureChanged(EventArgs e)
