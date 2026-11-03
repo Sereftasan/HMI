@@ -6,6 +6,14 @@ Claude reads this file at the start of every batch, does the items, and moves ea
 ## To do
 
 ## Done
+- 3 November (Logs and Reports at a screen scale, settings rows):
+  - 46f43e2 - Logs and Reports at 120% (any scale): the frames scale with the page - the fields and switches inside them.
+  - 42782f5 - Audit logging enabled: a switch row as Create event logs (words where the fields start, the switch at the
+    right end); Keep logs (days) and the folder a field's row under it.
+  - abfe683 - Machine Settings > Options: rows 38 high (46 before); the line between rows lighter.
+  - 3ae5f94 - Conveyor, Robot, Milling, Cutting, Others: each field a row as the Options page's (caption at the left, field
+    at the right end, the light line under it); Axis and Encoders: the light line between their rows.
+  - fa65143 - (a test's find) HeldByFinger not shown among a button's designer properties.
 - 3 November (the two answers):
   - 80ca93c - Numeric fields and switches act as the whole row by default (ActiveArea Row) - kept, noted in CLAUDE.md.
   - 74f17be - A small switch slides from the caption beside it too (mouse and finger; no page scrolls under it), in the
