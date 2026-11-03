@@ -68,6 +68,9 @@
 - Tick boxes (30 October, the user's choice): on / off switches. CheckBoxHMI is a switch row by default (Look; narrower
   than 120 px: the switch alone, its caption beside it); every plain CheckBox is drawn as a switch (TouchInput.Sizes,
   PaintSwitchBox). Lay a list of options out as rows: as wide as the column, 38 - 46 high, touching.
+- A control's caption is part of it (3 November, the user's choice): ActiveArea Row, the default of every NumericInputHMI
+  and CheckBoxHMI - the pointer on the caption lights the field (the switch) and a click there is a click on it. Set
+  Control (only the field or the switch answers, the caption is words) only where a page needs it; no page does now.
 - The keyboard on the screen (2 November): along the bottom of the screen, across its width; while it is there KeyboardRoom
   fits the maximised windows above it (the side panel, the page, the side page scroll there), scrolls the box into sight and
   moves a dialog above it. Windows' On-Screen Keyboard (WindowsKeyboard, osk.exe; the default), the HMI's own
