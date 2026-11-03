@@ -6,6 +6,12 @@ Claude reads this file at the start of every batch, does the items, and moves ea
 ## To do
 
 ## Done
+- 3 November, afternoon (the days at the right end, value rows 450, the AI table):
+  - 0fcbd67 - HMI Settings > AI: the table fills its width again with its kept widths (Active was out of sight, no scroll
+    bar) - every table that fills its width keeps doing so; a scroll bar along the bottom if ever needed.
+  - f3f1e1e - Logs and Reports: Keep logs (days) and the folder button at the right end, under the switch; the other
+    narrow fields (History days, most reports, Time) likewise.
+  - b60f00d - Machine Settings' value rows 450 wide (the answer: yes); the light lines of Axis and Encoders kept.
 - 3 November (Logs and Reports at a screen scale, settings rows):
   - 46f43e2 - Logs and Reports at 120% (any scale): the frames scale with the page - the fields and switches inside them.
   - 42782f5 - Audit logging enabled: a switch row as Create event logs (words where the fields start, the switch at the

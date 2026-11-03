@@ -2,22 +2,22 @@
 About_Library;KabanHMI\Settings\HmiManual.cs;41;Text;sb.AppendLine(LanguageManager.GetString("About_Library", "HMI library") + ": " +
 About_Machines;KabanHMI\Settings\HmiManual.cs;56;Text;sb.AppendLine(LanguageManager.GetString("About_Machines", "Machines") + ": " + machines);
 About_Program;KabanHMI\Settings\HmiManual.cs;39;Text;sb.AppendLine(LanguageManager.GetString("About_Program", "Program") + ": " +
-AiC_Active;KabanHMI\Settings\AiChatsEditor.cs;91;Heading;Name = "active", HeaderText = T("AiC_Active", "Active"),
-AiC_ActiveTip;KabanHMI\Settings\AiChatsEditor.cs;92;Tooltip;ToolTipText = T("AiC_ActiveTip", "Offered in the help lists as 'Ask <name>'. Not ticked: kept here, not offered.")
+AiC_Active;KabanHMI\Settings\AiChatsEditor.cs;93;Heading;Name = "active", HeaderText = T("AiC_Active", "Active"),
+AiC_ActiveTip;KabanHMI\Settings\AiChatsEditor.cs;94;Tooltip;ToolTipText = T("AiC_ActiveTip", "Offered in the help lists as 'Ask <name>'. Not ticked: kept here, not offered.")
 AiC_Add;KabanHMI\Settings\AiChatsEditor.cs;62;Tooltip;_add = UiStyle.ToolButton("➕", T("AiC_Add", "Add an AI chat to the list"), tips, (s, e) => AddRow());
-AiC_BadLink;KabanHMI\Settings\AiChatsEditor.cs;217;Text;if (!AiChats.IsLink(link)) return Fail(string.Format(T("AiC_BadLink", "{0}: its web address must start with https:// (or http://)."), name));
+AiC_BadLink;KabanHMI\Settings\AiChatsEditor.cs;219;Text;if (!AiChats.IsLink(link)) return Fail(string.Format(T("AiC_BadLink", "{0}: its web address must start with https:// (or http://)."), name));
 AiC_Down;KabanHMI\Settings\AiChatsEditor.cs;65;Tooltip;_down = UiStyle.ToolButton("▼", T("AiC_Down", "Down the list"), tips, (s, e) => Move(1));
-AiC_Empty;KabanHMI\Settings\AiChatsEditor.cs;223;Text;if (list.Count == 0) return Fail(T("AiC_Empty", "At least one AI chat, please."));
-AiC_Kept;KabanHMI\Settings\AiChatsEditor.cs;228;Status;_status.Text = T("AiC_Kept", "The list is kept.");
-AiC_Link;KabanHMI\Settings\AiChatsEditor.cs;88;Text;_grid.Columns.Add("link", T("AiC_Link", "Web address"));
-AiC_Name;KabanHMI\Settings\AiChatsEditor.cs;87;Text;_grid.Columns.Add("name", T("AiC_Name", "Name"));
-AiC_NoName;KabanHMI\Settings\AiChatsEditor.cs;216;Text;if (name.Length == 0) return Fail(string.Format(T("AiC_NoName", "Row {0}: a name, please."), r.Index + 1));
+AiC_Empty;KabanHMI\Settings\AiChatsEditor.cs;225;Text;if (list.Count == 0) return Fail(T("AiC_Empty", "At least one AI chat, please."));
+AiC_Kept;KabanHMI\Settings\AiChatsEditor.cs;230;Status;_status.Text = T("AiC_Kept", "The list is kept.");
+AiC_Link;KabanHMI\Settings\AiChatsEditor.cs;90;Text;_grid.Columns.Add("link", T("AiC_Link", "Web address"));
+AiC_Name;KabanHMI\Settings\AiChatsEditor.cs;89;Text;_grid.Columns.Add("name", T("AiC_Name", "Name"));
+AiC_NoName;KabanHMI\Settings\AiChatsEditor.cs;218;Text;if (name.Length == 0) return Fail(string.Format(T("AiC_NoName", "Row {0}: a name, please."), r.Index + 1));
 AiC_Note;KabanHMI\Settings\AiChatsEditor.cs;54;Text;Text = T("AiC_Note", "The AI chats the Help menu (?) and every alarm's help list offer, each as 'Ask <name>', in this order: a name and its web address (https://...).") +
 AiC_Note2;KabanHMI\Settings\AiChatsEditor.cs;55;Text;"\n" + T("AiC_Note2", "'Ask <name>' opens that chat in the browser and pastes the prompt into it (Ctrl+V, Preferences: Paste into the chat).")
 AiC_Remove;KabanHMI\Settings\AiChatsEditor.cs;63;Tooltip;_remove = UiStyle.ToolButton("🗑", T("AiC_Remove", "Remove the selected AI chat from the list"), tips, (s, e) => RemoveRow());
 AiC_Revert;KabanHMI\Settings\AiChatsEditor.cs;61;Tooltip;_revert = UiStyle.ToolButton("↺", T("AiC_Revert", "Throw the changes away and show the kept list"), tips, (s, e) => Fill(AiChats.All));
 AiC_Save;KabanHMI\Settings\AiChatsEditor.cs;60;Tooltip;_save = UiStyle.ToolButton("💾", T("AiC_Save", "Keep the list"), tips, (s, e) => Keep());
-AiC_Twice;KabanHMI\Settings\AiChatsEditor.cs;219;Text;return Fail(string.Format(T("AiC_Twice", "{0} is in the list twice."), name));
+AiC_Twice;KabanHMI\Settings\AiChatsEditor.cs;221;Text;return Fail(string.Format(T("AiC_Twice", "{0} is in the list twice."), name));
 AiC_Up;KabanHMI\Settings\AiChatsEditor.cs;64;Tooltip;_up = UiStyle.ToolButton("▲", T("AiC_Up", "Up the list"), tips, (s, e) => Move(-1));
 AiC_Usual;KabanHMI\Settings\AiChatsEditor.cs;66;Tooltip;_usual = UiStyle.ToolButton("↻", T("AiC_Usual", "The usual list"), tips, (s, e) => { Fill(AiChats.Defaults); _dirty.MarkDirty(); });
 Alarm_Col_Description;KabanHMI\Settings\AlarmSettingsControl.cs;156;Heading;{ Name = "Text", HeaderText = LanguageManager.GetString("Alarm_Col_Description", "Alarm"), FillWeight = 42, ReadOnly = true });
@@ -580,18 +580,18 @@ Dsh_SelectPeriod;KabanHMI\Dashboard\DashboardScreen.cs;403;Text;_latest.Items.Ad
 Dsh_SetAlarmReport;KabanHMI\Dashboard\DashboardSettingsPage.cs;169;Text;new[] { "alarm_logs_report", "Dsh_SetAlarmReport", "Create alarm logs" },
 Dsh_SetAnnualDates;KabanHMI\Dashboard\DashboardSettingsPage.cs;158;Text;_annualRow = FieldRow("Dsh_SetAnnualDates", "Dates (MM-DD, MM-DD ...)", _annualDates);
 Dsh_SetAuto;KabanHMI\Dashboard\DashboardSettingsPage.cs;165;Text;CheckRow(_auto, "Dsh_SetAuto", "Create the reports automatically");
-Dsh_SetBadDates;KabanHMI\Dashboard\DashboardSettingsPage.cs;481;Text;if (s.Type == "Annual" && ad.Count == 0) problems.Add(T("Dsh_SetBadDates", "The dates cannot be read (MM-DD, MM-DD ...)."));
-Dsh_SetBadMonthDays;KabanHMI\Dashboard\DashboardSettingsPage.cs;478;Text;if (s.Type == "Monthly" && md.Count == 0) problems.Add(T("Dsh_SetBadMonthDays", "The days of the month cannot be read (1 to 31)."));
-Dsh_SetBadShift;KabanHMI\Dashboard\DashboardSettingsPage.cs;452;Text;if (sh.Start == sh.End) problems.Add(T("Dsh_SetBadShift", "A shift cannot start and end at the same time:") + " " + sh.Text);
-Dsh_SetBadTime;KabanHMI\Dashboard\DashboardSettingsPage.cs;466;Text;if (s.Type != "Daily" && one.Count != 1) problems.Add(T("Dsh_SetBadTime", "The time cannot be read (HH:MM)."));
-Dsh_SetBadTimes;KabanHMI\Dashboard\DashboardSettingsPage.cs;463;Text;if (s.Type == "Daily" && times.Count == 0) problems.Add(T("Dsh_SetBadTimes", "The times cannot be read (HH:MM, HH:MM ...)."));
-Dsh_SetBadWeekdays;KabanHMI\Dashboard\DashboardSettingsPage.cs;470;Text;if (s.Type == "Weekly" && days.Count == 0) problems.Add(T("Dsh_SetBadWeekdays", "Choose at least one weekday."));
-Dsh_SetBadZone;KabanHMI\Dashboard\DashboardSettingsPage.cs;445;Text;if (!DashboardTime.Known(zone)) problems.Add(T("Dsh_SetBadZone", "This PC does not know the time zone") + " \"" + zone + "\".");
+Dsh_SetBadDates;KabanHMI\Dashboard\DashboardSettingsPage.cs;489;Text;if (s.Type == "Annual" && ad.Count == 0) problems.Add(T("Dsh_SetBadDates", "The dates cannot be read (MM-DD, MM-DD ...)."));
+Dsh_SetBadMonthDays;KabanHMI\Dashboard\DashboardSettingsPage.cs;486;Text;if (s.Type == "Monthly" && md.Count == 0) problems.Add(T("Dsh_SetBadMonthDays", "The days of the month cannot be read (1 to 31)."));
+Dsh_SetBadShift;KabanHMI\Dashboard\DashboardSettingsPage.cs;460;Text;if (sh.Start == sh.End) problems.Add(T("Dsh_SetBadShift", "A shift cannot start and end at the same time:") + " " + sh.Text);
+Dsh_SetBadTime;KabanHMI\Dashboard\DashboardSettingsPage.cs;474;Text;if (s.Type != "Daily" && one.Count != 1) problems.Add(T("Dsh_SetBadTime", "The time cannot be read (HH:MM)."));
+Dsh_SetBadTimes;KabanHMI\Dashboard\DashboardSettingsPage.cs;471;Text;if (s.Type == "Daily" && times.Count == 0) problems.Add(T("Dsh_SetBadTimes", "The times cannot be read (HH:MM, HH:MM ...)."));
+Dsh_SetBadWeekdays;KabanHMI\Dashboard\DashboardSettingsPage.cs;478;Text;if (s.Type == "Weekly" && days.Count == 0) problems.Add(T("Dsh_SetBadWeekdays", "Choose at least one weekday."));
+Dsh_SetBadZone;KabanHMI\Dashboard\DashboardSettingsPage.cs;453;Text;if (!DashboardTime.Known(zone)) problems.Add(T("Dsh_SetBadZone", "This PC does not know the time zone") + " \"" + zone + "\".");
 Dsh_SetBarcoded;KabanHMI\Dashboard\DashboardSettingsPage.cs;103;Text;CheckRow(_barcoded, "Dsh_SetBarcoded", "Use only barcoded cutting logs");
 Dsh_SetDatabase;KabanHMI\Dashboard\DashboardScreen.cs;767;Text;(SecurityManager.HasAccess(SecurityLevel.Maintenance) ? "\n" + T("Dsh_SetDatabase", "Choose it in HMI Settings > Logs and Reports.") : "");
 Dsh_SetDatabaseHead;KabanHMI\Dashboard\DashboardSettingsPage.cs;80;Text;Heading("Dsh_SetDatabaseHead", "\U0001F5C4\ufe0f", "Database");
 Dsh_SetDatabasePath;KabanHMI\Dashboard\DashboardSettingsPage.cs;83;Text;FieldRow("Dsh_SetDatabasePath", "Database file", _db, browseDb);
-Dsh_SetDatabasePath;KabanHMI\Dashboard\DashboardSettingsPage.cs;616;Text;using (var d = new OpenFileDialog { Filter = "SQLite (*.sqlite;*.db)|*.sqlite;*.db|*.*|*.*", Title = T("Dsh_SetDatabasePath", "Database file") })
+Dsh_SetDatabasePath;KabanHMI\Dashboard\DashboardSettingsPage.cs;624;Text;using (var d = new OpenFileDialog { Filter = "SQLite (*.sqlite;*.db)|*.sqlite;*.db|*.*|*.*", Title = T("Dsh_SetDatabasePath", "Database file") })
 Dsh_SetEventReport;KabanHMI\Dashboard\DashboardSettingsPage.cs;168;Text;new[] { "event_logs_report", "Dsh_SetEventReport", "Create event logs" },
 Dsh_SetExportDir;KabanHMI\Dashboard\DashboardSettingsPage.cs;137;Text;FieldRow("Dsh_SetExportDir", "Export folder", _exportDir, browseDir);
 Dsh_SetHistoryDays;KabanHMI\Dashboard\DashboardSettingsPage.cs;162;Text;FieldRow("Dsh_SetHistoryDays", "History: days", _historyDays);
@@ -599,7 +599,7 @@ Dsh_SetHistoryLimit;KabanHMI\Dashboard\DashboardSettingsPage.cs;164;Text;FieldRo
 Dsh_SetLogicHead;KabanHMI\Dashboard\DashboardSettingsPage.cs;102;Text;Heading("Dsh_SetLogicHead", "\U0001F9E0", "Data logic");
 Dsh_SetMonthDays;KabanHMI\Dashboard\DashboardSettingsPage.cs;156;Text;_monthDaysRow = FieldRow("Dsh_SetMonthDays", "Days of the month (1, 11, 21 ...)", _monthDays);
 Dsh_SetNext;KabanHMI\Dashboard\DashboardSettingsPage.cs;225;Text;_next.Text = T("Dsh_SetNext", "Next automatic report:") + " " +
-Dsh_SetNotWritten;KabanHMI\Dashboard\DashboardSettingsPage.cs;503;Text;_problem.Text = T("Dsh_SetNotWritten", "The settings could not be written:") + " " + c.FilePath;
+Dsh_SetNotWritten;KabanHMI\Dashboard\DashboardSettingsPage.cs;511;Text;_problem.Text = T("Dsh_SetNotWritten", "The settings could not be written:") + " " + c.FilePath;
 Dsh_SetPeriod;KabanHMI\Dashboard\DashboardSettingsPage.cs;146;Text;FieldRow("Dsh_SetPeriod", "Auto-report period", _period);
 Dsh_SetReportLanguage;KabanHMI\Dashboard\DashboardSettingsPage.cs;140;Text;FieldRow("Dsh_SetReportLanguage", "Report language", _reportLanguage);
 Dsh_SetReportsHead;KabanHMI\Dashboard\DashboardSettingsPage.cs;134;Text;Heading("Dsh_SetReportsHead", "\U0001F4C4", "Exported reports");
@@ -607,19 +607,19 @@ Dsh_SetRevert;KabanHMI\Dashboard\DashboardSettingsPage.cs;193;Tooltip;_revert = 
 Dsh_SetSave;KabanHMI\Dashboard\DashboardSettingsPage.cs;192;Tooltip;_save = UiStyle.ToolButton("\U0001F4BE", T("Dsh_SetSave", "Keep the settings"), _tips, (s, e) => Save());
 Dsh_SetSectionsHead;KabanHMI\Dashboard\DashboardSettingsPage.cs;120;Text;Heading("Dsh_SetSectionsHead", "\U0001F6E0\ufe0f", "Dashboard sections");
 Dsh_SetShiftAdd;KabanHMI\Dashboard\DashboardSettingsPage.cs;113;Text;var addShift = UiStyle.TextButton(T("Dsh_SetShiftAdd", "Add a shift"), 0, (s, e) => AddShift(NextShiftStart(), NextShiftStart().Add(TimeSpan.FromHours(8))));
-Dsh_SetShiftRemove;KabanHMI\Dashboard\DashboardSettingsPage.cs;540;Tooltip;var remove = UiStyle.ToolButton("\uD83D\uDDD1", T("Dsh_SetShiftRemove", "Remove this shift"), _tips, (s, e) =>
+Dsh_SetShiftRemove;KabanHMI\Dashboard\DashboardSettingsPage.cs;548;Tooltip;var remove = UiStyle.ToolButton("\uD83D\uDDD1", T("Dsh_SetShiftRemove", "Remove this shift"), _tips, (s, e) =>
 Dsh_SetShiftsHead;KabanHMI\Dashboard\DashboardSettingsPage.cs;106;Text;Heading("Dsh_SetShiftsHead", "\u23f1\ufe0f", "Shifts");
 Dsh_SetShiftsNote;KabanHMI\Dashboard\DashboardSettingsPage.cs;116;Text;Note("Dsh_SetShiftsNote", "A shift that ends at or before its start ends the next day.");
 Dsh_SetStateReport;KabanHMI\Dashboard\DashboardSettingsPage.cs;170;Text;new[] { "state_logs_report", "Dsh_SetStateReport", "Create state logs" },
 Dsh_SetTableReport;KabanHMI\Dashboard\DashboardSettingsPage.cs;171;Text;new[] { "database_table_report", "Dsh_SetTableReport", "Create database tables" }
 Dsh_SetTest;KabanHMI\Dashboard\DashboardSettingsPage.cs;85;Tooltip;var test = UiStyle.ToolButton("\U0001F50D", T("Dsh_SetTest", "Look into the database: its logs, first and last"), _tips, (s, e) => TestDatabase());
 Dsh_SetTestCaption;KabanHMI\Dashboard\DashboardSettingsPage.cs;90;Text;FieldRow("Dsh_SetTestCaption", "What it holds", _probe, test);
-Dsh_SetTesting;KabanHMI\Dashboard\DashboardSettingsPage.cs;578;Text;_probe.Text = T("Dsh_SetTesting", "Looking into the database...");
+Dsh_SetTesting;KabanHMI\Dashboard\DashboardSettingsPage.cs;586;Text;_probe.Text = T("Dsh_SetTesting", "Looking into the database...");
 Dsh_SetTime;KabanHMI\Dashboard\DashboardSettingsPage.cs;160;Text;_timeRow = FieldRow("Dsh_SetTime", "Time (HH:MM)", _time);
 Dsh_SetTimes;KabanHMI\Dashboard\DashboardSettingsPage.cs;148;Text;_timesRow = FieldRow("Dsh_SetTimes", "Times (HH:MM, HH:MM ...)", _times);
 Dsh_SetTimeZone;KabanHMI\Dashboard\DashboardSettingsPage.cs;94;Text;FieldRow("Dsh_SetTimeZone", "Time zone of the panel", _zone);
 Dsh_SetTimeZoneNote;KabanHMI\Dashboard\DashboardSettingsPage.cs;95;Text;Note("Dsh_SetTimeZoneNote", "The database keeps UTC. The dashboard shows the times of this zone.");
-Dsh_Settings;KabanHMI\Dashboard\DashboardSettingsPage.cs;602;Text;Text = title ?? T("Dsh_Settings", "Dashboard settings"), Width = 760, Height = 760, StartPosition = FormStartPosition.CenterParent,
+Dsh_Settings;KabanHMI\Dashboard\DashboardSettingsPage.cs;610;Text;Text = title ?? T("Dsh_Settings", "Dashboard settings"), Width = 760, Height = 760, StartPosition = FormStartPosition.CenterParent,
 Dsh_SetWeekdays;KabanHMI\Dashboard\DashboardSettingsPage.cs;153;Text;_weekdaysRow = FieldRow("Dsh_SetWeekdays", "Weekdays", _weekdays);
 Dsh_ShiftSelection;KabanHMI\Dashboard\DashboardScreen.cs;282;Text;_shiftPick = SidePick("Dsh_ShiftSelection", "Shift Selection", true);
 Dsh_ShowInFolder;KabanHMI\Dashboard\DashboardScreen.cs;292;Tooltip;_openFolder = UiStyle.ToolButton("\U0001F4C2", T("Dsh_ShowInFolder", "Show in folder"), _tips, (s, e) => OpenFolder());
