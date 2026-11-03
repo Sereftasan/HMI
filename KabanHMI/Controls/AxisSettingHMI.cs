@@ -530,6 +530,8 @@ namespace Kaban.UI.Controls
 
         public AxisSettingHMI()
         {
+            // a light line between the rows, as between the settings rows (3 November)
+            ParentChanged += (s, e) => UiStyle.RulesBetweenRows(Parent, c => c is AxisSettingHMI);
             PlcNumber = 1;
             AxisNameKey = "X";
             CommandBackAddress = CommandForwardAddress = PositionAddress = "";

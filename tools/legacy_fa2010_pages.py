@@ -513,6 +513,9 @@ GAP = 10
 HEAD_H = 26
 MAX_H = 650                      # a column taller than this continues beside it
 PARAM_ROW = 36
+# 3 November: these Machine Settings pages are kept by hand - settings rows (NumericInputHMI.RowWidth, rows 38 high, touching)
+# and the Others page's titled frames (2 November); the tool reads them but does not write them again
+HAND_KEPT = {'ParamConveyor', 'ParamRobot', 'ParamMilling', 'ParamCutting', 'ParamOther'}
 PARAM_BOX = (116, 26)
 CHAR_W = 6.4                     # a caption's width, per character (Segoe UI 9)
 
@@ -1435,6 +1438,9 @@ def write_params(pg, current, match):
                     cy += PARAM_ROW
             bottom = max(bottom, cy)
         y = bottom + 14
+    if pg['cls'] in HAND_KEPT:
+        print('%-26s kept by hand: not written' % pg['cls'])
+        return em
     em.write(os.path.join(PARAMS, pg['cls'] + '.Designer.cs'), (right, y))
     return em
 

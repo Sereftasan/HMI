@@ -111,7 +111,7 @@ namespace Kaban.UI.Controls
         {
             _rowHover = on;
             if (_label == null || _label.IsDisposed) return;
-            var want = _acts && on ? RowHoverBack : Color.Transparent;
+            var want = _acts && on ? (IsRow ? UiStyle.RowHoverFill : RowHoverBack) : Color.Transparent;
             if (_label.BackColor != want) _label.BackColor = want;
         }
 
@@ -120,6 +120,58 @@ namespace Kaban.UI.Controls
 
         /// <summary>The caption's label (tests).</summary>
         public Label CaptionLabel { get { return _label; } }
+
+        // ---- a settings row (3 November: "make all the other machine setting pages controls just same as the ones at this page
+        // (the controls are divided with a light line in between them)") ----
+
+        private int _rowWidth;
+
+        /// <summary>
+        /// 0: the caption beside its control. A width (factor 1): a settings row that wide, as the Options page's switch rows -
+        /// the caption is the row itself, behind its control at the row's right end (8 px in): its words at the row's left,
+        /// with no colon, a light line under it (UiStyle.RowRule), UiStyle.SettingRowHeight high; the pointer on the row lights
+        /// it all (ActiveArea.Row).
+        /// </summary>
+        public int RowWidth
+        {
+            get { return _rowWidth; }
+            set { int v = Math.Max(0, value); if (v == _rowWidth) return; _rowWidth = v; Sync(); }
+        }
+
+        /// <summary>Drawn as a settings row now (a width given, the caption on the left).</summary>
+        public bool IsRow { get { return _rowWidth > 0 && _side == DescriptionSide.Left; } }
+
+        private bool _placedAsRow;
+
+        /// <summary>
+        /// The row: from (its control's right end + 8) - RowWidth to its control's right end + 8, as high as a settings row and
+        /// centred on its control; the words kept clear of the control (the label's right padding), cut with "..." if long.
+        /// Measured at the screen scale (Px): the page is laid out once more after it is scaled.
+        /// </summary>
+        private void PositionRow()
+        {
+            int pad = UiScale.Px(8), h = UiScale.Px(UiStyle.SettingRowHeight), w = UiScale.Px(_rowWidth);
+            if (_label.AutoSize) _label.AutoSize = false;
+            if (!_label.AutoEllipsis) _label.AutoEllipsis = true;
+            if (_label.TextAlign != ContentAlignment.MiddleLeft) _label.TextAlign = ContentAlignment.MiddleLeft;
+            var p = new Padding(pad, 0, _owner.Width + 2 * pad, 1);
+            if (_label.Padding != p) _label.Padding = p;
+            int right = _owner.Right + pad;
+            _label.SetBounds(right - w, _owner.Top + (_owner.Height - h) / 2, w, h);
+            // behind its control (it lies under it)
+            var parent = _label.Parent;
+            int li = parent.Controls.GetChildIndex(_label), oi = parent.Controls.GetChildIndex(_owner, false);
+            if (oi >= 0 && li < oi) parent.Controls.SetChildIndex(_label, oi);
+            _placedAsRow = true;
+            _label.Invalidate();
+        }
+
+        /// <summary>The light line under the row.</summary>
+        private void PaintRow(object sender, PaintEventArgs e)
+        {
+            if (!IsRow || _label == null) return;
+            using (var pen = new Pen(UiStyle.RowRule)) e.Graphics.DrawLine(pen, 0, _label.Height - 1, _label.Width, _label.Height - 1);
+        }
 
         private void ApplyActs()
         {
@@ -231,6 +283,7 @@ namespace Kaban.UI.Controls
                 _label.MouseEnter += (s, e) => { if (_acts) { var h = CaptionHover; if (h != null) h(true); } };
                 _label.MouseLeave += (s, e) => { if (_acts) { var h = CaptionHover; if (h != null) h(false); } };
                 _label.Click += (s, e) => { if (_acts && _owner.Enabled && _owner.Visible) { var h = CaptionClick; if (h != null) h(_owner, EventArgs.Empty); } };
+                _label.Paint += PaintRow;
                 _label.MouseDown += (s, e) => Relay(CaptionMouseDown, e);
                 _label.MouseMove += (s, e) => Relay(CaptionMouseMove, e);
                 _label.MouseUp += (s, e) => Relay(CaptionMouseUp, e);
@@ -243,7 +296,7 @@ namespace Kaban.UI.Controls
 
             // A trailing colon is added automatically: every caption in the HMI reads
             // "Width :", and typing it on each control invites inconsistency.
-            if (AppendColon && _side == DescriptionSide.Left &&
+            if (AppendColon && _side == DescriptionSide.Left && !IsRow &&
                 shown.Length > 0 && !shown.TrimEnd().EndsWith(":"))
                 shown = shown.TrimEnd() + ":";
             _label.Text = shown;
@@ -268,7 +321,7 @@ namespace Kaban.UI.Controls
         public DescriptionSide Side
         {
             get { return _side; }
-            set { _side = value; Position(); }
+            set { _side = value; Sync(); }      // (a row's caption has no colon)
         }
 
         private bool _positioning;
@@ -313,6 +366,16 @@ namespace Kaban.UI.Controls
             // distance the eye has to decide which control a label belongs to -
             // which on a row of lamps is exactly the wrong question to raise.
             const int gap = 2;
+
+            if (IsRow) { PositionRow(); return; }
+            if (_placedAsRow)
+            {
+                // a row no more: a caption beside its control again
+                _placedAsRow = false;
+                _label.Padding = new Padding(2, 0, 2, 0);
+                _label.AutoEllipsis = false;
+                _label.AutoSize = true;
+            }
 
             if (_side == DescriptionSide.Right)
             {

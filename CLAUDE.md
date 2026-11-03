@@ -51,8 +51,13 @@
   `%LOCALAPPDATA%\Microsoft\VisualStudio\<version>\ProjectAssemblies`, and build again. Never "Ignore and Continue":
   the designer then saves the page without what it could not load.
   AxisJogBar is also shown by the program above the Manual Movement tabs and on the Axis Monitor.
-- FA2010's pages are generated from the old program's: `tools\legacy_fa2010_pages.py` (it keeps what was set by hand).
-  Its wiring list: `tools\build_wiring.py` -> `Kaban.Machines.FA2010\Wiring.csv`.
+- FA2010's pages are generated from the old program's: `tools\legacy_fa2010_pages.py` (it keeps what was set by hand) -
+  except Machine Settings' Options, Conveyor, Robot, Milling, Cutting and Others, kept by hand (3 November: it does not
+  write them). Its wiring list: `tools\build_wiring.py` -> `Kaban.Machines.FA2010\Wiring.csv`.
+- Machine Settings' rows (3 November): a page of settings is rows, UiStyle.SettingRowHeight (38) high, touching, 600 wide
+  (576 in a frame), a light line under each (UiStyle.RowRule, lighter than a table's GridRule) - a switch: CheckBoxHMI
+  SwitchRow; a value: NumericInputHMI.RowWidth (its caption is the row, words at the left, the field 8 px in from the
+  right end). The Axis and Encoders tables: the same light line between their rows (UiStyle.RulesBetweenRows).
 - The program's lines naming each translation key (HMI Settings > Translation, "Where is it used?" on a panel without
   the source): `tools\translation_uses.py` -> `KabanHMI\TranslationUses.csv`, made again in every batch.
 - The keys the code uses with an English text of its own and the translation files lack (23 October: tooltips shown in

@@ -696,6 +696,35 @@ namespace Kaban.UI.Controls
         public static readonly Color RowRule = Color.FromArgb(237, 239, 242);
         /// <summary>A settings row under the pointer.</summary>
         public static readonly Color RowHoverFill = Color.FromArgb(246, 248, 251);
+
+        private static readonly System.Runtime.CompilerServices.ConditionalWeakTable<Control, object> _ruled =
+            new System.Runtime.CompilerServices.ConditionalWeakTable<Control, object>();
+
+        /// <summary>
+        /// A light line (RowRule) in the gap between each two rows of a page's table, as between the settings rows (3 November:
+        /// Machine Settings > Axis and Encoders, "divided with a light line in between them"): the host's children that
+        /// <paramref name="isRow"/> picks, one right under another (the same left, at most 12 px apart). Once per host.
+        /// </summary>
+        public static void RulesBetweenRows(Control host, Func<Control, bool> isRow)
+        {
+            object unused;
+            if (host == null || _ruled.TryGetValue(host, out unused)) return;
+            _ruled.Add(host, isRow);
+            host.Paint += (s, e) =>
+            {
+                var rows = host.Controls.Cast<Control>().Where(c => c.Visible && isRow(c)).ToList();
+                int most = UiScale.Px(12);
+                using (var pen = new Pen(RowRule))
+                    foreach (var a in rows)
+                    {
+                        var b = rows.Where(r => r != a && r.Left == a.Left && r.Top >= a.Bottom && r.Top - a.Bottom <= most).OrderBy(r => r.Top).FirstOrDefault();
+                        if (b == null) continue;
+                        int y = a.Bottom + (b.Top - a.Bottom) / 2;
+                        e.Graphics.DrawLine(pen, a.Left, y, a.Right, y);
+                    }
+            };
+            host.Invalidate();
+        }
         public static readonly Color GridHeadBack = Color.FromArgb(245, 246, 248);
         public static readonly Color GridInk = Color.FromArgb(25, 28, 34);
         public static readonly Color GridSelection = Color.FromArgb(218, 232, 250);

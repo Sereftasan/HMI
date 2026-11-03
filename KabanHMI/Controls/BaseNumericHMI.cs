@@ -222,6 +222,19 @@ namespace Kaban.UI.Controls
         }
         [Category("   Formatting")] public UnitType UnitType { get; set; } = UnitType.None;
 
+        /// <summary>
+        /// 0: the caption beside the field. A width: a SETTINGS ROW that wide, as the Machine Settings > Options page's switch
+        /// rows (3 November) - the caption at the row's left (no colon), the field at its right end, a light line under the row,
+        /// the row lit under the pointer. Place the field 8 px in from the row's right end; rows touch at UiStyle.SettingRowHeight.
+        /// </summary>
+        [Category("   Appearance"), DefaultValue(0)]
+        [Description("0: the caption beside the field. A width: a settings row that wide (the Machine Settings pages) - the caption at the row's left, the field at its right end, a light line under the row.")]
+        public int RowWidth
+        {
+            get { return _descr == null ? 0 : _descr.RowWidth; }
+            set { Descr.RowWidth = value; }
+        }
+
         [Category("   Triggers")]
         [TypeConverter(typeof(Kaban.UI.Design.ConditionTextConverter))]
         [Editor("Kaban.UI.Design.UnifiedConditionEditor, Kaban.UI", typeof(UITypeEditor))]

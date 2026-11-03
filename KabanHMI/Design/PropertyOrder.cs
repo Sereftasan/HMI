@@ -44,7 +44,7 @@ namespace Kaban.UI.Design
         private static readonly string[] NumericDevice = { "PlcNumber", "Address", "DataType", "AddressOffset" };
         private static readonly string[] NumericFormat =
         {
-            "DescriptionText", "DescriptionColon", "DataFormat", "Divisor", "UnitType", "Digits", "DecimalPlaces",
+            "DescriptionText", "DescriptionColon", "RowWidth", "DataFormat", "Divisor", "UnitType", "Digits", "DecimalPlaces",
             "FillZero", "Suffix", "ShowSuffix"
         };
         private static readonly string[] NumericFrame = { "ShowValueBorder", "ValueBorderColor", "CornerRadius" };

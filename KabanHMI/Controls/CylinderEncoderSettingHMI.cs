@@ -39,6 +39,8 @@ namespace Kaban.UI.Controls
 
         public CylinderEncoderSettingHMI() : base(HeadingTag, "enc")
         {
+            // a light line between the rows, as between the settings rows (3 November)
+            ParentChanged += (s, e) => UiStyle.RulesBetweenRows(Parent, c => c is CylinderEncoderSettingHMI);
             AddSection("Reference", "Col_EncReference", "Reference", "Reference", "Tip_EncReference");
             AddSection("Tolerance", "Col_EncTolerance", "Measuring tolerance", "Tolerance", "Tip_EncTolerance");
             AddSection("MinimumLimit", "Col_EncMinimumLimit", "Minimum limit", "MinimumLimit", "Tip_EncMinimumLimit");

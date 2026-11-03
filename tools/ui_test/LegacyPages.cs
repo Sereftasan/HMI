@@ -30,6 +30,13 @@ class LP {
     static IEnumerable<Control> All(Control c) {
         foreach (Control k in c.Controls) { yield return k; foreach (var g in All(k)) yield return g; }
     }
+    // (3 November: a field drawn as a settings row lies on its caption - the row - on purpose)
+    static readonly System.Reflection.MethodInfo OwnerOf =
+        typeof(UiScale).Assembly.GetType("Kaban.UI.Controls.AttachedDescription").GetMethod("OwnerOf");
+    static bool RowOf(Control caption, Control field) {
+        var n = field as BaseNumericHMI;
+        return n != null && n.RowWidth > 0 && caption is Label && OwnerOf.Invoke(null, new object[] { caption }) == field;
+    }
     static string Bits(ButtonHMI b) { return string.Join(",", b.BitActions.Select(a => a.Address + ":" + a.Action)); }
     /// <summary>A unit by name: a cylinder unit, or the unit inside a cylinder with an encoder (9 October).</summary>
     static CylinderUnitHMI Unit(Control page, string name) {
@@ -66,7 +73,7 @@ class LP {
             var overlaps = new List<string>();
             for (int i = 0; i < tops.Count; i++)
                 for (int j = i + 1; j < tops.Count; j++)
-                    if (tops[i].Bounds.IntersectsWith(tops[j].Bounds)) overlaps.Add(tops[i].Name + "/" + tops[j].Name);
+                    if (tops[i].Bounds.IntersectsWith(tops[j].Bounds) && !RowOf(tops[i], tops[j]) && !RowOf(tops[j], tops[i])) overlaps.Add(tops[i].Name + "/" + tops[j].Name);
             Check(n + ": " + tops.Count + " controls, none overlapping", overlaps.Count == 0, string.Join(" ", overlaps.Take(4)));
             var unbound = All(page).OfType<CylinderUnitHMI>().Where(u => !(u.Parent is AxisUnitHMI) && string.IsNullOrEmpty(u.CommandAAddress) && string.IsNullOrEmpty(u.CommandBAddress)).Select(u => u.Name).ToList();
             Check("  every unit moves something", unbound.Count == 0, string.Join(",", unbound));
