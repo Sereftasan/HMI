@@ -82,7 +82,9 @@ namespace Kaban.UI.Settings
             _grid.SelectionMode = DataGridViewSelectionMode.CellSelect;
             _grid.EditMode = DataGridViewEditMode.EditOnKeystrokeOrF2;
             _grid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-            _grid.ScrollBars = ScrollBars.Vertical;          // its two columns fill its width
+            // its columns fill its width; a scroll bar along the bottom when they cannot (3 November: "there is no horizontal
+            // scroll to see the last column of the table")
+            _grid.ScrollBars = ScrollBars.Both;
             _grid.BackgroundColor = Color.White;
             _grid.Columns.Add("name", T("AiC_Name", "Name"));
             _grid.Columns.Add("link", T("AiC_Link", "Web address"));

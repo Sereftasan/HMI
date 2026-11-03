@@ -44,6 +44,7 @@ class HM {
         AiChats.SettingsPath = Path.Combine(dir, "AiChats.cfg");
         AlarmAiPrompt.SaveFolder = Path.Combine(dir, "AI prompts");
         NotesStore.Folder = Path.Combine(dir, "Notes");
+        Kaban.UI.Helpers.ColumnChooser.Folder = Path.Combine(dir, "Layouts");
         var opened = new List<string>();
         AiChats.OpenLink = link => { opened.Add(link); return true; };
         string openedFile = null;
@@ -319,6 +320,26 @@ class HM {
         Check("  ticked again: offered again", AiChats.Find("ChatGPT").Active && Item(form.BuildHelpMenu(), "aiAsk:ChatGPT") != null &&
               File.ReadAllLines(AiChats.SettingsPath).Contains("ChatGPT;https://chatgpt.com/"));
         holder2.Close();
+
+        // 3 November: "there is no horizontal scroll to see the last column of the table ('Active' column)" - widths kept from
+        // a wider window turned the table's filling off; Active was out of sight
+        Console.WriteLine("--- the AI table: its columns fill it, whatever widths were kept ---");
+        Directory.CreateDirectory(Kaban.UI.Helpers.ColumnChooser.Folder);
+        File.WriteAllLines(Path.Combine(Kaban.UI.Helpers.ColumnChooser.Folder, "AiChats.cols"),
+                           new[] { "col\tname\t532\t0\t1", "col\tlink\t1300\t1\t1", "col\tactive\t120\t2\t1" });
+        var ed3 = new Kaban.UI.Settings.AiChatsEditor();
+        var holder3 = new Form { ClientSize = new System.Drawing.Size(1100, 600) };
+        holder3.Controls.Add(ed3); holder3.Show(); Pump(200);
+        var g3 = ed3.Grid;
+        var activeAt = g3.GetColumnDisplayRectangle(2, false);
+        Check("kept widths wider than the window: the table still fills its width, Active in sight at its right end",
+              g3.AutoSizeColumnsMode == DataGridViewAutoSizeColumnsMode.Fill && activeAt.Width > 20 && activeAt.Right <= g3.ClientSize.Width + 2 &&
+              g3.Columns.Cast<DataGridViewColumn>().Sum(c => c.Width) <= g3.ClientSize.Width + 2,
+              g3.AutoSizeColumnsMode + " " + activeAt + " in " + g3.ClientSize.Width);
+        Check("  the kept widths its columns' shares (the web address the widest), a scroll bar along the bottom when they cannot fit",
+              g3.Columns[1].Width > g3.Columns[0].Width && g3.Columns[0].Width > g3.Columns[2].Width && g3.ScrollBars == ScrollBars.Both,
+              string.Join(" ", g3.Columns.Cast<DataGridViewColumn>().Select(c => c.Width)));
+        holder3.Close();
 
         Console.WriteLine("--- Users and Preferences: no Preferred AI any more ---");
         var page = new UsersPreferencesControl { Dock = DockStyle.Fill };

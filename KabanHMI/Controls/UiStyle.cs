@@ -1402,8 +1402,15 @@ namespace Kaban.UI.Controls
                         int w, idx;
                         if (int.TryParse(p[2], out w) && w > 10)
                         {
-                            grid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
-                            col.Width = w;
+                            // A TABLE THAT FILLS ITS WIDTH KEEPS DOING SO: its kept widths are its columns' shares of it
+                            // (3 November: the AI page's table - kept widths turned its filling off, at another window's
+                            // width its last column, Active, was out of sight with no scroll bar to reach it)
+                            if (grid.AutoSizeColumnsMode == DataGridViewAutoSizeColumnsMode.Fill) col.FillWeight = w;
+                            else
+                            {
+                                grid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
+                                col.Width = w;
+                            }
                         }
                         if (int.TryParse(p[3], out idx) && idx >= 0 && idx < grid.Columns.Count)
                             col.DisplayIndex = idx;
