@@ -183,6 +183,30 @@ class CN {
         small.ActiveArea = ActiveArea.Control; Pump(50);
         raise(smallCaption, "OnClick"); Pump(300);
         Check("a switch with its caption beside it - Row: a click on the caption changes it; Control: not", captionTicks && small.Checked && sim.Read("M61") == 1);
+        // 3 November: "on the small switches as well" - slid from the caption beside it too
+        Action<int[]> captionSlide = xs =>
+        {
+            Func<int, MouseEventArgs> on = x => new MouseEventArgs(MouseButtons.Left, 1, x, 8, 0);
+            typeof(Control).GetMethod("OnMouseDown", Any).Invoke(smallCaption, new object[] { on(xs[0]) });
+            for (int i = 1; i < xs.Length; i++) typeof(Control).GetMethod("OnMouseMove", Any).Invoke(smallCaption, new object[] { on(xs[i]) });
+            typeof(Control).GetMethod("OnClick", Any).Invoke(smallCaption, new object[] { EventArgs.Empty });
+            typeof(Control).GetMethod("OnMouseUp", Any).Invoke(smallCaption, new object[] { on(xs[xs.Length - 1]) });
+            Pump(300);
+        };
+        small.ActiveArea = ActiveArea.Row; small.ConfirmWrite = true; Pump(50);
+        asked = 0; answer = false;
+        CheckBoxHMI.Confirm = (b, on) => { asked++; return answer; };
+        captionSlide(new[] { 40, 30, 15, 5 });
+        bool slidOff = !small.Checked && sim.Read("M61") == 0 && small.LastChange == "slide";
+        captionSlide(new[] { 5, 20, 35, 50 });
+        Check("a small switch slid on the caption beside it: left OFF, right ON - nothing asked (ConfirmWrite), the lift's click changes nothing more",
+              slidOff && small.Checked && sim.Read("M61") == 1 && small.LastChange == "slide" && asked == 0, asked + " asked");
+        captionSlide(new[] { 20, 22 });
+        Check("  a tap on the caption (moved less than a slide): asked", asked == 1 && small.Checked && sim.Read("M61") == 1);
+        small.ActiveArea = ActiveArea.Control; Pump(50);
+        captionSlide(new[] { 40, 30, 15, 5 });
+        Check("  Control: a slide on the caption changes nothing (only words)", small.Checked && sim.Read("M61") == 1 && asked == 1);
+        CheckBoxHMI.Confirm = confirmWas; small.ConfirmWrite = false; small.ActiveArea = ActiveArea.Row;
 
         Console.WriteLine("--- AxisSettingHMI: the row's and each button's own conditions and triggers ---");
         sim.Write("L27", 1); sim.Write("M100", 0); sim.Write("M53", 1); Pump(900);

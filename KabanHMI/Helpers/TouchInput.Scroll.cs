@@ -52,11 +52,11 @@ namespace Kaban.UI.Helpers
             if (target == null || target.IsDisposed || Excluded(target)) return;
             int dx = screen.X - p.Screen.X, dy = screen.Y - p.Screen.Y;
             bool vertical = Math.Abs(dy) >= Math.Abs(dx);
-            // a switch slid sideways: its own (it changes, no page moves)
+            // a switch slid sideways - on it or on the caption beside it, part of it (ActiveArea.Row): its own (it changes, no page moves)
             if (!vertical)
                 for (var c = target; c != null; c = c.Parent)
                 {
-                    var sw = c as ISwipes;
+                    var sw = (c as ISwipes) ?? (Kaban.UI.Controls.AttachedDescription.ActingOwnerOf(c) as ISwipes);
                     if (sw != null) { if (sw.SwipesNow) return; break; }
                     if (c is Form) break;
                 }

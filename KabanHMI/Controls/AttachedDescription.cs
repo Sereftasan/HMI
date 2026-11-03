@@ -95,6 +95,14 @@ namespace Kaban.UI.Controls
         /// <summary>The pointer came onto the caption (true) or left it (false), while it acts as its control.</summary>
         public event Action<bool> CaptionHover;
 
+        /// <summary>
+        /// A press, a move and a lift on the caption, while it acts as its control (the caption's own coordinates) - a switch
+        /// slid from the caption beside it (3 November).
+        /// </summary>
+        public event MouseEventHandler CaptionMouseDown, CaptionMouseMove, CaptionMouseUp;
+
+        private void Relay(MouseEventHandler h, MouseEventArgs e) { if (_acts && h != null) h(_owner, e); }    // (the control decides whether it can change)
+
         /// <summary>The caption's light while its row is under the pointer (the control or the caption).</summary>
         public static readonly Color RowHoverBack = Color.FromArgb(236, 242, 250);
 
@@ -223,6 +231,9 @@ namespace Kaban.UI.Controls
                 _label.MouseEnter += (s, e) => { if (_acts) { var h = CaptionHover; if (h != null) h(true); } };
                 _label.MouseLeave += (s, e) => { if (_acts) { var h = CaptionHover; if (h != null) h(false); } };
                 _label.Click += (s, e) => { if (_acts && _owner.Enabled && _owner.Visible) { var h = CaptionClick; if (h != null) h(_owner, EventArgs.Empty); } };
+                _label.MouseDown += (s, e) => Relay(CaptionMouseDown, e);
+                _label.MouseMove += (s, e) => Relay(CaptionMouseMove, e);
+                _label.MouseUp += (s, e) => Relay(CaptionMouseUp, e);
                 ApplyActs();
             }
             // Key first, literal fallback - so DescriptionText is BOTH the key and

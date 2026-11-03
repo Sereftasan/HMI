@@ -194,12 +194,17 @@ namespace Kaban.UI.Controls
         protected override void OnMouseDown(MouseEventArgs e)
         {
             base.OnMouseDown(e);
-            if (e.Button != MouseButtons.Left) return;
+            if (e.Button == MouseButtons.Left) Pressed(e.Location, OnSwitchItself(e.Location));
+        }
+
+        /// <summary>A press on it - or on the caption beside it, part of it (ActiveArea.Row): the start of a tap or a slide.</summary>
+        private void Pressed(Point at, bool onSwitch)
+        {
             _down = true;
             _slid = false;
-            _downAt = e.Location;
+            _downAt = at;
             _pressByPointer = true;
-            _pressOnSwitch = OnSwitchItself(e.Location);
+            _pressOnSwitch = onSwitch;
         }
 
         protected override void OnMouseMove(MouseEventArgs e)
@@ -211,6 +216,12 @@ namespace Kaban.UI.Controls
                 var hand = !DisplayOnly && _softEnabled && OnSwitchItself(e.Location) ? Cursors.Hand : Cursors.Default;
                 if (Cursor != hand) Cursor = hand;
             }
+            SlideBy(e);
+        }
+
+        /// <summary>The pointer held down and moved (on it or on its caption): far enough sideways, the switch slides.</summary>
+        private void SlideBy(MouseEventArgs e)
+        {
             if (!_down || _slid || (e.Button & MouseButtons.Left) == 0 || !Swipeable) return;
             if (_activeArea == ActiveArea.Control && !_pressOnSwitch) return;
             int dx = e.X - _downAt.X, dy = e.Y - _downAt.Y;
@@ -226,6 +237,11 @@ namespace Kaban.UI.Controls
         protected override void OnMouseUp(MouseEventArgs e)
         {
             base.OnMouseUp(e);
+            Released();
+        }
+
+        private void Released()
+        {
             _down = false;
             // the click of this lift (before or after this, as the framework has it) is the slide's: then it is over
             if (IsHandleCreated) BeginInvoke(new Action(() => { _slid = false; _pressByPointer = false; }));
@@ -308,6 +324,11 @@ namespace Kaban.UI.Controls
             Descr.ActsAsOwner = true;
             Descr.CaptionHover += on => { _captionOver = on; Descr.SetRowHover(_over || on); if (_look != CheckBoxLook.Box) Invalidate(); };
             Descr.CaptionClick += (s, e) => { _pressByPointer = false; OnClick(EventArgs.Empty); };
+            // a small switch slid from the caption beside it as well (3 November: "on the small switches as well") - the caption
+            // keeps the pointer while held, so the slide is measured in its own coordinates
+            Descr.CaptionMouseDown += (s, e) => { if (e.Button == MouseButtons.Left) Pressed(e.Location, true); };
+            Descr.CaptionMouseMove += (s, e) => SlideBy(e);
+            Descr.CaptionMouseUp += (s, e) => Released();
         }
 
         /// <summary>The caption beside it (tests).</summary>

@@ -871,6 +871,25 @@ class TM {
         Up(inPage, up(90)); Pump(30);
         Check("a page: a finger trembling 2 px back leaves it where it is, a real move back takes it back",
               at100 == 100 && tremble == 100 && on == 101 && back == 90, at100 + " " + tremble + " " + on + " " + back);
+        // 3 November: a small switch slides from the caption beside it as well - a sideways drag there is the switch's, no page moves
+        var wide = new Panel { Name = "widePage", Location = new Point(630, 430), Size = new Size(400, 200), AutoScroll = true, BorderStyle = BorderStyle.FixedSingle };
+        var smallSw = new CheckBoxHMI { Name = "smallSw", Look = CheckBoxLook.Switch, Address = "M5", DescriptionText = "Air", Location = new Point(20, 30), Size = new Size(44, 32) };
+        var words = new Label { Text = "Only words", Location = new Point(20, 120), AutoSize = true };
+        wide.Controls.Add(smallSw); wide.Controls.Add(words); wide.Controls.Add(new Label { Text = "far", Location = new Point(1500, 20), AutoSize = true });
+        pf.Controls.Add(wide); Pump(100); TouchInput.Sweep(); Pump(50);
+        var swCaption = wide.Controls.OfType<Label>().First(l => l.Text.StartsWith("Air"));
+        Down(swCaption, new Point(30, 8)); bool capTaken = MoveTo(swCaption, new Point(-30, 10)); Up(swCaption, new Point(-30, 10)); Pump(50);
+        int afterCaption = -wide.AutoScrollPosition.X;
+        bool pageTookIt = TouchInput.LastScrolled == "widePage";
+        smallSw.ActiveArea = ActiveArea.Control; Pump(30);
+        Down(swCaption, new Point(30, 8)); bool capTaken2 = MoveTo(swCaption, new Point(-30, 10)); Up(swCaption, new Point(-30, 10)); Pump(50);
+        int afterWordsOnly = -wide.AutoScrollPosition.X;
+        wide.AutoScrollPosition = new Point(0, 0); Pump(30);
+        Down(words, new Point(60, 8)); bool wm = MoveTo(words, new Point(0, 10)); Up(words, new Point(0, 10)); Pump(50);
+        Check("a sideways drag on a small switch's caption (Row): the switch's - the page not moved; Control, or plain words: the page moves",
+              // (the drag taken by the page's scroll - Mono moves no page sideways, its scroll bar not shown: Windows does)
+              !capTaken && !pageTookIt && afterCaption == 0 && capTaken2 && wm && TouchInput.LastScrolled == "widePage",
+              "taken " + capTaken + " " + capTaken2 + " " + wm + ", scrolled " + TouchInput.LastScrolled + " " + afterCaption + " / " + afterWordsOnly);
         long1.FirstDisplayedScrollingRowIndex = 0; Pump(30);
         var s0 = new Point(start.X, long1.GetCellDisplayRectangle(0, 2, false).Top + rowH2 / 2);
         Down(long1, s0); MoveTo(long1, new Point(s0.X, s0.Y - 15));
