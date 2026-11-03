@@ -63,7 +63,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numMinimum_Bar_Length.EnableTrigger.ValB = 0D;
             this.numMinimum_Bar_Length.FillZero = false;
             this.numMinimum_Bar_Length.IsEditing = false;
-            this.numMinimum_Bar_Length.Location = new System.Drawing.Point(500, 30);
+            this.numMinimum_Bar_Length.Location = new System.Drawing.Point(350, 30);
             this.numMinimum_Bar_Length.LogAction = true;
             this.numMinimum_Bar_Length.MaxLimit.StaticValue = 0D;
             this.numMinimum_Bar_Length.MaxLimit.TagAddress = "";
@@ -75,7 +75,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numMinimum_Bar_Length.OutOfLimitsWarning = false;
             this.numMinimum_Bar_Length.PlcNumber = 1;
             this.numMinimum_Bar_Length.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            this.numMinimum_Bar_Length.RowWidth = 600;
+            this.numMinimum_Bar_Length.RowWidth = 450;
             this.numMinimum_Bar_Length.ShowSuffix = true;
             this.numMinimum_Bar_Length.ShowValueBorder = true;
             this.numMinimum_Bar_Length.Size = new System.Drawing.Size(116, 26);
@@ -117,7 +117,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numN1st_Clamping_Position.EnableTrigger.ValB = 0D;
             this.numN1st_Clamping_Position.FillZero = false;
             this.numN1st_Clamping_Position.IsEditing = false;
-            this.numN1st_Clamping_Position.Location = new System.Drawing.Point(500, 68);
+            this.numN1st_Clamping_Position.Location = new System.Drawing.Point(350, 68);
             this.numN1st_Clamping_Position.LogAction = true;
             this.numN1st_Clamping_Position.MaxLimit.StaticValue = 0D;
             this.numN1st_Clamping_Position.MaxLimit.TagAddress = "";
@@ -129,7 +129,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numN1st_Clamping_Position.OutOfLimitsWarning = false;
             this.numN1st_Clamping_Position.PlcNumber = 1;
             this.numN1st_Clamping_Position.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            this.numN1st_Clamping_Position.RowWidth = 600;
+            this.numN1st_Clamping_Position.RowWidth = 450;
             this.numN1st_Clamping_Position.ShowSuffix = true;
             this.numN1st_Clamping_Position.ShowValueBorder = true;
             this.numN1st_Clamping_Position.Size = new System.Drawing.Size(116, 26);
@@ -171,7 +171,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numN2nd_Clamping_Position.EnableTrigger.ValB = 0D;
             this.numN2nd_Clamping_Position.FillZero = false;
             this.numN2nd_Clamping_Position.IsEditing = false;
-            this.numN2nd_Clamping_Position.Location = new System.Drawing.Point(500, 106);
+            this.numN2nd_Clamping_Position.Location = new System.Drawing.Point(350, 106);
             this.numN2nd_Clamping_Position.LogAction = true;
             this.numN2nd_Clamping_Position.MaxLimit.StaticValue = 0D;
             this.numN2nd_Clamping_Position.MaxLimit.TagAddress = "";
@@ -183,7 +183,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numN2nd_Clamping_Position.OutOfLimitsWarning = false;
             this.numN2nd_Clamping_Position.PlcNumber = 1;
             this.numN2nd_Clamping_Position.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            this.numN2nd_Clamping_Position.RowWidth = 600;
+            this.numN2nd_Clamping_Position.RowWidth = 450;
             this.numN2nd_Clamping_Position.ShowSuffix = true;
             this.numN2nd_Clamping_Position.ShowValueBorder = true;
             this.numN2nd_Clamping_Position.Size = new System.Drawing.Size(116, 26);
@@ -225,7 +225,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numN3rd_Clamping_Position.EnableTrigger.ValB = 0D;
             this.numN3rd_Clamping_Position.FillZero = false;
             this.numN3rd_Clamping_Position.IsEditing = false;
-            this.numN3rd_Clamping_Position.Location = new System.Drawing.Point(500, 144);
+            this.numN3rd_Clamping_Position.Location = new System.Drawing.Point(350, 144);
             this.numN3rd_Clamping_Position.LogAction = true;
             this.numN3rd_Clamping_Position.MaxLimit.StaticValue = 0D;
             this.numN3rd_Clamping_Position.MaxLimit.TagAddress = "";
@@ -237,7 +237,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numN3rd_Clamping_Position.OutOfLimitsWarning = false;
             this.numN3rd_Clamping_Position.PlcNumber = 1;
             this.numN3rd_Clamping_Position.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            this.numN3rd_Clamping_Position.RowWidth = 600;
+            this.numN3rd_Clamping_Position.RowWidth = 450;
             this.numN3rd_Clamping_Position.ShowSuffix = true;
             this.numN3rd_Clamping_Position.ShowValueBorder = true;
             this.numN3rd_Clamping_Position.Size = new System.Drawing.Size(116, 26);
@@ -279,7 +279,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numN4th_Clamping_Position.EnableTrigger.ValB = 0D;
             this.numN4th_Clamping_Position.FillZero = false;
             this.numN4th_Clamping_Position.IsEditing = false;
-            this.numN4th_Clamping_Position.Location = new System.Drawing.Point(500, 182);
+            this.numN4th_Clamping_Position.Location = new System.Drawing.Point(350, 182);
             this.numN4th_Clamping_Position.LogAction = true;
             this.numN4th_Clamping_Position.MaxLimit.StaticValue = 0D;
             this.numN4th_Clamping_Position.MaxLimit.TagAddress = "";
@@ -291,7 +291,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numN4th_Clamping_Position.OutOfLimitsWarning = false;
             this.numN4th_Clamping_Position.PlcNumber = 1;
             this.numN4th_Clamping_Position.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            this.numN4th_Clamping_Position.RowWidth = 600;
+            this.numN4th_Clamping_Position.RowWidth = 450;
             this.numN4th_Clamping_Position.ShowSuffix = true;
             this.numN4th_Clamping_Position.ShowValueBorder = true;
             this.numN4th_Clamping_Position.Size = new System.Drawing.Size(116, 26);
@@ -333,7 +333,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numN5th_Clamping_Position.EnableTrigger.ValB = 0D;
             this.numN5th_Clamping_Position.FillZero = false;
             this.numN5th_Clamping_Position.IsEditing = false;
-            this.numN5th_Clamping_Position.Location = new System.Drawing.Point(500, 220);
+            this.numN5th_Clamping_Position.Location = new System.Drawing.Point(350, 220);
             this.numN5th_Clamping_Position.LogAction = true;
             this.numN5th_Clamping_Position.MaxLimit.StaticValue = 0D;
             this.numN5th_Clamping_Position.MaxLimit.TagAddress = "";
@@ -345,7 +345,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numN5th_Clamping_Position.OutOfLimitsWarning = false;
             this.numN5th_Clamping_Position.PlcNumber = 1;
             this.numN5th_Clamping_Position.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            this.numN5th_Clamping_Position.RowWidth = 600;
+            this.numN5th_Clamping_Position.RowWidth = 450;
             this.numN5th_Clamping_Position.ShowSuffix = true;
             this.numN5th_Clamping_Position.ShowValueBorder = true;
             this.numN5th_Clamping_Position.Size = new System.Drawing.Size(116, 26);
@@ -387,7 +387,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numN6th_Clamping_Position.EnableTrigger.ValB = 0D;
             this.numN6th_Clamping_Position.FillZero = false;
             this.numN6th_Clamping_Position.IsEditing = false;
-            this.numN6th_Clamping_Position.Location = new System.Drawing.Point(500, 258);
+            this.numN6th_Clamping_Position.Location = new System.Drawing.Point(350, 258);
             this.numN6th_Clamping_Position.LogAction = true;
             this.numN6th_Clamping_Position.MaxLimit.StaticValue = 0D;
             this.numN6th_Clamping_Position.MaxLimit.TagAddress = "";
@@ -399,7 +399,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numN6th_Clamping_Position.OutOfLimitsWarning = false;
             this.numN6th_Clamping_Position.PlcNumber = 1;
             this.numN6th_Clamping_Position.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            this.numN6th_Clamping_Position.RowWidth = 600;
+            this.numN6th_Clamping_Position.RowWidth = 450;
             this.numN6th_Clamping_Position.ShowSuffix = true;
             this.numN6th_Clamping_Position.ShowValueBorder = true;
             this.numN6th_Clamping_Position.Size = new System.Drawing.Size(116, 26);
@@ -441,7 +441,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numN7th_Clamping_Position.EnableTrigger.ValB = 0D;
             this.numN7th_Clamping_Position.FillZero = false;
             this.numN7th_Clamping_Position.IsEditing = false;
-            this.numN7th_Clamping_Position.Location = new System.Drawing.Point(500, 296);
+            this.numN7th_Clamping_Position.Location = new System.Drawing.Point(350, 296);
             this.numN7th_Clamping_Position.LogAction = true;
             this.numN7th_Clamping_Position.MaxLimit.StaticValue = 0D;
             this.numN7th_Clamping_Position.MaxLimit.TagAddress = "";
@@ -453,7 +453,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numN7th_Clamping_Position.OutOfLimitsWarning = false;
             this.numN7th_Clamping_Position.PlcNumber = 1;
             this.numN7th_Clamping_Position.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            this.numN7th_Clamping_Position.RowWidth = 600;
+            this.numN7th_Clamping_Position.RowWidth = 450;
             this.numN7th_Clamping_Position.ShowSuffix = true;
             this.numN7th_Clamping_Position.ShowValueBorder = true;
             this.numN7th_Clamping_Position.Size = new System.Drawing.Size(116, 26);
@@ -480,7 +480,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.Controls.Add(this.numN6th_Clamping_Position);
             this.Controls.Add(this.numN7th_Clamping_Position);
             this.Name = "ParamConveyor";
-            this.Size = new System.Drawing.Size(648, 352);
+            this.Size = new System.Drawing.Size(498, 352);
             this.ResumeLayout(false);
             this.PerformLayout();
 

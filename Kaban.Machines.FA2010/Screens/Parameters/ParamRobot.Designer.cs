@@ -74,7 +74,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numGripper_Length.EnableTrigger.ValB = 0D;
             this.numGripper_Length.FillZero = false;
             this.numGripper_Length.IsEditing = false;
-            this.numGripper_Length.Location = new System.Drawing.Point(500, 30);
+            this.numGripper_Length.Location = new System.Drawing.Point(350, 30);
             this.numGripper_Length.LogAction = true;
             this.numGripper_Length.MaxLimit.StaticValue = 0D;
             this.numGripper_Length.MaxLimit.TagAddress = "";
@@ -86,7 +86,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numGripper_Length.OutOfLimitsWarning = false;
             this.numGripper_Length.PlcNumber = 1;
             this.numGripper_Length.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            this.numGripper_Length.RowWidth = 600;
+            this.numGripper_Length.RowWidth = 450;
             this.numGripper_Length.ShowSuffix = true;
             this.numGripper_Length.ShowValueBorder = true;
             this.numGripper_Length.Size = new System.Drawing.Size(116, 26);
@@ -128,7 +128,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numLength_Measuring_Dist.EnableTrigger.ValB = 0D;
             this.numLength_Measuring_Dist.FillZero = false;
             this.numLength_Measuring_Dist.IsEditing = false;
-            this.numLength_Measuring_Dist.Location = new System.Drawing.Point(500, 68);
+            this.numLength_Measuring_Dist.Location = new System.Drawing.Point(350, 68);
             this.numLength_Measuring_Dist.LogAction = true;
             this.numLength_Measuring_Dist.MaxLimit.StaticValue = 0D;
             this.numLength_Measuring_Dist.MaxLimit.TagAddress = "";
@@ -140,7 +140,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numLength_Measuring_Dist.OutOfLimitsWarning = false;
             this.numLength_Measuring_Dist.PlcNumber = 1;
             this.numLength_Measuring_Dist.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            this.numLength_Measuring_Dist.RowWidth = 600;
+            this.numLength_Measuring_Dist.RowWidth = 450;
             this.numLength_Measuring_Dist.ShowSuffix = true;
             this.numLength_Measuring_Dist.ShowValueBorder = true;
             this.numLength_Measuring_Dist.Size = new System.Drawing.Size(116, 26);
@@ -182,7 +182,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numZ_Profile_Lifting_Amount.EnableTrigger.ValB = 0D;
             this.numZ_Profile_Lifting_Amount.FillZero = false;
             this.numZ_Profile_Lifting_Amount.IsEditing = false;
-            this.numZ_Profile_Lifting_Amount.Location = new System.Drawing.Point(500, 106);
+            this.numZ_Profile_Lifting_Amount.Location = new System.Drawing.Point(350, 106);
             this.numZ_Profile_Lifting_Amount.LogAction = true;
             this.numZ_Profile_Lifting_Amount.MaxLimit.StaticValue = 0D;
             this.numZ_Profile_Lifting_Amount.MaxLimit.TagAddress = "";
@@ -194,7 +194,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numZ_Profile_Lifting_Amount.OutOfLimitsWarning = false;
             this.numZ_Profile_Lifting_Amount.PlcNumber = 1;
             this.numZ_Profile_Lifting_Amount.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            this.numZ_Profile_Lifting_Amount.RowWidth = 600;
+            this.numZ_Profile_Lifting_Amount.RowWidth = 450;
             this.numZ_Profile_Lifting_Amount.ShowSuffix = true;
             this.numZ_Profile_Lifting_Amount.ShowValueBorder = true;
             this.numZ_Profile_Lifting_Amount.Size = new System.Drawing.Size(116, 26);
@@ -236,7 +236,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numY_Profile_Back_Clearing_Amount.EnableTrigger.ValB = 0D;
             this.numY_Profile_Back_Clearing_Amount.FillZero = false;
             this.numY_Profile_Back_Clearing_Amount.IsEditing = false;
-            this.numY_Profile_Back_Clearing_Amount.Location = new System.Drawing.Point(500, 144);
+            this.numY_Profile_Back_Clearing_Amount.Location = new System.Drawing.Point(350, 144);
             this.numY_Profile_Back_Clearing_Amount.LogAction = true;
             this.numY_Profile_Back_Clearing_Amount.MaxLimit.StaticValue = 0D;
             this.numY_Profile_Back_Clearing_Amount.MaxLimit.TagAddress = "";
@@ -248,7 +248,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numY_Profile_Back_Clearing_Amount.OutOfLimitsWarning = false;
             this.numY_Profile_Back_Clearing_Amount.PlcNumber = 1;
             this.numY_Profile_Back_Clearing_Amount.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            this.numY_Profile_Back_Clearing_Amount.RowWidth = 600;
+            this.numY_Profile_Back_Clearing_Amount.RowWidth = 450;
             this.numY_Profile_Back_Clearing_Amount.ShowSuffix = true;
             this.numY_Profile_Back_Clearing_Amount.ShowValueBorder = true;
             this.numY_Profile_Back_Clearing_Amount.Size = new System.Drawing.Size(116, 26);
@@ -290,7 +290,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numN1st_Clamp_Releasing_Distance.EnableTrigger.ValB = 0D;
             this.numN1st_Clamp_Releasing_Distance.FillZero = false;
             this.numN1st_Clamp_Releasing_Distance.IsEditing = false;
-            this.numN1st_Clamp_Releasing_Distance.Location = new System.Drawing.Point(500, 182);
+            this.numN1st_Clamp_Releasing_Distance.Location = new System.Drawing.Point(350, 182);
             this.numN1st_Clamp_Releasing_Distance.LogAction = true;
             this.numN1st_Clamp_Releasing_Distance.MaxLimit.StaticValue = 0D;
             this.numN1st_Clamp_Releasing_Distance.MaxLimit.TagAddress = "";
@@ -302,7 +302,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numN1st_Clamp_Releasing_Distance.OutOfLimitsWarning = false;
             this.numN1st_Clamp_Releasing_Distance.PlcNumber = 1;
             this.numN1st_Clamp_Releasing_Distance.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            this.numN1st_Clamp_Releasing_Distance.RowWidth = 600;
+            this.numN1st_Clamp_Releasing_Distance.RowWidth = 450;
             this.numN1st_Clamp_Releasing_Distance.ShowSuffix = true;
             this.numN1st_Clamp_Releasing_Distance.ShowValueBorder = true;
             this.numN1st_Clamp_Releasing_Distance.Size = new System.Drawing.Size(116, 26);
@@ -344,7 +344,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numRecognition_Extrication_Pos.EnableTrigger.ValB = 0D;
             this.numRecognition_Extrication_Pos.FillZero = false;
             this.numRecognition_Extrication_Pos.IsEditing = false;
-            this.numRecognition_Extrication_Pos.Location = new System.Drawing.Point(500, 220);
+            this.numRecognition_Extrication_Pos.Location = new System.Drawing.Point(350, 220);
             this.numRecognition_Extrication_Pos.LogAction = true;
             this.numRecognition_Extrication_Pos.MaxLimit.StaticValue = 0D;
             this.numRecognition_Extrication_Pos.MaxLimit.TagAddress = "";
@@ -356,7 +356,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numRecognition_Extrication_Pos.OutOfLimitsWarning = false;
             this.numRecognition_Extrication_Pos.PlcNumber = 1;
             this.numRecognition_Extrication_Pos.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            this.numRecognition_Extrication_Pos.RowWidth = 600;
+            this.numRecognition_Extrication_Pos.RowWidth = 450;
             this.numRecognition_Extrication_Pos.ShowSuffix = true;
             this.numRecognition_Extrication_Pos.ShowValueBorder = true;
             this.numRecognition_Extrication_Pos.Size = new System.Drawing.Size(116, 26);
@@ -398,7 +398,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numY_Profile_Clearing_Pos.EnableTrigger.ValB = 0D;
             this.numY_Profile_Clearing_Pos.FillZero = false;
             this.numY_Profile_Clearing_Pos.IsEditing = false;
-            this.numY_Profile_Clearing_Pos.Location = new System.Drawing.Point(500, 258);
+            this.numY_Profile_Clearing_Pos.Location = new System.Drawing.Point(350, 258);
             this.numY_Profile_Clearing_Pos.LogAction = true;
             this.numY_Profile_Clearing_Pos.MaxLimit.StaticValue = 0D;
             this.numY_Profile_Clearing_Pos.MaxLimit.TagAddress = "";
@@ -410,7 +410,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numY_Profile_Clearing_Pos.OutOfLimitsWarning = false;
             this.numY_Profile_Clearing_Pos.PlcNumber = 1;
             this.numY_Profile_Clearing_Pos.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            this.numY_Profile_Clearing_Pos.RowWidth = 600;
+            this.numY_Profile_Clearing_Pos.RowWidth = 450;
             this.numY_Profile_Clearing_Pos.ShowSuffix = true;
             this.numY_Profile_Clearing_Pos.ShowValueBorder = true;
             this.numY_Profile_Clearing_Pos.Size = new System.Drawing.Size(116, 26);
@@ -452,7 +452,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numZ_Profile_Clearing_Pos.EnableTrigger.ValB = 0D;
             this.numZ_Profile_Clearing_Pos.FillZero = false;
             this.numZ_Profile_Clearing_Pos.IsEditing = false;
-            this.numZ_Profile_Clearing_Pos.Location = new System.Drawing.Point(500, 296);
+            this.numZ_Profile_Clearing_Pos.Location = new System.Drawing.Point(350, 296);
             this.numZ_Profile_Clearing_Pos.LogAction = true;
             this.numZ_Profile_Clearing_Pos.MaxLimit.StaticValue = 0D;
             this.numZ_Profile_Clearing_Pos.MaxLimit.TagAddress = "";
@@ -464,7 +464,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numZ_Profile_Clearing_Pos.OutOfLimitsWarning = false;
             this.numZ_Profile_Clearing_Pos.PlcNumber = 1;
             this.numZ_Profile_Clearing_Pos.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            this.numZ_Profile_Clearing_Pos.RowWidth = 600;
+            this.numZ_Profile_Clearing_Pos.RowWidth = 450;
             this.numZ_Profile_Clearing_Pos.ShowSuffix = true;
             this.numZ_Profile_Clearing_Pos.ShowValueBorder = true;
             this.numZ_Profile_Clearing_Pos.Size = new System.Drawing.Size(116, 26);
@@ -506,7 +506,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numCross_Rollers_Robot_Y_Offset.EnableTrigger.ValB = 0D;
             this.numCross_Rollers_Robot_Y_Offset.FillZero = false;
             this.numCross_Rollers_Robot_Y_Offset.IsEditing = false;
-            this.numCross_Rollers_Robot_Y_Offset.Location = new System.Drawing.Point(500, 334);
+            this.numCross_Rollers_Robot_Y_Offset.Location = new System.Drawing.Point(350, 334);
             this.numCross_Rollers_Robot_Y_Offset.LogAction = true;
             this.numCross_Rollers_Robot_Y_Offset.MaxLimit.StaticValue = 0D;
             this.numCross_Rollers_Robot_Y_Offset.MaxLimit.TagAddress = "";
@@ -518,7 +518,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numCross_Rollers_Robot_Y_Offset.OutOfLimitsWarning = false;
             this.numCross_Rollers_Robot_Y_Offset.PlcNumber = 1;
             this.numCross_Rollers_Robot_Y_Offset.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            this.numCross_Rollers_Robot_Y_Offset.RowWidth = 600;
+            this.numCross_Rollers_Robot_Y_Offset.RowWidth = 450;
             this.numCross_Rollers_Robot_Y_Offset.ShowSuffix = true;
             this.numCross_Rollers_Robot_Y_Offset.ShowValueBorder = true;
             this.numCross_Rollers_Robot_Y_Offset.Size = new System.Drawing.Size(116, 26);
@@ -560,7 +560,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numRobot_Height.EnableTrigger.ValB = 0D;
             this.numRobot_Height.FillZero = false;
             this.numRobot_Height.IsEditing = false;
-            this.numRobot_Height.Location = new System.Drawing.Point(500, 372);
+            this.numRobot_Height.Location = new System.Drawing.Point(350, 372);
             this.numRobot_Height.LogAction = true;
             this.numRobot_Height.MaxLimit.StaticValue = 0D;
             this.numRobot_Height.MaxLimit.TagAddress = "";
@@ -572,7 +572,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numRobot_Height.OutOfLimitsWarning = false;
             this.numRobot_Height.PlcNumber = 1;
             this.numRobot_Height.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            this.numRobot_Height.RowWidth = 600;
+            this.numRobot_Height.RowWidth = 450;
             this.numRobot_Height.ShowSuffix = true;
             this.numRobot_Height.ShowValueBorder = true;
             this.numRobot_Height.Size = new System.Drawing.Size(116, 26);
@@ -614,7 +614,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numLeft_Front_Extrication_Pos.EnableTrigger.ValB = 0D;
             this.numLeft_Front_Extrication_Pos.FillZero = false;
             this.numLeft_Front_Extrication_Pos.IsEditing = false;
-            this.numLeft_Front_Extrication_Pos.Location = new System.Drawing.Point(500, 410);
+            this.numLeft_Front_Extrication_Pos.Location = new System.Drawing.Point(350, 410);
             this.numLeft_Front_Extrication_Pos.LogAction = true;
             this.numLeft_Front_Extrication_Pos.MaxLimit.StaticValue = 0D;
             this.numLeft_Front_Extrication_Pos.MaxLimit.TagAddress = "";
@@ -626,7 +626,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numLeft_Front_Extrication_Pos.OutOfLimitsWarning = false;
             this.numLeft_Front_Extrication_Pos.PlcNumber = 1;
             this.numLeft_Front_Extrication_Pos.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            this.numLeft_Front_Extrication_Pos.RowWidth = 600;
+            this.numLeft_Front_Extrication_Pos.RowWidth = 450;
             this.numLeft_Front_Extrication_Pos.ShowSuffix = true;
             this.numLeft_Front_Extrication_Pos.ShowValueBorder = true;
             this.numLeft_Front_Extrication_Pos.Size = new System.Drawing.Size(116, 26);
@@ -668,7 +668,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numConveyor_Extrication_Position.EnableTrigger.ValB = 0D;
             this.numConveyor_Extrication_Position.FillZero = false;
             this.numConveyor_Extrication_Position.IsEditing = false;
-            this.numConveyor_Extrication_Position.Location = new System.Drawing.Point(500, 448);
+            this.numConveyor_Extrication_Position.Location = new System.Drawing.Point(350, 448);
             this.numConveyor_Extrication_Position.LogAction = true;
             this.numConveyor_Extrication_Position.MaxLimit.StaticValue = 0D;
             this.numConveyor_Extrication_Position.MaxLimit.TagAddress = "";
@@ -680,7 +680,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numConveyor_Extrication_Position.OutOfLimitsWarning = false;
             this.numConveyor_Extrication_Position.PlcNumber = 1;
             this.numConveyor_Extrication_Position.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            this.numConveyor_Extrication_Position.RowWidth = 600;
+            this.numConveyor_Extrication_Position.RowWidth = 450;
             this.numConveyor_Extrication_Position.ShowSuffix = true;
             this.numConveyor_Extrication_Position.ShowValueBorder = true;
             this.numConveyor_Extrication_Position.Size = new System.Drawing.Size(116, 26);
@@ -722,7 +722,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numAcceleration_Time.EnableTrigger.ValB = 0D;
             this.numAcceleration_Time.FillZero = false;
             this.numAcceleration_Time.IsEditing = false;
-            this.numAcceleration_Time.Location = new System.Drawing.Point(500, 486);
+            this.numAcceleration_Time.Location = new System.Drawing.Point(350, 486);
             this.numAcceleration_Time.LogAction = true;
             this.numAcceleration_Time.MaxLimit.StaticValue = 0D;
             this.numAcceleration_Time.MaxLimit.TagAddress = "";
@@ -734,7 +734,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numAcceleration_Time.OutOfLimitsWarning = false;
             this.numAcceleration_Time.PlcNumber = 1;
             this.numAcceleration_Time.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            this.numAcceleration_Time.RowWidth = 600;
+            this.numAcceleration_Time.RowWidth = 450;
             this.numAcceleration_Time.ShowSuffix = true;
             this.numAcceleration_Time.ShowValueBorder = true;
             this.numAcceleration_Time.Size = new System.Drawing.Size(116, 26);
@@ -776,7 +776,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numDeceleration_Time.EnableTrigger.ValB = 0D;
             this.numDeceleration_Time.FillZero = false;
             this.numDeceleration_Time.IsEditing = false;
-            this.numDeceleration_Time.Location = new System.Drawing.Point(500, 524);
+            this.numDeceleration_Time.Location = new System.Drawing.Point(350, 524);
             this.numDeceleration_Time.LogAction = true;
             this.numDeceleration_Time.MaxLimit.StaticValue = 0D;
             this.numDeceleration_Time.MaxLimit.TagAddress = "";
@@ -788,7 +788,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numDeceleration_Time.OutOfLimitsWarning = false;
             this.numDeceleration_Time.PlcNumber = 1;
             this.numDeceleration_Time.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            this.numDeceleration_Time.RowWidth = 600;
+            this.numDeceleration_Time.RowWidth = 450;
             this.numDeceleration_Time.ShowSuffix = true;
             this.numDeceleration_Time.ShowValueBorder = true;
             this.numDeceleration_Time.Size = new System.Drawing.Size(116, 26);
@@ -830,7 +830,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numR_Movement_Amount_Rotation.EnableTrigger.ValB = 0D;
             this.numR_Movement_Amount_Rotation.FillZero = false;
             this.numR_Movement_Amount_Rotation.IsEditing = false;
-            this.numR_Movement_Amount_Rotation.Location = new System.Drawing.Point(500, 562);
+            this.numR_Movement_Amount_Rotation.Location = new System.Drawing.Point(350, 562);
             this.numR_Movement_Amount_Rotation.LogAction = true;
             this.numR_Movement_Amount_Rotation.MaxLimit.StaticValue = 0D;
             this.numR_Movement_Amount_Rotation.MaxLimit.TagAddress = "";
@@ -842,7 +842,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numR_Movement_Amount_Rotation.OutOfLimitsWarning = false;
             this.numR_Movement_Amount_Rotation.PlcNumber = 1;
             this.numR_Movement_Amount_Rotation.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            this.numR_Movement_Amount_Rotation.RowWidth = 600;
+            this.numR_Movement_Amount_Rotation.RowWidth = 450;
             this.numR_Movement_Amount_Rotation.ShowSuffix = true;
             this.numR_Movement_Amount_Rotation.ShowValueBorder = true;
             this.numR_Movement_Amount_Rotation.Size = new System.Drawing.Size(116, 26);
@@ -884,7 +884,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numLinear_Encoder_Tolerance.EnableTrigger.ValB = 0D;
             this.numLinear_Encoder_Tolerance.FillZero = false;
             this.numLinear_Encoder_Tolerance.IsEditing = false;
-            this.numLinear_Encoder_Tolerance.Location = new System.Drawing.Point(500, 600);
+            this.numLinear_Encoder_Tolerance.Location = new System.Drawing.Point(350, 600);
             this.numLinear_Encoder_Tolerance.LogAction = true;
             this.numLinear_Encoder_Tolerance.MaxLimit.StaticValue = 0D;
             this.numLinear_Encoder_Tolerance.MaxLimit.TagAddress = "";
@@ -896,7 +896,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numLinear_Encoder_Tolerance.OutOfLimitsWarning = false;
             this.numLinear_Encoder_Tolerance.PlcNumber = 1;
             this.numLinear_Encoder_Tolerance.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            this.numLinear_Encoder_Tolerance.RowWidth = 600;
+            this.numLinear_Encoder_Tolerance.RowWidth = 450;
             this.numLinear_Encoder_Tolerance.ShowSuffix = true;
             this.numLinear_Encoder_Tolerance.ShowValueBorder = true;
             this.numLinear_Encoder_Tolerance.Size = new System.Drawing.Size(116, 26);
@@ -938,7 +938,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numN90_Degree_Gripper_Y_Offset.EnableTrigger.ValB = 0D;
             this.numN90_Degree_Gripper_Y_Offset.FillZero = false;
             this.numN90_Degree_Gripper_Y_Offset.IsEditing = false;
-            this.numN90_Degree_Gripper_Y_Offset.Location = new System.Drawing.Point(500, 638);
+            this.numN90_Degree_Gripper_Y_Offset.Location = new System.Drawing.Point(350, 638);
             this.numN90_Degree_Gripper_Y_Offset.LogAction = true;
             this.numN90_Degree_Gripper_Y_Offset.MaxLimit.StaticValue = 0D;
             this.numN90_Degree_Gripper_Y_Offset.MaxLimit.TagAddress = "";
@@ -950,7 +950,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numN90_Degree_Gripper_Y_Offset.OutOfLimitsWarning = false;
             this.numN90_Degree_Gripper_Y_Offset.PlcNumber = 1;
             this.numN90_Degree_Gripper_Y_Offset.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            this.numN90_Degree_Gripper_Y_Offset.RowWidth = 600;
+            this.numN90_Degree_Gripper_Y_Offset.RowWidth = 450;
             this.numN90_Degree_Gripper_Y_Offset.ShowSuffix = true;
             this.numN90_Degree_Gripper_Y_Offset.ShowValueBorder = true;
             this.numN90_Degree_Gripper_Y_Offset.Size = new System.Drawing.Size(116, 26);
@@ -992,7 +992,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numN90_Degree_Gripper_Z_Offset.EnableTrigger.ValB = 0D;
             this.numN90_Degree_Gripper_Z_Offset.FillZero = false;
             this.numN90_Degree_Gripper_Z_Offset.IsEditing = false;
-            this.numN90_Degree_Gripper_Z_Offset.Location = new System.Drawing.Point(500, 676);
+            this.numN90_Degree_Gripper_Z_Offset.Location = new System.Drawing.Point(350, 676);
             this.numN90_Degree_Gripper_Z_Offset.LogAction = true;
             this.numN90_Degree_Gripper_Z_Offset.MaxLimit.StaticValue = 0D;
             this.numN90_Degree_Gripper_Z_Offset.MaxLimit.TagAddress = "";
@@ -1004,7 +1004,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numN90_Degree_Gripper_Z_Offset.OutOfLimitsWarning = false;
             this.numN90_Degree_Gripper_Z_Offset.PlcNumber = 1;
             this.numN90_Degree_Gripper_Z_Offset.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            this.numN90_Degree_Gripper_Z_Offset.RowWidth = 600;
+            this.numN90_Degree_Gripper_Z_Offset.RowWidth = 450;
             this.numN90_Degree_Gripper_Z_Offset.ShowSuffix = true;
             this.numN90_Degree_Gripper_Z_Offset.ShowValueBorder = true;
             this.numN90_Degree_Gripper_Z_Offset.Size = new System.Drawing.Size(116, 26);
@@ -1046,7 +1046,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numCross_Rollers_Robot_Z_Offset.EnableTrigger.ValB = 0D;
             this.numCross_Rollers_Robot_Z_Offset.FillZero = false;
             this.numCross_Rollers_Robot_Z_Offset.IsEditing = false;
-            this.numCross_Rollers_Robot_Z_Offset.Location = new System.Drawing.Point(500, 714);
+            this.numCross_Rollers_Robot_Z_Offset.Location = new System.Drawing.Point(350, 714);
             this.numCross_Rollers_Robot_Z_Offset.LogAction = true;
             this.numCross_Rollers_Robot_Z_Offset.MaxLimit.StaticValue = 0D;
             this.numCross_Rollers_Robot_Z_Offset.MaxLimit.TagAddress = "";
@@ -1058,7 +1058,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numCross_Rollers_Robot_Z_Offset.OutOfLimitsWarning = false;
             this.numCross_Rollers_Robot_Z_Offset.PlcNumber = 1;
             this.numCross_Rollers_Robot_Z_Offset.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            this.numCross_Rollers_Robot_Z_Offset.RowWidth = 600;
+            this.numCross_Rollers_Robot_Z_Offset.RowWidth = 450;
             this.numCross_Rollers_Robot_Z_Offset.ShowSuffix = true;
             this.numCross_Rollers_Robot_Z_Offset.ShowValueBorder = true;
             this.numCross_Rollers_Robot_Z_Offset.Size = new System.Drawing.Size(116, 26);
@@ -1096,7 +1096,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.Controls.Add(this.numN90_Degree_Gripper_Z_Offset);
             this.Controls.Add(this.numCross_Rollers_Robot_Z_Offset);
             this.Name = "ParamRobot";
-            this.Size = new System.Drawing.Size(648, 770);
+            this.Size = new System.Drawing.Size(498, 770);
             this.ResumeLayout(false);
             this.PerformLayout();
 

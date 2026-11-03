@@ -68,7 +68,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numSaw_Diameter.EnableTrigger.ValB = 0D;
             this.numSaw_Diameter.FillZero = false;
             this.numSaw_Diameter.IsEditing = false;
-            this.numSaw_Diameter.Location = new System.Drawing.Point(500, 30);
+            this.numSaw_Diameter.Location = new System.Drawing.Point(350, 30);
             this.numSaw_Diameter.LogAction = true;
             this.numSaw_Diameter.MaxLimit.StaticValue = 700D;
             this.numSaw_Diameter.MaxLimit.TagAddress = "";
@@ -81,7 +81,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numSaw_Diameter.PlcNumber = 1;
             this.numSaw_Diameter.ReadFormula = "";
             this.numSaw_Diameter.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            this.numSaw_Diameter.RowWidth = 600;
+            this.numSaw_Diameter.RowWidth = 450;
             this.numSaw_Diameter.ShowSuffix = true;
             this.numSaw_Diameter.ShowValueBorder = true;
             this.numSaw_Diameter.Size = new System.Drawing.Size(116, 26);
@@ -125,7 +125,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numMin_Cut_Length_to_Conveyor.EnableTrigger.ValB = 0D;
             this.numMin_Cut_Length_to_Conveyor.FillZero = false;
             this.numMin_Cut_Length_to_Conveyor.IsEditing = false;
-            this.numMin_Cut_Length_to_Conveyor.Location = new System.Drawing.Point(500, 68);
+            this.numMin_Cut_Length_to_Conveyor.Location = new System.Drawing.Point(350, 68);
             this.numMin_Cut_Length_to_Conveyor.LogAction = true;
             this.numMin_Cut_Length_to_Conveyor.MaxLimit.StaticValue = 0D;
             this.numMin_Cut_Length_to_Conveyor.MaxLimit.TagAddress = "";
@@ -137,7 +137,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numMin_Cut_Length_to_Conveyor.OutOfLimitsWarning = false;
             this.numMin_Cut_Length_to_Conveyor.PlcNumber = 1;
             this.numMin_Cut_Length_to_Conveyor.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            this.numMin_Cut_Length_to_Conveyor.RowWidth = 600;
+            this.numMin_Cut_Length_to_Conveyor.RowWidth = 450;
             this.numMin_Cut_Length_to_Conveyor.ShowSuffix = true;
             this.numMin_Cut_Length_to_Conveyor.ShowValueBorder = true;
             this.numMin_Cut_Length_to_Conveyor.Size = new System.Drawing.Size(116, 26);
@@ -180,7 +180,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numMin_Waste_Profile_to_Conveyor.EnableTrigger.ValB = 0D;
             this.numMin_Waste_Profile_to_Conveyor.FillZero = false;
             this.numMin_Waste_Profile_to_Conveyor.IsEditing = false;
-            this.numMin_Waste_Profile_to_Conveyor.Location = new System.Drawing.Point(500, 106);
+            this.numMin_Waste_Profile_to_Conveyor.Location = new System.Drawing.Point(350, 106);
             this.numMin_Waste_Profile_to_Conveyor.LogAction = true;
             this.numMin_Waste_Profile_to_Conveyor.MaxLimit.StaticValue = 0D;
             this.numMin_Waste_Profile_to_Conveyor.MaxLimit.TagAddress = "";
@@ -192,7 +192,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numMin_Waste_Profile_to_Conveyor.OutOfLimitsWarning = false;
             this.numMin_Waste_Profile_to_Conveyor.PlcNumber = 1;
             this.numMin_Waste_Profile_to_Conveyor.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            this.numMin_Waste_Profile_to_Conveyor.RowWidth = 600;
+            this.numMin_Waste_Profile_to_Conveyor.RowWidth = 450;
             this.numMin_Waste_Profile_to_Conveyor.ShowSuffix = true;
             this.numMin_Waste_Profile_to_Conveyor.ShowValueBorder = true;
             this.numMin_Waste_Profile_to_Conveyor.Size = new System.Drawing.Size(116, 26);
@@ -235,7 +235,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numN45_Target_Position.EnableTrigger.ValB = 0D;
             this.numN45_Target_Position.FillZero = false;
             this.numN45_Target_Position.IsEditing = false;
-            this.numN45_Target_Position.Location = new System.Drawing.Point(500, 144);
+            this.numN45_Target_Position.Location = new System.Drawing.Point(350, 144);
             this.numN45_Target_Position.LogAction = true;
             this.numN45_Target_Position.MaxLimit.StaticValue = 0D;
             this.numN45_Target_Position.MaxLimit.TagAddress = "";
@@ -247,7 +247,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numN45_Target_Position.OutOfLimitsWarning = false;
             this.numN45_Target_Position.PlcNumber = 1;
             this.numN45_Target_Position.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            this.numN45_Target_Position.RowWidth = 600;
+            this.numN45_Target_Position.RowWidth = 450;
             this.numN45_Target_Position.ShowSuffix = true;
             this.numN45_Target_Position.ShowValueBorder = true;
             this.numN45_Target_Position.Size = new System.Drawing.Size(116, 26);
@@ -290,7 +290,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numN90_Target_Position.EnableTrigger.ValB = 0D;
             this.numN90_Target_Position.FillZero = false;
             this.numN90_Target_Position.IsEditing = false;
-            this.numN90_Target_Position.Location = new System.Drawing.Point(500, 182);
+            this.numN90_Target_Position.Location = new System.Drawing.Point(350, 182);
             this.numN90_Target_Position.LogAction = true;
             this.numN90_Target_Position.MaxLimit.StaticValue = 0D;
             this.numN90_Target_Position.MaxLimit.TagAddress = "";
@@ -302,7 +302,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numN90_Target_Position.OutOfLimitsWarning = false;
             this.numN90_Target_Position.PlcNumber = 1;
             this.numN90_Target_Position.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            this.numN90_Target_Position.RowWidth = 600;
+            this.numN90_Target_Position.RowWidth = 450;
             this.numN90_Target_Position.ShowSuffix = true;
             this.numN90_Target_Position.ShowValueBorder = true;
             this.numN90_Target_Position.Size = new System.Drawing.Size(116, 26);
@@ -345,7 +345,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numN135_Target_Position.EnableTrigger.ValB = 0D;
             this.numN135_Target_Position.FillZero = false;
             this.numN135_Target_Position.IsEditing = false;
-            this.numN135_Target_Position.Location = new System.Drawing.Point(500, 220);
+            this.numN135_Target_Position.Location = new System.Drawing.Point(350, 220);
             this.numN135_Target_Position.LogAction = true;
             this.numN135_Target_Position.MaxLimit.StaticValue = 0D;
             this.numN135_Target_Position.MaxLimit.TagAddress = "";
@@ -357,7 +357,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numN135_Target_Position.OutOfLimitsWarning = false;
             this.numN135_Target_Position.PlcNumber = 1;
             this.numN135_Target_Position.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            this.numN135_Target_Position.RowWidth = 600;
+            this.numN135_Target_Position.RowWidth = 450;
             this.numN135_Target_Position.ShowSuffix = true;
             this.numN135_Target_Position.ShowValueBorder = true;
             this.numN135_Target_Position.Size = new System.Drawing.Size(116, 26);
@@ -400,7 +400,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numLast_Piece_Cutting_Offset.EnableTrigger.ValB = 0D;
             this.numLast_Piece_Cutting_Offset.FillZero = false;
             this.numLast_Piece_Cutting_Offset.IsEditing = false;
-            this.numLast_Piece_Cutting_Offset.Location = new System.Drawing.Point(500, 258);
+            this.numLast_Piece_Cutting_Offset.Location = new System.Drawing.Point(350, 258);
             this.numLast_Piece_Cutting_Offset.LogAction = true;
             this.numLast_Piece_Cutting_Offset.MaxLimit.StaticValue = 0D;
             this.numLast_Piece_Cutting_Offset.MaxLimit.TagAddress = "";
@@ -412,7 +412,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numLast_Piece_Cutting_Offset.OutOfLimitsWarning = false;
             this.numLast_Piece_Cutting_Offset.PlcNumber = 1;
             this.numLast_Piece_Cutting_Offset.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            this.numLast_Piece_Cutting_Offset.RowWidth = 600;
+            this.numLast_Piece_Cutting_Offset.RowWidth = 450;
             this.numLast_Piece_Cutting_Offset.ShowSuffix = true;
             this.numLast_Piece_Cutting_Offset.ShowValueBorder = true;
             this.numLast_Piece_Cutting_Offset.Size = new System.Drawing.Size(116, 26);
@@ -455,7 +455,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numRight_Front_Clamp_Min_Length.EnableTrigger.ValB = 0D;
             this.numRight_Front_Clamp_Min_Length.FillZero = false;
             this.numRight_Front_Clamp_Min_Length.IsEditing = false;
-            this.numRight_Front_Clamp_Min_Length.Location = new System.Drawing.Point(500, 296);
+            this.numRight_Front_Clamp_Min_Length.Location = new System.Drawing.Point(350, 296);
             this.numRight_Front_Clamp_Min_Length.LogAction = true;
             this.numRight_Front_Clamp_Min_Length.MaxLimit.StaticValue = 0D;
             this.numRight_Front_Clamp_Min_Length.MaxLimit.TagAddress = "";
@@ -467,7 +467,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numRight_Front_Clamp_Min_Length.OutOfLimitsWarning = false;
             this.numRight_Front_Clamp_Min_Length.PlcNumber = 1;
             this.numRight_Front_Clamp_Min_Length.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            this.numRight_Front_Clamp_Min_Length.RowWidth = 600;
+            this.numRight_Front_Clamp_Min_Length.RowWidth = 450;
             this.numRight_Front_Clamp_Min_Length.ShowSuffix = true;
             this.numRight_Front_Clamp_Min_Length.ShowValueBorder = true;
             this.numRight_Front_Clamp_Min_Length.Size = new System.Drawing.Size(116, 26);
@@ -510,7 +510,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numMilling_X_Cutting_Front_Vertical_Clamping_Distance.EnableTrigger.ValB = 0D;
             this.numMilling_X_Cutting_Front_Vertical_Clamping_Distance.FillZero = false;
             this.numMilling_X_Cutting_Front_Vertical_Clamping_Distance.IsEditing = false;
-            this.numMilling_X_Cutting_Front_Vertical_Clamping_Distance.Location = new System.Drawing.Point(500, 334);
+            this.numMilling_X_Cutting_Front_Vertical_Clamping_Distance.Location = new System.Drawing.Point(350, 334);
             this.numMilling_X_Cutting_Front_Vertical_Clamping_Distance.LogAction = true;
             this.numMilling_X_Cutting_Front_Vertical_Clamping_Distance.MaxLimit.StaticValue = 0D;
             this.numMilling_X_Cutting_Front_Vertical_Clamping_Distance.MaxLimit.TagAddress = "";
@@ -522,7 +522,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numMilling_X_Cutting_Front_Vertical_Clamping_Distance.OutOfLimitsWarning = false;
             this.numMilling_X_Cutting_Front_Vertical_Clamping_Distance.PlcNumber = 1;
             this.numMilling_X_Cutting_Front_Vertical_Clamping_Distance.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            this.numMilling_X_Cutting_Front_Vertical_Clamping_Distance.RowWidth = 600;
+            this.numMilling_X_Cutting_Front_Vertical_Clamping_Distance.RowWidth = 450;
             this.numMilling_X_Cutting_Front_Vertical_Clamping_Distance.ShowSuffix = true;
             this.numMilling_X_Cutting_Front_Vertical_Clamping_Distance.ShowValueBorder = true;
             this.numMilling_X_Cutting_Front_Vertical_Clamping_Distance.Size = new System.Drawing.Size(116, 26);
@@ -565,7 +565,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numLong_Profile_Ejection_Min_Length.EnableTrigger.ValB = 0D;
             this.numLong_Profile_Ejection_Min_Length.FillZero = false;
             this.numLong_Profile_Ejection_Min_Length.IsEditing = false;
-            this.numLong_Profile_Ejection_Min_Length.Location = new System.Drawing.Point(500, 372);
+            this.numLong_Profile_Ejection_Min_Length.Location = new System.Drawing.Point(350, 372);
             this.numLong_Profile_Ejection_Min_Length.LogAction = true;
             this.numLong_Profile_Ejection_Min_Length.MaxLimit.StaticValue = 0D;
             this.numLong_Profile_Ejection_Min_Length.MaxLimit.TagAddress = "";
@@ -577,7 +577,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numLong_Profile_Ejection_Min_Length.OutOfLimitsWarning = false;
             this.numLong_Profile_Ejection_Min_Length.PlcNumber = 1;
             this.numLong_Profile_Ejection_Min_Length.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            this.numLong_Profile_Ejection_Min_Length.RowWidth = 600;
+            this.numLong_Profile_Ejection_Min_Length.RowWidth = 450;
             this.numLong_Profile_Ejection_Min_Length.ShowSuffix = true;
             this.numLong_Profile_Ejection_Min_Length.ShowValueBorder = true;
             this.numLong_Profile_Ejection_Min_Length.Size = new System.Drawing.Size(116, 26);
@@ -620,7 +620,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numSaw_Right_Top_Clamp_Clearing_Position.EnableTrigger.ValB = 0D;
             this.numSaw_Right_Top_Clamp_Clearing_Position.FillZero = false;
             this.numSaw_Right_Top_Clamp_Clearing_Position.IsEditing = false;
-            this.numSaw_Right_Top_Clamp_Clearing_Position.Location = new System.Drawing.Point(500, 410);
+            this.numSaw_Right_Top_Clamp_Clearing_Position.Location = new System.Drawing.Point(350, 410);
             this.numSaw_Right_Top_Clamp_Clearing_Position.LogAction = true;
             this.numSaw_Right_Top_Clamp_Clearing_Position.MaxLimit.StaticValue = 0D;
             this.numSaw_Right_Top_Clamp_Clearing_Position.MaxLimit.TagAddress = "";
@@ -632,7 +632,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numSaw_Right_Top_Clamp_Clearing_Position.OutOfLimitsWarning = false;
             this.numSaw_Right_Top_Clamp_Clearing_Position.PlcNumber = 1;
             this.numSaw_Right_Top_Clamp_Clearing_Position.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            this.numSaw_Right_Top_Clamp_Clearing_Position.RowWidth = 600;
+            this.numSaw_Right_Top_Clamp_Clearing_Position.RowWidth = 450;
             this.numSaw_Right_Top_Clamp_Clearing_Position.ShowSuffix = true;
             this.numSaw_Right_Top_Clamp_Clearing_Position.ShowValueBorder = true;
             this.numSaw_Right_Top_Clamp_Clearing_Position.Size = new System.Drawing.Size(116, 26);
@@ -675,7 +675,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numSaw_Cooling_Time.EnableTrigger.ValB = 0D;
             this.numSaw_Cooling_Time.FillZero = false;
             this.numSaw_Cooling_Time.IsEditing = false;
-            this.numSaw_Cooling_Time.Location = new System.Drawing.Point(500, 448);
+            this.numSaw_Cooling_Time.Location = new System.Drawing.Point(350, 448);
             this.numSaw_Cooling_Time.LogAction = true;
             this.numSaw_Cooling_Time.MaxLimit.StaticValue = 0D;
             this.numSaw_Cooling_Time.MaxLimit.TagAddress = "";
@@ -687,7 +687,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numSaw_Cooling_Time.OutOfLimitsWarning = false;
             this.numSaw_Cooling_Time.PlcNumber = 1;
             this.numSaw_Cooling_Time.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            this.numSaw_Cooling_Time.RowWidth = 600;
+            this.numSaw_Cooling_Time.RowWidth = 450;
             this.numSaw_Cooling_Time.ShowSuffix = true;
             this.numSaw_Cooling_Time.ShowValueBorder = true;
             this.numSaw_Cooling_Time.Size = new System.Drawing.Size(116, 26);
@@ -730,7 +730,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numSaw_Cooling_Period.EnableTrigger.ValB = 0D;
             this.numSaw_Cooling_Period.FillZero = false;
             this.numSaw_Cooling_Period.IsEditing = false;
-            this.numSaw_Cooling_Period.Location = new System.Drawing.Point(500, 486);
+            this.numSaw_Cooling_Period.Location = new System.Drawing.Point(350, 486);
             this.numSaw_Cooling_Period.LogAction = true;
             this.numSaw_Cooling_Period.MaxLimit.StaticValue = 0D;
             this.numSaw_Cooling_Period.MaxLimit.TagAddress = "";
@@ -742,7 +742,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numSaw_Cooling_Period.OutOfLimitsWarning = false;
             this.numSaw_Cooling_Period.PlcNumber = 1;
             this.numSaw_Cooling_Period.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            this.numSaw_Cooling_Period.RowWidth = 600;
+            this.numSaw_Cooling_Period.RowWidth = 450;
             this.numSaw_Cooling_Period.ShowSuffix = true;
             this.numSaw_Cooling_Period.ShowValueBorder = true;
             this.numSaw_Cooling_Period.Size = new System.Drawing.Size(116, 26);
@@ -775,7 +775,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.Controls.Add(this.numSaw_Cooling_Time);
             this.Controls.Add(this.numSaw_Cooling_Period);
             this.Name = "ParamCutting";
-            this.Size = new System.Drawing.Size(648, 542);
+            this.Size = new System.Drawing.Size(498, 542);
             this.ResumeLayout(false);
             this.PerformLayout();
 

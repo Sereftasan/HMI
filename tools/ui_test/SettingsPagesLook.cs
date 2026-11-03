@@ -54,7 +54,8 @@ class SPL {
         }
         Check(n + ": every field (" + fields.Count + ") a settings row - its caption the row (" + fields.Select(f => f.RowWidth).FirstOrDefault() +
               " wide, " + UiStyle.SettingRowHeight + " high, ending 8 px past the field, behind it, words at the left, no colon)",
-              fields.Count > 0 && bad.Count == 0, bad.Count + ": " + string.Join(" | ", bad.Take(3)));
+              // (3 November, the second: 450 wide - "Yes", the field nearer its caption)
+              fields.Count > 0 && bad.Count == 0 && fields.All(f => f.RowWidth == 450), bad.Count + ": " + string.Join(" | ", bad.Take(3)));
         var apart = new List<string>();
         foreach (var col in labels.Values.Where(l => fields.Contains(OwnerOf(l))).GroupBy(l => new { l.Parent, l.Left })) {
             var ordered = col.OrderBy(l => l.Top).ToList();
