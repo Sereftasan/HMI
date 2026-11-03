@@ -492,14 +492,14 @@ namespace Kaban.UI.Controls
                 case CheckBoxLook.SwitchRow:
                 {
                     // the row lit under the pointer - while the whole row answers (ActiveArea.Row)
-                    if (_over && live && _activeArea == ActiveArea.Row) using (var back = new SolidBrush(Color.FromArgb(246, 248, 251))) g.FillRectangle(back, 0, 0, Width, Height - 1);
+                    if (_over && live && _activeArea == ActiveArea.Row) using (var back = new SolidBrush(UiStyle.RowHoverFill)) g.FillRectangle(back, 0, 0, Width, Height - 1);
                     var t = SwitchTrack;
                     var text = new Rectangle(8, 0, Math.Max(10, (int)t.Left - 16), Height - 1);
                     TextRenderer.DrawText(g, CaptionShown, font, text, ink,
                         TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis | TextFormatFlags.SingleLine | TextFormatFlags.NoPrefix);
                     ToggleSwitch.Draw(g, t, Checked, live);
                     if (alert) using (var path = ToggleSwitch.Pill(RectangleF.Inflate(t, 2f, 2f))) using (var pen = new Pen(red, 2f)) g.DrawPath(pen, path);
-                    using (var pen = new Pen(UiStyle.GridRule)) g.DrawLine(pen, 0, Height - 1, Width, Height - 1);
+                    using (var pen = new Pen(UiStyle.RowRule)) g.DrawLine(pen, 0, Height - 1, Width, Height - 1);     // (lighter than a table's rule)
                     break;
                 }
 

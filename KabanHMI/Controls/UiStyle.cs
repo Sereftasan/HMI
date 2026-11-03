@@ -686,6 +686,16 @@ namespace Kaban.UI.Controls
 
         // The table colours, one set for the whole program.
         public static readonly Color GridRule = Color.FromArgb(228, 231, 235);
+
+        // ---- the settings rows (Machine Settings: the Options page's switches, the fields' rows) ----
+
+        /// <summary>A settings row's height at factor 1 (3 November: the Options page's rows "a little less" high - 46 before).</summary>
+        public const int SettingRowHeight = 38;
+        /// <summary>The light line between settings rows (3 November: "make this divider line a little less visible" - the
+        /// tables' GridRule before).</summary>
+        public static readonly Color RowRule = Color.FromArgb(237, 239, 242);
+        /// <summary>A settings row under the pointer.</summary>
+        public static readonly Color RowHoverFill = Color.FromArgb(246, 248, 251);
         public static readonly Color GridHeadBack = Color.FromArgb(245, 246, 248);
         public static readonly Color GridInk = Color.FromArgb(25, 28, 34);
         public static readonly Color GridSelection = Color.FromArgb(218, 232, 250);
