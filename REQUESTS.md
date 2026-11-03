@@ -6,6 +6,10 @@ Claude reads this file at the start of every batch, does the items, and moves ea
 ## To do
 
 ## Done
+- 3 November (the two answers):
+  - 80ca93c - Numeric fields and switches act as the whole row by default (ActiveArea Row) - kept, noted in CLAUDE.md.
+  - 74f17be - A small switch slides from the caption beside it too (mouse and finger; no page scrolls under it), in the
+    manual's switch paragraph.
 - 2 November, night (alignment, titled frames, switches that ask, the row as the control):
   - f453b4a - Logs and Reports: the audit log's row on one middle line; the dashboard settings' switches end where
     the time zone's list and the folder buttons end.
