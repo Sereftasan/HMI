@@ -51,6 +51,9 @@ namespace Kaban.UI.Controls
         /// <summary>For tests and tools: the factor to use, set before any window is built.</summary>
         public static void Override(double factor) { _factor = (float)DisplaySettings.Clamp(factor); }
 
+        /// <summary>Run by Mono (the tests on Linux), not by .NET on Windows.</summary>
+        private static readonly bool OnMono = Type.GetType("Mono.Runtime") != null;
+
         /// <summary>False at factor 1: nothing is scaled.</summary>
         public static bool Active { get { return Math.Abs(Factor - 1f) > 0.001f; } }
 
@@ -230,6 +233,10 @@ namespace Kaban.UI.Controls
                 {
                     // Positions and sizes of everything under root (and root's own size).
                     root.Scale(new SizeF(Factor, Factor));
+                    // Windows' Control.Scale scales each control's Padding and Margin with its bounds; Mono's does not -
+                    // the tests (on Mono) then saw rows placed by a margin at factor 1 (3 November). As Windows does:
+                    if (OnMono)
+                        foreach (var c in all) { c.Padding = Px(c.Padding); c.Margin = Px(c.Margin); }
 
                     foreach (var c in all)
                     {

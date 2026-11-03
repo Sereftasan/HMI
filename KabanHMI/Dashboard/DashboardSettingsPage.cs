@@ -250,8 +250,9 @@ namespace Kaban.UI.Dashboard
                 FlowDirection = FlowDirection.TopDown, WrapContents = false, AutoSize = true, AutoSizeMode = AutoSizeMode.GrowAndShrink,
                 Location = new Point(group.Padding.Left, group.Padding.Top + 4), BackColor = Color.White, Margin = Padding.Empty
             };
-            // as tall as its rows (a row shown or hidden: the frame follows)
-            rows.SizeChanged += (s, e) => group.Size = new Size(GroupWidth, rows.Bottom + group.Padding.Bottom);
+            // as tall as its rows (a row shown or hidden: the frame follows) - its width left as it is: GroupWidth, scaled with
+            // the page (3 November: at 120% the frames stayed GroupWidth wide, their rows scaled past them - the switches cut off)
+            rows.SizeChanged += (s, e) => group.Height = rows.Bottom + group.Padding.Bottom;
             group.Controls.Add(rows);
             _flow.Controls.Add(group);
             _groups.Add(group);

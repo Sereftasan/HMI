@@ -169,12 +169,13 @@ namespace Kaban.UI.Settings
             audit.Controls.Add(pn);
             var auditHost = new Panel { Dock = DockStyle.Top, BackColor = Color.White, Name = "auditHost" };
             audit.Location = new Point(Kaban.UI.Dashboard.DashboardSettingsControl.GroupLeft, 8);
+            audit.Width = Kaban.UI.Dashboard.DashboardSettingsControl.GroupWidth;     // (scaled with the page, then kept)
             auditHost.Controls.Add(audit);
             Action fitAudit = () =>
             {
-                audit.Size = new Size(Math.Max(Kaban.UI.Dashboard.DashboardSettingsControl.GroupWidth, pn.Width + audit.Padding.Horizontal),
-                                      pn.Height + audit.Padding.Vertical);
-                auditHost.Height = audit.Bottom + 6;
+                // (3 November: set to GroupWidth again here, the frame lost its scale at 120%)
+                audit.Size = new Size(Math.Max(audit.Width, pn.Width + audit.Padding.Horizontal), pn.Height + audit.Padding.Vertical);
+                auditHost.Height = audit.Bottom + Kaban.UI.Controls.UiScale.For(auditHost, 6);
             };
             pn.SizeChanged += (s, e) => fitAudit();
             fitAudit();
