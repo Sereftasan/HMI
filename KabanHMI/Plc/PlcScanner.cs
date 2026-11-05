@@ -839,9 +839,14 @@ namespace Kaban.UI.Plc
                         {
                             Func<string, int> there;
                             if (lookups.TryGetValue(at, out there)) return there(device);
+                            string clean = device.Trim().ToUpper();
+                            // read there already, and that station did not answer (5 November: PLC 2 switched off on a
+                            // panel, the HMI's records of a cylinder of PLC 1 with a sensor of PLC 2): nothing to queue - it
+                            // is no device of the page, and must not make that station one of the page's (the banner)
+                            string[] thereBatch;
+                            if (work.TryGetValue(at, out thereBatch) && thereBatch != null && Array.IndexOf(thereBatch, clean) >= 0) return 0;
                             // not read there yet: into that station's batch
                             HashSet<string> dynThere;
-                            string clean = device.Trim().ToUpper();
                             if (!_dynamicAddresses.TryGetValue(at, out dynThere))
                                 _dynamicAddresses[at] = dynThere = new HashSet<string>();
                             if (!dynThere.Contains(clean)) { dynThere.Add(clean); _needsRebuild = true; }
@@ -905,6 +910,8 @@ namespace Kaban.UI.Plc
 
             // Alarms only ever on FRESH data - never raise or clear an alarm from
             // stale/failed reads - and each station's alarms from that station.
+            // A watch with a device of another station (X12@2) is not judged while that station is not fresh.
+            AlarmGeneration.StationFresh = st => freshValues.ContainsKey(st);
             foreach (var kvFresh in freshValues)
             {
                 Func<string, int> lk;

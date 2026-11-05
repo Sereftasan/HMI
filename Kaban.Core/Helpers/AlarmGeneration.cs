@@ -176,6 +176,34 @@ namespace Kaban.Core.Helpers
         /// <summary>The HMI's records (null: none - a test, the designer).</summary>
         public static IRecordsObserver Records;
 
+        /// <summary>
+        /// A station's values are fresh this scan (the scanner's; null: every station is). A movement with a device of another
+        /// station (a sensor X12@2 of a cylinder of PLC 1) is not timed while that station does not answer - 5 November: PLC 2
+        /// switched off on a panel, every movement of such a cylinder was "not confirmed".
+        /// </summary>
+        public static Func<int, bool> StationFresh;
+
+        /// <summary>Every station a movement's devices are on is fresh now.</summary>
+        private static bool Fresh(Cylinder c, CylinderSide s)
+        {
+            var f = StationFresh;
+            if (f == null) return true;
+            if (s.Stations == null)
+            {
+                var list = new List<int>();
+                foreach (var a in new[] { s.Drive, s.OtherDrive, s.Position }.Concat(s.MustOn.Select(x => x.Address)).Concat(s.MustOff.Select(x => x.Address)))
+                {
+                    if (string.IsNullOrWhiteSpace(a)) continue;
+                    int st = PlcAddressHelper.StationOf(c.Station, a.Trim());
+                    if (st != c.Station && !list.Contains(st)) list.Add(st);
+                }
+                s.Stations = list.ToArray();
+            }
+            foreach (var st in s.Stations)
+                try { if (!f(st)) return false; } catch { return false; }
+            return true;
+        }
+
         /// <summary>The HMI takes its records of the machine now.</summary>
         public static bool RecordsOn(string moduleId)
         {
@@ -235,6 +263,8 @@ namespace Kaban.Core.Helpers
             public TroubleshootingCatalog.MovementInfo Movement;
 
             // ---- while running ----
+            /// <summary>The other stations its devices are on (null: not looked at yet).</summary>
+            internal int[] Stations;
             internal bool Seen, Commanded;
             internal DateTime? Since;
             internal int? PositionStart, PositionLast;
@@ -806,6 +836,8 @@ namespace Kaban.Core.Helpers
         private static void EvaluateSide(Cylinder c, CylinderSide s, Settings settings, Func<string, int> lookup, DateTime now, bool alarms = true)
         {
             if (string.IsNullOrWhiteSpace(s.Drive)) return;
+            // a device of a station that does not answer now: not judged - and timed again only from a fresh command
+            if (!Fresh(c, s)) { s.Since = null; s.Seen = false; return; }
             bool drive = On(lookup, s.Drive);
             bool commanded = s.DriveOn ? drive : !drive;
             // NOT FROM THE FIRST SCAN. What is commanded when the HMI starts (or the

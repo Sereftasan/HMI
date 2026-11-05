@@ -165,6 +165,22 @@ class HR {
         mem["M240"] = 1; mem["M225"] = 0; Scan();
         Move(false, 0.8);
 
+        Console.WriteLine("--- a sensor of another PLC that does not answer ---");
+        // 5 November, on the panel: PLC 2 switched off there, a cylinder of PLC 1 with a sensor of PLC 2
+        var cyl2 = new AlarmGeneration.Cylinder { Station = 1, ModuleId = "FA2010", Unit = "Back Clamping" };
+        var c2 = new AlarmGeneration.CylinderSide { Side = "B", Name = "Clamp", Code = "M850", ErrorAddress = "M850", Drive = "Y40" };
+        c2.MustOn.Add(new AlarmGeneration.Signal { Address = "X12@2", Name = "SN90 (X12@2)" });
+        cyl2.Sides.Add(c2); AlarmGeneration.Register(cyl2);
+        int ncBefore = taken.Count(x => x == "FA2010:1102");
+        AlarmGeneration.StationFresh = n => n != 2;
+        mem["Y40"] = 0; Scan(); mem["Y40"] = 1; Scan(); Run(6);
+        Check("PLC 2 not answering: its movement not judged - no 'not confirmed' record", taken.Count(x => x == "FA2010:1102") == ncBefore && !c2.Timing);
+        AlarmGeneration.StationFresh = n => true;
+        mem["Y40"] = 0; Scan(); mem["Y40"] = 1; Scan(); Run(5.1);
+        Check("  answering again: judged (its sensor never came)", taken.Count(x => x == "FA2010:1102") == ncBefore + 1);
+        mem["Y40"] = 0; Scan();
+        AlarmGeneration.StationFresh = null;
+
         Console.WriteLine("--- the shift's times ---");
         board.Change(c => c.Shifts = new List<DashboardConfig.Shift> {
             new DashboardConfig.Shift { Start = TimeSpan.FromHours(6), End = TimeSpan.FromHours(14) },
