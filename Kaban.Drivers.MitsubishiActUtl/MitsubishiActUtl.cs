@@ -165,14 +165,15 @@ namespace Kaban.Drivers.MitsubishiActUtl // <-- Updated Namespace
             if (!_isConnected) return false;              // no link: answer at once
 
             ReadOne r;
+            bool started;
             if (!_worker.TryRun(() =>
                 {
                     int v;
                     bool ok = TryReadDirect(address, out v);
                     return new ReadOne { Ok = ok, Value = v };
-                }, CallWaitMs, out r))
+                }, CallWaitMs, out r, out started))
             {
-                Stalled();
+                if (started) Stalled();           // it ran and did not come back: the link; never ran: only busy
                 return false;
             }
             value = r.Value;
@@ -186,14 +187,15 @@ namespace Kaban.Drivers.MitsubishiActUtl // <-- Updated Namespace
             if (!_isConnected) return false;              // no link: answer at once
 
             ReadMany r;
+            bool started;
             if (!_worker.TryRun(() =>
                 {
                     int[] v;
                     bool ok = TryReadMultiDirect(addresses, out v);
                     return new ReadMany { Ok = ok, Values = v };
-                }, CallWaitMs, out r))
+                }, CallWaitMs, out r, out started))
             {
-                Stalled();
+                if (started) Stalled();           // it ran and did not come back: the link; never ran: only busy
                 return false;
             }
             values = r.Values;
@@ -210,9 +212,10 @@ namespace Kaban.Drivers.MitsubishiActUtl // <-- Updated Namespace
             if (!_isConnected) return -1;
 
             int rc;
-            if (!_worker.TryRun(() => WriteDirect(address, value), CallWaitMs, out rc))
+            bool started;
+            if (!_worker.TryRun(() => WriteDirect(address, value), CallWaitMs, out rc, out started))
             {
-                Stalled();
+                if (started) Stalled();
                 return -1;
             }
             return rc;

@@ -66,6 +66,25 @@ class T {
               !w.TryRunPolite(() => 1, 300, out r0, out started0) && !started0);
         Thread.Sleep(1000);
 
+        // 5 November, found on the panel (GX Simulator3, the machine's log read beside the scan): a read that waited most of its second
+        // behind another call was given what was left of it, gave up - and the driver took the link down (Stalled) every minute or two
+        Console.WriteLine("--- a call that waited behind another: its own time once it runs; never run: busy, not dead ---");
+        var s3 = new ManualResetEvent(false);
+        Occupy(w, 700, s3);
+        bool st3; int r3;
+        sw.Restart();
+        bool ok3 = w.TryRun(() => { Thread.Sleep(500); return 3; }, 1000, out r3, out st3);
+        sw.Stop();
+        Check("waited 700 ms, ran 500 ms - done (was: given the 300 ms left, abandoned)", ok3 && st3 && r3 == 3, ok3 + " " + st3 + " " + sw.ElapsedMilliseconds + " ms");
+        var s4 = new ManualResetEvent(false);
+        Occupy(w, 1500, s4);
+        sw.Restart();
+        ok3 = w.TryRun(() => 4, 500, out r3, out st3);
+        sw.Stop();
+        Check("  behind a call longer than its bound: gives up at the bound and says it never ran (the driver keeps the link)",
+              !ok3 && !st3 && sw.ElapsedMilliseconds < 900, ok3 + " " + st3 + " " + sw.ElapsedMilliseconds + " ms");
+        Thread.Sleep(1300);
+
         Console.WriteLine("--- a STUCK call still cannot freeze the screen ---");
         var s2 = new ManualResetEvent(false);
         Occupy(w, 2500, s2);                                 // Open() to a PLC that is not there

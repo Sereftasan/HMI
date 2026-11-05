@@ -123,6 +123,16 @@ namespace Kaban.Drivers.MitsubishiActUtl
         }
 
         /// <summary>
+        /// As TryRun, saying whether the work ran at all (5 November): false with <paramref name="started"/> false is a
+        /// BUSY thread - another call held it all the time - not a dead link. Only a call that ran and did not come back in
+        /// time says that (the driver's Stalled).
+        /// </summary>
+        public bool TryRun<T>(Func<T> work, int timeoutMs, out T result, out bool started)
+        {
+            return Run(work, timeoutMs, false, out result, out started);
+        }
+
+        /// <summary>
         /// A BULK JOB'S CALL (23 October: the PLC Connection page's Read and Write): it waits while
         /// anyone else is waiting for the thread, so the screen's reads, the connection beat and a
         /// button's write always go first. <paramref name="started"/>: false when it never had its
@@ -210,8 +220,11 @@ namespace Kaban.Drivers.MitsubishiActUtl
 
             try
             {
-                int remaining = Math.Max(0, deadline - Environment.TickCount);
-                if (!WaitWithoutPumping(done, remaining)) return false;
+                // ITS OWN TIME ONCE IT RUNS (5 November, found on the panel: GX Simulator3 with the machine's log read beside
+                // the scan - a scan read that had waited most of its second behind the log's read was given what was left of
+                // it, gave up and took the link down, every minute or two). The wait for the thread is still bounded by
+                // timeoutMs, and so is the call itself.
+                if (!WaitWithoutPumping(done, timeoutMs)) return false;
             }
             finally { release(); }
             if (!box.Ok) return false;
