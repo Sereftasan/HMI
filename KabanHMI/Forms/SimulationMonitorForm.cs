@@ -300,6 +300,8 @@ namespace Kaban.UI.Forms
         {
             /// <summary>The monitor showing it (its tables' events need it).</summary>
             public SimulationMonitorForm Form;
+            /// <summary>Its list file as this monitor last read or wrote it (null: none yet) - another writer is seen by it.</summary>
+            public DateTime? FileStamp;
             public PlcConnectionSettings.Endpoint Endpoint;
             public bool IsSimulated;
             public TabPage Page;
@@ -4058,14 +4060,49 @@ namespace Kaban.UI.Forms
             }
         }
 
+        /// <summary>How many copies of a list overwritten from elsewhere are kept beside it.</summary>
+        internal const int KeptCopies = 10;
+
+        /// <summary>
+        /// The list into its file. 5 November ("It had deleted the labels I created on the PLC Monitor page when I changed the view
+        /// scale"): a file another writer changed since this monitor read it - a second instance of the HMI (one restarted for the
+        /// screen scale outside Visual Studio while another was started from it), each saving the list it had when it closed - is
+        /// kept beside it first ("FA2010_PLC1.2026-11-05_1700.csv", the last 10), never just written over.
+        /// </summary>
         private static void SaveWatchList(MonitorTab mon)
         {
             try
             {
                 Directory.CreateDirectory(WatchFolder);
-                SafeFile.WriteAllText(WatchPath(mon.Endpoint), string.Join("\r\n", Serialize(mon)) + "\r\n", new UTF8Encoding(true));
+                string path = WatchPath(mon.Endpoint);
+                KeepIfChangedElsewhere(mon, path);
+                SafeFile.WriteAllText(path, string.Join("\r\n", Serialize(mon)) + "\r\n", new UTF8Encoding(true));
+                mon.FileStamp = File.GetLastWriteTimeUtc(path);
             }
             catch (Exception ex) { AuditLogger.Log("could not save the monitor watch list: " + ex.Message); }
+        }
+
+        /// <summary>The list's file kept as a copy when someone else wrote it since this monitor read it.</summary>
+        internal static void KeepIfChangedElsewhere(MonitorTab mon, string path)
+        {
+            if (!File.Exists(path)) return;
+            var stamp = File.GetLastWriteTimeUtc(path);
+            if (mon.FileStamp.HasValue && mon.FileStamp.Value == stamp) return;
+            string old;
+            try { old = File.ReadAllText(path); } catch { return; }
+            string mine = string.Join("\r\n", Serialize(mon)) + "\r\n";
+            if (string.Equals(old.TrimStart('\ufeff'), mine.TrimStart('\ufeff'), StringComparison.Ordinal)) return;
+            if (mon.FileStamp.HasValue || !string.IsNullOrWhiteSpace(old))
+            {
+                string copy = Path.Combine(Path.GetDirectoryName(path), Path.GetFileNameWithoutExtension(path) + "." +
+                                           DateTime.Now.ToString("yyyy-MM-dd_HHmmss", CultureInfo.InvariantCulture) + ".csv");
+                File.Copy(path, copy, true);
+                AuditLogger.Log("monitor: the list " + Path.GetFileName(path) + " was changed elsewhere (another instance of the HMI?) - kept as " +
+                                Path.GetFileName(copy) + " before this one's was written.");
+                foreach (var extra in Directory.GetFiles(Path.GetDirectoryName(path), Path.GetFileNameWithoutExtension(path) + ".????-??-??_??????.csv")
+                                               .OrderByDescending(f => f, StringComparer.Ordinal).Skip(KeptCopies))
+                    try { File.Delete(extra); } catch { }
+            }
         }
 
         private static void LoadWatchList(MonitorTab mon)
@@ -4073,9 +4110,34 @@ namespace Kaban.UI.Forms
             try
             {
                 string path = WatchPath(mon.Endpoint);
-                if (File.Exists(path)) Deserialize(mon, File.ReadAllLines(path));
+                if (File.Exists(path))
+                {
+                    Deserialize(mon, File.ReadAllLines(path));
+                    mon.FileStamp = File.GetLastWriteTimeUtc(path);
+                }
             }
             catch (Exception ex) { AuditLogger.Log("could not read the monitor watch list: " + ex.Message); }
+        }
+
+        /// <summary>
+        /// A name, a type, an address or a scale typed and not yet confirmed (its cell still open: the screen scale changed from
+        /// the top bar, the program restarted, the side page closed) - kept, as Enter would have. A value still being typed is
+        /// dropped, never written to the PLC by closing.
+        /// </summary>
+        internal void CommitPendingEdits()
+        {
+            foreach (var mon in _monitors)
+                foreach (var sh in mon.Sheets)
+                {
+                    var g = sh.Grid;
+                    if (g != null && g.IsCurrentCellInEditMode && g.CurrentCell != null)
+                    {
+                        string col = g.CurrentCell.OwningColumn.Name;
+                        try { if (col == "Value" || col == "Calculated") g.CancelEdit(); else g.EndEdit(); } catch { }
+                    }
+                    foreach (var b in sh.Blocks)
+                        if (b.Grid != null && b.Grid.IsCurrentCellInEditMode) try { b.Grid.CancelEdit(); } catch { }
+                }
         }
 
         /// <summary>
@@ -4091,12 +4153,14 @@ namespace Kaban.UI.Forms
         /// <summary>Keeps every controller's lists now (a side page is hidden, never closed).</summary>
         public void SaveLists()
         {
+            CommitPendingEdits();
             foreach (var mon in _monitors) SaveWatchList(mon);
         }
 
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
             _refresh.Stop();
+            CommitPendingEdits();
             foreach (var mon in _monitors) SaveWatchList(mon);
             var place = new Dictionary<string, string>();
             WindowLayout.Store(this, LayoutName, place);
