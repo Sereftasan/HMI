@@ -10,6 +10,7 @@ using Kaban.Core.Helpers;
 using Kaban.Profiles.Data;
 using Kaban.UI.Controls;
 using Kaban.UI.Dashboard;
+using Kaban.Core.Models;
 
 // 5 November: "These are not our client requirements so we are not currently taking such logs but I think we should start it to
 // have a better competence. I want you make a search about what logs would be useful for these controls so we could apply them" -
@@ -368,6 +369,57 @@ class HR {
         StopReasons.StateLogged("FA2010", 2, t0.AddMinutes(410));
         LanguageManager.ChangeLanguage("EN");
         main.Close();
+
+        Console.WriteLine("--- the records a page defines, taken when their triggers come (LogRecordHMI) ---");
+        // 5 November: "We need to define a trigger device and additional info devices for each one to the read when it is triggered
+        // by PLC. The trigger device could be set just like 'EnableTrigger' property for the input controls and the info should be a
+        // collection lamp HMI and numerical display HMI controls"
+        var barRec = new LogRecordHMI { Name = "recBar", RecordCode = 16, PlcNumber = 1, ModuleId = "FA2010" };
+        barRec.Trigger.TriggerType = TriggerType.ON; barRec.Trigger.MonitorAddress = "M500";
+        barRec.Values.Add(new RecordNumber("", "D89", DataTypeEnum.Bin_32, 1));
+        var ownRec = new LogRecordHMI { Name = "recOwn", RecordCode = 1201, PlcNumber = 1, ModuleId = "FA2010", TextKey = "Glue checked" };
+        ownRec.Trigger.TriggerType = TriggerType.Range; ownRec.Trigger.MonitorAddress = "D600"; ownRec.Trigger.OpB = ComparisonOperator.Equal; ownRec.Trigger.ValB = 3;
+        ownRec.Values.Add(new RecordNumber("Glue pressure (bar)", "D601", DataTypeEnum.Bin_16, 10));
+        ownRec.Values.Add(new RecordLamp("Glue OK", "M601"));
+        var page2 = new Panel(); page2.Controls.Add(barRec); page2.Controls.Add(ownRec);
+        Kaban.UI.Helpers.AlarmHelpLinks.Harvest(page2);
+        Check("found as the pages are discovered", RecordTriggers.All.Count(d => d.ModuleId == "FA2010") == 2);
+        var adr = AlarmGeneration.Addresses().Select(a => a.Value).ToList();
+        Check("  a new machine: its trigger and its values read (a 32-bit value: both words)",
+              adr.Contains("M500") && adr.Contains("D89") && adr.Contains("D90") && adr.Contains("D600") && adr.Contains("D601") && adr.Contains("M601"));
+        HmiFeatures.Set(HmiFeatures.MachineRecords, false);
+        Check("  an older machine: not read", !AlarmGeneration.Addresses().Any(a => a.Value == "M500"));
+        HmiFeatures.Set(HmiFeatures.MachineRecords, true);
+        mem["M500"] = 1; mem["D89"] = 0x2345; mem["D90"] = 1; Scan(); Scan();
+        Check("its trigger already on when watched: not a record", !taken.Contains("FA2010:16"));
+        mem["M500"] = 0; Scan(); mem["M500"] = 1; Scan();
+        Check("it comes (ON): recorded at once", taken.Count(x => x == "FA2010:16") == 1);
+        Scan(); Scan();
+        Check("  staying on: once", taken.Count(x => x == "FA2010:16") == 1);
+        MachineRecords.Flush();
+        var bl = Details(Convert.ToInt64(Records(16).Last()[0]));
+        Check("  as the PLC's record 16: its code, the state map's name of its value, the two words", bl == "Bar Length:74565", bl);
+        mem["D600"] = 2; Scan(); mem["D601"] = 37; mem["M601"] = 1; mem["D600"] = 3; Scan();
+        MachineRecords.Flush();
+        var own = Records(1201);
+        Check("a record of its own (1201): its value in a range (D600 = 3) - its values, named, divided",
+              own.Count == 1 && Details(Convert.ToInt64(own[0][0])) == "Glue pressure (bar):3.7 | Glue OK:1", own.Count == 0 ? "none" : Details(Convert.ToInt64(own[0][0])));
+        Check("  named in the state map (the dashboard's events)", board.Map.RawDescription(1201) == "Glue checked" && board.Map.Find(16).Description.StartsWith("Bar length"));
+        var host2 = new Form { ClientSize = new Size(500, 120) }; host2.Controls.Add(page2); page2.Dock = DockStyle.Fill; host2.Show(); Pump(100);
+        Check("on its page: its switch row (the state map's name for 16, its own for 1201), on",
+              barRec.Switch.Checked && ownRec.Switch.Checked && barRec.Shown.StartsWith("Bar length") && ownRec.Shown == "Glue checked" && barRec.Width == 450);
+        barRec.Switch.Toggle(); Pump(50);
+        mem["M500"] = 0; Scan(); mem["M500"] = 1; Scan();
+        Check("  switched off: kept in the machine's settings, not taken", !board.Config.RecordOn("record_16") && taken.Count(x => x == "FA2010:16") == 1 &&
+              !AlarmGeneration.Addresses().Any(a => a.Value == "M500"));
+        barRec.Switch.Toggle(); Pump(50);
+        host2.Close();
+        var conv = new RecordValueConverter();
+        var idesc = conv.ConvertTo(null, CultureInfo.InvariantCulture, new RecordNumber("Bar Length", "D89", DataTypeEnum.Bin_32, 10), typeof(System.ComponentModel.Design.Serialization.InstanceDescriptor))
+                    as System.ComponentModel.Design.Serialization.InstanceDescriptor;
+        var back = idesc == null ? null : idesc.Invoke() as RecordNumber;
+        Check("a value in the designer's code: new RecordNumber(\"Bar Length\", \"D89\", Bin_32, 10)", back != null && back.TextKey == "Bar Length" && back.Address == "D89" &&
+              back.DataType == DataTypeEnum.Bin_32 && back.Divisor == 10);
 
         Console.WriteLine("--- the dashboard lists them as the machine's events ---");
         var map = board.Map;

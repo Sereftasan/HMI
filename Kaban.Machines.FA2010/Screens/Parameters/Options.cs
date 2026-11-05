@@ -20,6 +20,10 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
         /// PUT IN ITS PLACE WHEN THE PAGE IS MADE, as the Axis page's jog bar (CLAUDE.md, 23 October): the designer shows a plain
         /// panel where it goes (industry4SettingsPlace: move or size it there). The frame follows it, and is shown only while
         /// HMI Settings > Options has the Industry 4 logging in the HMI on.
+        ///
+        /// A new machine (5 November): the records the HMI takes itself when their triggers come - recWaste_Profile_Emerged (15),
+        /// recBar_Length_Measured (16), recProfile_Measured (22), LogRecordHMI rows under the PLC's switches, as the PLC program
+        /// writes them (its MOV K15 ... CALL MakineLogKayit) - shown instead of the PLC's switches of the same records.
         /// </summary>
         internal Kaban.UI.Dashboard.MachineLogSettings machineLog;
 
@@ -33,9 +37,9 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             grpIndustry4Logging.Controls.Remove(industry4SettingsPlace);
             industry4SettingsPlace.Dispose();
             grpIndustry4Logging.Controls.Add(machineLog);
-            // the frame as tall as its rows and the settings under them
-            machineLog.SizeChanged += (s, e) => grpIndustry4Logging.Height = machineLog.Bottom + grpIndustry4Logging.Padding.Bottom;
-            grpIndustry4Logging.Height = machineLog.Bottom + grpIndustry4Logging.Padding.Bottom;
+            // the rows as the machine is (a new machine: the HMI's records - recWaste_Profile_Emerged ... - instead of the PLC's switches
+            // of the same records), the settings under them, the frame round them
+            Kaban.UI.Dashboard.MachineLogSettings.Arrange(grpIndustry4Logging, machineLog);
             Kaban.UI.Dashboard.MachineLogSettings.ShownWhileLogging(grpIndustry4Logging);
         }
     }

@@ -183,6 +183,7 @@
     </Compile>
     <Compile Include="Design\HelpFilesEditor.cs" />
     <Compile Include="Design\MathVariablesEditor.cs" />
+    <Compile Include="Design\RecordValuesEditor.cs" />
     <Compile Include="Design\PropertyOrder.cs" />
     <Compile Include="Design\ConditionTextConverter.cs" />
     <Compile Include="Design\CylinderUnitChildConverter.cs" />
@@ -276,6 +277,9 @@
     <Compile Include="Controls\CheckBoxHMI.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls\LogRecordHMI.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\ComboBoxHMI.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -332,6 +336,7 @@
     <Compile Include="Dashboard\MachineLogger.cs" />
     <Compile Include="Dashboard\MachineRecords.cs" />
     <Compile Include="Dashboard\StopReasons.cs" />
+    <Compile Include="Dashboard\RecordTriggers.cs" />
     <Compile Include="Dashboard\MachineLogSettings.cs">
       <SubType>Component</SubType>
     </Compile>

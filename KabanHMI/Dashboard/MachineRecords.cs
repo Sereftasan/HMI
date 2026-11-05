@@ -50,6 +50,9 @@ namespace Kaban.UI.Dashboard
     /// Without CurrentAddress (FA2010's PLC does not read the inverters' current yet) only its faults are recorded.
     ///
     /// Why the machine stood still - asked of the operator after a stop of 5 minutes: StopReasons ("Machine stop").
+    ///
+    /// And the records a page defines, taken when their triggers come (LogRecordHMI - the PLC program's records, done by the HMI):
+    /// RecordTriggers.
     /// </summary>
     public static class MachineRecords
     {
@@ -231,6 +234,7 @@ namespace Kaban.UI.Dashboard
             public void MovementDone(AlarmGeneration.Cylinder c, AlarmGeneration.CylinderSide s, double seconds, DateTime now) { Done(c, s, seconds, now); }
             public void MovementTooLong(AlarmGeneration.Cylinder c, AlarmGeneration.CylinderSide s, double seconds, int sub, DateTime now) { TooLong(c, s, seconds, sub, now); }
             public void Scanned(int station, Func<string, int> lookup, DateTime now) { MachineRecords.Scanned(station, lookup, now); }
+            public IEnumerable<KeyValuePair<int, string>> Addresses() { return RecordTriggers.Addresses(); }
         }
 
         /// <summary>Raised (on the scan's thread) for every record taken: its machine, its code, its values (tests, the frame).</summary>
@@ -418,6 +422,8 @@ namespace Kaban.UI.Dashboard
                 if (x.Station == station && On(x.ModuleId)) ScanAxis(x, lookup, now);
             foreach (var v in AlarmGeneration.Inverters)
                 if (v.Station == station && On(v.ModuleId)) ScanInverter(v, lookup, now);
+            // the records taken when their triggers come (LogRecordHMI)
+            RecordTriggers.Scan(station, lookup, now);
             // the shifts ended: once a second is plenty
             if (Math.Abs((now - _lastTimesCheck).TotalSeconds) >= 1) { _lastTimesCheck = now; WriteTimes(now, false); }
         }

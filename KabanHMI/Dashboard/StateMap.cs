@@ -161,19 +161,33 @@ namespace Kaban.UI.Dashboard
         {
             foreach (var k in MachineRecords.Kinds)
                 if (!_entries.ContainsKey(k.Code)) _entries[k.Code] = new Entry { Code = k.Code, Description = k.Text };
-            var texts = MachineRecords.Kinds.Select(k => new KeyValuePair<string, string>(k.Text, k.TextKey)).Concat(MachineRecords.DetailNames).ToList();
-            foreach (var lang in LanguageColumns)
-            {
-                Dictionary<string, string> map;
-                if (!_texts.TryGetValue(lang.Value, out map)) _texts[lang.Value] = map = new Dictionary<string, string>(StringComparer.Ordinal);
-                foreach (var t in texts)
+            foreach (var t in MachineRecords.Kinds.Select(k => new KeyValuePair<string, string>(k.Text, k.TextKey)).Concat(MachineRecords.DetailNames))
+                AddText(t.Key, t.Value);
+        }
+
+        /// <summary>A record of the HMI's own (a LogRecordHMI whose code the map does not have): its name, translated as the HMI's texts are.</summary>
+        public void AddNamed(int code, string english, string key)
+        {
+            if (string.IsNullOrWhiteSpace(english)) return;
+            lock (_entries)
+                if (!_entries.ContainsKey(code)) _entries[code] = new Entry { Code = code, Description = english };
+            AddText(english, key);
+        }
+
+        /// <summary>A name the dashboard shows (a record's, a value's) in each language: the HMI's translation of its key, unless the map's own file says it.</summary>
+        public void AddText(string english, string key)
+        {
+            if (string.IsNullOrWhiteSpace(english)) return;
+            lock (_texts)
+                foreach (var lang in LanguageColumns)
                 {
+                    Dictionary<string, string> map;
+                    if (!_texts.TryGetValue(lang.Value, out map)) _texts[lang.Value] = map = new Dictionary<string, string>(StringComparer.Ordinal);
                     string had;
-                    if (map.TryGetValue(t.Key, out had) && had != t.Key) continue;      // the machine's own file says it
-                    var own = Kaban.Core.Helpers.LanguageManager.GetStringIn(lang.Key, t.Value);
-                    map[t.Key] = string.IsNullOrEmpty(own) ? t.Key : own;
+                    if (map.TryGetValue(english, out had) && had != english) continue;      // the machine's own file says it
+                    var own = string.IsNullOrWhiteSpace(key) ? null : Kaban.Core.Helpers.LanguageManager.GetStringIn(lang.Key, key);
+                    map[english] = string.IsNullOrEmpty(own) ? english : own;
                 }
-            }
         }
 
         public void ReadMap(string json)

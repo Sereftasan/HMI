@@ -124,10 +124,22 @@ class SPL {
               recRows.All(r => r != null && r.Visible && r.Width == 450 && r.DrawnAsRow) && frame.Height == log.Bottom + frame.Padding.Bottom &&
               ((ScrollableControl)page).AutoScroll && page.DisplayRectangle.Height >= frame.Bottom,
               frame.Bounds + " page " + page.DisplayRectangle);
+        // 5 November: the records the HMI takes itself when their triggers come (LogRecordHMI) - instead of the PLC's switches of them
+        var hmiRecs = frame.Controls.OfType<LogRecordHMI>().OrderBy(r => r.Top).ToList();
+        var shownRows = frame.Controls.Cast<Control>().Where(c => (c is CheckBoxHMI || c is LogRecordHMI) && c.Visible).OrderBy(c => c.Top).ToList();
+        Check("  its rows: the PLC's switches of 15, 16, 22 hidden, the HMI's records of them shown under the others - touching, the settings under them",
+              hmiRecs.Select(r => r.RecordCode).SequenceEqual(new[] { 15, 16, 22 }) && hmiRecs.All(r => r.Visible && r.Width == 450 && r.Switch.Right == 450 - 8) &&
+              hmiRecs[0].Shown == "Waste profile emerged" && hmiRecs[2].Shown.StartsWith("Profile meas") &&
+              recs.Where(c => c.Address == "L1015" || c.Address == "L1016" || c.Address == "L1022").All(c => !c.Visible) &&
+              shownRows.Count == 12 && shownRows.Zip(shownRows.Skip(1), (x, y) => y.Top - x.Bottom).All(g => g == 0) && shownRows[0].Top == recs[0].Top &&
+              shownRows.Last() == hmiRecs.Last() && log.Top == hmiRecs.Last().Bottom + 8,
+              string.Join(", ", shownRows.Select(c => c.Name + "@" + c.Top)));
+        Shot(form, "settings_Options_records_rows");
         ((ScrollableControl)page).AutoScrollPosition = new Point(0, frame.Bottom); Pump(200);
         Shot(form, "settings_Options_records");
         HmiFeatures.Set(HmiFeatures.MachineRecords, false); Pump(200);
-        Check("  an older machine again: gone, the frame as before", !recRows[0].Visible && frame.Height == log.Bottom + frame.Padding.Bottom);
+        Check("  an older machine again: gone, the frame as before - the PLC's twelve switches", !recRows[0].Visible && frame.Height == log.Bottom + frame.Padding.Bottom &&
+              recs.All(c => c.Visible) && hmiRecs.All(r => !r.Visible) && log.Top == recs.Last().Bottom + 8);
         HmiFeatures.Set(HmiFeatures.Industry4Logging, false); Pump(200);
         Check("  off again: hidden", !frame.Visible);
         form.Close(); form.Dispose();

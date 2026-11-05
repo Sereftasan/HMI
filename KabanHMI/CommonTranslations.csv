@@ -2214,3 +2214,6 @@ Stp_StoodEnded;It stood still {0} - {1} ({2} min).;{0} - {1} arası durdu ({2} d
 Stp_Title;Why did the machine stop?;Makine neden durdu?;;;;
 Stp_Tool;Saw blade / tool change;Testere / takım değişimi;;;;
 Stp_Unplanned;Unplanned stop;Plansız duruş;;;;
+Rcd_Hmi;HMI record;HMI kaydı;;;;
+Rcd_Record;Record;Kayıt;;;;
+Rcd_Values;values;değer;;;;

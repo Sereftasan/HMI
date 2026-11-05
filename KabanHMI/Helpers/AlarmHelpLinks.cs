@@ -112,6 +112,7 @@ namespace Kaban.UI.Helpers
         {
             SimulationMotion.Clear();      // collected in the same pass over the pages
             AlarmGeneration.Clear();       // so are the movements the HMI times itself
+            Kaban.UI.Dashboard.RecordTriggers.Clear();     // and the log records taken when their triggers come
             _links.Clear();
             _conflicts.Clear();
             _axes.Clear();
@@ -348,6 +349,10 @@ namespace Kaban.UI.Helpers
         {
             if (root == null) return;
 
+            // a log record the HMI takes when its trigger comes (5 November)
+            var record = root as LogRecordHMI;
+            if (record != null) { Kaban.UI.Dashboard.RecordTriggers.Register(record); return; }
+
             var unit = root as CylinderUnitHMI;
             if (unit != null) { HarvestUnit(unit); return; }
 
@@ -370,6 +375,8 @@ namespace Kaban.UI.Helpers
         private static void HarvestControls(Control root)
         {
             if (root == null) return;
+            var record = root as LogRecordHMI;
+            if (record != null) { Kaban.UI.Dashboard.RecordTriggers.Register(record); return; }
             var unit = root as CylinderUnitHMI;
             if (unit != null) { HarvestUnit(unit); return; }
             var axis = root as AxisSettingHMI;

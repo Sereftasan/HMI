@@ -64,6 +64,9 @@
             this.logBar_Length_Measured = new Kaban.UI.Controls.CheckBoxHMI();
             this.logProfile_Not_Recognised = new Kaban.UI.Controls.CheckBoxHMI();
             this.logProfile_Measured = new Kaban.UI.Controls.CheckBoxHMI();
+            this.recWaste_Profile_Emerged = new Kaban.UI.Controls.LogRecordHMI();
+            this.recBar_Length_Measured = new Kaban.UI.Controls.LogRecordHMI();
+            this.recProfile_Measured = new Kaban.UI.Controls.LogRecordHMI();
             this.grpIndustry4Logging = new Kaban.UI.Controls.GroupBoxHMI();
             this.industry4SettingsPlace = new System.Windows.Forms.Panel();
             this.groupBoxMullionNotching.SuspendLayout();
@@ -709,6 +712,9 @@
             this.grpIndustry4Logging.Controls.Add(this.logBar_Length_Measured);
             this.grpIndustry4Logging.Controls.Add(this.logProfile_Not_Recognised);
             this.grpIndustry4Logging.Controls.Add(this.logProfile_Measured);
+            this.grpIndustry4Logging.Controls.Add(this.recWaste_Profile_Emerged);
+            this.grpIndustry4Logging.Controls.Add(this.recBar_Length_Measured);
+            this.grpIndustry4Logging.Controls.Add(this.recProfile_Measured);
             this.grpIndustry4Logging.Controls.Add(this.industry4SettingsPlace);
             this.grpIndustry4Logging.Emoji = "";
             this.grpIndustry4Logging.EnableAddress = "";
@@ -717,7 +723,7 @@
             this.grpIndustry4Logging.Name = "grpIndustry4Logging";
             this.grpIndustry4Logging.Padding = new System.Windows.Forms.Padding(10, 22, 10, 8);
             this.grpIndustry4Logging.PlcNumber = 1;
-            this.grpIndustry4Logging.Size = new System.Drawing.Size(474, 722);
+            this.grpIndustry4Logging.Size = new System.Drawing.Size(474, 836);
             this.grpIndustry4Logging.TabIndex = 79;
             this.grpIndustry4Logging.TitleText = "Industry 4 Logging";
             this.grpIndustry4Logging.TitleTextKey = "Industry 4 Logging";
@@ -728,7 +734,7 @@
             // PLC log area, the logger's state, the KMSystem connection)
             // 
             this.industry4SettingsPlace.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(246)))), ((int)(((byte)(252)))));
-            this.industry4SettingsPlace.Location = new System.Drawing.Point(12, 494);
+            this.industry4SettingsPlace.Location = new System.Drawing.Point(12, 608);
             this.industry4SettingsPlace.Name = "industry4SettingsPlace";
             this.industry4SettingsPlace.Size = new System.Drawing.Size(450, 220);
             this.industry4SettingsPlace.TabIndex = 92;
@@ -940,6 +946,68 @@
             this.logProfile_Measured.TabIndex = 91;
             this.logProfile_Measured.ToolTipCaption = null;
             // 
+            // recWaste_Profile_Emerged  (a new machine: code 15 when PC_FireBarkod_Bas (L24) comes, its waste length FireBoyu - its device to be set)
+            // 
+            this.recWaste_Profile_Emerged.BackColor = System.Drawing.Color.White;
+            this.recWaste_Profile_Emerged.Location = new System.Drawing.Point(12, 486);
+            this.recWaste_Profile_Emerged.Name = "recWaste_Profile_Emerged";
+            this.recWaste_Profile_Emerged.PlcNumber = 1;
+            this.recWaste_Profile_Emerged.RecordCode = 15;
+            this.recWaste_Profile_Emerged.Size = new System.Drawing.Size(450, 38);
+            this.recWaste_Profile_Emerged.TabIndex = 93;
+            this.recWaste_Profile_Emerged.TextKey = "";
+            this.recWaste_Profile_Emerged.Trigger.DescriptionKey = "";
+            this.recWaste_Profile_Emerged.Trigger.MonitorAddress = "L24";
+            this.recWaste_Profile_Emerged.Trigger.MonitorDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+            this.recWaste_Profile_Emerged.Trigger.OpA = Kaban.Core.Enums.ComparisonOperator.None;
+            this.recWaste_Profile_Emerged.Trigger.OpB = Kaban.Core.Enums.ComparisonOperator.None;
+            this.recWaste_Profile_Emerged.Trigger.TriggerType = Kaban.Core.Enums.TriggerType.ON;
+            this.recWaste_Profile_Emerged.Trigger.ValA = 0D;
+            this.recWaste_Profile_Emerged.Trigger.ValB = 0D;
+            this.recWaste_Profile_Emerged.Values.Add(new Kaban.UI.Controls.RecordNumber("", "", Kaban.Core.Enums.DataTypeEnum.Bin_32, 1D));
+            // 
+            // recBar_Length_Measured  (a new machine: code 16 when BoyOkundu comes - its device to be set - the bar's length PC_ProfilBarBoyu (D89))
+            // 
+            this.recBar_Length_Measured.BackColor = System.Drawing.Color.White;
+            this.recBar_Length_Measured.Location = new System.Drawing.Point(12, 524);
+            this.recBar_Length_Measured.Name = "recBar_Length_Measured";
+            this.recBar_Length_Measured.PlcNumber = 1;
+            this.recBar_Length_Measured.RecordCode = 16;
+            this.recBar_Length_Measured.Size = new System.Drawing.Size(450, 38);
+            this.recBar_Length_Measured.TabIndex = 94;
+            this.recBar_Length_Measured.TextKey = "";
+            this.recBar_Length_Measured.Trigger.DescriptionKey = "";
+            this.recBar_Length_Measured.Trigger.MonitorAddress = "";
+            this.recBar_Length_Measured.Trigger.MonitorDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+            this.recBar_Length_Measured.Trigger.OpA = Kaban.Core.Enums.ComparisonOperator.None;
+            this.recBar_Length_Measured.Trigger.OpB = Kaban.Core.Enums.ComparisonOperator.None;
+            this.recBar_Length_Measured.Trigger.TriggerType = Kaban.Core.Enums.TriggerType.ON;
+            this.recBar_Length_Measured.Trigger.ValA = 0D;
+            this.recBar_Length_Measured.Trigger.ValB = 0D;
+            this.recBar_Length_Measured.Values.Add(new Kaban.UI.Controls.RecordNumber("", "D89", Kaban.Core.Enums.DataTypeEnum.Bin_32, 1D));
+            // 
+            // recProfile_Measured  (a new machine: code 22 when ProfilOlcum_OK comes - Profil_OkunanGenislik, Profil_OkunanYukseklik, Profil_Dogru: their devices to be set)
+            // 
+            this.recProfile_Measured.BackColor = System.Drawing.Color.White;
+            this.recProfile_Measured.Location = new System.Drawing.Point(12, 562);
+            this.recProfile_Measured.Name = "recProfile_Measured";
+            this.recProfile_Measured.PlcNumber = 1;
+            this.recProfile_Measured.RecordCode = 22;
+            this.recProfile_Measured.Size = new System.Drawing.Size(450, 38);
+            this.recProfile_Measured.TabIndex = 95;
+            this.recProfile_Measured.TextKey = "";
+            this.recProfile_Measured.Trigger.DescriptionKey = "";
+            this.recProfile_Measured.Trigger.MonitorAddress = "";
+            this.recProfile_Measured.Trigger.MonitorDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+            this.recProfile_Measured.Trigger.OpA = Kaban.Core.Enums.ComparisonOperator.None;
+            this.recProfile_Measured.Trigger.OpB = Kaban.Core.Enums.ComparisonOperator.None;
+            this.recProfile_Measured.Trigger.TriggerType = Kaban.Core.Enums.TriggerType.ON;
+            this.recProfile_Measured.Trigger.ValA = 0D;
+            this.recProfile_Measured.Trigger.ValB = 0D;
+            this.recProfile_Measured.Values.Add(new Kaban.UI.Controls.RecordNumber("", "", Kaban.Core.Enums.DataTypeEnum.Bin_16, 1D));
+            this.recProfile_Measured.Values.Add(new Kaban.UI.Controls.RecordNumber("", "", Kaban.Core.Enums.DataTypeEnum.Bin_16, 1D));
+            this.recProfile_Measured.Values.Add(new Kaban.UI.Controls.RecordLamp("", ""));
+            // 
             // Options
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -1010,6 +1078,9 @@
         private UI.Controls.CheckBoxHMI logBar_Length_Measured;
         private UI.Controls.CheckBoxHMI logProfile_Not_Recognised;
         private UI.Controls.CheckBoxHMI logProfile_Measured;
+        private UI.Controls.LogRecordHMI recWaste_Profile_Emerged;
+        private UI.Controls.LogRecordHMI recBar_Length_Measured;
+        private UI.Controls.LogRecordHMI recProfile_Measured;
         private UI.Controls.GroupBoxHMI grpIndustry4Logging;
         private System.Windows.Forms.Panel industry4SettingsPlace;
     }

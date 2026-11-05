@@ -169,6 +169,8 @@ namespace Kaban.Core.Helpers
             void MovementTooLong(Cylinder c, CylinderSide s, double seconds, int sub, DateTime now);
             /// <summary>A station's scan evaluated: its axes and inverters as they are now.</summary>
             void Scanned(int station, Func<string, int> lookup, DateTime now);
+            /// <summary>The devices the records read themselves (their triggers and values: LogRecordHMI), per station.</summary>
+            IEnumerable<KeyValuePair<int, string>> Addresses();
         }
 
         /// <summary>The HMI's records (null: none - a test, the designer).</summary>
@@ -512,6 +514,15 @@ namespace Kaban.Core.Helpers
                 if (RecordsOn(x.ModuleId))
                     foreach (var a in new[] { x.EffectiveLoad, x.PeakTorque, x.RegenerativeLoad })
                         if (!string.IsNullOrWhiteSpace(a)) yield return new KeyValuePair<int, string>(x.Station, a.Trim());
+            }
+            // the records' own triggers and values (LogRecordHMI, 5 November)
+            var rec = Records;
+            if (rec != null)
+            {
+                List<KeyValuePair<int, string>> own;
+                try { own = rec.Addresses().ToList(); }
+                catch (Exception ex) { AuditLogger.Log("machine records: " + ex.Message); own = new List<KeyValuePair<int, string>>(); }
+                foreach (var a in own) yield return a;
             }
             foreach (var v in _inverters)
             {

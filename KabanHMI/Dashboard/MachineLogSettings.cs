@@ -306,6 +306,61 @@ namespace Kaban.UI.Dashboard
             follow(null, EventArgs.Empty);
         }
 
+        /// <summary>
+        /// The Industry 4 Logging frame's rows as the machine is (5 November): an older machine - the PLC's record switches; a new
+        /// machine (HMI Settings > Options: Machine details from the HMI) - the HMI's own records (LogRecordHMI) too, and the PLC's
+        /// switch of each record one of them replaces (its code's bit, the state map's ActiveDevice) hidden. The rows stacked in the
+        /// designer's order from the first one's place, the machine's log settings under them (as far below as in the designer),
+        /// the frame round them - again whenever the options or the settings' height change.
+        /// </summary>
+        public static void Arrange(Control frame, MachineLogSettings log)
+        {
+            if (frame == null || log == null) return;
+            var rows = frame.Controls.Cast<Control>().Where(c => c is CheckBoxHMI || c is LogRecordHMI).OrderBy(c => c.Top).ToList();
+            if (rows.Count == 0) return;
+            int top = rows[0].Top;
+            int gap = Math.Max(0, log.Top - rows.Max(r => r.Bottom));
+            // the HMI's records are the frame's machine's
+            if (log.Machine != null)
+                foreach (var r in rows.OfType<LogRecordHMI>()) r.ModuleId = log.Machine.ModuleId;
+            Action arrange = () =>
+            {
+                if (frame.IsDisposed || log.IsDisposed) return;
+                bool newMachine = HmiFeatures.RecordsOn;
+                var map = log.Machine != null ? log.Machine.Map : null;
+                var replaced = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                if (newMachine && map != null)
+                    foreach (var r in rows.OfType<LogRecordHMI>())
+                    {
+                        var e = map.Find(r.RecordCode);
+                        if (e != null && !string.IsNullOrWhiteSpace(e.ActiveDevice)) replaced.Add(e.ActiveDevice.Trim());
+                    }
+                int y = top;
+                foreach (var r in rows)
+                {
+                    var box = r as CheckBoxHMI;
+                    bool show = r is LogRecordHMI ? newMachine : !(box != null && replaced.Contains((box.Address ?? "").Trim()));
+                    r.Visible = show;
+                    if (!show) continue;
+                    if (r.Top != y) r.Top = y;
+                    y += r.Height;
+                    var rec = r as LogRecordHMI;
+                    if (rec != null) rec.Fill();
+                }
+                if (log.Top != y + gap) log.Top = y + gap;
+                var pad = frame.Padding.Bottom;
+                if (frame.Height != log.Bottom + pad) frame.Height = log.Bottom + pad;
+            };
+            EventHandler follow = (s, e) =>
+            {
+                try { if (frame.IsHandleCreated && frame.InvokeRequired) frame.BeginInvoke(arrange); else arrange(); } catch { }
+            };
+            HmiFeatures.Changed += follow;
+            log.SizeChanged += follow;
+            frame.Disposed += (s, e) => HmiFeatures.Changed -= follow;
+            arrange();
+        }
+
         /// <summary>The fields from the machine's settings.</summary>
         public void Fill()
         {
