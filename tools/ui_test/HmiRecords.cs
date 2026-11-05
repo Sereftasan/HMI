@@ -241,6 +241,51 @@ class HR {
               !Details(Convert.ToInt64(Records(1112)[1][0])).Contains("Over for"), Details(Convert.ToInt64(Records(1112)[1][0])));
         mem["U1\\G2480"] = 100; Scan();
 
+        Console.WriteLine("--- the inverters ---");
+        var saw = new Kaban.UI.Controls.InverterUnitHMI { PlcNumber = 1, TitleTextKey = "Saw Motor", Name = "unitSaw", FaultCodeAddress = "D669",
+            RunLampAddress = "M300", CurrentAddress = "D680", CurrentDivisor = 100, LoadWhileAddress = "M301",
+            PositionAddress = "D681", PositionDivisor = 10, PositionDecimalPlaces = 1, PositionSuffix = "Hz" };
+        var iw = saw.BuildInverterWatch(); iw.ModuleId = "FA2010";
+        Check("an inverter's watch: its current (/100: A), its run, its work (the saw's feed), its value", iw.Current == "D680" && iw.CurrentDivisor == 100 &&
+              iw.Running == "M300" && iw.LoadWhile == "M301" && iw.Value == "D681" && iw.ValueDivisor == 10 && iw.ValueSuffix == "Hz");
+        AlarmGeneration.Register(iw);
+        Check("  read for the records: its fault word, current, run, work and value",
+              new[] { "D669", "D680", "M300", "M301", "D681" }.All(a => AlarmGeneration.Addresses().Any(x => x.Value == a)));
+        Action<double, double> work = (amps, seconds) => {
+            mem["M301"] = 1;
+            for (double t = 0; t < seconds - 1e-9; t += 0.1) { mem["D680"] = t < seconds / 2 ? 900 : (int)Math.Round(amps * 100); Scan(); }
+            mem["M301"] = 0; mem["D680"] = 300; Scan();
+        };
+        mem["M300"] = 1; mem["D680"] = 300; mem["D681"] = 500; Scan(); Scan();
+        for (int i = 0; i < 20; i++) work(12, 2);
+        string sawKey = MachineRecords.KeyOf(iw);
+        Check("its normal peak learned from its first 20 works (12 A)", MachineRecords.Normals.Of(sawKey) == 12, Convert.ToString(MachineRecords.Normals.Of(sawKey)));
+        work(16, 2);
+        Check("a work's peak 33 % over it: not high (the limit: 50 %)", !taken.Contains("FA2010:1122"));
+        work(19, 2);
+        Check("  58 % over: recorded", taken.Count(x => x == "FA2010:1122") == 1);
+        MachineRecords.Flush();
+        var hl = Details(Convert.ToInt64(Records(1122)[0][0]));
+        Check("  the motor, its peak and average current, how long it worked, its normal peak, how much higher, how many since the last",
+              hl == "Motor:" + iw.Name + " | Peak current (A):19 | Average current (A):13.5 | Duration (s):2 | Normal peak (A):12 | Higher (%):58 | High since the last record:1", hl);
+        mem["D669"] = 16; mem["D680"] = 2500; Scan(); mem["M300"] = 0; Scan();
+        Check("its fault came: recorded", taken.Count(x => x == "FA2010:1121") == 1);
+        MachineRecords.Flush();
+        var fl = Details(Convert.ToInt64(Records(1121)[0][0]));
+        Check("  the fault (as its panel shows it), the current and the value then, how long it had run",
+              fl.StartsWith("Motor:" + iw.Name + " | Fault:Inverter fault E.OC1 (16)") && fl.Contains("| Current (A):25 | Value:50.0 Hz | Running for (s):"), fl);
+        Scan(); Scan();
+        Check("  once (the fault stays)", taken.Count(x => x == "FA2010:1121") == 1);
+        mem["D669"] = 0; Scan();
+        var sawEnd = MachineRecords.NextShiftEnd(board.Config, now);
+        now = sawEnd.AddSeconds(-0.05); Scan(); Scan();
+        MachineRecords.Flush();
+        var ml = Records(1123).Select(r => Details(Convert.ToInt64(r[0]))).ToList();
+        Check("at the shift's end: the motor's loads - its works, its average and highest peak, its normal", ml.Count == 1 &&
+              ml[0].StartsWith("Motor:" + iw.Name + " | Runs:22 | Average peak (A):12.5 | Highest peak (A):19 | Normal peak (A):12 | From:"), string.Join(" // ", ml));
+        var bare = new Kaban.UI.Controls.InverterUnitHMI { PlcNumber = 1, TitleTextKey = "Conveyor Motor", FaultCodeAddress = "D671" }.BuildInverterWatch();
+        Check("an inverter without a current word (FA2010's now): only its fault word read", bare.Current == "" && bare.LoadWhile == "");
+
         Console.WriteLine("--- the dashboard lists them as the machine's events ---");
         var map = board.Map;
         Check("the state map names them (EN, TR) - not records the PLC can be told to log",
@@ -276,8 +321,10 @@ class HR {
               slowSw.DescriptionText == "Slow cylinder movement");
         Check("  the axes' records and their limits (100 %, 10 s, 250 %)", page.RecordSwitch("axis_alarm").Checked && page.RecordSwitch("axis_overload").Checked &&
               page.LimitField("overload_percent").Value == 100 && page.LimitField("overload_seconds").Value == 10 && page.LimitField("peak_percent").Value == 250);
+        Check("  the inverters' records and their limit (50 %)", page.RecordSwitch("inverter_fault").Checked && page.RecordSwitch("motor_high_load").Checked &&
+              page.RecordSwitch("motor_loads").Checked && page.LimitField("load_percent").Value == 50);
         Check("  'Learn the normal times again', how many are learned under it", All(page).OfType<Button>().Any(b => b.Name == "learnNormals" && b.Visible) &&
-              page.NormalsText == "Normal times learned: 2.", page.NormalsText);
+              page.NormalsText == "Normal times learned: 3.", page.NormalsText);
         Shot(form, "records_frame");
         slowLim.Value = 20; Pump(50);
         Check("the limit changed: kept at once", board.Config.RecordLimit("slow_percent", 50) == 20);

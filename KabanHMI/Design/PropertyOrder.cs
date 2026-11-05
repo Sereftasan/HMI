@@ -210,7 +210,7 @@ namespace Kaban.UI.Design
 
             // An inverter's motor (14 October): its fault code first - it is what the unit is for.
             ["InverterUnitHMI"] = L(
-                C("Inverter", "FaultCodeAddress", "ErrorAddress", "RunLampAddress", "RunLampTipKey"),
+                C("Inverter", "FaultCodeAddress", "ErrorAddress", "RunLampAddress", "RunLampTipKey", "CurrentAddress", "CurrentDivisor", "LoadWhileAddress"),
                 C("Device", "PlcNumber", "BaseOffset"),
                 C("Unit", "TitleTextKey", "TitleTipKey"),
                 C("Action A", InverterSide("A")),

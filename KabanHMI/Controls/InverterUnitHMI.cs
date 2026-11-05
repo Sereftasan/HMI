@@ -35,7 +35,8 @@ namespace Kaban.UI.Controls
     [Description("A motor driven by an inverter: its buttons, a run lamp before its name, a value, and its fault code - the fault's help and alarm come from it.")]
     public class InverterUnitHMI : CylinderUnitHMI
     {
-        private string _faultCode = "", _runLamp = "", _runLampTip = "Running";
+        private string _faultCode = "", _runLamp = "", _runLampTip = "Running", _current = "", _loadWhile = "";
+        private double _currentDivisor = 100;
         private readonly LampHMI _lamp = new LampHMI();
 
         public InverterUnitHMI()
@@ -86,6 +87,34 @@ namespace Kaban.UI.Controls
             set { _runLampTip = value ?? ""; _lamp.ToolTipTextKey = _runLampTip; }
         }
 
+        // ---- its load, for the HMI's records of a new machine (5 November) ----------------------------
+
+        [Category(" Inverter"), DefaultValue("")]
+        [Description("The word holding the inverter's output current (the PLC reads it from the inverter - FR-A800: its output current monitor, " +
+                     "0.01 A). Not shown: the HMI's records of a new machine take the motor's load from it (HMI Settings > Options). Empty: no load records.")]
+        public string CurrentAddress
+        {
+            get { return _current; }
+            set { _current = (value ?? "").Trim(); }
+        }
+
+        [Category(" Inverter"), DefaultValue(100.0)]
+        [Description("What the current word is divided by to give amperes (100: the word counts 0.01 A).")]
+        public double CurrentDivisor
+        {
+            get { return _currentDivisor; }
+            set { _currentDivisor = value > 0 ? value : 1; }
+        }
+
+        [Category(" Inverter"), DefaultValue("")]
+        [Description("The bit that is ON while the motor does its work (the saw's feed, a milling): its load is measured then. " +
+                     "Empty: while it runs (RunLampAddress), from a second after it starts (its starting current left out).")]
+        public string LoadWhileAddress
+        {
+            get { return _loadWhile; }
+            set { _loadWhile = (value ?? "").Trim(); }
+        }
+
         /// <summary>The run lamp (tests).</summary>
         [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public LampHMI RunLamp { get { return _lamp; } }
@@ -119,7 +148,16 @@ namespace Kaban.UI.Controls
                 Station = PlcNumber,
                 Name = string.IsNullOrEmpty(TitleTextKey) ? Name : LanguageManager.GetString(TitleTextKey, TitleTextKey),
                 CodeAddress = Absolute(_faultCode),
-                ErrorAddress = Absolute(ErrorAddress ?? "")
+                ErrorAddress = Absolute(ErrorAddress ?? ""),
+                // for the HMI's records of a new machine (5 November)
+                Current = Absolute(_current),
+                CurrentDivisor = _currentDivisor,
+                Running = Absolute(_runLamp),
+                LoadWhile = Absolute(_loadWhile),
+                Value = Absolute(PositionAddress ?? ""),
+                ValueDivisor = PositionDivisor > 0 ? PositionDivisor : 1,
+                ValueDecimals = PositionDecimalPlaces,
+                ValueSuffix = PositionSuffix ?? ""
             };
         }
 

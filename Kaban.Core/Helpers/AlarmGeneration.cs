@@ -389,6 +389,20 @@ namespace Kaban.Core.Helpers
             public int Code { get { return Last; } }
             /// <summary>The device the alarm is named by: the error bit, or the code word.</summary>
             public string Device { get { return !string.IsNullOrWhiteSpace(ErrorAddress) ? ErrorAddress.Trim() : (CodeAddress ?? "").Trim(); } }
+
+            // ---- read only for the HMI's records of a new machine (5 November) ----
+            /// <summary>The word of its output current (the PLC reads it from the inverter), divided by <see cref="CurrentDivisor"/> to amperes.</summary>
+            public string Current = "";
+            public double CurrentDivisor = 100;
+            /// <summary>It runs (its RUN output, or the PLC's bit for it).</summary>
+            public string Running = "";
+            /// <summary>ON while it does its work (the saw's feed): its load measured then - else while it runs.</summary>
+            public string LoadWhile = "";
+            /// <summary>Its value as its unit shows it (a speed, a frequency): the word, what divides it, its decimals and unit.</summary>
+            public string Value = "";
+            public double ValueDivisor = 1;
+            public int ValueDecimals;
+            public string ValueSuffix = "";
         }
 
         private static readonly List<Cylinder> _cylinders = new List<Cylinder>();
@@ -497,7 +511,14 @@ namespace Kaban.Core.Helpers
                         if (!string.IsNullOrWhiteSpace(a)) yield return new KeyValuePair<int, string>(x.Station, a.Trim());
             }
             foreach (var v in _inverters)
-                if (AxisAlarmsFor(v.ModuleId)) yield return new KeyValuePair<int, string>(v.Station, v.CodeAddress.Trim());
+            {
+                bool records = RecordsOn(v.ModuleId);
+                if (AxisAlarmsFor(v.ModuleId) || records) yield return new KeyValuePair<int, string>(v.Station, v.CodeAddress.Trim());
+                // its current, its run, its work and its value, for the HMI's records of a new machine (5 November)
+                if (records)
+                    foreach (var a in new[] { v.Current, v.Running, v.LoadWhile, v.Value })
+                        if (!string.IsNullOrWhiteSpace(a)) yield return new KeyValuePair<int, string>(v.Station, a.Trim());
+            }
         }
 
         /// <summary>The devices an axis's moment is read from (each word of a 32-bit value).</summary>

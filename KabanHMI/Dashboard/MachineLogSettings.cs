@@ -112,6 +112,16 @@ namespace Kaban.UI.Dashboard
                     T("Rec_OverloadSecondsTip", "How long the effective load must stay over its limit.")));
                 _recordRows.Add(LimitRow("peak_percent", T("Rec_PeakPercent", "Overload: peak torque over (%)"), MachineRecords.DefaultPeakPercent, 100, 500,
                     T("Rec_PeakPercentTip", "The motion module's peak torque ratio (Md.111), % of the rated - at once.")));
+                // the inverters
+                _recordRows.Add(KindRow(MachineRecords.InverterFault,
+                    T("Rec_InverterFaultTip", "An inverter's fault: the fault, its current and value then, how long the motor had been running.")));
+                _recordRows.Add(KindRow(MachineRecords.HighMotorLoad,
+                    T("Rec_HighMotorLoadTip", "A run's peak current over the motor's normal peak by more than the limit - a dull saw blade or tool, " +
+                      "a tight bearing. Needs the inverter's current word (its unit's CurrentAddress).")));
+                _recordRows.Add(LimitRow("load_percent", T("Rec_LoadPercent", "High load: over its normal peak by (%)"), MachineRecords.DefaultLoadPercent, 10, 500,
+                    T("Rec_LoadPercentTip", "How much higher than its normal peak current a run's peak must be to be recorded.")));
+                _recordRows.Add(KindRow(MachineRecords.MotorLoads,
+                    T("Rec_MotorLoadsTip", "At the end of each shift: each motor's runs, its average and highest peak current, its normal.")));
                 rows.AddRange(_recordRows);
                 _onFeatures = (s, e) =>
                 {

@@ -39,6 +39,15 @@ namespace Kaban.UI.Dashboard
     ///   Axis overload              its effective load over the limit (100 %) for a time (10 s), or its peak torque over its
     ///                              limit (250 %): a sticking guide, a dry ball screw, a crash. Once - again only after the loads
     ///                              were back under 90 % of their limits for 10 s, and 5 minutes on at the earliest.
+    ///
+    /// The inverters - AlarmGeneration's inverter watches (InverterUnitHMI), with the output current, the run and the work bits
+    /// read for these records:
+    ///   Inverter fault             its fault code came: the fault, its current and value then, how long it had been running.
+    ///   High motor load            a run's (or a work's: LoadWhileAddress, the saw's feed) peak current over its normal peak by
+    ///                              more than the limit (50 %): a dull saw blade or tool, a tight bearing. Its normal: learned as
+    ///                              a cylinder's, from its first 20 runs. One record in 10 minutes at most.
+    ///   Motor loads                at the end of each shift: each motor's runs, its average and highest peak, its normal.
+    /// Without CurrentAddress (FA2010's PLC does not read the inverters' current yet) only its faults are recorded.
     /// </summary>
     public static class MachineRecords
     {
@@ -51,6 +60,7 @@ namespace Kaban.UI.Dashboard
 
         public const int CylinderSlow = 1101, CylinderNotConfirmed = 1102, CylinderTimes = 1103;
         public const int AxisAlarm = 1111, AxisOverload = 1112;
+        public const int InverterFault = 1121, HighMotorLoad = 1122, MotorLoads = 1123;
 
         public static bool IsRecord(int code) { return code >= First && code <= Last; }
 
@@ -71,6 +81,9 @@ namespace Kaban.UI.Dashboard
             new Kind { Code = CylinderTimes, Key = "cylinder_times", TextKey = "Rec_CylinderTimes", Text = "Cylinder movement times", Group = "Cylinders" },
             new Kind { Code = AxisAlarm, Key = "axis_alarm", TextKey = "Rec_AxisAlarm", Text = "Axis alarm", Group = "Axes" },
             new Kind { Code = AxisOverload, Key = "axis_overload", TextKey = "Rec_AxisOverload", Text = "Axis overload", Group = "Axes" },
+            new Kind { Code = InverterFault, Key = "inverter_fault", TextKey = "Rec_InverterFault", Text = "Inverter fault", Group = "Inverters" },
+            new Kind { Code = HighMotorLoad, Key = "motor_high_load", TextKey = "Rec_HighMotorLoad", Text = "High motor load", Group = "Inverters" },
+            new Kind { Code = MotorLoads, Key = "motor_loads", TextKey = "Rec_MotorLoads", Text = "Motor loads", Group = "Inverters" },
         };
 
         public static Kind KindOf(int code) { return Kinds.FirstOrDefault(k => k.Code == code); }
@@ -100,7 +113,25 @@ namespace Kaban.UI.Dashboard
             new KeyValuePair<string, string>(DOverWhat, "RecD_OverWhat"),
             new KeyValuePair<string, string>(DLimit, "RecD_Limit"),
             new KeyValuePair<string, string>(DOverFor, "RecD_OverFor"),
+            new KeyValuePair<string, string>(DMotor, "RecD_Motor"),
+            new KeyValuePair<string, string>(DFault, "RecD_Fault"),
+            new KeyValuePair<string, string>(DCurrent, "RecD_Current"),
+            new KeyValuePair<string, string>(DValue, "RecD_Value"),
+            new KeyValuePair<string, string>(DRunningFor, "RecD_RunningFor"),
+            new KeyValuePair<string, string>(DPeakCurrent, "RecD_PeakCurrent"),
+            new KeyValuePair<string, string>(DAverageCurrent, "RecD_AverageCurrent"),
+            new KeyValuePair<string, string>(DDuration, "RecD_Duration"),
+            new KeyValuePair<string, string>(DNormalPeak, "RecD_NormalPeak"),
+            new KeyValuePair<string, string>(DHigher, "RecD_Higher"),
+            new KeyValuePair<string, string>(DHighSince, "RecD_HighSince"),
+            new KeyValuePair<string, string>(DRuns, "RecD_Runs"),
+            new KeyValuePair<string, string>(DAveragePeak, "RecD_AveragePeak"),
+            new KeyValuePair<string, string>(DHighestPeak, "RecD_HighestPeak"),
         };
+        public const string DMotor = "Motor", DFault = "Fault", DCurrent = "Current (A)", DValue = "Value", DRunningFor = "Running for (s)",
+                            DPeakCurrent = "Peak current (A)", DAverageCurrent = "Average current (A)", DDuration = "Duration (s)",
+                            DNormalPeak = "Normal peak (A)", DHigher = "Higher (%)", DHighSince = "High since the last record", DRuns = "Runs",
+                            DAveragePeak = "Average peak (A)", DHighestPeak = "Highest peak (A)";
 
         public const string DUnit = "Unit", DMovement = "Movement", DTime = "Time (s)", DNormal = "Normal (s)", DSlower = "Slower (%)",
                             DSlowSince = "Slow since the last record", DWaited = "Waited (s)", DFailure = "Failure", DCount = "Movements",
@@ -155,6 +186,10 @@ namespace Kaban.UI.Dashboard
         }
 
         public static double SlowPercent(string moduleId) { return Limit(moduleId, "slow_percent", DefaultSlowPercent); }
+
+        public const double DefaultLoadPercent = 50;
+        /// <summary>A run's load measured from this long after it started, when no work bit says when (its starting current left out).</summary>
+        public const double StartSkipSeconds = 1.0;
 
         // ------------------------------------------------------------------ installed with the main window
 
@@ -250,10 +285,26 @@ namespace Kaban.UI.Dashboard
             public double Sum, Longest;
         }
 
+        private sealed class Loads
+        {
+            public string Motor = "";
+            public int Runs;
+            public double SumPeak, HighestPeak;
+        }
+
         private sealed class Period
         {
             public DateTime Start, Next;
             public readonly Dictionary<string, Times> Movements = new Dictionary<string, Times>();
+            public readonly Dictionary<string, Loads> Motors = new Dictionary<string, Loads>();
+        }
+
+        private static Period PeriodOf(string moduleId, DateTime now)
+        {
+            Period p;
+            if (!_periods.TryGetValue(moduleId ?? "", out p))
+                _periods[moduleId ?? ""] = p = new Period { Start = now, Next = NextShiftEnd(ConfigOf(moduleId), now) };
+            return p;
         }
 
         /// <summary>module -> the period running.</summary>
@@ -261,9 +312,7 @@ namespace Kaban.UI.Dashboard
 
         private static void AddTime(AlarmGeneration.Cylinder c, AlarmGeneration.CylinderSide s, string key, double seconds, DateTime now)
         {
-            Period p;
-            if (!_periods.TryGetValue(c.ModuleId ?? "", out p))
-                _periods[c.ModuleId ?? ""] = p = new Period { Start = now, Next = NextShiftEnd(ConfigOf(c.ModuleId), now) };
+            var p = PeriodOf(c.ModuleId, now);
             Times t;
             if (!p.Movements.TryGetValue(key, out t)) p.Movements[key] = t = new Times();
             t.Unit = c.Unit ?? "";
@@ -301,11 +350,25 @@ namespace Kaban.UI.Dashboard
                 var p = kv.Value;
                 if (!all && now < p.Next) continue;
                 DateTime end = all && now < p.Next ? now : p.Next;
+                var cfg = ConfigOf(kv.Key);
+                var zone = DashboardTime.Find(cfg != null ? cfg.TimeZoneName : "");
+                string from = DashboardTime.ToLocal(ToUtc(p.Start), zone).ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture);
+                if (Taken(kv.Key, MotorLoads))
+                    foreach (var m in p.Motors.OrderBy(x => x.Value.Motor, StringComparer.CurrentCulture))
+                    {
+                        if (m.Value.Runs == 0) continue;
+                        var details = new List<LogDatabase.Detail>
+                        {
+                            D(DMotor, null, m.Value.Motor), D(DRuns, m.Value.Runs), D(DAveragePeak, R(m.Value.SumPeak / m.Value.Runs)),
+                            D(DHighestPeak, R(m.Value.HighestPeak))
+                        };
+                        var normal = Normals.Of(m.Key);
+                        if (normal.HasValue) details.Add(D(DNormalPeak, R(normal.Value)));
+                        details.Add(D(DFrom, null, from));
+                        Add(kv.Key, MotorLoads, end, details);
+                    }
                 if (Taken(kv.Key, CylinderTimes))
                 {
-                    var cfg = ConfigOf(kv.Key);
-                    var zone = DashboardTime.Find(cfg != null ? cfg.TimeZoneName : "");
-                    string from = DashboardTime.ToLocal(ToUtc(p.Start), zone).ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture);
                     foreach (var m in p.Movements.OrderBy(x => x.Value.Unit, StringComparer.CurrentCulture).ThenBy(x => x.Value.Movement))
                     {
                         if (m.Value.Count == 0) continue;
@@ -333,6 +396,8 @@ namespace Kaban.UI.Dashboard
         {
             foreach (var x in AlarmGeneration.Axes)
                 if (x.Station == station && On(x.ModuleId)) ScanAxis(x, lookup, now);
+            foreach (var v in AlarmGeneration.Inverters)
+                if (v.Station == station && On(v.ModuleId)) ScanInverter(v, lookup, now);
             // the shifts ended: once a second is plenty
             if (Math.Abs((now - _lastTimesCheck).TotalSeconds) >= 1) { _lastTimesCheck = now; WriteTimes(now, false); }
         }
@@ -423,6 +488,115 @@ namespace Kaban.UI.Dashboard
             st.Armed = false;
             st.Below = null;
             st.Last = now;
+        }
+
+        // ------------------------------------------------------------------ the inverters
+
+        private sealed class InverterState
+        {
+            public int Code;
+            public bool Seen, Running, Working;
+            public DateTime? RunSince, WorkSince;
+            public double Peak, Sum;
+            public int Samples;
+            public DateTime? LastHigh;
+            public int HighSince;
+        }
+
+        private static readonly Dictionary<AlarmGeneration.Inverter, InverterState> _inverters = new Dictionary<AlarmGeneration.Inverter, InverterState>();
+
+        /// <summary>A motor's key for its normal peak: its station and its fault word.</summary>
+        public static string KeyOf(AlarmGeneration.Inverter v)
+        {
+            return (v.ModuleId ?? "") + "|inv|" + v.Station + "|" + (v.CodeAddress ?? "").Trim();
+        }
+
+        private static bool Bit(Func<string, int> lookup, string address)
+        {
+            if (string.IsNullOrWhiteSpace(address)) return false;
+            try { return lookup(address.Trim()) != 0; } catch { return false; }
+        }
+
+        private static void ScanInverter(AlarmGeneration.Inverter v, Func<string, int> lookup, DateTime now)
+        {
+            InverterState st;
+            if (!_inverters.TryGetValue(v, out st)) _inverters[v] = st = new InverterState();
+            int code = (AlarmGeneration.SignedWord(lookup, v.CodeAddress) ?? 0) & 0xFFFF;
+            double? amps = string.IsNullOrWhiteSpace(v.Current) ? (double?)null
+                         : (AlarmGeneration.SignedWord(lookup, v.Current) ?? 0) / (v.CurrentDivisor > 0 ? v.CurrentDivisor : 1);
+            bool running = Bit(lookup, v.Running);
+            // how long it ran - until this scan (the fault may have stopped it already)
+            var ranSince = st.Running ? st.RunSince : (running ? now : (DateTime?)null);
+            if (running && !st.Running) st.RunSince = now;
+            if (!running) st.RunSince = null;
+
+            // its fault came (not one already there when the HMI started to watch)
+            if (code != 0 && code != st.Code && st.Seen && Taken(v.ModuleId, InverterFault))
+            {
+                var details = new List<LogDatabase.Detail> { D(DMotor, null, v.Name), D(DFault, code, AxisCodeHelp.Describe(AxisCodeKind.InverterFault, code)) };
+                if (amps.HasValue) details.Add(D(DCurrent, R(amps.Value)));
+                if (!string.IsNullOrWhiteSpace(v.Value))
+                {
+                    double value = (AlarmGeneration.SignedWord(lookup, v.Value) ?? 0) / (v.ValueDivisor > 0 ? v.ValueDivisor : 1);
+                    string shown = value.ToString("F" + Math.Max(0, Math.Min(6, v.ValueDecimals)), CultureInfo.InvariantCulture);
+                    details.Add(D(DValue, R(value, 3), string.IsNullOrEmpty(v.ValueSuffix) ? shown : shown + " " + v.ValueSuffix.Trim()));
+                }
+                if (ranSince.HasValue) details.Add(D(DRunningFor, R((now - ranSince.Value).TotalSeconds, 1)));
+                Add(v.ModuleId, InverterFault, now, details);
+            }
+            st.Code = code;
+            st.Seen = true;
+            st.Running = running;
+
+            // its load: while it works (its work bit), else while it runs from a second after it started
+            if (!amps.HasValue) return;
+            bool byWork = !string.IsNullOrWhiteSpace(v.LoadWhile);
+            bool working = byWork ? Bit(lookup, v.LoadWhile) : running;
+            if (working && !st.Working) { st.WorkSince = now; st.Peak = 0; st.Sum = 0; st.Samples = 0; }
+            if (working)
+            {
+                if (byWork || (now - st.WorkSince.Value).TotalSeconds >= StartSkipSeconds)
+                {
+                    double a = Math.Abs(amps.Value);
+                    if (a > st.Peak) st.Peak = a;
+                    st.Sum += a;
+                    st.Samples++;
+                }
+            }
+            else if (st.Working && st.Samples >= 2) RunEnded(v, st, now);
+            st.Working = working;
+        }
+
+        /// <summary>A run (a work) ended: its peak learned from, compared with its normal, added to the shift's.</summary>
+        private static void RunEnded(AlarmGeneration.Inverter v, InverterState st, DateTime now)
+        {
+            string key = KeyOf(v);
+            double peak = st.Peak, average = st.Sum / st.Samples;
+            double? normal = Normals.Of(key);
+            if (!normal.HasValue) { Normals.Learn(key, peak); normal = Normals.Of(key); }
+            if (Taken(v.ModuleId, MotorLoads))
+            {
+                var p = PeriodOf(v.ModuleId, now);
+                Loads l;
+                if (!p.Motors.TryGetValue(key, out l)) p.Motors[key] = l = new Loads();
+                l.Motor = v.Name ?? "";
+                l.Runs++;
+                l.SumPeak += peak;
+                if (peak > l.HighestPeak) l.HighestPeak = peak;
+            }
+            if (!normal.HasValue || normal.Value <= 0 || !Taken(v.ModuleId, HighMotorLoad)) return;
+            double limit = Limit(v.ModuleId, "load_percent", DefaultLoadPercent);
+            if (peak <= normal.Value * (1 + limit / 100.0)) return;
+            st.HighSince++;
+            if (st.LastHigh.HasValue && (now - st.LastHigh.Value).TotalMinutes < SlowGapMinutes) return;
+            Add(v.ModuleId, HighMotorLoad, now, new List<LogDatabase.Detail>
+            {
+                D(DMotor, null, v.Name), D(DPeakCurrent, R(peak)), D(DAverageCurrent, R(average)),
+                D(DDuration, R((now - (st.WorkSince ?? now)).TotalSeconds, 1)), D(DNormalPeak, R(normal.Value)),
+                D(DHigher, Math.Round((peak - normal.Value) / normal.Value * 100.0)), D(DHighSince, st.HighSince)
+            });
+            st.LastHigh = now;
+            st.HighSince = 0;
         }
 
         // ------------------------------------------------------------------ the normal times
@@ -665,6 +839,7 @@ namespace Kaban.UI.Dashboard
             _slow.Clear();
             _tooLong.Clear();
             _axes.Clear();
+            _inverters.Clear();
             _periods.Clear();
             _lastTimesCheck = DateTime.MinValue;
             lock (_queue) _queue.Clear();
