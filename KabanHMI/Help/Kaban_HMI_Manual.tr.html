@@ -805,7 +805,7 @@ ama ünitede <b>gösterilmez</b>:</p>
 </ul>
 
 <h3 id="genalarms">6a. HMI'nin kendi ürettiği alarmlar</h3>
-<p>Makine başına iki anahtar, <b>Alarmlar ve Kayıtlar</b>'da (<a href="#params">10</a>). <b>Silindir alarmları</b> açıkken HMI, varmayan bir silindiri
+<p>Makine başına iki anahtar, <b>Alarmlar</b>'da (<a href="#params">10</a>). <b>Silindir alarmları</b> açıkken HMI, varmayan bir silindiri
 PLC'nin bildirmesini beklemez: her silindir ünitesinin hareketlerini kendisi zamanlar. <b>Eksen ve invertör alarmları</b> &ndash; kapatılmadıkça
 açık &ndash; her eksenin sürücüsünü ve her motorun invertörünü izler.</p>
 <ul>
@@ -943,7 +943,7 @@ Değerler her zaman makinenin birimlerinde <b>saklanır</b> ve yalnızca sizinki
   tablolar, ipuçları, oturum açtıktan sonraki sayfa, bir alarmın sesi, AI istemi.</td></tr>
 <tr><td>Kayıtlar ve Raporlar</td><td><span class="lvl l2">Bakım</span></td><td>Kayıtların ayarları: HMI'nin kaydı, ve her makinenin kayıt veritabanı ve raporları
   (bkz. <a href="#diag">11</a>). Kayıtların kendisi Gösterge Paneli sayfasında okunur. Bir makinenin kaydını kimin yazdığı orada söylenir; PLC kayıt alanı
-  Makine Parametreleri &rsaquo; Alarmlar ve Kayıtlar'dadır (<a href="#params">10</a>).
+  Makine Parametreleri &rsaquo; Seçenekler'in Industry 4 Kaydı çerçevesindedir (<a href="#params">10</a>).
   HMI'nin kaydını kapatmak ve kaç gün saklandığı: <span class="lvl l3">Admin</span>.</td></tr>
 <tr><td>PLC Bağlantıları</td><td><span class="lvl l2">Bakım</span></td><td>Kontrolörlerin tablosu: her birinin adı <b>Aktif</b> işaretiyle (<a href="#conn">7</a>), sürücüsü, istasyonu
   ve adresi (bir <span class="lvl l3">Admin</span> değiştirir), ve durumu &ndash; bağlanınca CPU'nun modeli ve program sürümüyle: <i>Bağlı - FX5UCCPU (Sürüm: 1.41)</i>
@@ -1101,7 +1101,7 @@ veya satırın herhangi bir yerine tıklamak onu çevirir; bu panel için, herke
 <tr><th>Seçenek</th><th>Açık</th><th>Kapalı</th></tr>
 <tr><td>HMI'de Industry 4 kaydı</td><td>HMI her makinenin durumlarını, olaylarını ve alarmlarını PLC'sinden makinenin kayıt veritabanına alır &ndash;
   Industry 4 servisinin işi &ndash; ve kendi kaydını (oturum açmalar, yazmalar, ayarlar) aynı veritabanında tutar (<a href="#i4log">11a</a>). Her makinenin PLC kayıt alanı
-  kendi Makine Parametreleri &rsaquo; Alarmlar ve Kayıtlar sayfasındadır. <i>Şu an</i> her makinenin kaydedicisinin durumunu verir.</td><td>Industry 4 servisi kaydeder (kurulu
+  kendi Makine Parametreleri &rsaquo; Seçenekler sayfasındadır (Industry 4 Kaydı). <i>Şu an</i> her makinenin kaydedicisinin durumunu verir.</td><td>Industry 4 servisi kaydeder (kurulu
   olduğu yerde); HMI'nin kaydı eskisi gibi kendi dosyalarındadır.</td></tr>
 <tr><td>Dokunmatik ekran</td><td>Bu bilgisayarın ekranının dokunmatik özelliği var (<a href="#touch">1a</a>): fare ile parmak arasında geçmek için üst çubukta
   &#128433; / &#128070; düğmesi bulunur, Kullanıcılar ve Tercihler'de <i>Ekran kullanımı</i> vardır. <i>Şu an</i> dokunarak mı fare ile mi kullanıldığını söyler.</td><td>Dokunmatik
@@ -1190,7 +1190,22 @@ HMI kaydetmeye başlayınca servisi durdurun &ndash; ya da kaldırın.</div>
      <b>manuel hareketi</b> (&#9664; pozisyon &#9654;), <b>Referans</b> (sayımın referans sensöründe aldığı pozisyon), <b>Ölçüm toleransı</b>,
      <b>Minimum limit</b> ve <b>Açma aralığı</b>, başlıklarının altında; enkoderin sahip olmadığı bir alan boş bırakılır, sütunu korunur.
      Manuel Hareket sayfalarının enkoder üniteleri her şeyi bu satırlardan alır (<a href="#encoders">4b</a>).</li>
- <li><b>Alarmlar ve Kayıtlar:</b> her alarmın önemi ve <b>yardımcı bağlantıları</b> &ndash; alarmdan açılan <b>birkaç</b> belge, çizim, sayfa veya web adresi.
+ <li><b>Seçenekler:</b> makinenin seçenekleri, her biri bir anahtar satırı &ndash; açıksa makinede vardır; dokunmak önce sorar, anahtarı kaydırmak sormaz.
+     Sağ uçta <b>Industry 4 Kaydı</b> &ndash; yalnızca <b>HMI Ayarları &rsaquo; Seçenekler</b>'de HMI'de Industry 4 kaydı açıkken
+     (<a href="#features">9b</a>; aksi halde bunları Industry 4 servisi kendisi ayarlar):
+     <ul>
+      <li>Makinenin PLC'sinin kaydettiği her kayıt için bir anahtar &ndash; FA2010: makine kapalı, çalışma pasif, çalışma aktif, geçici durdurma,
+          hata var, acil stop, profil değişti, kesim tamamlandı, fire profil çıktı, bar boyu ölçüldü, profil tanınmadı, profil ölçüldü.
+          Açıksa PLC onu kaydeder: anahtar kaydın PLC bitidir (<code>L1000</code> &hellip;), PLC'de tutulur, bir seçeneğinki gibi hemen yazılır.
+          İlk üçü makinenin durumlarıdır ve <b>her zaman kaydedilir</b> &ndash; gösterilir, değiştirilmez: HMI PLC'ye bağlandığında onları açar.
+          Geçici durdurma, hata ve acil stop durum grafiklerini tamamlar; kesim tamamlandı üretimin kaydıdır; diğerleri ayrıntıdır.</li>
+      <li>Altında makinenin kayıt ayarları, her biri değiştirildikçe saklanır (bir alan, bırakıldığında veya Enter'a basıldığında): HMI'nin bu makinenin
+          kaydını PLC'sinden alıp almadığı, <b>PLC kayıt alanı</b> &ndash; PLC'nin kayıtlarını tuttuğu word cihazı (<code>R27000</code>; her makinenin kendisininki:
+          alan geçerli olanı gösterir, boşaltılırsa makinenin kendisininkine döner; word cihazı değilse saklanmaz, satırların altında söylenir),
+          <i>Şu an</i> (makinenin kaydedicisinin ne yaptığı: kayıtları alıyor, PLC'yi bekliyor, Industry 4 servisi çalışırken bekliyor &hellip;)
+          ve bir kaydın Process ID'sinin bağlantısıyla <b>KMSystem</b> araması. Kayıt veritabanı olmayan bir makine bunu söyler. Bkz. <a href="#i4log">11a</a>.</li>
+     </ul></li>
+ <li><b>Alarmlar:</b> her alarmın önemi ve <b>yardımcı bağlantıları</b> &ndash; alarmdan açılan <b>birkaç</b> belge, çizim, sayfa veya web adresi.
      Liste için hücreye çift tıklayın (veya &#9999;&#65039;): <i>Dosya ekle...</i>, yazılan bir bağlantı, kaldır, yukarı ve aşağı;
      ya da aralarında <b>;</b> ile hücreye yazın. &#128194; birini açar (birkaç tane varsa bir menü).
      Kaydetmek makinenin kendi <code>Alarms.json</code> dosyasını yazar, böylece her makine kendi ayarlarını korur.
@@ -1200,16 +1215,6 @@ HMI kaydetmeye başlayınca servisi durdurun &ndash; ya da kaldırın.</div>
           (başta 5 s). Bkz. <a href="#genalarms">6a</a>. Gecikmeler ileri geri hareket eden bir silindiri de zamanlar (<a href="#fwback">4</a>).</li>
       <li><b>Silindir gecikmesi (s)</b> sütunu: bir hareketin alarmı için <b>kendi</b> gecikmesi, saniye olarak; boşsa genel olanı kullanır. Yalnızca bir silindir ünitesinin
           hareketinin bildirdiği bir alarmın gecikmesi olabilir: diğerleri gridir.</li>
-      <li><b>Makinenin PLC'den kaydı</b>, anahtarların altında &ndash; yalnızca <b>HMI Ayarları &rsaquo; Seçenekler</b>'de HMI'de Industry 4 kaydı
-          açıkken (<a href="#features">9b</a>): HMI'nin bu makinenin kaydını PLC'sinden alıp almadığı, <b>PLC kayıt alanı</b> &ndash; PLC'nin kayıtlarını tuttuğu
-          word cihazı (<code>R27000</code>; her makinenin kendisininki vardır &ndash; alan geçerli olanı gösterir, boşaltılırsa makinenin kendisininkine döner), <i>Şu an</i> (makinenin kaydedicisinin ne yaptığı: kayıtları alıyor,
-          PLC'yi bekliyor, Industry 4 servisi çalışırken bekliyor &hellip;), bir kaydın Process ID'sinin bağlantısıyla <b>KMSystem</b> araması
-          ve <b>Kaydedilecek kayıtlar</b> (<i>24 kayıttan 7</i>): <b>Seç&hellip;</b> PLC'nin kaydedebileceği her kaydı listeler &ndash; her biri bir satır, anahtarından
-          önce kodu ve PLC biti (<code>4 &middot; L1004</code>); açıksa PLC onu kaydeder. <i>Makinenin dosyasındaki gibi</i> makinenin kendi seçimini (durum haritası)
-          geri getirir; başka bir kayda devam eden kayıt (hatanın ikinci kaydı, bir eksenin <i>verisi (2)</i>) onunla birlikte kaydedilir. HMI bitleri PLC'ye
-          bağlandığında ve sayfa kaydedildiğinde yeniden, seçildiği gibi ayarlar.
-          Sayfanın &#128190;'si onları saklar ve kaydedici yeni alanı hemen alır; word cihazı olmayan bir kayıt alanı bunu söyleyerek reddedilir. Kayıt
-          veritabanı olmayan bir makine bunu söyler. Bkz. <a href="#i4log">11a</a>.</li>
      </ul></li>
 </ul>
 
@@ -1235,7 +1240,7 @@ HMI kaydetmeye başlayınca servisi durdurun &ndash; ya da kaldırın.</div>
        ve kaç günün saklandığı. &#128194; kayıt klasörünü açar.</li>
    <li>&#128452;&#65039; <b>Kayıt veritabanı ve raporlar</b>: bir makine seçin; altında, sayfada, kayıt veritabanı ve raporları &ndash; gösterge panelinin
        ayarları (<a href="#dashboard">Gösterge paneli</a>). Sayfa kaydı kimin yazdığını söyler &ndash; Industry 4 servisi veya HMI (<a href="#features">9b</a>) &ndash;
-       ve makinenin PLC kayıt alanının kendi Makine Parametreleri &rsaquo; Alarmlar ve Kayıtlar sayfasında olduğunu. Veritabanının içeriğine sayfa açılırken bakılır &ndash; <i>12.345 kayıt,
+       ve makinenin PLC kayıt alanının kendi Makine Parametreleri &rsaquo; Seçenekler sayfasında (Industry 4 Kaydı) olduğunu. Veritabanının içeriğine sayfa açılırken bakılır &ndash; <i>12.345 kayıt,
        2026-09-01 08:00 - 2026-10-01 09:12</i> &ndash; ya da, kırmızıyla, neden okunamadığı: bulunamadı, bir makine kaydı değil (<code>main_log</code> tablosu yok &ndash;
        başka bir programın veritabanı), henüz kayıt yok, okuyamadığı tarihler, veritabanı olmayan bir dosya. &#128269; yeniden bakar.</li>
    <li>Makineleri kayıt veritabanı tutmayan bir programın Gösterge Paneli sayfası yoktur: HMI'nin kaydı burada, aşağıdaki tabloda okunur.</li>
@@ -1354,10 +1359,10 @@ Bunu kendi başına bir Windows servisi olan <b>Industry 4 servisi</b> yapardı.
 bunu HMI yapar, servisin yaptığı gibi kayıt kayıt, her makinenin ilk PLC'sine kendi bağlantısı üzerinden &ndash; servise artık gerek yoktur.</p>
 <ul>
  <li>Kayıt veritabanı ve durum haritası olan makine başına bir <b>kaydedici</b>, ana pencereyle başlatılır. Durumu makinenin
-     Makine Parametreleri &rsaquo; Alarmlar ve Kayıtlar sayfasında ve HMI Ayarları &rsaquo; Seçenekler'dedir: <i>Kayıtlar PLC istasyonu 1 (R27000) üzerinden alınıyor: başlangıçtan beri
+     Makine Parametreleri &rsaquo; Seçenekler sayfasında (Industry 4 Kaydı) ve HMI Ayarları &rsaquo; Seçenekler'dedir: <i>Kayıtlar PLC istasyonu 1 (R27000) üzerinden alınıyor: başlangıçtan beri
      120 yazıldı</i>, <i>PLC bekleniyor: bağlı değil</i>, <i>Kapalı</i> &hellip;</li>
  <li><b>Kayıt alanı</b>: PLC'nin bir word cihazı (<code>R27000</code>) &ndash; ilk word'ü bekleyen kayıtlar, sonraki HMI'nin yanıtı, kayıtlar onuncu
-     word'ünden itibaren, her biri on word. Her makinenin kendisininki vardır, kendi Alarmlar ve Kayıtlar sayfasında ayarlanır (boş: makinenin programının verdiği).</li>
+     word'ünden itibaren, her biri on word. Her makinenin kendisininki vardır, kendi Seçenekler sayfasının Industry 4 Kaydı çerçevesinde ayarlanır (boş: makinenin programının verdiği).</li>
  <li>Her kayıt, PLC'nin tarihiyle veritabanının bir satırıdır, ve değerleri ayrıntılar olarak &ndash; durum haritasının söylediği gibi bölünmüş, iki word'den 32 bitlik değerler,
      açık olan her adlandırılmış bit kendi ayrıntısı. PLC'ye yanıt onunla birlikte yazılır: reddedilirse hiçbir şey saklanmaz ve PLC onu yeniden gönderir.
      Yanıtlar PLC yazma kaydında değildir (her kayıt için bir el sıkışma, bir kullanıcının yazması değil); denetim kaydı bir kaydedicinin ne zaman başladığını söyler.</li>

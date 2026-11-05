@@ -55,13 +55,14 @@ class CET {
         var titles = screen.AllPages.Select(p => LanguageManager.GetString(p.TitleKey, p.TitleFallback)).ToList();
         // (14 October: the user's Options tab first)
         // (30 October: "We can change the alarms setting page name to 'Alarms and Logs'")
-        Check("Options, Axis, Conveyor, Robot, Milling, Cutting, Encoders, Others, Alarms and Logs - no 'Parameters'",
-              string.Join(", ", titles) == "Options, Axis, Conveyor, Robot, Milling, Cutting, Encoders, Others, Alarms and Logs", string.Join(", ", titles));
+        // (5 November: "Alarms" again - "We should separate alarms and Industry4 logs from each other")
+        Check("Options, Axis, Conveyor, Robot, Milling, Cutting, Encoders, Others, Alarms - no 'Parameters'",
+              string.Join(", ", titles) == "Options, Axis, Conveyor, Robot, Milling, Cutting, Encoders, Others, Alarms", string.Join(", ", titles));
         AlarmHelpLinks.Discard(screen);
         LanguageManager.ChangeLanguage("TR");
-        Check("  in Turkish: Eksen ... Enkoderler, Diğerleri, Alarmlar ve Kayıtlar", LanguageManager.GetString("Tab_AxisSettings", "") == "Eksen" &&
+        Check("  in Turkish: Eksen ... Enkoderler, Diğerleri, Alarmlar", LanguageManager.GetString("Tab_AxisSettings", "") == "Eksen" &&
               LanguageManager.GetString("Tab_ParamEncoders", "") == "Enkoderler" && LanguageManager.GetString("Tab_ParamOther", "") == "Diğerleri" &&
-              LanguageManager.GetString("Set_AlarmsAndLogs", "") == "Alarmlar ve Kayıtlar");
+              LanguageManager.GetString("Set_Alarms", "") == "Alarmlar");
         LanguageManager.ChangeLanguage("EN");
 
         Console.WriteLine("--- Encoders: a CylinderEncoderSettingHMI row an encoder ---");

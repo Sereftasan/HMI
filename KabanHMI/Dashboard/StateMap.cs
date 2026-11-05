@@ -51,6 +51,12 @@ namespace Kaban.UI.Dashboard
 
         public static bool IsState(int code) { return code >= 0 && code <= 5; }
 
+        /// <summary>
+        /// Logged always (5 November: "The first 6 state codes are the machine state logs. The first 3 are must for it and the rest
+        /// is optional if the user want to see the state charts"): the machine closed, operation not active, operation active.
+        /// </summary>
+        public static bool IsRequired(int code) { return code >= Closed && code <= Active; }
+
         /// <summary>The colours the old program gave the states.</summary>
         public static Color ColorOf(int code)
         {
@@ -92,7 +98,8 @@ namespace Kaban.UI.Dashboard
 
         public IEnumerable<Entry> Entries { get { return _entries.Values.OrderBy(e => e.Code); } }
 
-        /// <summary>The records the PLC can be told to log or not: each that starts a record and has its bit (ActiveDevice).</summary>
+        /// <summary>The records the PLC can be told to log or not: each that starts a record and has its bit (ActiveDevice) - FA2010's
+        /// used ones switched on its Machine Parameters > Options page.</summary>
         public IEnumerable<Entry> Switchable
         {
             get { return Entries.Where(e => !e.PreviousCode.HasValue && !string.IsNullOrWhiteSpace(e.ActiveDevice)); }

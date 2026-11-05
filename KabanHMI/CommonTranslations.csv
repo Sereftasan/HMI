@@ -75,7 +75,6 @@ Tab_Machinery;Machinery;Makine;Оборудование;Maschine;Macchina;Maquin
 Set_AiPrompt;AI;AI;ИИ;KI;IA;IA
 Btn_SimMonitor;Simulation Monitor (F12);Simülasyon Monitörü (F12);Монитор симуляции (F12);Simulationsmonitor (F12);Monitor di simulazione (F12);Monitor de simulación (F12)
 Set_Alarms;Alarms;Alarmlar;Аварии;Alarme;Allarmi;Alarmas
-Set_AlarmsAndLogs;Alarms and Logs;Alarmlar ve Kayıtlar;;;;
 Set_AlarmGenOn;The HMI raises the cylinder alarms itself;Silindir alarmlarını HMI kendisi üretir;HMI сам формирует аварии цилиндров;Das HMI erzeugt die Zylinderalarme selbst;L'HMI genera da sé gli allarmi dei cilindri;El HMI genera por sí mismo las alarmas de cilindros
 Tip_AlarmGenOn;On: every cylinder unit's movement is timed from its output and must be confirmed by its sensors within its delay, or the HMI raises its alarm with the signal that failed (M840.1, M840.2...). The PLC's own alarm for the same device is then not listed twice.;Açık: her silindir biriminin hareketi çıkışından itibaren zamanlanır ve gecikme süresi içinde sensörleriyle doğrulanmalıdır, aksi halde HMI alarmını başarısız sinyalle birlikte üretir (M840.1, M840.2...). Aynı cihaz için PLC'nin kendi alarmı bu durumda iki kez listelenmez.;Вкл.: каждое движение цилиндра отсчитывается от его выхода и должно быть подтверждено датчиками в пределах задержки, иначе HMI формирует аварию с указанием несработавшего сигнала (M840.1, M840.2...). Собственная авария ПЛК для того же устройства тогда не выводится дважды.;Ein: Jede Bewegung einer Zylindereinheit wird ab ihrem Ausgang gemessen und muss innerhalb ihrer Verzögerung von ihren Sensoren bestätigt werden, sonst erzeugt das HMI ihren Alarm mit dem fehlgeschlagenen Signal (M840.1, M840.2...). Der eigene SPS-Alarm desselben Geräts wird dann nicht doppelt angezeigt.;Attivo: ogni movimento di un'unità cilindro è cronometrato dalla sua uscita e deve essere confermato dai suoi sensori entro il ritardo, altrimenti l'HMI genera l'allarme con il segnale mancato (M840.1, M840.2...). L'allarme del PLC per lo stesso dispositivo non viene allora elencato due volte.;Activado: cada movimiento de una unidad de cilindro se cronometra desde su salida y debe confirmarse con sus sensores dentro de su retardo, o el HMI genera su alarma con la señal que falló (M840.1, M840.2...). La alarma propia del PLC para el mismo dispositivo no se lista entonces dos veces.
 Set_AlarmGenDelay;Cylinder alarm delay (s):;Silindir alarm gecikmesi (s):;Задержка аварии цилиндра (с):;Zylinderalarm-Verzögerung (s):;Ritardo allarme cilindro (s):;Retardo de alarma de cilindro (s):
@@ -2061,6 +2060,8 @@ PV_Copy;Copy;Kopyala;;;;
 PV_Paste;Paste;Yapıştır;;;;
 Plg_Head;The machine's log from its PLC;Makinenin PLC'sinden kaydı;;;;
 Plg_Switch;The HMI takes the machine's states, events and alarms from its PLC into its log database;HMI makinenin durumlarını, olaylarını ve alarmlarını PLC'sinden kayıt veritabanına alır;;;;
+Plg_SwitchRow;The HMI takes the log from the PLC;HMI kaydı PLC'den alır;;;;
+Plg_KmRow;Process ID: its profile from KMSystem;Process ID: profili KMSystem'den;;;;
 Plg_Area;PLC log area;PLC kayıt alanı;;;;
 Plg_State;Now;Şu an;;;;
 Plg_ServiceNote;Not beside the Industry 4 service: while it runs on this PC, the HMI waits. Stop it (or uninstall it) once the HMI logs.;Industry 4 servisiyle birlikte değil: servis bu bilgisayarda çalışırken HMI bekler. HMI kayıt almaya başlayınca servisi durdurun (veya kaldırın).;;;;
@@ -2112,13 +2113,4 @@ Ftr_TouchNowTouch;Now: used by touch.;Şu an: dokunarak kullanılıyor.;;;;
 Ftr_TouchOff;Now: used with a mouse.;Şu an: fare ile kullanılıyor.;;;;
 Plg_NoDatabase;This machine keeps no log database (HMI Settings > Logs and Reports): nothing is taken from its PLC.;Bu makine kayıt veritabanı tutmuyor (HMI Ayarları > Kayıtlar ve Raporlar): PLC'sinden hiçbir şey alınmaz.;;;;
 Plg_WhoNote;Written by the Industry 4 service or the HMI (HMI Settings > Options).;Industry 4 servisi veya HMI yazar (HMI Ayarları > Seçenekler).;;;;
-Plg_AreaNote;Its PLC log area: Machine Parameters > Alarms and Logs.;PLC kayıt alanı: Makine Parametreleri > Alarmlar ve Kayıtlar.;;;;
-Plg_Records;Records to log;Kaydedilecek kayıtlar;;;;
-Plg_RecordsChoose;Choose...;Seç...;;;;
-Plg_RecordsCount;{0} of {1};{1} kayıttan {0};;;;
-Plg_RecordsNone;none - the machine has no state map;yok - makinenin durum haritası yok;;;;
-Plg_RecordsNote;The PLC logs a record only while its bit (L1000 ...) is on. The HMI sets each bit as chosen here when it connects to the PLC, and again when the page is saved. A record continued by another (There is an error (2), an axis's data (2)) is logged with it.;PLC bir kaydı yalnızca biti (L1000 ...) açıkken kaydeder. HMI her biti PLC'ye bağlandığında ve sayfa kaydedildiğinde yeniden, burada seçildiği gibi ayarlar. Başka bir kayda devam eden kayıt (hatanın ikinci kaydı, bir eksenin verisi (2)) onunla birlikte kaydedilir.;;;;
-Plg_RecordsTip;Code {0}, PLC bit {1}.;Kod {0}, PLC biti {1}.;;;;
-Plg_RecordsWith;Logged with it: {0}.;Onunla birlikte kaydedilir: {0}.;;;;
-Plg_RecordsAll;All;Tümü;;;;
-Plg_RecordsFile;As the machine's file;Makinenin dosyasındaki gibi;;;;
+Plg_AreaNote;Its PLC log area: Machine Parameters > Options (Industry 4 Logging).;PLC kayıt alanı: Makine Parametreleri > Seçenekler (Industry 4 Kaydı).;;;;

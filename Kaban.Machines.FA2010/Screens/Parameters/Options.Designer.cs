@@ -52,7 +52,22 @@
             this.checkBoxWithBladeSingleSideCut = new Kaban.UI.Controls.CheckBoxHMI();
             this.optVithBlade = new Kaban.UI.Controls.CheckBoxHMI();
             this.optMullionNotching = new Kaban.UI.Controls.CheckBoxHMI();
+            this.logMachine_Closed = new Kaban.UI.Controls.CheckBoxHMI();
+            this.logOperation_Not_Active = new Kaban.UI.Controls.CheckBoxHMI();
+            this.logOperation_Active = new Kaban.UI.Controls.CheckBoxHMI();
+            this.logPause_Mode = new Kaban.UI.Controls.CheckBoxHMI();
+            this.logError = new Kaban.UI.Controls.CheckBoxHMI();
+            this.logEmergency_Stop = new Kaban.UI.Controls.CheckBoxHMI();
+            this.logProfile_Changed = new Kaban.UI.Controls.CheckBoxHMI();
+            this.logCutting_Done = new Kaban.UI.Controls.CheckBoxHMI();
+            this.logWaste_Profile_Emerged = new Kaban.UI.Controls.CheckBoxHMI();
+            this.logBar_Length_Measured = new Kaban.UI.Controls.CheckBoxHMI();
+            this.logProfile_Not_Recognised = new Kaban.UI.Controls.CheckBoxHMI();
+            this.logProfile_Measured = new Kaban.UI.Controls.CheckBoxHMI();
+            this.grpIndustry4Logging = new Kaban.UI.Controls.GroupBoxHMI();
+            this.industry4SettingsPlace = new System.Windows.Forms.Panel();
             this.groupBoxMullionNotching.SuspendLayout();
+            this.grpIndustry4Logging.SuspendLayout();
             this.SuspendLayout();
             // 
             // optCooling
@@ -677,9 +692,258 @@
             this.optMullionNotching.TabIndex = 62;
             this.optMullionNotching.ToolTipCaption = null;
             // 
+            // grpIndustry4Logging  (5 November: the records the PLC logs and the machine's log settings - shown while the
+            // HMI does the Industry 4 logging; the first three always logged: the HMI switches them on)
+            // 
+            this.grpIndustry4Logging.Address = null;
+            this.grpIndustry4Logging.BackColor = System.Drawing.Color.White;
+            this.grpIndustry4Logging.Controls.Add(this.logMachine_Closed);
+            this.grpIndustry4Logging.Controls.Add(this.logOperation_Not_Active);
+            this.grpIndustry4Logging.Controls.Add(this.logOperation_Active);
+            this.grpIndustry4Logging.Controls.Add(this.logPause_Mode);
+            this.grpIndustry4Logging.Controls.Add(this.logError);
+            this.grpIndustry4Logging.Controls.Add(this.logEmergency_Stop);
+            this.grpIndustry4Logging.Controls.Add(this.logProfile_Changed);
+            this.grpIndustry4Logging.Controls.Add(this.logCutting_Done);
+            this.grpIndustry4Logging.Controls.Add(this.logWaste_Profile_Emerged);
+            this.grpIndustry4Logging.Controls.Add(this.logBar_Length_Measured);
+            this.grpIndustry4Logging.Controls.Add(this.logProfile_Not_Recognised);
+            this.grpIndustry4Logging.Controls.Add(this.logProfile_Measured);
+            this.grpIndustry4Logging.Controls.Add(this.industry4SettingsPlace);
+            this.grpIndustry4Logging.Emoji = "";
+            this.grpIndustry4Logging.EnableAddress = "";
+            this.grpIndustry4Logging.EnableConditions = Kaban.Core.Enums.SystemCondition.None;
+            this.grpIndustry4Logging.Location = new System.Drawing.Point(996, 16);
+            this.grpIndustry4Logging.Name = "grpIndustry4Logging";
+            this.grpIndustry4Logging.Padding = new System.Windows.Forms.Padding(10, 22, 10, 8);
+            this.grpIndustry4Logging.PlcNumber = 1;
+            this.grpIndustry4Logging.Size = new System.Drawing.Size(474, 722);
+            this.grpIndustry4Logging.TabIndex = 79;
+            this.grpIndustry4Logging.TitleText = "Industry 4 Logging";
+            this.grpIndustry4Logging.TitleTextKey = "Industry 4 Logging";
+            this.grpIndustry4Logging.VisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
+            this.grpIndustry4Logging.VisibleAddress = "";
+            // 
+            // industry4SettingsPlace  (where the machine's log settings go - put there by the page when it is made: its
+            // PLC log area, the logger's state, the KMSystem connection)
+            // 
+            this.industry4SettingsPlace.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(246)))), ((int)(((byte)(252)))));
+            this.industry4SettingsPlace.Location = new System.Drawing.Point(12, 494);
+            this.industry4SettingsPlace.Name = "industry4SettingsPlace";
+            this.industry4SettingsPlace.Size = new System.Drawing.Size(450, 220);
+            this.industry4SettingsPlace.TabIndex = 92;
+            // 
+            // logMachine_Closed  (L1000: the PLC logs code 0 while it is on)
+            // 
+            this.logMachine_Closed.Address = "L1000";
+            this.logMachine_Closed.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.logMachine_Closed.CornerRadius = 4;
+            this.logMachine_Closed.DescriptionSide = Kaban.Core.Enums.DescriptionSide.Left;
+            this.logMachine_Closed.DescriptionText = "The machine is closed";
+            this.logMachine_Closed.DisplayOnly = true;
+            this.logMachine_Closed.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.logMachine_Closed.Location = new System.Drawing.Point(12, 30);
+            this.logMachine_Closed.LogAction = true;
+            this.logMachine_Closed.Name = "logMachine_Closed";
+            this.logMachine_Closed.PlcNumber = 1;
+            this.logMachine_Closed.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
+            this.logMachine_Closed.Size = new System.Drawing.Size(450, 38);
+            this.logMachine_Closed.TabIndex = 80;
+            this.logMachine_Closed.ToolTipCaption = null;
+            // 
+            // logOperation_Not_Active  (L1001: the PLC logs code 1 while it is on)
+            // 
+            this.logOperation_Not_Active.Address = "L1001";
+            this.logOperation_Not_Active.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.logOperation_Not_Active.CornerRadius = 4;
+            this.logOperation_Not_Active.DescriptionSide = Kaban.Core.Enums.DescriptionSide.Left;
+            this.logOperation_Not_Active.DescriptionText = "Operation is not active";
+            this.logOperation_Not_Active.DisplayOnly = true;
+            this.logOperation_Not_Active.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.logOperation_Not_Active.Location = new System.Drawing.Point(12, 68);
+            this.logOperation_Not_Active.LogAction = true;
+            this.logOperation_Not_Active.Name = "logOperation_Not_Active";
+            this.logOperation_Not_Active.PlcNumber = 1;
+            this.logOperation_Not_Active.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
+            this.logOperation_Not_Active.Size = new System.Drawing.Size(450, 38);
+            this.logOperation_Not_Active.TabIndex = 81;
+            this.logOperation_Not_Active.ToolTipCaption = null;
+            // 
+            // logOperation_Active  (L1002: the PLC logs code 2 while it is on)
+            // 
+            this.logOperation_Active.Address = "L1002";
+            this.logOperation_Active.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.logOperation_Active.CornerRadius = 4;
+            this.logOperation_Active.DescriptionSide = Kaban.Core.Enums.DescriptionSide.Left;
+            this.logOperation_Active.DescriptionText = "Operation is active";
+            this.logOperation_Active.DisplayOnly = true;
+            this.logOperation_Active.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.logOperation_Active.Location = new System.Drawing.Point(12, 106);
+            this.logOperation_Active.LogAction = true;
+            this.logOperation_Active.Name = "logOperation_Active";
+            this.logOperation_Active.PlcNumber = 1;
+            this.logOperation_Active.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
+            this.logOperation_Active.Size = new System.Drawing.Size(450, 38);
+            this.logOperation_Active.TabIndex = 82;
+            this.logOperation_Active.ToolTipCaption = null;
+            // 
+            // logPause_Mode  (L1003: the PLC logs code 3 while it is on)
+            // 
+            this.logPause_Mode.Address = "L1003";
+            this.logPause_Mode.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.logPause_Mode.CornerRadius = 4;
+            this.logPause_Mode.DescriptionSide = Kaban.Core.Enums.DescriptionSide.Left;
+            this.logPause_Mode.DescriptionText = "On pause mode";
+            this.logPause_Mode.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.logPause_Mode.Location = new System.Drawing.Point(12, 144);
+            this.logPause_Mode.LogAction = true;
+            this.logPause_Mode.Name = "logPause_Mode";
+            this.logPause_Mode.PlcNumber = 1;
+            this.logPause_Mode.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
+            this.logPause_Mode.Size = new System.Drawing.Size(450, 38);
+            this.logPause_Mode.TabIndex = 83;
+            this.logPause_Mode.ToolTipCaption = null;
+            // 
+            // logError  (L1004: the PLC logs code 4 while it is on)
+            // 
+            this.logError.Address = "L1004";
+            this.logError.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.logError.CornerRadius = 4;
+            this.logError.DescriptionSide = Kaban.Core.Enums.DescriptionSide.Left;
+            this.logError.DescriptionText = "There is an error";
+            this.logError.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.logError.Location = new System.Drawing.Point(12, 182);
+            this.logError.LogAction = true;
+            this.logError.Name = "logError";
+            this.logError.PlcNumber = 1;
+            this.logError.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
+            this.logError.Size = new System.Drawing.Size(450, 38);
+            this.logError.TabIndex = 84;
+            this.logError.ToolTipCaption = null;
+            // 
+            // logEmergency_Stop  (L1005: the PLC logs code 5 while it is on)
+            // 
+            this.logEmergency_Stop.Address = "L1005";
+            this.logEmergency_Stop.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.logEmergency_Stop.CornerRadius = 4;
+            this.logEmergency_Stop.DescriptionSide = Kaban.Core.Enums.DescriptionSide.Left;
+            this.logEmergency_Stop.DescriptionText = "Emergency stop";
+            this.logEmergency_Stop.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.logEmergency_Stop.Location = new System.Drawing.Point(12, 220);
+            this.logEmergency_Stop.LogAction = true;
+            this.logEmergency_Stop.Name = "logEmergency_Stop";
+            this.logEmergency_Stop.PlcNumber = 1;
+            this.logEmergency_Stop.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
+            this.logEmergency_Stop.Size = new System.Drawing.Size(450, 38);
+            this.logEmergency_Stop.TabIndex = 85;
+            this.logEmergency_Stop.ToolTipCaption = null;
+            // 
+            // logProfile_Changed  (L1006: the PLC logs code 6 while it is on)
+            // 
+            this.logProfile_Changed.Address = "L1006";
+            this.logProfile_Changed.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.logProfile_Changed.CornerRadius = 4;
+            this.logProfile_Changed.DescriptionSide = Kaban.Core.Enums.DescriptionSide.Left;
+            this.logProfile_Changed.DescriptionText = "Profile changed";
+            this.logProfile_Changed.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.logProfile_Changed.Location = new System.Drawing.Point(12, 258);
+            this.logProfile_Changed.LogAction = true;
+            this.logProfile_Changed.Name = "logProfile_Changed";
+            this.logProfile_Changed.PlcNumber = 1;
+            this.logProfile_Changed.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
+            this.logProfile_Changed.Size = new System.Drawing.Size(450, 38);
+            this.logProfile_Changed.TabIndex = 86;
+            this.logProfile_Changed.ToolTipCaption = null;
+            // 
+            // logCutting_Done  (L1008: the PLC logs code 8 while it is on)
+            // 
+            this.logCutting_Done.Address = "L1008";
+            this.logCutting_Done.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.logCutting_Done.CornerRadius = 4;
+            this.logCutting_Done.DescriptionSide = Kaban.Core.Enums.DescriptionSide.Left;
+            this.logCutting_Done.DescriptionText = "Cutting done";
+            this.logCutting_Done.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.logCutting_Done.Location = new System.Drawing.Point(12, 296);
+            this.logCutting_Done.LogAction = true;
+            this.logCutting_Done.Name = "logCutting_Done";
+            this.logCutting_Done.PlcNumber = 1;
+            this.logCutting_Done.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
+            this.logCutting_Done.Size = new System.Drawing.Size(450, 38);
+            this.logCutting_Done.TabIndex = 87;
+            this.logCutting_Done.ToolTipCaption = null;
+            // 
+            // logWaste_Profile_Emerged  (L1015: the PLC logs code 15 while it is on)
+            // 
+            this.logWaste_Profile_Emerged.Address = "L1015";
+            this.logWaste_Profile_Emerged.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.logWaste_Profile_Emerged.CornerRadius = 4;
+            this.logWaste_Profile_Emerged.DescriptionSide = Kaban.Core.Enums.DescriptionSide.Left;
+            this.logWaste_Profile_Emerged.DescriptionText = "Waste profile emerged";
+            this.logWaste_Profile_Emerged.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.logWaste_Profile_Emerged.Location = new System.Drawing.Point(12, 334);
+            this.logWaste_Profile_Emerged.LogAction = true;
+            this.logWaste_Profile_Emerged.Name = "logWaste_Profile_Emerged";
+            this.logWaste_Profile_Emerged.PlcNumber = 1;
+            this.logWaste_Profile_Emerged.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
+            this.logWaste_Profile_Emerged.Size = new System.Drawing.Size(450, 38);
+            this.logWaste_Profile_Emerged.TabIndex = 88;
+            this.logWaste_Profile_Emerged.ToolTipCaption = null;
+            // 
+            // logBar_Length_Measured  (L1016: the PLC logs code 16 while it is on)
+            // 
+            this.logBar_Length_Measured.Address = "L1016";
+            this.logBar_Length_Measured.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.logBar_Length_Measured.CornerRadius = 4;
+            this.logBar_Length_Measured.DescriptionSide = Kaban.Core.Enums.DescriptionSide.Left;
+            this.logBar_Length_Measured.DescriptionText = "Bar length measured";
+            this.logBar_Length_Measured.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.logBar_Length_Measured.Location = new System.Drawing.Point(12, 372);
+            this.logBar_Length_Measured.LogAction = true;
+            this.logBar_Length_Measured.Name = "logBar_Length_Measured";
+            this.logBar_Length_Measured.PlcNumber = 1;
+            this.logBar_Length_Measured.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
+            this.logBar_Length_Measured.Size = new System.Drawing.Size(450, 38);
+            this.logBar_Length_Measured.TabIndex = 89;
+            this.logBar_Length_Measured.ToolTipCaption = null;
+            // 
+            // logProfile_Not_Recognised  (L1020: the PLC logs code 20 while it is on)
+            // 
+            this.logProfile_Not_Recognised.Address = "L1020";
+            this.logProfile_Not_Recognised.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.logProfile_Not_Recognised.CornerRadius = 4;
+            this.logProfile_Not_Recognised.DescriptionSide = Kaban.Core.Enums.DescriptionSide.Left;
+            this.logProfile_Not_Recognised.DescriptionText = "Profile not recognised";
+            this.logProfile_Not_Recognised.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.logProfile_Not_Recognised.Location = new System.Drawing.Point(12, 410);
+            this.logProfile_Not_Recognised.LogAction = true;
+            this.logProfile_Not_Recognised.Name = "logProfile_Not_Recognised";
+            this.logProfile_Not_Recognised.PlcNumber = 1;
+            this.logProfile_Not_Recognised.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
+            this.logProfile_Not_Recognised.Size = new System.Drawing.Size(450, 38);
+            this.logProfile_Not_Recognised.TabIndex = 90;
+            this.logProfile_Not_Recognised.ToolTipCaption = null;
+            // 
+            // logProfile_Measured  (L1022: the PLC logs code 22 while it is on)
+            // 
+            this.logProfile_Measured.Address = "L1022";
+            this.logProfile_Measured.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.logProfile_Measured.CornerRadius = 4;
+            this.logProfile_Measured.DescriptionSide = Kaban.Core.Enums.DescriptionSide.Left;
+            this.logProfile_Measured.DescriptionText = "Profile measured";
+            this.logProfile_Measured.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.logProfile_Measured.Location = new System.Drawing.Point(12, 448);
+            this.logProfile_Measured.LogAction = true;
+            this.logProfile_Measured.Name = "logProfile_Measured";
+            this.logProfile_Measured.PlcNumber = 1;
+            this.logProfile_Measured.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
+            this.logProfile_Measured.Size = new System.Drawing.Size(450, 38);
+            this.logProfile_Measured.TabIndex = 91;
+            this.logProfile_Measured.ToolTipCaption = null;
+            // 
             // Options
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
+            this.Controls.Add(this.grpIndustry4Logging);
             this.Controls.Add(this.groupBoxMullionNotching);
             this.Controls.Add(this.optCooling);
             this.Controls.Add(this.optProfile_Carrying_Roller_Sensor);
@@ -700,8 +964,9 @@
             this.Controls.Add(this.optCutting_Right_Front_Vertical_Without_Encoder);
             this.Controls.Add(this.optCutting_Left_Front_Air_Exhaust);
             this.Name = "Options";
-            this.Size = new System.Drawing.Size(996, 512);
+            this.Size = new System.Drawing.Size(1494, 754);
             this.groupBoxMullionNotching.ResumeLayout(false);
+            this.grpIndustry4Logging.ResumeLayout(false);
             this.groupBoxMullionNotching.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -733,5 +998,19 @@
         private UI.Controls.CheckBoxHMI checkBoxWithBladeBackFinishCut;
         private UI.Controls.CheckBoxHMI checkBoxWithBladeLeftBackFinishCut;
         private UI.Controls.CheckBoxHMI checkBoxWithBladeSingleSideCut;
+        private UI.Controls.CheckBoxHMI logMachine_Closed;
+        private UI.Controls.CheckBoxHMI logOperation_Not_Active;
+        private UI.Controls.CheckBoxHMI logOperation_Active;
+        private UI.Controls.CheckBoxHMI logPause_Mode;
+        private UI.Controls.CheckBoxHMI logError;
+        private UI.Controls.CheckBoxHMI logEmergency_Stop;
+        private UI.Controls.CheckBoxHMI logProfile_Changed;
+        private UI.Controls.CheckBoxHMI logCutting_Done;
+        private UI.Controls.CheckBoxHMI logWaste_Profile_Emerged;
+        private UI.Controls.CheckBoxHMI logBar_Length_Measured;
+        private UI.Controls.CheckBoxHMI logProfile_Not_Recognised;
+        private UI.Controls.CheckBoxHMI logProfile_Measured;
+        private UI.Controls.GroupBoxHMI grpIndustry4Logging;
+        private System.Windows.Forms.Panel industry4SettingsPlace;
     }
 }

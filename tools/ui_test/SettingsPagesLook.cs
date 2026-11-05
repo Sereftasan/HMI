@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
@@ -77,6 +77,49 @@ class SPL {
               line.ToArgb() == UiStyle.RowRule.ToArgb() && lit && first.BackColor == Color.Transparent, line + " " + lit);
     }
 
+    /// <summary>
+    /// 5 November: "create a group box inside 'Options' page (just like 'Mullion Notching' group box) at the right end column and put
+    /// these controls and database connection setting inside it (only the following logs are used at FA2010)".
+    /// </summary>
+    static void IndustryFrame(string dir) {
+        Console.WriteLine("--- Options: the Industry 4 Logging frame ---");
+        HmiFeatures.SettingsPath = Path.Combine(dir, "Features.cfg");
+        Kaban.UI.Dashboard.DashboardConfig.FolderOverride = Path.Combine(dir, "dashboard");
+        Kaban.UI.Dashboard.DashboardService.Register("FA2010", Path.Combine("Dashboard", "config.json"), Path.Combine("Dashboard", "StateMap.json"),
+                                                     Path.Combine("Dashboard", "Translation_JSON.csv"));
+        var form = new Form { ClientSize = new Size(1520, 800), StartPosition = FormStartPosition.Manual, Location = new Point(0, 0), BackColor = Color.White };
+        var page = Page("Options");
+        ((ContainerControl)page).AutoScaleMode = AutoScaleMode.None;
+        page.Dock = DockStyle.Fill;
+        form.Controls.Add(page);
+        form.Show(); Pump(400);
+        var frame = page.Controls.Find("grpIndustry4Logging", true).OfType<GroupBoxHMI>().Single();
+        var mullion = page.Controls.Find("groupBoxMullionNotching", true).OfType<GroupBoxHMI>().Single();
+        Check("Industry 4 logging in the HMI off: the frame not shown (the Industry 4 service sets the PLC's bits)", !frame.Visible);
+        HmiFeatures.Set(HmiFeatures.Industry4Logging, true); Pump(400);
+        Check("  on: shown, at the right end column (24 right of Mullion Notching), as wide, its title Industry 4 Logging",
+              frame.Visible && frame.Left == mullion.Right + 24 && frame.Width == mullion.Width && frame.Top == mullion.Top && frame.TitleTextKey == "Industry 4 Logging",
+              frame.Bounds + " / " + mullion.Bounds);
+        var recs = frame.Controls.OfType<CheckBoxHMI>().OrderBy(c => c.Top).ToList();
+        var want = new[] { "L1000", "L1001", "L1002", "L1003", "L1004", "L1005", "L1006", "L1008", "L1015", "L1016", "L1020", "L1022" };
+        Check("  the twelve records FA2010 logs, each a switch row on its PLC bit (0 - 6, 8, 15, 16, 20, 22), as the options",
+              recs.Select(c => c.Address).SequenceEqual(want) && recs.All(c => c.DrawnAsRow && c.Width == 450 && c.Height == UiStyle.SettingRowHeight && c.Left == 12) &&
+              recs.Zip(recs.Skip(1), (a, b) => b.Top - a.Bottom).All(g => g == 0) && recs[0].CaptionShown == "The machine is closed" && recs[7].CaptionShown == "Cutting done" &&
+              recs[11].CaptionShown == "Profile measured", string.Join(",", recs.Select(c => c.Address)));
+        Check("  the first three always logged - shown, not switched (the HMI switches them on)",
+              recs.Take(3).All(c => c.DisplayOnly) && recs.Skip(3).All(c => !c.DisplayOnly && c.RequiredSecurity == SecurityLevel.Maintenance && c.LogAction));
+        var log = frame.Controls.OfType<Kaban.UI.Dashboard.MachineLogSettings>().SingleOrDefault();
+        Check("  the machine's log settings under them: its switch, the PLC log area, the logger's state, the KMSystem lookup and connection; the frame round them",
+              log != null && log.Top >= recs.Last().Bottom && log.Machine != null && log.Controls.Find("logArea", true).Length == 1 &&
+              log.Controls.Find("kmConnection", true).Length == 1 && log.Controls.OfType<CheckBoxHMI>().All(c => c.Width == 450 && c.DrawnAsRow) &&
+              frame.Height == log.Bottom + frame.Padding.Bottom && ((TextBox)log.Controls.Find("logArea", true)[0]).Text == "R27000",
+              log == null ? "none" : log.Bounds + " in " + frame.Size);
+        Shot(form, "settings_Options_logging");
+        HmiFeatures.Set(HmiFeatures.Industry4Logging, false); Pump(200);
+        Check("  off again: hidden", !frame.Visible);
+        form.Close(); form.Dispose();
+    }
+
     [STAThread]
     static void Main() {
         var scale = Environment.GetEnvironmentVariable("SPL_SCALE");      // another screen scale: the rows only
@@ -110,7 +153,8 @@ class SPL {
             form.Show(); Pump(500);
             Shot(form, "settings_" + n + (UiScale.Active ? "_" + (int)Math.Round(UiScale.Factor * 100) : ""));
             if (n == "Options" && !UiScale.Active) {
-                var rows = All(page).OfType<CheckBoxHMI>().ToList();
+                Func<Control, bool> inLogFrame = c => { for (var q = c.Parent; q != null; q = q.Parent) if (q.Name == "grpIndustry4Logging") return true; return false; };
+                var rows = All(page).OfType<CheckBoxHMI>().Where(c => !inLogFrame(c)).ToList();
                 // (5 November: "The width of the check box HMI controls ... should be set suitable to the other machine setting page
                 // numerical input controls" - 450, as the value rows)
                 Check("Options: every switch a row " + UiStyle.SettingRowHeight + " high (46 before: 'a little less'), 450 wide as the value rows", rows.Count == 23 &&
@@ -123,7 +167,7 @@ class SPL {
                     for (int i = 1; i < ordered.Count; i++) if (ordered[i].Top != ordered[i - 1].Bottom) apart.Add(ordered[i - 1].Name + "/" + ordered[i].Name);
                 }
                 Check("  the rows of a column touching", apart.Count == 0, string.Join(" ", apart));
-                var group = All(page).OfType<GroupBoxHMI>().First();
+                var group = All(page).OfType<GroupBoxHMI>().First(g => g.Name == "groupBoxMullionNotching");
                 var inGroup = rows.Where(r => r.Parent == group).ToList();
                 var below = rows.Where(r => r.Parent == page && r.Left == group.Left + 12).OrderBy(r => r.Top).ToList();
                 Check("  the Mullion Notching frame round its five rows, the right column's rows under it", inGroup.Count == 5 &&
@@ -149,6 +193,7 @@ class SPL {
             }
             form.Close(); form.Dispose(); Pump(100);
         }
+        if (!UiScale.Active) IndustryFrame(dir);
         Console.WriteLine(fail == 0 ? "\nSETTINGS PAGES LOOK ALL PASS" : "\nSETTINGS PAGES LOOK " + fail + " FAILED");
         Environment.Exit(fail == 0 ? 0 : 1);
     }

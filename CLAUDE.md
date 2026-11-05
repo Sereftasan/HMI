@@ -69,7 +69,10 @@
   bit). An older installation's `Alarms.json` with its texts still reads; the translation file's text wins.
 - Optional parts (30 October): HMI Settings > Options (was Features; the machine's Options tab's key, Tab_Options) - the
   Industry 4 logging in the HMI and the touch screen, a row each with a switch, both off until switched on; what they do
-  is in the manual (9b), not on the page. A machine's PLC log area: its Machine Parameters > Alarms and Logs.
+  is in the manual (9b), not on the page. A machine's PLC log area: its Machine Parameters > Options, the Industry 4 Logging
+  frame (5 November: the alarms page is "Alarms" again) - with a switch row on each record's PLC bit (FA2010: codes 0 - 6,
+  8, 15, 16, 20, 22; L1000 + code), the PLC keeping them; 0 - 2 (the machine's states) always logged: the HMI switches them
+  on as it connects (MachineLogger.WriteRequired). FA2010's records: docs\industry4\MachineLog_DeviceList.xlsx.
 - Tick boxes (30 October, the user's choice): on / off switches. CheckBoxHMI is a switch row by default (Look; narrower
   than 120 px: the switch alone, its caption beside it); every plain CheckBox is drawn as a switch (TouchInput.Sizes,
   PaintSwitchBox). Lay a list of options out as rows: as wide as the column, 38 - 46 high, touching.

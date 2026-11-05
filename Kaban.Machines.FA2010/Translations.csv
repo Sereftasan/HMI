@@ -207,6 +207,19 @@ Tank Pulse Capacity;Tank Pulse Capacity;Tank Kapasitesi;Ёмкость бака 
 Robot Lubrication Ratio;Robot Lubrication Ratio;Robot Yağlama Oranı;Коэффициент смазки робота;Roboter-Schmierverhältnis;Rapporto lubrificazione robot;Relación de lubricación del robot
 Machine Options;Machine Options;Makine Seçenekleri;Опции станка;Maschinenoptionen;Opzioni macchina;Opciones de la máquina
 Mullion Notching;Mullion Notching;Ortakayıt Kertme;Надрезка импоста;Pfostenausklinkung;Intaglio montante;Entalladura de montante
+Industry 4 Logging;Industry 4 Logging;Industry 4 Kaydı;;;;
+The machine is closed;The machine is closed;Makine kapalı;;;;
+Operation is not active;Operation is not active;Çalışma pasif;;;;
+Operation is active;Operation is active;Çalışma aktif;;;;
+On pause mode;On pause mode;Geçici durdurma;;;;
+There is an error;There is an error;Hata var;;;;
+Emergency stop;Emergency stop;Acil stop;;;;
+Profile changed;Profile changed;Profil değişti;;;;
+Cutting done;Cutting done;Kesim tamamlandı;;;;
+Waste profile emerged;Waste profile emerged;Fire profil çıktı;;;;
+Bar length measured;Bar length measured;Bar boyu ölçüldü;;;;
+Profile not recognised;Profile not recognised;Profil tanınmadı;;;;
+Profile measured;Profile measured;Profil ölçüldü;;;;
 Cooling;Cooling;Soğutma;Охлаждение;Kühlung;Raffreddamento;Refrigeración
 Profile Carrying Roller Sensor;Profile Carrying Roller Sensor;Profil Taşıma Rulo Kontrolü;Датчик ролика переноса профиля;Sensor Profiltragrolle;Sensore rullo trasporto profilo;Sensor del rodillo de transporte
 Profile Recog. Carrying Roller;Profile Recog. Carrying Roller;Profil Tanıma Kaldırma Rulosu;Ролик переноса распознавания профиля;Tragrolle Profilerkennung;Rullo trasporto riconoscimento profilo;Rodillo de transporte reconocimiento

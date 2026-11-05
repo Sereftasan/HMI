@@ -18,8 +18,9 @@ namespace Kaban.UI.Settings
     /// AlarmSettings.cfg beside it is gone, see Save); the alarm's texts are rows of
     /// the machine's Translations.csv (30 October), edited on HMI Settings > Translation.
     ///
-    /// The page is Machine Parameters > Alarms and Logs: with the machine's PLC log
-    /// area under the switches while the HMI logs (MachineLogSettings).
+    /// The page is Machine Parameters > Alarms - the alarms only (5 November: "We should separate alarms and Industry4
+    /// logs from each other as the different pages ... the page got too complicated"); the machine's log from its PLC is
+    /// set in the Industry 4 Logging frame of its Options page (MachineLogSettings).
     ///
     /// THE ALARMS THE HMI RAISES ITSELF (1 October): above the table, switched on
     /// per machine, with the general delay; in the table, a delay of its own for
@@ -218,25 +219,14 @@ namespace Kaban.UI.Settings
             _status.Padding = new Padding(8, 4, 0, 0);
             _status.Font = Kaban.UI.Controls.UiStyle.Small;
 
-            // ---- the machine's log from its PLC (30 October: "visible when HMI industry 4 logging
-            // activated ... change the alarms setting page name to 'Alarms and Logs' and put the setting
-            // on the page"): under the alarms the HMI raises, while HMI Settings > Options has it on
-            _log = new Kaban.UI.Dashboard.MachineLogSettings(string.IsNullOrEmpty(moduleId) ? AlarmGeneration.ModuleOfStation(1) : moduleId);
-            _log.Edited += (s, e) => _dirty.MarkDirty();
-
             Controls.Add(_grid);
             Controls.Add(_status);
-            Controls.Add(_log);
             Controls.Add(_genPanel);
             Controls.Add(bar);
 
             LoadRows();
         }
 
-        private readonly Kaban.UI.Dashboard.MachineLogSettings _log;
-
-        /// <summary>The machine's log settings on the page (tests).</summary>
-        public Kaban.UI.Dashboard.MachineLogSettings MachineLog { get { return _log; } }
 
 
         private readonly FlowLayoutPanel _genPanel;
@@ -306,7 +296,6 @@ namespace Kaban.UI.Settings
             _genAxes.Checked = gen.AxisAlarms;
             _genDelay.Value = (decimal)Math.Max(AlarmGeneration.MinimumDelaySeconds, Math.Min(600, gen.DelaySeconds));
             ShowGeneration();
-            if (_log != null) _log.Fill();
             // What discovery found, so a unit whose error bits were set in the designer
             // can be checked without raising an alarm.
             _status.Text = _grid.Rows.Count + " alarms. " + Kaban.UI.Helpers.AlarmHelpLinks.Count +
@@ -328,13 +317,6 @@ namespace Kaban.UI.Settings
         {
             try
             {
-                // the machine's log first: a log area that is no word device stops the save, said
-                string logProblem;
-                if (_log != null && HmiFeatures.LoggingOn && !_log.Save(out logProblem))
-                {
-                    _status.Text = logProblem;
-                    return;
-                }
                 foreach (DataGridViewRow r in _grid.Rows)
                 {
                     if (r.IsNewRow) continue;
@@ -583,9 +565,9 @@ namespace Kaban.UI.Settings
         private readonly string _moduleId;
         public AlarmSettingsPage() : this(null) { }
         public AlarmSettingsPage(Kaban.Core.Machines.IMachineMountContext ctx) { _moduleId = ctx == null ? null : ctx.ModuleId; }
-        // 30 October: "We can change the alarms setting page name to 'Alarms and Logs'"
-        public string TitleKey { get { return "Set_AlarmsAndLogs"; } }
-        public string TitleFallback { get { return "Alarms and Logs"; } }
+        // "Alarms" again (5 November): the machine's log is set on its Options page (30 October - 5 November "Alarms and Logs")
+        public string TitleKey { get { return "Set_Alarms"; } }
+        public string TitleFallback { get { return "Alarms"; } }
         public SecurityLevel RequiredLevel { get { return SecurityLevel.Maintenance; } }
         public UserControl GetControl() { return new AlarmSettingsControl(_moduleId); }
     }

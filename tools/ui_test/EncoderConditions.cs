@@ -85,7 +85,9 @@ class ECT {
         var form = new Form { ClientSize = new Size(1270, 840), StartPosition = FormStartPosition.Manual, Location = new Point(0, 0) };
         var opt = Page("Parameters", "Options");
         form.Controls.Add(opt); form.Show(); Pump(400);
-        var boxes = All(opt).OfType<CheckBoxHMI>().ToList();
+        // (5 November: the Industry 4 Logging frame's switches are no machine options)
+        Func<Control, bool> inLogFrame = c => { for (var p = c.Parent; p != null; p = p.Parent) if (p.Name == "grpIndustry4Logging") return true; return false; };
+        var boxes = All(opt).OfType<CheckBoxHMI>().Where(b => !inLogFrame(b)).ToList();
         Func<string, CheckBoxHMI> box = a => boxes.FirstOrDefault(b => b.Address == a);
         Check("three option boxes: L33 with Encoder, L34 without Encoder, L35 with Air Exhaust",
               box("L33") != null && box("L33").DescriptionText == "Cutting Left Front with Encoder" &&

@@ -26,8 +26,10 @@ namespace Kaban.UI.Dashboard
     ///          its values (the state map's Parameters: a word, or two for a Bit32) - a record whose code
     ///          CONTINUES another (PreviousCode) follows it, its values from its second word.
     ///
-    /// At the start (and after every reconnection) each state of the map that starts a record has
-    /// its ActiveDevice (L1000 ...) set to its Active: the PLC logs only what is switched on.
+    /// The PLC logs a record only while its bit (the state map's ActiveDevice: L1000 ...) is on - switched on the machine's
+    /// Machine Parameters > Options page (5 November: its Industry 4 Logging frame), the PLC keeping them (latched). At the
+    /// start (and after every reconnection) the HMI only switches on the three always logged (StateMap.IsRequired) - the
+    /// Industry 4 service set every bit from its file instead.
     ///
     /// A record goes into main_log (its code, the PLC's date as "yyyy-MM-dd HH:mm:ss") with its
     /// values in log_details (each value divided by its multiplier; a value of named bits: a row
@@ -84,9 +86,6 @@ namespace Kaban.UI.Dashboard
         private readonly object _sync = new object();
         private string _status = "";
         private volatile bool _activeWritten;
-
-        /// <summary>The PLC told again which records to log - at the next look (the choices were saved: Alarms and Logs).</summary>
-        public void TellPlcAgain() { _activeWritten = false; }
         private DbConnection _db;
         private string _dbPath = "";
         private KmSystem _km;
@@ -196,10 +195,10 @@ namespace Kaban.UI.Dashboard
                             {
                                 if (!_activeWritten)
                                 {
-                                    var written = WriteActive(link, map, cfg);
+                                    var written = WriteRequired(link, map);
                                     _activeWritten = true;
                                     AuditLogger.Log("Machine log (" + Machine.ModuleId + "): taken from PLC station " + Station + ", log area " + area +
-                                                    " - the PLC told which records to log (" + written + ").");
+                                                    " - the machine's states always logged (" + written + ").");
                                 }
                                 string path = cfg.DatabasePath ?? "";
                                 if (_db != null && !string.Equals(_dbPath, path, StringComparison.OrdinalIgnoreCase)) CloseDb();
@@ -312,22 +311,17 @@ namespace Kaban.UI.Dashboard
             }
         }
 
-        /// <summary>Logged: the record's own choice in the machine's settings (Alarms and Logs), else the state map's Active.</summary>
-        public static bool IsLogged(StateMap.Entry e, DashboardConfig cfg)
-        {
-            var own = cfg != null ? cfg.LoggedRecord(e.Code) : null;
-            return own ?? e.Active;
-        }
-
         /// <summary>
-        /// Each state that starts a record: its ActiveDevice set to whether it is logged (IsLogged). How many were written, in words.
+        /// The records always logged (StateMap.IsRequired): their bits switched on - the others left as the PLC keeps them (the
+        /// Options page's switches). What was written, in words ("L1000, L1001, L1002 on").
         /// </summary>
-        public static string WriteActive(ILink link, StateMap map, DashboardConfig cfg = null)
+        public static string WriteRequired(ILink link, StateMap map)
         {
-            int ok = 0, failed = 0;
-            foreach (var e in map.Switchable)
-                if (link.Write(e.ActiveDevice.Trim(), IsLogged(e, cfg) ? 1 : 0) == 0) ok++; else failed++;
-            return ok + " written" + (failed > 0 ? ", " + failed + " refused" : "");
+            var on = new List<string>();
+            int failed = 0;
+            foreach (var e in map.Switchable.Where(x => StateMap.IsRequired(x.Code)))
+                if (link.Write(e.ActiveDevice.Trim(), 1) == 0) on.Add(e.ActiveDevice.Trim()); else failed++;
+            return (on.Count > 0 ? string.Join(", ", on) + " on" : "none") + (failed > 0 ? ", " + failed + " refused" : "");
         }
 
         // ------------------------------------------------------------------ one look at the PLC

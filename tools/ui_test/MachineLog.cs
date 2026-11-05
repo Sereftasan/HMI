@@ -103,28 +103,16 @@ class ML {
               map.Translate("Axis overload", "T\u00fcrk\u00e7e") == "Eksen a\u015f\u0131r\u0131 y\u00fck\u00fc");
 
         Console.WriteLine("--- the PLC told what to log ---");
+        // 5 November: the records' bits are switched on the machine's Options page (its Industry 4 Logging frame) - the PLC keeps
+        // them; "The first 3 are must": the HMI only switches those on
         var plc = new FakePlc();
-        string said = MachineLogger.WriteActive(plc, map);
-        Check("each state that starts a record: its ActiveDevice = its Active (L1002 = 1, L1010 = 0), none for a continuation",
-              plc.Writes.Contains("L1002=1") && plc.Writes.Contains("L1010=0") && plc.Writes.Contains("L1000=1") &&
-              !plc.Writes.Any(w => w.StartsWith("=")) && plc.Writes.Count == map.Entries.Count(e => !e.PreviousCode.HasValue && e.ActiveDevice.Length > 0),
-              said + ": " + string.Join(",", plc.Writes.Take(6)));
-        // 5 November: "add the controls for the selection of which events to be logged" - a record's own choice in the
-        // machine's settings stands before the state map's Active
-        var chosen = DashboardConfig.FromText("{}");
-        chosen.SetLoggedRecords(new Dictionary<int, bool> { { 2, false }, { 10, true } });
-        var again = DashboardConfig.FromText(chosen.ToText());
-        plc.Writes.Clear();
-        MachineLogger.WriteActive(plc, map, again);
-        Check("a record chosen otherwise (Operation is active off, Welding done on): its bit so - the others as the map has them",
-              plc.Writes.Contains("L1002=0") && plc.Writes.Contains("L1010=1") && plc.Writes.Contains("L1000=1") && plc.Writes.Contains("L1006=0") &&
-              again.LoggedRecord(2) == false && again.LoggedRecord(10) == true && again.LoggedRecord(0) == null && chosen.ToText().Contains("\"logged_records\""),
-              string.Join(",", plc.Writes.Take(12)));
-        Check("  the records that can be switched: those that start one and have a bit (25 of FA2010's 35) - a continuation logged with its first",
+        string said = MachineLogger.WriteRequired(plc, map);
+        Check("the three always logged switched on (L1000, L1001, L1002) - nothing else written: the others are the Options page's",
+              plc.Writes.SequenceEqual(new[] { "L1000=1", "L1001=1", "L1002=1" }) && said == "L1000, L1001, L1002 on" &&
+              StateMap.IsRequired(2) && !StateMap.IsRequired(3), said + ": " + string.Join(",", plc.Writes));
+        Check("  the records with a bit: those that start one (25 of FA2010's 35) - a continuation logged with its first",
               map.Switchable.Count() == 25 && !map.Switchable.Any(e => e.PreviousCode.HasValue) && map.ContinuationsOf(4).Single().Code == 14 &&
               map.ContinuationsOf(100).Single().Code == 150, map.Switchable.Count() + "");
-        chosen.SetLoggedRecords(new Dictionary<int, bool>());
-        Check("  none chosen otherwise: kept nowhere", !chosen.ToText().Contains("logged_records"));
 
         Console.WriteLine("--- nothing waiting ---");
         bool opened = false;
@@ -266,39 +254,45 @@ class ML {
         // 30 October: "we should create a setting inside 'Machine Parameters' for each machine as well btw (visible
         // when HMI industry 4 logging activated). We can change the alarms setting page name to 'Alarms and Logs' and
         // put the setting on the page"
-        Console.WriteLine("--- its settings on Machine Parameters > Alarms and Logs ---");
+        // 5 November: in the Industry 4 Logging frame of the machine's Options page - "We should separate alarms and Industry4 logs
+        // from each other as the different pages" - kept as each is changed (the Options page has no Save)
+        Console.WriteLine("--- its settings in the Options page's Industry 4 Logging frame ---");
         HmiFeatures.SettingsPath = Path.Combine(dir, "Features.cfg");
         HmiFeatures.Reload();
         board.Change(c => { c.PlcLogging = true; c.PlcLogArea = ""; });
+        var frame = new Panel { Name = "frame" };
         var page = new MachineLogSettings("FA2010");
+        frame.Controls.Add(page);
+        MachineLogSettings.ShownWhileLogging(frame);
         var form = new Form { Width = 1200, Height = 800 };
-        form.Controls.Add(page);
+        form.Controls.Add(frame);
         form.Show();
         Pump(200);
-        Check("hidden while the HMI does not log (HMI Settings > Features off)", !page.Visible);
+        Check("its frame hidden while the HMI does not log (HMI Settings > Options off)", !frame.Visible);
         HmiFeatures.Set(HmiFeatures.Industry4Logging, true);
         Pump(100);
-        Check("  shown once it does", page.Visible);
+        Check("  shown once it does", frame.Visible);
         var on = All(page).OfType<CheckBox>().First(b => b.Name == "plcLogging");
         var area = All(page).OfType<TextBox>().First(b => b.Name == "logArea");
-        Check("the switch ticked, the area the machine's own (R27000)", on.Checked && area.Text == "R27000", area.Text);
-        int edits = 0;
-        page.Edited += (s, e) => edits++;
+        Check("the switch on, the area the machine's own (R27000); rows of the settings pages' size", on.Checked && area.Text == "R27000" &&
+              on.Width == 450 && on.Height == Kaban.UI.Controls.UiStyle.SettingRowHeight && page.Width == 450, area.Text);
         SecurityManager.Login("setter", SecurityLevel.Maintenance);
-        area.Text = "D7000";
-        string problem;
-        Check("another area kept (D7000) - the page told of the edit", edits > 0 && page.Save(out problem) && board.Config.PlcLogArea == "D7000" &&
-              MachineLogger.Area(board.Config, board) == "D7000");
-        area.Text = "M100";
-        Check("  M100: refused, said, nothing written", !page.Save(out problem) && problem.Contains("word device") && board.Config.PlcLogArea == "D7000", problem);
+        Action<TextBox> enter = box => typeof(Control).GetMethod("OnKeyDown", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
+                                                      .Invoke(box, new object[] { new KeyEventArgs(Keys.Enter) });
+        area.Text = "D7000"; enter(area); Pump(50);
+        Check("another area, Enter: kept at once (D7000)", board.Config.PlcLogArea == "D7000" && MachineLogger.Area(board.Config, board) == "D7000" &&
+              page.ProblemText == "");
+        area.Text = "M100"; enter(area); Pump(50);
+        Check("  M100: refused, said under the rows, nothing written", page.ProblemText.Contains("word device") && board.Config.PlcLogArea == "D7000", page.ProblemText);
         area.Text = "R27000";
-        Check("  the machine's own again: kept as \"\" (follows the machine)", page.Save(out problem) && board.Config.PlcLogArea == "");
-        on.Checked = false;
-        page.Save(out problem);
-        Check("  the machine not logged: kept", !board.Config.PlcLogging);
+        typeof(Control).GetMethod("OnLeave", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).Invoke(area, new object[] { EventArgs.Empty });
+        Pump(50);
+        Check("  the machine's own again, the field left: kept as \"\" (follows the machine), the problem gone", board.Config.PlcLogArea == "" && page.ProblemText == "");
+        on.Checked = false; Pump(50);
+        Check("  the switch off: kept at once - the machine not logged", !board.Config.PlcLogging);
         board.Change(c => c.PlcLogging = true);
         page.Fill();
-        Check("  filled again from the settings (the page's revert)", on.Checked);
+        Check("  filled again from the settings", on.Checked && board.Config.PlcLogging);
         form.Close();
         var none = new MachineLogSettings("H500");
         Check("a machine with no log database: says so", none.Machine == null && All(none).OfType<Label>().Any(l => l.Name == "noLogDatabase" && l.Text.Contains("no log database")));

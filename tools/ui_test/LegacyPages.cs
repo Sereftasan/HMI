@@ -37,6 +37,7 @@ class LP {
         var n = field as BaseNumericHMI;
         return n != null && n.RowWidth > 0 && caption is Label && OwnerOf.Invoke(null, new object[] { caption }) == field;
     }
+    static bool InFrame(Control c, string frame) { for (var p = c.Parent; p != null; p = p.Parent) if (p.Name == frame) return true; return false; }
     static string Bits(ButtonHMI b) { return string.Join(",", b.BitActions.Select(a => a.Address + ":" + a.Action)); }
     /// <summary>A unit by name: a cylinder unit, or the unit inside a cylinder with an encoder (9 October).</summary>
     static CylinderUnitHMI Unit(Control page, string name) {
@@ -235,7 +236,8 @@ class LP {
         // (14 October: the user moved the machine's options to an Options page of their own, 20 of them;
         // 30 October: "you can add these option selections to 'Machine Parameters / Options' page" - L33, L34, L35)
         var optionsPage = Page("Options");
-        var opts = All(optionsPage).OfType<CheckBoxHMI>().ToList();
+        // (5 November: the Industry 4 Logging frame's switches are no machine options)
+        var opts = All(optionsPage).OfType<CheckBoxHMI>().Where(c => !InFrame(c, "grpIndustry4Logging")).ToList();
         Check("Machine Options on the Options page: 23 switches, Mullion Notching L5, the Clamping Mould option L27 and L33 - L35 among them; none left on Others",
               opts.Count == 23 && opts.Any(o => o.Address == "L5") && opts.Any(o => o.Address == "L27") &&
               new[] { "L33", "L34", "L35" }.All(a => opts.Any(o => o.Address == a)) && !All(other).OfType<CheckBoxHMI>().Any(),

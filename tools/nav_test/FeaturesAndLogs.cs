@@ -86,97 +86,68 @@ class FL {
               AuditLogReader.Store == null, MachineLoggers.All.Count + " loggers");
         host.Close(); host.Dispose();
 
-        Console.WriteLine("--- Machine Parameters > Alarms and Logs: the machine's PLC log area ---");
+        // 5 November: "We should separate alarms and Industry4 logs from each other as the different pages ... create a group box
+        // inside 'Options' page (just like 'Mullion Notching' group box) at the right end column and put these controls and database
+        // connection setting inside it (only the following logs are used at FA2010)"
+        Console.WriteLine("--- Machine Parameters > Alarms: the alarms only ---");
         var fa2010 = Kaban.Core.Machines.MachineRegistry.Modules.First(x => x.IsMain);
         var alarmsPage = new AlarmSettingsPage(fa2010.Context);
-        Check("the Alarms tab is 'Alarms and Logs' now", alarmsPage.TitleFallback == "Alarms and Logs" && LanguageManager.GetString(alarmsPage.TitleKey, "") != "");
         var alarms = (AlarmSettingsControl)alarmsPage.GetControl();
-        var ahost = new Form { ClientSize = new Size(1260, 760), StartPosition = FormStartPosition.Manual, Location = new Point(0, 0) };
-        alarms.Dock = DockStyle.Fill; ahost.Controls.Add(alarms); ahost.Show(); Pump(200);
-        Check("  Industry 4 logging off: the log settings not shown", !alarms.MachineLog.Visible && alarms.MachineLog.Machine != null);
-        HmiFeatures.Set(HmiFeatures.Industry4Logging, true); Pump(400);
-        var areaBox = All(alarms.MachineLog).OfType<TextBox>().First(b => b.Name == "logArea");
-        Check("  on: shown under the alarms the HMI raises - FA2010's log area R27000, its logger's state", alarms.MachineLog.Visible && areaBox.Text == "R27000" &&
-              alarms.MachineLog.Top > ((Control)Get(alarms, "_genPanel")).Top, areaBox.Text + " / " + alarms.MachineLog.StateText);
-        var save = (Control)Get(alarms, "_btnSave");
-        areaBox.Text = "R28000"; Pump(50);
-        Check("  an edit: the page's Save comes on", save.Enabled);
-        typeof(AlarmSettingsControl).GetMethod("Save", Any).Invoke(alarms, null); Pump(100);
+        Check("the tab is 'Alarms' again (Alarmlar), no log settings on it", alarmsPage.TitleFallback == "Alarms" &&
+              LanguageManager.GetString(alarmsPage.TitleKey, "") != "" && !All(alarms).OfType<MachineLogSettings>().Any());
+        alarms.Dispose();
+
+        Console.WriteLine("--- Machine Parameters > Options: the Industry 4 Logging frame ---");
+        SecurityManager.Login("setter", SecurityLevel.Maintenance);
+        var options = new Kaban.Machines.FA2010.Screens.Parameters.Options();
+        var ahost = new Form { ClientSize = new Size(1520, 800), StartPosition = FormStartPosition.Manual, Location = new Point(0, 0) };
+        options.Dock = DockStyle.Fill; ahost.Controls.Add(options); ahost.Show(); Pump(200);
+        var frame = All(options).OfType<GroupBoxHMI>().First(g => g.Name == "grpIndustry4Logging");
+        var machineLog = All(frame).OfType<MachineLogSettings>().Single();
+        Check("  Industry 4 logging in the HMI off: the frame not shown", !frame.Visible && machineLog.Machine != null);
+        HmiFeatures.Set(HmiFeatures.Industry4Logging, true); Pump(1500);
+        var areaBox = All(machineLog).OfType<TextBox>().First(b => b.Name == "logArea");
+        var drv = PlcManager.Instance.GetDriver(1);
+        Check("  on: shown - FA2010's log area R27000, its logger's state", frame.Visible && areaBox.Text == "R27000" &&
+              machineLog.StateText.Contains("(R27000)"), areaBox.Text + " / " + machineLog.StateText);
+        Check("  the three always logged switched on by the HMI as it connects (L1000 - L1002), the others left as the PLC keeps them",
+              drv.Read("L1000") == 1 && drv.Read("L1001") == 1 && drv.Read("L1002") == 1 && drv.Read("L1006") == 0,
+              "L1000 " + drv.Read("L1000") + " L1002 " + drv.Read("L1002") + " L1006 " + drv.Read("L1006"));
+        var profileChanged = All(frame).OfType<CheckBoxHMI>().First(c => c.Address == "L1006");
+        typeof(Control).GetMethod("OnClick", Any).Invoke(profileChanged, new object[] { EventArgs.Empty }); Pump(100);
+        Check("  'Profile changed' switched on: its bit L1006 written at once (no Save - as an option)", drv.Read("L1006") == 1 && profileChanged.Checked);
+        typeof(Control).GetMethod("OnClick", Any).Invoke(profileChanged, new object[] { EventArgs.Empty }); Pump(100);
+        Check("    and off", drv.Read("L1006") == 0);
+        areaBox.Text = "R28000";
+        typeof(Control).GetMethod("OnKeyDown", Any).Invoke(areaBox, new object[] { new KeyEventArgs(Keys.Enter) }); Pump(100);
         var board = DashboardService.Find("FA2010");
-        Check("  saved with the alarms: FA2010's log area R28000 - the logger takes it", board.Config.PlcLogArea == "R28000" &&
+        Check("  another log area, Enter: kept at once (R28000) - the logger takes it", board.Config.PlcLogArea == "R28000" &&
               MachineLogger.Area(board.Config, board) == "R28000");
         Pump(1500);
-        Check("    its state says so", alarms.MachineLog.StateText.Contains("(R28000)"), alarms.MachineLog.StateText);
-
-        // 5 November: "We need to add the controls for the selection of which events to be logged to the database when 'Industry 4
-        // logging in the HMI' activated ... 'ActiveDevice' shows which device to activate for which log"
-        Console.WriteLine("--- the records to log ---");
-        var drv = PlcManager.Instance.GetDriver(1);
-        Check("the records logged: as FA2010's state map has them (7 of 24), the PLC told so (L1002 on, L1006 off)",
-              alarms.MachineLog.RecordsText == "7 of 24" && drv.Read("L1002") == 1 && drv.Read("L1006") == 0,
-              alarms.MachineLog.RecordsText + " / L1002 " + drv.Read("L1002") + " L1006 " + drv.Read("L1006"));
-        int rows = 0; string caption = "", note = "", cutting = ""; bool asRow = false; Size size = Size.Empty;
-        MachineLogSettings.AskRecords = f =>
-        {
-            f.Show(); Pump(150);
-            var r4 = f.Rows[4];
-            rows = f.Rows.Count; caption = r4.CaptionShown; note = r4.RowNote; asRow = r4.DrawnAsRow; size = r4.Size;
-            cutting = f.Rows[8].CaptionShown;
-            if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("TOUCH_SHOTS")))
-            {
-                var at = f.PointToScreen(Point.Empty);
-                System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo("python3",
-                    "-c \"from PIL import ImageGrab; ImageGrab.grab(bbox=(" + at.X + "," + at.Y + "," + (at.X + f.ClientSize.Width) + "," + (at.Y + f.ClientSize.Height) +
-                    "), xdisplay=':99').save('" + Path.Combine(Environment.GetEnvironmentVariable("TOUCH_SHOTS"), "records_to_log.png") + "')\"") { UseShellExecute = false }).WaitForExit(10000);
-            }
-            f.Rows[6].Checked = true;                 // Profile changed: logged
-            f.Rows[3].Checked = false;                // On pause mode: not
-            return DialogResult.OK;
-        };
-        alarms.MachineLog.ChooseRecords(); Pump(50);
-        Check("  its window: a row for each (24), its words, its code and bit before the switch, as the settings rows",
-              rows == 24 && caption.StartsWith("There is an error") && note == "4 \u00b7 L1004" && asRow && size == new Size(450, UiStyle.SettingRowHeight),
-              caption + " / " + note + " / " + size);
-        Check("  two records of the same words: the state map's parenthesis after them (Cutting done (Processing Centre))",
-              cutting.EndsWith("(Processing Centre)"), cutting);
-        Check("  chosen: 7 of 24 still (one on, one off), the page's Save on - nothing written yet",
-              alarms.MachineLog.RecordsText == "7 of 24" && alarms.MachineLog.LoggedChoices[6] && !alarms.MachineLog.LoggedChoices[3] && save.Enabled &&
-              drv.Read("L1006") == 0 && board.Config.LoggedRecord(6) == null);
-        typeof(AlarmSettingsControl).GetMethod("Save", Any).Invoke(alarms, null); Pump(1500);
-        Check("  saved: kept in the machine's settings (only the two chosen otherwise), the PLC told at once (L1006 on, L1003 off)",
-              board.Config.LoggedRecord(6) == true && board.Config.LoggedRecord(3) == false && board.Config.LoggedRecord(2) == null &&
-              drv.Read("L1006") == 1 && drv.Read("L1003") == 0 && drv.Read("L1002") == 1,
-              "L1006 " + drv.Read("L1006") + " L1003 " + drv.Read("L1003"));
-        MachineLogSettings.AskRecords = f => { f.Show(); Pump(100); ((Button)f.Controls.Find("recordsFile", true)[0]).PerformClick(); return DialogResult.OK; };
-        alarms.MachineLog.ChooseRecords();
-        typeof(AlarmSettingsControl).GetMethod("Save", Any).Invoke(alarms, null); Pump(1500);
-        Check("  'As the machine's file', saved: the choices gone, the PLC told the map's own (L1006 off, L1003 on)",
-              board.Config.LoggedRecord(6) == null && board.Config.LoggedRecord(3) == null && drv.Read("L1006") == 0 && drv.Read("L1003") == 1);
-        MachineLogSettings.AskRecords = null;
+        Check("    its state says so", machineLog.StateText.Contains("(R28000)"), machineLog.StateText);
         var shotDir = Environment.GetEnvironmentVariable("TOUCH_SHOTS");
         if (!string.IsNullOrEmpty(shotDir))
         {
             Directory.CreateDirectory(shotDir);
-            var at = ahost.PointToScreen(Point.Empty);
+            var at = frame.PointToScreen(Point.Empty);
             var p = System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo("python3",
-                "-c \"from PIL import ImageGrab; ImageGrab.grab(bbox=(" + at.X + "," + at.Y + "," + (at.X + 1260) + "," + (at.Y + 420) + "), xdisplay=':99').save('" +
-                Path.Combine(shotDir, "alarms_and_logs.png") + "')\"") { UseShellExecute = false });
+                "-c \"from PIL import ImageGrab; ImageGrab.grab(bbox=(" + at.X + "," + at.Y + "," + (at.X + frame.Width) + "," + (at.Y + frame.Height) + "), xdisplay=':99').save('" +
+                Path.Combine(shotDir, "industry4_frame.png") + "')\"") { UseShellExecute = false });
             p.WaitForExit(10000);
         }
-        areaBox.Text = "M5"; Pump(50);
-        typeof(AlarmSettingsControl).GetMethod("Save", Any).Invoke(alarms, null); Pump(50);
-        Check("  a bit device: not saved, said on the page", board.Config.PlcLogArea == "R28000" &&
-              ((Label)Get(alarms, "_status")).Text.Contains("word device"), ((Label)Get(alarms, "_status")).Text);
+        areaBox.Text = "M5";
+        typeof(Control).GetMethod("OnKeyDown", Any).Invoke(areaBox, new object[] { new KeyEventArgs(Keys.Enter) }); Pump(50);
+        Check("  a bit device: not kept, said under the rows", board.Config.PlcLogArea == "R28000" && machineLog.ProblemText.Contains("word device"), machineLog.ProblemText);
         board.Change(c => c.PlcLogArea = "");
         HmiFeatures.Set(HmiFeatures.Industry4Logging, false); Pump(200);
-        Check("  logging off again: hidden", !alarms.MachineLog.Visible);
+        Check("  logging off again: hidden", !frame.Visible);
         ahost.Close(); ahost.Dispose();
         var logs = new LogSettingsControl();
         var lhost = new Form { ClientSize = new Size(1200, 800) };
         logs.Dock = DockStyle.Fill; lhost.Controls.Add(logs); lhost.Show(); Pump(300);
         Check("Logs and Reports: the log area no more - where it is now, said", logs.MachineSettings == null ||
               (!All(logs.MachineSettings).OfType<TextBox>().Any(b => b.Text == "R27000") &&
-               All(logs.MachineSettings).OfType<Label>().Any(l => l.Text == "Its PLC log area: Machine Parameters > Alarms and Logs.")));
+               All(logs.MachineSettings).OfType<Label>().Any(l => l.Text == "Its PLC log area: Machine Parameters > Options (Industry 4 Logging).")));
         lhost.Close(); lhost.Dispose();
 
         Console.WriteLine("--- Alarms > History: the machine's alarms from its log database ---");
