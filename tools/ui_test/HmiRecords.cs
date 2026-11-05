@@ -193,6 +193,54 @@ class HR {
         now = now.AddHours(9); Scan(); Scan(); MachineRecords.Flush();
         Check("  the next shift: its own", Records(1103).Count == 4);
 
+        Console.WriteLine("--- the axes ---");
+        var ax = new AlarmGeneration.Axis {
+            Station = 1, ModuleId = "FA2010", Name = "Robot X", Number = 1, ServoAlarm = "D900", AxisAlarm = "D901",
+            Position = "D910", PositionDouble = true, Divisor = 100, Decimals = 2, Suffix = "mm", Status = "U1\\G2409", Busy = "U1\\G31501", BusyBit = 0,
+            EffectiveLoad = "U1\\G2479", PeakTorque = "U1\\G2480", RegenerativeLoad = "U1\\G2478" };
+        AlarmGeneration.Register(ax);
+        Check("an axis's loads read (Md.110, Md.111, Md.109) - for the records only", AlarmGeneration.Addresses().Any(a => a.Value == "U1\\G2479") &&
+              AlarmGeneration.Addresses().Any(a => a.Value == "U1\\G2480") && AlarmGeneration.Addresses().Any(a => a.Value == "U1\\G2478"));
+        HmiFeatures.Set(HmiFeatures.MachineRecords, false);
+        Check("  an older machine: not read", !AlarmGeneration.Addresses().Any(a => a.Value == "U1\\G2479"));
+        HmiFeatures.Set(HmiFeatures.MachineRecords, true);
+        mem["D910"] = 12345; mem["D911"] = 0; mem["U1\\G2409"] = 8; mem["U1\\G31501"] = 1;
+        mem["U1\\G2479"] = 64; mem["U1\\G2480"] = 180; mem["U1\\G2478"] = 12;
+        Scan(); Scan();
+        mem["D900"] = 0x501; Scan();
+        Check("a servo alarm came: recorded at once", taken.Count(x => x == "FA2010:1111") == 1, string.Join(",", taken.Where(x => x.EndsWith("1111"))));
+        MachineRecords.Flush();
+        var aa = Details(Convert.ToInt64(Records(1111)[0][0]));
+        Check("  its code, the position, what the axis was doing, its loads",
+              aa.StartsWith("Axis:Robot X | Code:Servo alarm 50.1") && aa.Contains("| Position:123.45 mm | Doing:in the cycle | Effective load (%):64 | Peak torque (%):180 | Regenerative load (%):12"), aa);
+        Scan(); Scan();
+        Check("  once (the code stays)", taken.Count(x => x == "FA2010:1111") == 1);
+        mem["D900"] = 0; Scan(); mem["D901"] = 0x1A0; Scan();
+        MachineRecords.Flush();
+        Check("  an axis error after it: recorded too", taken.Count(x => x == "FA2010:1111") == 2 &&
+              Details(Convert.ToInt64(Records(1111)[1][0])).Contains("Code:Axis alarm 01A0H"), Details(Convert.ToInt64(Records(1111)[1][0])));
+        mem["D901"] = 0; Scan();
+
+        mem["U1\\G2479"] = 110; Run(9.5);
+        Check("its effective load over 100 %: not for 10 s yet - nothing", !taken.Contains("FA2010:1112"));
+        Run(0.6);
+        Check("  10 s: an overload recorded", taken.Count(x => x == "FA2010:1112") == 1);
+        MachineRecords.Flush();
+        var ov = Details(Convert.ToInt64(Records(1112)[0][0]));
+        Check("  the axis, the position, its loads, the limit it was over, how long",
+              ov == "Axis:Robot X | Position:123.45 | Effective load (%):110 | Peak torque (%):180 | Regenerative load (%):12 | Over its limit:Effective load (%) | Limit (%):100 | Over for (s):10", ov);
+        Run(30);
+        Check("  staying over: not again", taken.Count(x => x == "FA2010:1112") == 1);
+        mem["U1\\G2479"] = 50; Run(10.5);
+        now = now.AddMinutes(5);
+        mem["U1\\G2480"] = 260; Scan();
+        Check("back under 90 % for 10 s, 5 minutes on: its peak torque over 250 % - recorded at once", taken.Count(x => x == "FA2010:1112") == 2);
+        MachineRecords.Flush();
+        Check("  the peak's limit named", Details(Convert.ToInt64(Records(1112)[1][0])).Contains("Peak torque (%):260") &&
+              Details(Convert.ToInt64(Records(1112)[1][0])).Contains("Over its limit:Peak torque (%) | Limit (%):250") &&
+              !Details(Convert.ToInt64(Records(1112)[1][0])).Contains("Over for"), Details(Convert.ToInt64(Records(1112)[1][0])));
+        mem["U1\\G2480"] = 100; Scan();
+
         Console.WriteLine("--- the dashboard lists them as the machine's events ---");
         var map = board.Map;
         Check("the state map names them (EN, TR) - not records the PLC can be told to log",
@@ -226,6 +274,8 @@ class HR {
               slowSw != null && slowSw.Visible && slowSw.Checked && slowSw.Width == 450 && page.RecordSwitch("cylinder_not_confirmed").Checked &&
               page.RecordSwitch("cylinder_times").Checked && slowLim != null && slowLim.Visible && slowLim.Value == 50 &&
               slowSw.DescriptionText == "Slow cylinder movement");
+        Check("  the axes' records and their limits (100 %, 10 s, 250 %)", page.RecordSwitch("axis_alarm").Checked && page.RecordSwitch("axis_overload").Checked &&
+              page.LimitField("overload_percent").Value == 100 && page.LimitField("overload_seconds").Value == 10 && page.LimitField("peak_percent").Value == 250);
         Check("  'Learn the normal times again', how many are learned under it", All(page).OfType<Button>().Any(b => b.Name == "learnNormals" && b.Visible) &&
               page.NormalsText == "Normal times learned: 2.", page.NormalsText);
         Shot(form, "records_frame");

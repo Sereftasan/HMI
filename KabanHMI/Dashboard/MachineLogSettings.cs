@@ -100,6 +100,18 @@ namespace Kaban.UI.Dashboard
                 _recordRows.Add(new SettingRow("", learn, true));
                 _normals.ForeColor = Color.FromArgb(110, 116, 124);
                 _recordRows.Add(Words(_normals));
+                // the axes
+                _recordRows.Add(KindRow(MachineRecords.AxisAlarm,
+                    T("Rec_AxisAlarmTip", "A servo alarm or an axis error: its code, the position, what the axis was doing, its loads.")));
+                _recordRows.Add(KindRow(MachineRecords.AxisOverload,
+                    T("Rec_AxisOverloadTip", "An axis's effective load over its limit for a time, or its peak torque over its limit (% of the rated) - " +
+                      "a sticking guide, a dry ball screw, a crash.")));
+                _recordRows.Add(LimitRow("overload_percent", T("Rec_OverloadPercent", "Overload: effective load over (%)"), MachineRecords.DefaultOverloadPercent, 50, 300,
+                    T("Rec_OverloadPercentTip", "The motion module's effective load torque (Md.110), % of the rated.")));
+                _recordRows.Add(LimitRow("overload_seconds", T("Rec_OverloadSeconds", "Overload: for at least (s)"), MachineRecords.DefaultOverloadSeconds, 1, 120,
+                    T("Rec_OverloadSecondsTip", "How long the effective load must stay over its limit.")));
+                _recordRows.Add(LimitRow("peak_percent", T("Rec_PeakPercent", "Overload: peak torque over (%)"), MachineRecords.DefaultPeakPercent, 100, 500,
+                    T("Rec_PeakPercentTip", "The motion module's peak torque ratio (Md.111), % of the rated - at once.")));
                 rows.AddRange(_recordRows);
                 _onFeatures = (s, e) =>
                 {

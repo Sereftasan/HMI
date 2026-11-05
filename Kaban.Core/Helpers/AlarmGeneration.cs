@@ -319,6 +319,11 @@ namespace Kaban.Core.Helpers
             public int BusyBit = -1;
             /// <summary>The machine's "running" and "manual mode" conditions (on this axis's station only).</summary>
             public ConditionRule Running, ManualMode;
+            /// <summary>
+            /// The motion module's loads, in % of the rated (5 November, the HMI's records of a new machine - read only for them):
+            /// Md.110 effective load torque, Md.111 peak torque ratio, Md.109 regenerative load ratio.
+            /// </summary>
+            public string EffectiveLoad = "", PeakTorque = "", RegenerativeLoad = "";
 
             /// <summary>The moment of the code shown now (kept while the code is: acknowledged and back, it is the same moment).</summary>
             public AxisMoment ServoMoment { get; internal set; }
@@ -486,6 +491,10 @@ namespace Kaban.Core.Helpers
                 if (!string.IsNullOrWhiteSpace(x.AxisAlarm)) yield return new KeyValuePair<int, string>(x.Station, x.AxisAlarm.Trim());
                 // what it is doing, for the help of a code when it comes (16 October)
                 foreach (var a in MotionAddresses(x)) yield return new KeyValuePair<int, string>(x.Station, a);
+                // its loads, for the HMI's records of a new machine (5 November)
+                if (RecordsOn(x.ModuleId))
+                    foreach (var a in new[] { x.EffectiveLoad, x.PeakTorque, x.RegenerativeLoad })
+                        if (!string.IsNullOrWhiteSpace(a)) yield return new KeyValuePair<int, string>(x.Station, a.Trim());
             }
             foreach (var v in _inverters)
                 if (AxisAlarmsFor(v.ModuleId)) yield return new KeyValuePair<int, string>(v.Station, v.CodeAddress.Trim());
@@ -691,6 +700,26 @@ namespace Kaban.Core.Helpers
             }
             // the HMI's records: the station's axes and inverters as they are now
             if (Records != null) Tell(r => r.Scanned(station, lookup, now));
+        }
+
+        /// <summary>A word as a signed number (null: no address, or not read).</summary>
+        public static int? SignedWord(Func<string, int> lookup, string address)
+        {
+            if (lookup == null || string.IsNullOrWhiteSpace(address)) return null;
+            try { return (short)(lookup(address.Trim()) & 0xFFFF); } catch { return null; }
+        }
+
+        /// <summary>An axis's position now, in its unit (its Divisor), or null when it is not watched.</summary>
+        public static double? PositionOf(Axis x, Func<string, int> lookup)
+        {
+            if (x == null || lookup == null || string.IsNullOrWhiteSpace(x.Position)) return null;
+            try
+            {
+                int lo = lookup(x.Position.Trim());
+                long raw = x.PositionDouble ? (int)(((uint)(lookup(NextWord(x.Position.Trim())) & 0xFFFF) << 16) | (uint)(lo & 0xFFFF)) : (short)lo;
+                return raw / (x.Divisor > 0 ? x.Divisor : 1);
+            }
+            catch { return null; }
         }
 
         private static bool On(Func<string, int> lookup, string address)

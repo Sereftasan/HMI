@@ -451,6 +451,10 @@ namespace Kaban.UI.Helpers
                 w.SoftUpper = SimpleMotion.Device(axis.MotionNumber, SimpleMotion.AddressOf(SimpleMotion.Find("SoftLimitUpper"), axis.MotionAxisIndex));
                 w.SoftLower = SimpleMotion.Device(axis.MotionNumber, SimpleMotion.AddressOf(SimpleMotion.Find("SoftLimitLower"), axis.MotionAxisIndex));
                 w.UnitWord = SimpleMotion.UnitDevice(axis.MotionNumber, axis.MotionAxisIndex);
+                // its loads, read for the HMI's records of a new machine (5 November)
+                w.EffectiveLoad = SimpleMotion.Device(axis.MotionNumber, SimpleMotion.AddressOf(SimpleMotion.Find("EffectiveLoad"), axis.MotionAxisIndex));
+                w.PeakTorque = SimpleMotion.Device(axis.MotionNumber, SimpleMotion.AddressOf(SimpleMotion.Find("PeakTorque"), axis.MotionAxisIndex));
+                w.RegenerativeLoad = SimpleMotion.Device(axis.MotionNumber, SimpleMotion.AddressOf(SimpleMotion.Find("RegenerativeLoad"), axis.MotionAxisIndex));
             }
             var running = MachineConditionMap.GetRule(SystemCondition.MachineIsRunning);
             if (running != null && running.PlcNumber == axis.PlcNumber && !string.IsNullOrWhiteSpace(running.Address)) w.Running = running;

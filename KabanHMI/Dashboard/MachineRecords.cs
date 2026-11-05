@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -31,6 +31,14 @@ namespace Kaban.UI.Dashboard
     ///   Cylinder movement not confirmed   its feedback not there within its delay (its alarm's): which signal failed.
     ///   Cylinder movement times    at the end of each shift (the dashboard's shifts; midnight when it has none): each movement's
     ///                              count, average and longest time, with its normal - the trend before anything fails.
+    ///
+    /// The axes - AlarmGeneration's axis watches, with the motion module's loads (Md.110 effective load torque, Md.111 peak
+    /// torque, Md.109 regenerative load: % of the rated) read for these records:
+    ///   Axis alarm                 a servo alarm or an axis error came: its code, the position, what the axis was doing (the
+    ///                              moment the help shows), its loads - the moment of the fault, kept.
+    ///   Axis overload              its effective load over the limit (100 %) for a time (10 s), or its peak torque over its
+    ///                              limit (250 %): a sticking guide, a dry ball screw, a crash. Once - again only after the loads
+    ///                              were back under 90 % of their limits for 10 s, and 5 minutes on at the earliest.
     /// </summary>
     public static class MachineRecords
     {
@@ -42,6 +50,7 @@ namespace Kaban.UI.Dashboard
         public const int First = 1100, Last = 1199;
 
         public const int CylinderSlow = 1101, CylinderNotConfirmed = 1102, CylinderTimes = 1103;
+        public const int AxisAlarm = 1111, AxisOverload = 1112;
 
         public static bool IsRecord(int code) { return code >= First && code <= Last; }
 
@@ -60,6 +69,8 @@ namespace Kaban.UI.Dashboard
             new Kind { Code = CylinderSlow, Key = "cylinder_slow", TextKey = "Rec_CylinderSlow", Text = "Slow cylinder movement", Group = "Cylinders" },
             new Kind { Code = CylinderNotConfirmed, Key = "cylinder_not_confirmed", TextKey = "Rec_CylinderNotConfirmed", Text = "Cylinder movement not confirmed", Group = "Cylinders" },
             new Kind { Code = CylinderTimes, Key = "cylinder_times", TextKey = "Rec_CylinderTimes", Text = "Cylinder movement times", Group = "Cylinders" },
+            new Kind { Code = AxisAlarm, Key = "axis_alarm", TextKey = "Rec_AxisAlarm", Text = "Axis alarm", Group = "Axes" },
+            new Kind { Code = AxisOverload, Key = "axis_overload", TextKey = "Rec_AxisOverload", Text = "Axis overload", Group = "Axes" },
         };
 
         public static Kind KindOf(int code) { return Kinds.FirstOrDefault(k => k.Code == code); }
@@ -79,11 +90,24 @@ namespace Kaban.UI.Dashboard
             new KeyValuePair<string, string>(DAverage, "RecD_Average"),
             new KeyValuePair<string, string>(DLongest, "RecD_Longest"),
             new KeyValuePair<string, string>(DFrom, "RecD_From"),
+            new KeyValuePair<string, string>(DAxis, "RecD_Axis"),
+            new KeyValuePair<string, string>(DCode, "RecD_Code"),
+            new KeyValuePair<string, string>(DPosition, "RecD_Position"),
+            new KeyValuePair<string, string>(DDoing, "RecD_Doing"),
+            new KeyValuePair<string, string>(DEffective, "RecD_Effective"),
+            new KeyValuePair<string, string>(DPeak, "RecD_Peak"),
+            new KeyValuePair<string, string>(DRegenerative, "RecD_Regenerative"),
+            new KeyValuePair<string, string>(DOverWhat, "RecD_OverWhat"),
+            new KeyValuePair<string, string>(DLimit, "RecD_Limit"),
+            new KeyValuePair<string, string>(DOverFor, "RecD_OverFor"),
         };
 
         public const string DUnit = "Unit", DMovement = "Movement", DTime = "Time (s)", DNormal = "Normal (s)", DSlower = "Slower (%)",
                             DSlowSince = "Slow since the last record", DWaited = "Waited (s)", DFailure = "Failure", DCount = "Movements",
                             DAverage = "Average (s)", DLongest = "Longest (s)", DFrom = "From";
+        public const string DAxis = "Axis", DCode = "Code", DPosition = "Position", DDoing = "Doing", DEffective = "Effective load (%)",
+                            DPeak = "Peak torque (%)", DRegenerative = "Regenerative load (%)", DOverWhat = "Over its limit", DLimit = "Limit (%)",
+                            DOverFor = "Over for (s)";
 
         // ------------------------------------------------------------------ settings, per machine
 
@@ -119,11 +143,18 @@ namespace Kaban.UI.Dashboard
             return k != null && c != null && c.RecordOn(k.Key);
         }
 
-        public static double SlowPercent(string moduleId)
+        public const double DefaultOverloadPercent = 100, DefaultOverloadSeconds = 10, DefaultPeakPercent = 250;
+        /// <summary>An axis's overload again: its loads under this part of their limits for <see cref="RearmSeconds"/>, and <see cref="OverloadGapMinutes"/> on.</summary>
+        public const double RearmPart = 0.9, RearmSeconds = 10, OverloadGapMinutes = 5;
+
+        /// <summary>A limit of the machine's records (its default when none is set).</summary>
+        public static double Limit(string moduleId, string key, double fallback)
         {
             var c = ConfigOf(moduleId);
-            return c == null ? DefaultSlowPercent : c.RecordLimit("slow_percent", DefaultSlowPercent);
+            return c == null ? fallback : c.RecordLimit(key, fallback);
         }
+
+        public static double SlowPercent(string moduleId) { return Limit(moduleId, "slow_percent", DefaultSlowPercent); }
 
         // ------------------------------------------------------------------ installed with the main window
 
@@ -300,8 +331,98 @@ namespace Kaban.UI.Dashboard
 
         private static void Scanned(int station, Func<string, int> lookup, DateTime now)
         {
+            foreach (var x in AlarmGeneration.Axes)
+                if (x.Station == station && On(x.ModuleId)) ScanAxis(x, lookup, now);
             // the shifts ended: once a second is plenty
             if (Math.Abs((now - _lastTimesCheck).TotalSeconds) >= 1) { _lastTimesCheck = now; WriteTimes(now, false); }
+        }
+
+        // ------------------------------------------------------------------ the axes
+
+        private sealed class AxisState
+        {
+            public AxisMoment Servo, Axis;
+            public DateTime? Over, Below, Last;
+            public bool Armed = true;
+        }
+
+        private static readonly Dictionary<AlarmGeneration.Axis, AxisState> _axes = new Dictionary<AlarmGeneration.Axis, AxisState>();
+
+        /// <summary>What an axis was doing, in words ("in the cycle", "moved by hand" ...).</summary>
+        public static string Doing(AxisMoment m)
+        {
+            if (m == null) return "";
+            string s;
+            switch (m.Motion)
+            {
+                case AxisMotion.Standing: s = T("RecM_Standing", "standing"); break;
+                case AxisMotion.Homing: s = T("RecM_Homing", "going to its reference"); break;
+                case AxisMotion.Manual: s = T("RecM_Manual", "moved by hand"); break;
+                case AxisMotion.Automatic: s = T("RecM_Automatic", "in the cycle"); break;
+                default: s = ""; break;
+            }
+            if (m.Stuck) s += (s.Length > 0 ? ", " : "") + T("RecM_Stuck", "stood still after it moved");
+            return s;
+        }
+
+        private static void ScanAxis(AlarmGeneration.Axis x, Func<string, int> lookup, DateTime now)
+        {
+            AxisState st;
+            if (!_axes.TryGetValue(x, out st)) _axes[x] = st = new AxisState { Servo = x.ServoMoment, Axis = x.AxisMoment };
+            int? eff = AlarmGeneration.SignedWord(lookup, x.EffectiveLoad), peak = AlarmGeneration.SignedWord(lookup, x.PeakTorque),
+                 regen = AlarmGeneration.SignedWord(lookup, x.RegenerativeLoad);
+
+            // a code came: the moment AlarmGeneration took of it
+            foreach (var pair in new[] { new { Now = x.ServoMoment, Was = st.Servo, Kind = AxisCodeKind.ServoAlarm },
+                                         new { Now = x.AxisMoment, Was = st.Axis, Kind = AxisCodeKind.AxisError } })
+            {
+                if (pair.Now == null || ReferenceEquals(pair.Now, pair.Was)) continue;
+                if (!Taken(x.ModuleId, AxisAlarm)) continue;
+                var m = pair.Now;
+                var details = new List<LogDatabase.Detail>
+                {
+                    D(DAxis, null, x.Name), D(DCode, m.Code, AxisCodeHelp.Describe(pair.Kind, m.Code))
+                };
+                if (m.Position.HasValue) details.Add(D(DPosition, R(m.Position.Value, 3), m.Shown(m.Position)));
+                var doing = Doing(m);
+                if (doing.Length > 0) details.Add(D(DDoing, null, doing));
+                if (eff.HasValue) details.Add(D(DEffective, eff.Value));
+                if (peak.HasValue) details.Add(D(DPeak, peak.Value));
+                if (regen.HasValue) details.Add(D(DRegenerative, regen.Value));
+                Add(x.ModuleId, AxisAlarm, now, details);
+            }
+            st.Servo = x.ServoMoment;
+            st.Axis = x.AxisMoment;
+
+            // its loads over their limits
+            if (!eff.HasValue && !peak.HasValue) return;
+            double effLimit = Limit(x.ModuleId, "overload_percent", DefaultOverloadPercent);
+            double seconds = Limit(x.ModuleId, "overload_seconds", DefaultOverloadSeconds);
+            double peakLimit = Limit(x.ModuleId, "peak_percent", DefaultPeakPercent);
+            bool effOver = eff.HasValue && Math.Abs(eff.Value) >= effLimit;
+            bool peakOver = peak.HasValue && Math.Abs(peak.Value) >= peakLimit;
+            if (effOver) { if (!st.Over.HasValue) st.Over = now; } else st.Over = null;
+            bool under = (!eff.HasValue || Math.Abs(eff.Value) < effLimit * RearmPart) && (!peak.HasValue || Math.Abs(peak.Value) < peakLimit * RearmPart);
+            if (under) { if (!st.Below.HasValue) st.Below = now; } else st.Below = null;
+            if (!st.Armed && st.Below.HasValue && (now - st.Below.Value).TotalSeconds >= RearmSeconds) st.Armed = true;
+
+            bool effLong = effOver && st.Over.HasValue && (now - st.Over.Value).TotalSeconds >= seconds;
+            if (!st.Armed || (!effLong && !peakOver)) return;
+            if (st.Last.HasValue && (now - st.Last.Value).TotalMinutes < OverloadGapMinutes) return;
+            if (!Taken(x.ModuleId, AxisOverload)) return;
+            var pos = AlarmGeneration.PositionOf(x, lookup);
+            var list = new List<LogDatabase.Detail> { D(DAxis, null, x.Name) };
+            if (pos.HasValue) list.Add(D(DPosition, R(pos.Value, 3)));
+            if (eff.HasValue) list.Add(D(DEffective, eff.Value));
+            if (peak.HasValue) list.Add(D(DPeak, peak.Value));
+            if (regen.HasValue) list.Add(D(DRegenerative, regen.Value));
+            list.Add(D(DOverWhat, null, effLong ? T("RecD_Effective", DEffective) : T("RecD_Peak", DPeak)));
+            list.Add(D(DLimit, effLong ? effLimit : peakLimit));
+            if (effLong) list.Add(D(DOverFor, R((now - st.Over.Value).TotalSeconds, 1)));
+            Add(x.ModuleId, AxisOverload, now, list);
+            st.Armed = false;
+            st.Below = null;
+            st.Last = now;
         }
 
         // ------------------------------------------------------------------ the normal times
@@ -543,6 +664,7 @@ namespace Kaban.UI.Dashboard
         {
             _slow.Clear();
             _tooLong.Clear();
+            _axes.Clear();
             _periods.Clear();
             _lastTimesCheck = DateTime.MinValue;
             lock (_queue) _queue.Clear();
