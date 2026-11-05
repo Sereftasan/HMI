@@ -97,6 +97,11 @@ class ML {
               map.Find(9).Params[0].Multiplier == 10 && map.Find(14).PreviousCode == 4,
               map.Count + " entries");
 
+        // 5 November: "'12' state coded log is 'Axis overload' actually"; "20 Profile not recognised" among FA2010's logs
+        Check("code 12 is Axis overload; code 20, Profile not recognised (L1020: measured width and height, the required SW state)",
+              map.Find(12).Description == "Axis overload" && map.Find(20) != null && map.Find(20).ActiveDevice == "L1020" && map.Find(20).Params.Count == 3 &&
+              map.Translate("Axis overload", "T\u00fcrk\u00e7e") == "Eksen a\u015f\u0131r\u0131 y\u00fck\u00fc");
+
         Console.WriteLine("--- the PLC told what to log ---");
         var plc = new FakePlc();
         string said = MachineLogger.WriteActive(plc, map);
@@ -115,8 +120,8 @@ class ML {
               plc.Writes.Contains("L1002=0") && plc.Writes.Contains("L1010=1") && plc.Writes.Contains("L1000=1") && plc.Writes.Contains("L1006=0") &&
               again.LoggedRecord(2) == false && again.LoggedRecord(10) == true && again.LoggedRecord(0) == null && chosen.ToText().Contains("\"logged_records\""),
               string.Join(",", plc.Writes.Take(12)));
-        Check("  the records that can be chosen: those that start one and have a bit (24 of FA2010's 34) - a continuation logged with its first",
-              map.Switchable.Count() == 24 && !map.Switchable.Any(e => e.PreviousCode.HasValue) && map.ContinuationsOf(4).Single().Code == 14 &&
+        Check("  the records that can be switched: those that start one and have a bit (25 of FA2010's 35) - a continuation logged with its first",
+              map.Switchable.Count() == 25 && !map.Switchable.Any(e => e.PreviousCode.HasValue) && map.ContinuationsOf(4).Single().Code == 14 &&
               map.ContinuationsOf(100).Single().Code == 150, map.Switchable.Count() + "");
         chosen.SetLoggedRecords(new Dictionary<int, bool>());
         Check("  none chosen otherwise: kept nowhere", !chosen.ToText().Contains("logged_records"));

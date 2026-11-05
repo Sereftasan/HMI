@@ -15,6 +15,7 @@ Axis 7 data (1);Axis 7 data (1);Eksen 7 verisi (1);Данные оси 7 (1);Ach
 Axis 7 data (2);Axis 7 data (2);Eksen 7 verisi (2);Данные оси 7 (2);Achse 7 Daten (2);Dati asse 7 (2);Datos del eje 7 (2)
 Axis 8 data (1);Axis 8 data (1);Eksen 8 verisi (1);Данные оси 8 (1);Achse 8 Daten (1);Dati asse 8 (1);Datos del eje 8 (1)
 Axis 8 data (2);Axis 8 data (2);Eksen 8 verisi (2);Данные оси 8 (2);Achse 8 Daten (2);Dati asse 8 (2);Datos del eje 8 (2)
+Axis overload;Axis overload;Eksen aşırı yükü;Перегрузка оси;Achsüberlastung;Sovraccarico asse;Sobrecarga del eje
 Bar length meassured;Bar length measured;Bar boyu ölçümü;Длина стержня измерена;Stablänge gemessen;Lunghezza barra misurata;Longitud de la barra medida
 Cutting done (Cutting Machine);Cutting done;Kesim işlemi;Резка завершена (Режущий станок);Schnitt abgeschlossen (Schneidemaschine);Taglio completato (Macchina da taglio);Corte finalizado (Máquina de corte)
 Cutting done (Processing Centre);Cutting done;Kesim işlemi;Резка завершена (Обрабатывающий центр);Schnitt abgeschlossen (Bearbeitungszentrum);Taglio completato (Centro di lavorazione);Corte finalizado (Centro de procesamiento)
@@ -27,6 +28,7 @@ Operation is active;Operation is active;Çalışma Aktif;Операция акт
 Operation is not active;Operation is not active;Çalışma Pasif;Операция не активна;Betrieb ist nicht aktiv;Operazione non attiva;Operación no activa
 Profile changed;Profile changed;Profil değişti;Профиль изменен;Profil geändert;Profilo cambiato;Perfil cambiado
 Profile meassured;Profile measured;Profil ölçümü;Профиль измерен;Profil gemessen;Profilo misurato;Perfil medido
+Profile not recognised;Profile not recognised;Profil tanınmadı;Профиль не распознан;Profil nicht erkannt;Profilo non riconosciuto;Perfil no reconocido
 There is an error (1);There is an error;Arıza Var;Есть ошибка;Es gibt einen Fehler;C'è un errore;Hay un error
 Waste profile emerged;Waste profile emerged;Fire profil;Образовался отходный профиль;Abfallprofil entstanden;Profilo di scarto emerso;Perfil de desecho surgido
 Welding done (1);Welding done;Kaynak tamamlandı;Сварка завершена;Schweißen abgeschlossen;Saldatura completata;Soldadura finalizada

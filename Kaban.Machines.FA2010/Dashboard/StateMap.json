@@ -199,7 +199,7 @@
     },
     {
         "StateCode": 12,
-        "Description": "Cutting done (Cutting Machine)",
+        "Description": "Axis overload",
         "Active": false,
         "ActiveDevice": "L1012",
         "PreviousCode": null,
@@ -419,6 +419,27 @@
                 "Description": "Bar Length",
                 "Multiplier": 10,
                 "Bit32": true
+            }
+        ]
+    },
+    {
+        "StateCode": 20,
+        "Description": "Profile not recognised",
+        "Active": false,
+        "ActiveDevice": "L1020",
+        "PreviousCode": null,
+        "Parameters": [
+            {
+                "Description": "Measured Width",
+                "Bit32": false
+            },
+            {
+                "Description": "Measured Height",
+                "Bit32": false
+            },
+            {
+                "Description": "Required SW State",
+                "Bit32": false
             }
         ]
     },
