@@ -129,8 +129,9 @@ class AGU {
         Check("  only about the switch that did not come ON: where is it, the way, the switch, the time - not the valve, not the back sensor",
               t[0] == "Where is the cylinder now?" && t.Any(x => x.Contains("SN83") && x.Contains("switch?")) && t.Any(x => x.Contains("whole way")) &&
               !t.Any(x => x.StartsWith("Does the output card")) && !t.Any(x => x.Contains("gone OFF")), string.Join(" | ", t));
-        Check("  what the HMI saw: the output and the two sensors only, when its time ran out",
-              Regex.Matches(Regex.Match(html, "<table class=\"states\">.*?</table>", RegexOptions.Singleline).Value, "<tr>").Count == 4 &&
+        // 2 November: what the HMI saw - the sensors only (the valve's outputs drop with the alarm)
+        Check("  what the HMI saw: the two sensors only, when its time ran out",
+              Regex.Matches(Regex.Match(html, "<table class=\"states\">.*?</table>", RegexOptions.Singleline).Value, "<tr>").Count == 3 &&
               html.Contains("when the HMI's time for the movement ran out"));
 
         mem["M844"] = 1; Scan();
