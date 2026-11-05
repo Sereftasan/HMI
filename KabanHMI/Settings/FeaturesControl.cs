@@ -22,9 +22,13 @@ namespace Kaban.UI.Settings
     ///   - the Industry 4 logging in the HMI: the machines' logs taken from their PLCs, the HMI's own
     ///     log beside them in the same database (off: the Windows service logs, the HMI's log is in
     ///     its files);
+    ///   - the machine details from the HMI (5 November: "this same HMI program is gonna be deployed to the
+    ///     currently operating old machines as well as the new producing ones. So it should be selected at the
+    ///     HMI setting's option page"): on, a new machine - the HMI takes the details itself (MachineRecords);
+    ///     off, an older machine - its PLC logs them. Usable only while the logging in the HMI is on;
     ///   - the touch screen: the mouse / finger button on the top bar and the "Screen used with"
     ///     preference (off: a mouse).
-    /// Both off until an Admin switches them on; taken at once, written in the log.
+    /// All off until an Admin switches them on; taken at once, written in the log.
     /// </summary>
     public sealed class FeaturesControl : UserControl, IRebuildForLanguage
     {
@@ -37,6 +41,7 @@ namespace Kaban.UI.Settings
         private readonly Dictionary<string, ToggleSwitch> _switches = new Dictionary<string, ToggleSwitch>(StringComparer.OrdinalIgnoreCase);
         private readonly Dictionary<string, Panel> _rows = new Dictionary<string, Panel>(StringComparer.OrdinalIgnoreCase);
         private readonly Label _loggingNow = new Label { Name = "loggingNow" };
+        private readonly Label _recordsNow = new Label { Name = "recordsNow" };
         private readonly Label _touchNow = new Label { Name = "touchNow" };
         private readonly Timer _clock = new Timer { Interval = 1000 };
         private readonly EventHandler _onChanged;
@@ -59,6 +64,7 @@ namespace Kaban.UI.Settings
             Controls.Add(_flow);
 
             Feature(HmiFeatures.Industry4Logging, T("Ftr_Logging", "Industry 4 logging in the HMI"), _loggingNow);
+            Feature(HmiFeatures.MachineRecords, T("Ftr_Records", "Machine details from the HMI (new machines)"), _recordsNow);
             Feature(HmiFeatures.TouchScreen, T("Ftr_Touch", "Touch screen"), _touchNow);
 
             _onChanged = (s, e) => { try { if (IsHandleCreated && InvokeRequired) BeginInvoke((Action)Fill); else Fill(); } catch { } };
@@ -124,13 +130,19 @@ namespace Kaban.UI.Settings
             row.Invalidate();
         }
 
-        /// <summary>The switches as the features are.</summary>
+        /// <summary>The switches as the features are; the machine details usable only while the logging in the HMI is on.</summary>
         private void Fill()
         {
             if (IsDisposed) return;
             _filling = true;
             try { foreach (var kv in _switches) kv.Value.Checked = HmiFeatures.IsOn(kv.Key); }
             finally { _filling = false; }
+            bool logging = HmiFeatures.LoggingOn;
+            var records = SwitchOf(HmiFeatures.MachineRecords);
+            records.Enabled = logging;
+            var row = RowOf(HmiFeatures.MachineRecords);
+            row.Cursor = logging ? Cursors.Hand : Cursors.Default;
+            foreach (var l in row.Controls.OfType<Label>()) { l.Cursor = row.Cursor; if (l.Name == "title") l.ForeColor = logging ? Ink : Grey; }
             ShowNow();
         }
 
@@ -150,6 +162,9 @@ namespace Kaban.UI.Settings
                 if (lines.Count == 0) lines.Add(T("Ftr_NoLogMachine", "No machine of this panel keeps a log database (its Dashboard settings)."));
                 _loggingNow.Text = string.Join("\n", lines);
             }
+            _recordsNow.Text = !HmiFeatures.LoggingOn ? T("Ftr_RecordsNeedLogging", "Needs the Industry 4 logging in the HMI (above).")
+                             : HmiFeatures.RecordsOn ? T("Ftr_RecordsOn", "Now: a new machine - the HMI takes its details itself: cylinder times, axis alarms and overloads, inverter faults and loads, why it stood still.")
+                             : T("Ftr_RecordsOff", "Now: an older machine - its PLC logs its details (the records switched on its Options page).");
             _touchNow.Text = !HmiFeatures.TouchOn ? T("Ftr_TouchOff", "Now: used with a mouse.")
                            : ViewPreferences.TouchMode ? T("Ftr_TouchNowTouch", "Now: used by touch.")
                            : T("Ftr_TouchNowMouse", "Now: used with a mouse - the button on the top bar switches it.");
@@ -157,7 +172,10 @@ namespace Kaban.UI.Settings
         }
 
         /// <summary>The grey line under a feature (tests).</summary>
-        public string NowText(string feature) { return feature == HmiFeatures.TouchScreen ? _touchNow.Text : _loggingNow.Text; }
+        public string NowText(string feature)
+        {
+            return feature == HmiFeatures.TouchScreen ? _touchNow.Text : feature == HmiFeatures.MachineRecords ? _recordsNow.Text : _loggingNow.Text;
+        }
 
         /// <summary>A feature's switch (tests).</summary>
         public ToggleSwitch SwitchOf(string feature)

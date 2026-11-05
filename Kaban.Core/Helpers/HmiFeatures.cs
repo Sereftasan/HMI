@@ -14,6 +14,12 @@ namespace Kaban.Core.Helpers
     ///   Industry4Logging  the HMI takes the machines' logs from their PLCs (the Industry 4 service's
     ///                     job) and keeps its own log in the same database. Off: the Windows service
     ///                     logs, the HMI's log is in its files - as before 29 October.
+    ///   MachineRecords    (5 November: "this same HMI program is gonna be deployed to the currently operating
+    ///                     old machines as well as the new producing ones. So it should be selected at the HMI
+    ///                     setting's option page") a new machine: the HMI takes the machine's details itself
+    ///                     (MachineRecords - its cylinders' times, its axes' alarms and overloads, its inverters'
+    ///                     faults and loads, why it stood still). Off: an older machine - its PLC logs its details
+    ///                     (the records switched on its Options page). Only with Industry4Logging on.
     ///   TouchScreen       the screen may be used by touch: the 🖱 / 👆 button on the top bar and the
     ///                     "Screen used with" preference. Off: a mouse, neither shown.
     ///
@@ -22,10 +28,11 @@ namespace Kaban.Core.Helpers
     public static class HmiFeatures
     {
         public const string Industry4Logging = "Industry4Logging";
+        public const string MachineRecords = "MachineRecords";
         public const string TouchScreen = "TouchScreen";
 
         /// <summary>Every feature, in the order the page lists them.</summary>
-        public static readonly IList<string> All = new[] { Industry4Logging, TouchScreen };
+        public static readonly IList<string> All = new[] { Industry4Logging, MachineRecords, TouchScreen };
 
         /// <summary>Where they are kept. Replaceable so a test can use its own file.</summary>
         public static string SettingsPath = Path.Combine(
@@ -40,6 +47,9 @@ namespace Kaban.Core.Helpers
 
         /// <summary>The HMI takes the machines' logs from their PLCs and keeps its own log beside them.</summary>
         public static bool LoggingOn { get { return IsOn(Industry4Logging); } }
+
+        /// <summary>A new machine: the HMI takes the machines' details itself - only while it does the Industry 4 logging.</summary>
+        public static bool RecordsOn { get { return LoggingOn && IsOn(MachineRecords); } }
 
         /// <summary>The screen may be used by touch.</summary>
         public static bool TouchOn { get { return IsOn(TouchScreen); } }

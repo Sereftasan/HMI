@@ -132,14 +132,15 @@ class TM {
         Shot(fhost, "features_off");
         // (30 October: "redesign the items (selection toggles) as the attached image as well and remove the description
         // notes for the items (we should put them into the manuals instead, they look too much on the screen)")
-        Check("  its two features, each a row: the name, what it does now in grey under it, its switch Off at the right end",
+        Check("  its three features, each a row: the name, what it does now in grey under it, its switch Off at the right end",
               !features.SwitchOf(HmiFeatures.Industry4Logging).Checked && !features.SwitchOf(HmiFeatures.TouchScreen).Checked &&
               features.NowText(HmiFeatures.TouchScreen) == "Now: used with a mouse." && features.NowText(HmiFeatures.Industry4Logging).Contains("Industry 4 service logs"),
               features.NowText(HmiFeatures.Industry4Logging));
         var touchRow = features.RowOf(HmiFeatures.TouchScreen); var logRow = features.RowOf(HmiFeatures.Industry4Logging);
+        var recordsRow = features.RowOf(HmiFeatures.MachineRecords);
         var touchSw = features.SwitchOf(HmiFeatures.TouchScreen);
-        Check("  the rows one under the other, the switches at the same right end, in the middle of their rows",
-              touchRow.Top == logRow.Bottom && touchRow.Left == logRow.Left && touchSw.Right == touchRow.Width - 4 &&
+        Check("  the rows one under the other (the machine details' between: 5 November), the switches at the same right end, in the middle of their rows",
+              recordsRow.Top == logRow.Bottom && touchRow.Top == recordsRow.Bottom && touchRow.Left == logRow.Left && touchSw.Right == touchRow.Width - 4 &&
               touchSw.Left == features.SwitchOf(HmiFeatures.Industry4Logging).Left && Math.Abs(touchSw.Top + touchSw.Height / 2 - touchRow.Height / 2) <= 1);
         Check("  no description notes: a row's name and its line under it only",
               touchRow.Controls.OfType<Label>().Count() == 2 && logRow.Controls.OfType<Label>().Count() == 2 &&

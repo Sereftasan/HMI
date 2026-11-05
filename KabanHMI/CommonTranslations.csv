@@ -2104,6 +2104,10 @@ Alarm_HistorySinceStart;Since the HMI started (the machine keeps no log database
 Ftr_Logging;Industry 4 logging in the HMI;HMI'de Industry 4 kaydı;;;;
 Ftr_LoggingOff;Now: the Industry 4 service logs (when it is installed) - the HMI's log is in its files.;Şu an: Industry 4 servisi kaydediyor (kuruluysa) - HMI'nin kaydı kendi dosyalarında.;;;;
 Ftr_NoLogMachine;No machine of this panel keeps a log database (its Dashboard settings).;Bu panelin hiçbir makinesi kayıt veritabanı tutmuyor (Gösterge Paneli ayarları).;;;;
+Ftr_Records;Machine details from the HMI (new machines);Makine ayrıntıları HMI'den (yeni makineler);;;;
+Ftr_RecordsNeedLogging;Needs the Industry 4 logging in the HMI (above).;HMI'de Industry 4 kaydı gerekir (yukarıda).;;;;
+Ftr_RecordsOff;Now: an older machine - its PLC logs its details (the records switched on its Options page).;Şu an: eski bir makine - ayrıntılarını PLC'si kaydediyor (kayıtlar makinenin Seçenekler sayfasında açılır).;;;;
+Ftr_RecordsOn;Now: a new machine - the HMI takes its details itself: cylinder times, axis alarms and overloads, inverter faults and loads, why it stood still.;Şu an: yeni bir makine - ayrıntılarını HMI kendisi alıyor: silindir süreleri, eksen alarmları ve aşırı yükleri, invertör arızaları ve yükleri, neden durduğu.;;;;
 Ftr_Touch;Touch screen;Dokunmatik ekran;;;;
 Ftr_TouchNowMouse;Now: used with a mouse - the button on the top bar switches it.;Şu an: fare ile kullanılıyor - üst çubuktaki düğme bunu değiştirir.;;;;
 Ftr_TouchNowTouch;Now: used by touch.;Şu an: dokunarak kullanılıyor.;;;;

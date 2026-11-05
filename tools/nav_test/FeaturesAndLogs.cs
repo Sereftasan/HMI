@@ -72,6 +72,30 @@ class FL {
         var features = new FeaturesControl();
         var host = new Form { ClientSize = new Size(900, 700), StartPosition = FormStartPosition.Manual, Location = new Point(0, 0) };
         features.Dock = DockStyle.Fill; host.Controls.Add(features); host.Show(); Pump(100);
+        // 5 November: "this same HMI program is gonna be deployed to the currently operating old machines as well as the new
+        // producing ones. So it should be selected at the HMI setting's option page"
+        var recSw = features.SwitchOf(HmiFeatures.MachineRecords);
+        var recRow = features.RowOf(HmiFeatures.MachineRecords);
+        Check("the machine details' row between the logging and the touch screen, its switch off and greyed while the logging is off",
+              recSw != null && !recSw.Checked && !recSw.Enabled && recRow.Top > features.RowOf(HmiFeatures.Industry4Logging).Top &&
+              recRow.Top < features.RowOf(HmiFeatures.TouchScreen).Top &&
+              recRow.Controls.OfType<Label>().First(l => l.Name == "title").Text == "Machine details from the HMI (new machines)" &&
+              features.NowText(HmiFeatures.MachineRecords) == "Needs the Industry 4 logging in the HMI (above).",
+              features.NowText(HmiFeatures.MachineRecords));
+        recSw.Toggle(); Pump(50);
+        Check("  a click there does nothing then", !HmiFeatures.IsOn(HmiFeatures.MachineRecords) && !HmiFeatures.RecordsOn);
+        features.SwitchOf(HmiFeatures.Industry4Logging).Toggle(); Pump(600);
+        Check("  usable with the logging on: an older machine at first (its PLC logs its details)", recSw.Enabled && !recSw.Checked &&
+              features.NowText(HmiFeatures.MachineRecords).StartsWith("Now: an older machine - its PLC logs its details"),
+              features.NowText(HmiFeatures.MachineRecords));
+        recSw.Toggle(); Pump(50);
+        Check("  switched on: a new machine - the HMI takes its details itself (kept in Features.cfg)", HmiFeatures.RecordsOn &&
+              File.ReadAllText(HmiFeatures.SettingsPath).Contains("MachineRecords=On") &&
+              features.NowText(HmiFeatures.MachineRecords).StartsWith("Now: a new machine - the HMI takes its details itself"),
+              features.NowText(HmiFeatures.MachineRecords));
+        recSw.Toggle(); Pump(50);
+        Check("  and off again", !HmiFeatures.RecordsOn && HmiFeatures.LoggingOn);
+        features.SwitchOf(HmiFeatures.Industry4Logging).Toggle(); Pump(300);
         features.SwitchOf(HmiFeatures.Industry4Logging).Toggle(); Pump(600);
         var fa = MachineLoggers.Of("FA2010");
         Check("switched on: a logger for the machine with a log database (FA2010), the HMI's log into the same database - at once",
