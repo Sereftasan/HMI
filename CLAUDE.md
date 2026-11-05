@@ -86,7 +86,9 @@
   LogRecordHMI rows in the Industry 4 Logging frame - RecordCode (the PLC's code: the dashboard treats it as that record; or 1200 - 1299),
   Trigger (a PlcTrigger as EnableTrigger: taken as it becomes true), Values (RecordNumber / RecordLamp, written into the designer file as
   "Values.Add(new RecordNumber(...))"); discovered with the pages (RecordTriggers), shown instead of the PLC's switch of the same record
-  (MachineLogSettings.Arrange). FA2010: 15, 16, 22 - FireBoyu, BoyOkundu, ProfilOlcum_OK and the profile's values not yet given devices.
+  (MachineLogSettings.Arrange). FA2010: 6, 15, 16, 20, 22 - 6 and 20 come with L1006 / L1020 (the user's answer: the records' devices in
+  MachineLog_DeviceList.xlsx); the measured width / height D481 / D482; FireBoyu, BoyOkundu, ProfilOlcum_OK, Profil_Dogru, the profile code
+  and the required switch state not yet given devices (the user sets them in the designer).
 - Tick boxes (30 October, the user's choice): on / off switches. CheckBoxHMI is a switch row by default (Look; narrower
   than 120 px: the switch alone, its caption beside it); every plain CheckBox is drawn as a switch (TouchInput.Sizes,
   PaintSwitchBox). Lay a list of options out as rows: as wide as the column, 38 - 46 high, touching.

@@ -113,9 +113,11 @@ best set from a baseline measured at commissioning (what the machine does when i
 - The machine's own records by HMI triggers (your answer: "We need to define a trigger device and additional info devices for each
   one ... just like 'EnableTrigger' ... a collection lamp HMI and numerical display HMI controls"): LogRecordHMI rows in the Industry 4
   Logging frame - code, trigger, values - shown on a new machine instead of the PLC's switches of the same records. FA2010: 15, 16, 22
-  (from your PLC program's MakineLogKayit calls); FireBoyu, BoyOkundu, ProfilOlcum_OK, Profil_OkunanGenislik, Profil_OkunanYukseklik and
-  Profil_Dogru still need their devices; 6 and 20 need theirs too.
-- Not yet: the PLC's detail records 6 and 20 as HMI records (their trigger and value devices); the
+  (from your PLC program's MakineLogKayit calls), 6 and 20 (your answer: "Their trigger devices are given at the DeviceList ... files
+  (from L1000 to ...)" - L1006, L1020). The measured width and height: D481 / D482 (FA2010_DeviceList.xls, "Okunan Profil Genişliği /
+  Yüksekliği"). FireBoyu, BoyOkundu, ProfilOlcum_OK, Profil_Dogru, the profile code (6) and the required switch state (20) still need
+  their devices - you set them in the Options page's designer.
+- Not yet: the
   inverters' current needs the PLC to read it (FA2010 has no current word yet); the axis load trend, travel and moves, the cylinders'
   cycles and sensor faults, the cycle / quality / consumable records of section 2.
 

@@ -21,9 +21,11 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
         /// panel where it goes (industry4SettingsPlace: move or size it there). The frame follows it, and is shown only while
         /// HMI Settings > Options has the Industry 4 logging in the HMI on.
         ///
-        /// A new machine (5 November): the records the HMI takes itself when their triggers come - recWaste_Profile_Emerged (15),
-        /// recBar_Length_Measured (16), recProfile_Measured (22), LogRecordHMI rows under the PLC's switches, as the PLC program
-        /// writes them (its MOV K15 ... CALL MakineLogKayit) - shown instead of the PLC's switches of the same records.
+        /// A new machine (5 November): the records the HMI takes itself when their triggers come - recProfile_Changed (6),
+        /// recWaste_Profile_Emerged (15), recBar_Length_Measured (16), recProfile_Not_Recognised (20), recProfile_Measured (22),
+        /// LogRecordHMI rows under the PLC's switches, as the PLC program writes them (its MOV K15 ... CALL MakineLogKayit) -
+        /// shown instead of the PLC's switches of the same records. 6 and 20 come with L1006 / L1020 (the user: "Their trigger
+        /// devices are given at the DeviceList ... files (from L1000 to ...)").
         /// </summary>
         internal Kaban.UI.Dashboard.MachineLogSettings machineLog;
 
