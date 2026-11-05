@@ -9,6 +9,7 @@ Claude reads this file at the start of every batch, does the items, and moves ea
 - 5 November, evening late (the answers: devices set by you, 6 and 20 from the device list; one copy of the HMI; the profiles next):
   - 1092b49 - One copy of the HMI at a time: a second start brings the running one to the front, says why and ends; a restart waits for the old one.
   - 8775b82 - FA2010, a new machine: records 6 and 20 taken as L1006 / L1020 come on; the measured width / height D481 / D482 for 20 and 22.
+  - 679a66b - Found on the panel: the frame showed "Profile changed" twice and no "Cutting done" (each scan showed the hidden switches again) - fixed.
 - 5 November, late night (the answers: the record trigger tool; the inverters' current later; test on the PC):
   - 9982221 - LogRecordHMI: a record the HMI takes when its trigger comes - code, Trigger (as EnableTrigger), Values (numbers and
     lamps); FA2010's 15, 16, 22 in the Industry 4 Logging frame (devices partly to be set), instead of the PLC's switches on a new machine.
