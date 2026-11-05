@@ -2149,7 +2149,7 @@ Rec_PeakPercentTip;The motion module's peak torque ratio (Md.111), % of the rate
 Rec_SlowPercent;Slow: slower than its normal by (%);Yavaş: normalinden daha yavaş (%);;;;
 Rec_SlowPercentTip;How much slower than its normal time a movement must be to be recorded (and by 0.3 s at least).;Bir hareketin kaydedilmesi için normal süresinden ne kadar yavaş olması gerektiği (en az 0,3 sn de).;;;;
 Rec_StopMinutes;Ask why after a stop of (min);Şu süreden uzun duruşta nedenini sor (dk);;;;
-Rec_StopMinutesTip;How long the machine must stand still (out of 'Operation is active') before the operator is asked why.;Operatöre nedeni sorulmadan önce makinenin ne kadar durması gerektiği ('Operasyon aktif' dışında).;;;;
+Rec_StopMinutesTip;How long the machine must stand still (out of 'Operation is active') before the operator is asked why.;Operatöre nedeni sorulmadan önce makinenin ne kadar durması gerektiği ('Çalışma Aktif' dışında).;;;;
 RecD_Average;Average (s);Ortalama (sn);;;;
 RecD_AverageCurrent;Average current (A);Ortalama akım (A);;;;
 RecD_AveragePeak;Average peak (A);Ortalama tepe (A);;;;

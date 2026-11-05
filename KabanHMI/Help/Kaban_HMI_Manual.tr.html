@@ -98,6 +98,7 @@
  <a href="#params">10. Makine Parametreleri</a>
  <a href="#diag">11. Kayıtlar ve tanılama</a>
  <a href="#i4log">&nbsp;&nbsp;11a. Makine kaydını HMI'nin alması</a>
+ <a href="#records">&nbsp;&nbsp;11b. Yeni bir makinenin HMI'nin kendi kayıtları</a>
  <a href="#files">12. Nerede ne saklanır</a>
  <a href="#machine">13. Bu makine</a>
 </nav>
@@ -1096,13 +1097,17 @@ içe aktarılır; çeviri dosyasının metni geçerlidir.</p>
 <p><span class="lvl l3">Admin</span> HMI'nin <b>isteğe bağlı bölümleri</b>, HMI Ayarları'nın son sekmesi (bir makinenin Seçenekler sekmesi gibi adlandırılır). Her biri bir
 satırdır: adı, altında gri olarak <b>şu an</b> ne yaptığı ve sağ uçta <b>anahtarı</b> &ndash; mavi, düğmesi sağda: açık; gri, düğmesi solda: kapalı. Anahtara
 veya satırın herhangi bir yerine tıklamak onu çevirir; bu panel için, herkes için, hemen değiştirilir &ndash; yeniden başlatma yok &ndash; ve kayda yazılır.
-İkisi de açılana kadar <b>kapalıdır</b>. Her birinin ne yaptığı sayfada değil, buradadır:</p>
+Hepsi açılana kadar <b>kapalıdır</b>. Her birinin ne yaptığı sayfada değil, buradadır:</p>
 <table>
 <tr><th>Seçenek</th><th>Açık</th><th>Kapalı</th></tr>
 <tr><td>HMI'de Industry 4 kaydı</td><td>HMI her makinenin durumlarını, olaylarını ve alarmlarını PLC'sinden makinenin kayıt veritabanına alır &ndash;
   Industry 4 servisinin işi &ndash; ve kendi kaydını (oturum açmalar, yazmalar, ayarlar) aynı veritabanında tutar (<a href="#i4log">11a</a>). Her makinenin kaydı
   kendi Makine Parametreleri &rsaquo; Seçenekler sayfasında (Industry 4 Kaydı) ayarlanır; PLC kayıt alanı programında ayarlanır. <i>Şu an</i> her makinenin kaydedicisinin durumunu verir.</td><td>Industry 4 servisi kaydeder (kurulu
   olduğu yerde); HMI'nin kaydı eskisi gibi kendi dosyalarındadır.</td></tr>
+<tr><td>Makine ayrıntıları HMI'den (yeni makineler)</td><td><b>Yeni bir makine</b>: ayrıntılarını HMI kendisi alır (<a href="#records">11b</a>) &ndash;
+  silindirlerinin süreleri, eksenlerinin alarmları ve aşırı yükleri, invertörlerinin arızaları ve yükleri ve neden durduğu (operatöre sorulur). Yalnızca HMI'de
+  Industry 4 kaydı açıkken kullanılabilir. Aynı program eski ve yeni makinelerde çalışır: bu satır bu panelinkinin hangisi olduğunu söyler.</td><td><b>Eski bir
+  makine</b>: ayrıntılarını PLC'si kaydeder (kayıtlar Makine Parametreleri &rsaquo; Seçenekler'de açılır), eskisi gibi.</td></tr>
 <tr><td>Dokunmatik ekran</td><td>Bu bilgisayarın ekranının dokunmatik özelliği var (<a href="#touch">1a</a>): fare ile parmak arasında geçmek için üst çubukta
   &#128433; / &#128070; düğmesi bulunur, Kullanıcılar ve Tercihler'de <i>Ekran kullanımı</i> vardır. <i>Şu an</i> dokunarak mı fare ile mi kullanıldığını söyler.</td><td>Dokunmatik
   özelliği yok: fare ile kullanılır; ne düğme ne tercih gösterilir.</td></tr>
@@ -1194,7 +1199,7 @@ HMI kaydetmeye başlayınca servisi durdurun &ndash; ya da kaldırın.</div>
      Sağ uçta <b>Industry 4 Kaydı</b> &ndash; yalnızca <b>HMI Ayarları &rsaquo; Seçenekler</b>'de HMI'de Industry 4 kaydı açıkken
      (<a href="#features">9b</a>; aksi halde bunları Industry 4 servisi kendisi ayarlar):
      <ul>
-      <li>Makinenin PLC'sinin kaydettiği her kayıt için bir anahtar &ndash; FA2010: makine kapalı, çalışma pasif, çalışma aktif, geçici durdurma,
+      <li>Makinenin PLC'sinin kaydettiği her kayıt için bir anahtar &ndash; örneğin: makine kapalı, çalışma pasif, çalışma aktif, geçici durdurma,
           hata var, acil stop, profil değişti, kesim tamamlandı, fire profil çıktı, bar boyu ölçüldü, profil tanınmadı, profil ölçüldü.
           Açıksa PLC onu kaydeder: anahtar kaydın PLC bitidir (<code>L1000</code> &hellip;), PLC'de tutulur, bir seçeneğinki gibi hemen yazılır.
           İlk üçü makinenin durumlarıdır ve <b>her zaman kaydedilir</b> &ndash; gösterilir, değiştirilmez: HMI PLC'ye bağlandığında onları açar.
@@ -1204,6 +1209,9 @@ HMI kaydetmeye başlayınca servisi durdurun &ndash; ya da kaldırın.</div>
           PLC'yi bekliyor, Industry 4 servisi çalışırken bekliyor &hellip; &ndash; adı geçen <b>PLC kayıt alanı</b> makinenin programında PLC programcısı
           tarafından ayarlanır, ekranda değil)
           ve bir kaydın Process ID'sinin bağlantısıyla <b>KMSystem</b> araması. Kayıt veritabanı olmayan bir makine bunu söyler. Bkz. <a href="#i4log">11a</a>.</li>
+      <li><b>Yeni bir makine</b> (<i>Makine ayrıntıları HMI'den</i>, <a href="#features">9b</a>): altında <b>HMI'nin kendi aldıkları</b> &ndash; HMI'nin kendisi
+          aldığı her kayıt için bir anahtar satırı, her sınır için bir satır, <b>Normal süreleri yeniden öğren</b> (bir onarımdan sonra) ve kaç normal sürenin
+          öğrenildiği. Her biri değiştirildikçe saklanır. Bkz. <a href="#records">11b</a>.</li>
      </ul></li>
  <li><b>Alarmlar:</b> her alarmın önemi ve <b>yardımcı bağlantıları</b> &ndash; alarmdan açılan <b>birkaç</b> belge, çizim, sayfa veya web adresi.
      Liste için hücreye çift tıklayın (veya &#9999;&#65039;): <i>Dosya ekle...</i>, yazılan bir bağlantı, kaldır, yukarı ve aşağı;
@@ -1362,7 +1370,7 @@ bunu HMI yapar, servisin yaptığı gibi kayıt kayıt, her makinenin ilk PLC'si
      Makine Parametreleri &rsaquo; Seçenekler sayfasında (Industry 4 Kaydı) ve HMI Ayarları &rsaquo; Seçenekler'dedir: <i>Kayıtlar PLC istasyonu 1 (R27000) üzerinden alınıyor: başlangıçtan beri
      120 yazıldı</i>, <i>PLC bekleniyor: bağlı değil</i>, <i>Kapalı</i> &hellip;</li>
  <li><b>Kayıt alanı</b>: PLC'nin bir word cihazı (<code>R27000</code>) &ndash; ilk word'ü bekleyen kayıtlar, sonraki HMI'nin yanıtı, kayıtlar onuncu
-     word'ünden itibaren, her biri on word. Her makinenin kendisininki vardır, makinenin programında PLC programcısı tarafından ayarlanır (FA2010: <code>R27000</code>) &ndash; ekranda bir ayar değildir.</li>
+     word'ünden itibaren, her biri on word. Her makinenin kendisininki vardır, makinenin programında PLC programcısı tarafından ayarlanır (<code>R27000</code> gibi) &ndash; ekranda bir ayar değildir.</li>
  <li>Her kayıt, PLC'nin tarihiyle veritabanının bir satırıdır, ve değerleri ayrıntılar olarak &ndash; durum haritasının söylediği gibi bölünmüş, iki word'den 32 bitlik değerler,
      açık olan her adlandırılmış bit kendi ayrıntısı. PLC'ye yanıt onunla birlikte yazılır: reddedilirse hiçbir şey saklanmaz ve PLC onu yeniden gönderir.
      Yanıtlar PLC yazma kaydında değildir (her kayıt için bir el sıkışma, bir kullanıcının yazması değil); denetim kaydı bir kaydedicinin ne zaman başladığını söyler.</li>
@@ -1375,6 +1383,49 @@ bunu HMI yapar, servisin yaptığı gibi kayıt kayıt, her makinenin ilk PLC'si
      <b>1002</b> bağlantı, <b>1003</b> bir kontrolün yazması, <b>1004</b> bir sorun, <b>1005</b> ayarlar, <b>1006</b> yazılan bir cihaz; makinenin kendi kodları
      0 &ndash; 157'dir). Günlük dosyalar yine önce yazılır ve başlangıçta veritabanına getirilir. Gösterge paneli, sayımları ve raporlar
      HMI'nin satırlarını dışarıda bırakır &ndash; rapor dosyaları eskisi gibidir; <i>Tüm kayıtlar</i> ve kayıt tabloları onları geri okur.</li>
+</ul>
+
+<h3 id="records">11b. Yeni bir makinenin HMI'nin kendi kayıtları</h3>
+<p>Eski bir makinenin PLC'si ayrıntılarını kendisi kaydeder (kayıtlar Seçenekler sayfasında açılır). <b>Yeni bir makinede</b> &ndash; <b>HMI Ayarları &rsaquo;
+Seçenekler</b>, <i>Makine ayrıntıları HMI'den</i> açık (<a href="#features">9b</a>) &ndash; PLC makinenin durumlarını ve kesimlerini yine kaydeder (bağlantı
+koptuğunda kaybolmamalıdırlar), ayrıntıları ise HMI zaten okuduklarından kendisi alır: silindirleri, eksenleri ve invertörleri. Her kayıt makinenin kayıt
+veritabanına makinenin kendi kaydı olarak yazılır (<b>1100</b> ve üstü kodlar, aşağıdaki adlarla) &ndash; gösterge paneli onları PLC'ninkilerle birlikte
+makinenin olayları olarak, çevrilmiş listeler. Her biri makinenin Industry 4 Kaydı çerçevesinde açılır veya kapatılır, sınırları orada ayarlanır
+(<a href="#params">10</a>); başta hepsi açıktır.</p>
+<table>
+<tr><th>Kayıt</th><th>Ne zaman</th><th>Değerleri</th></tr>
+<tr><td>Yavaş silindir hareketi</td><td>Bir hareket <b>normal süresinden</b> sınırdan fazla yavaş (%50 ve en az 0,3 sn) &ndash; arıza olmadan önceki aşınma:
+  contalar, takılan bir valf, düşük hava. Bir hareket için 10 dakikada en çok bir kayıt.</td><td>Ünite, hareket, süresi, normali, ne kadar yavaş, son kayıttan
+  beri kaç tanesinin yavaş olduğu.</td></tr>
+<tr><td>Silindir hareketi doğrulanmadı</td><td>Sensörleri onu gecikme süresi içinde doğrulamadı (alarmınınki, <a href="#genalarms">6a</a>) &ndash; alarmı
+  HMI de PLC de verse kaydedilir.</td><td>Ünite, hareket, beklenen süre, hangi sinyalin gelmediği.</td></tr>
+<tr><td>Silindir hareket süreleri</td><td>Her <b>vardiyanın</b> sonunda (gösterge panelinin vardiyaları; yoksa gece yarısı).</td><td>Her hareketin sayısı,
+  ortalama ve en uzun süresi, normali, dönemin başladığı zaman.</td></tr>
+<tr><td>Eksen alarmı</td><td>Bir servo alarmı veya eksen hatası gelir.</td><td>Kod, pozisyon, eksenin ne yaptığı (yardımının söylediği gibi), yükleri.</td></tr>
+<tr><td>Eksen aşırı yükü</td><td>Hareket modülünün <b>etkin yükü</b> bir süre (10 sn) sınırın (anma değerinin %100'ü) üstünde veya <b>tepe torku</b> sınırının
+  (%250) üstünde &ndash; takılan bir kızak, yağsız bir vidalı mil, bir çarpma. Yeniden ancak yükleri 10 sn %90'ın altına indikten sonra, 5 dakika sonra.</td><td>Eksen,
+  pozisyon, etkin, tepe ve rejeneratif yükü, aştığı sınır, ne kadar süre.</td></tr>
+<tr><td>İnvertör arızası</td><td>Arıza kodu gelir.</td><td>Arıza, o anki akımı ve değeri, motorun ne kadar süredir çalıştığı.</td></tr>
+<tr><td>Yüksek motor yükü</td><td>Bir çalışmanın tepe akımı motorun normal tepesini sınırdan (%50) fazla aşar &ndash; körelmiş testere veya takım, sıkışan bir
+  rulman. Ünitenin <i>LoadWhileAddress</i>'i açıkken (testerenin ilerlemesi), yoksa çalıştığı sürece başladıktan bir saniye sonrasından ölçülür.</td><td>Motor,
+  tepe ve ortalama akımı, süre, normal tepesi, ne kadar yüksek.</td></tr>
+<tr><td>Motor yükleri</td><td>Her vardiyanın sonunda.</td><td>Her motorun çalışma sayısı, ortalama ve en yüksek tepe akımı, normali.</td></tr>
+<tr><td>Makine duruşu</td><td>Makine sınırdan (5 dk) uzun durdu (<i>Çalışma Aktif</i> dışında) &ndash; aşağıya bakın.</td><td>Başlangıcıyla tarihlenir: ne
+  kadar sürdüğü, hangi durumda durduğu, neden, türü (planlı, ayar, plansız), kimin yanıtladığı.</td></tr>
+</table>
+<ul>
+ <li>Bir hareketin <b>normal süresi</b> (ve bir motorun normal tepesi) ilk 20'sinden öğrenilir (orta değerleri) ve panelde saklanır
+     (<code>MovementNormals.cfg</code>). Bir onarımdan sonra çerçevedeki <b>Normal süreleri yeniden öğren</b>: sonrakilerden öğrenilir.</li>
+ <li>Silindirler HMI'nin kendi silindir alarmları kapalıyken de bu kayıtlar için okunur ve süreleri ölçülür (alarmlarını PLC verdiğinde); eksenlerin
+     yükleri (Md.109 &ndash; Md.111) ve invertörlerin akımı yalnızca kayıtlar alınırken okunur.</li>
+ <li>Bir motorun yükü akımını gerektirir: invertör ünitesinin <b>CurrentAddress</b>'i (PLC'nin invertörün çıkış akımını kopyaladığı kelime) ve
+     <b>CurrentDivisor</b>'ı (100: 0,01 A). O olmadan yalnızca invertörün arızaları kaydedilir.</li>
+ <li><b>Makine neden durdu?</b> Bir duruş sınır kadar sürünce sayfaların üstünde bir pencere açılır (önlerini kesmez: arkasında çalışmaya devam ederler):
+     makinenin ne zamandan beri, hangi durumda durduğu ve büyük düğmeler halinde nedenler &ndash; <i>Mola / yemek</i>, <i>Planlı bakım / temizlik</i>
+     (planlı), <i>Ayar / profil değişimi</i>, <i>Testere / takım değişimi</i> (ayar), <i>Malzeme bekleniyor</i>, <i>Makine arızası</i>, <i>Operatör
+     bekleniyor</i>, <i>Kalite kontrol</i>, <i>Diğer</i> (plansız). Herkes yanıtlayabilir. Duruş sırasında yanıtlanırsa kayıt duruşun sonunda yazılır;
+     <i>Sonra</i> pencereyi duruş bitene kadar gizler &ndash; o zaman yeniden sorulur ve <i>Sonra</i> onu nedensiz yazar. Sınırdan kısa bir duruş kaydedilmez.
+     Duruşlar PLC'nin durum kayıtlarından gelir: HMI makinenin kaydını alıyor olmalıdır (<a href="#i4log">11a</a>).</li>
 </ul>
 
 <h3 id="dashboard">Gösterge paneli</h3>

@@ -95,6 +95,7 @@
  <a href="#params">10. Machine Parameters</a>
  <a href="#diag">11. Logs and diagnostics</a>
  <a href="#i4log">&nbsp;&nbsp;11a. The machine's log, taken by the HMI</a>
+ <a href="#records">&nbsp;&nbsp;11b. The HMI's own records of a new machine</a>
  <a href="#files">12. Where things are kept</a>
  <a href="#machine">13. This machine</a>
 </nav>
@@ -283,7 +284,7 @@ touch function &ndash; the program is used with a mouse, and neither the button 
      a drag does not choose the row it started on, and a button it starts on is not pressed. A finger's small tremble does not move the page back. A slider, a jog button, a splitter, a chart, a table's headings
      and a tab strip are not scrolled that way &ndash; there the drag is the work.</li>
  <li><b>Grips on the borders.</b> The side page's border is wider and carries a grip at its middle; a side page in a window of its own, and each pane of
-     the Profiles page, has a wider frame with a grip at each corner and at the middle of each side. Hold one and drag: the side page, the window or the
+     a page made of panes, has a wider frame with a grip at each corner and at the middle of each side. Hold one and drag: the side page, the window or the
      pane is sized as it goes (a corner sizes both of its sides). With a mouse the grips are not there and the borders are thin again.</li>
  <li><b>Typing.</b> A tap on a text box brings a <b>keyboard on the screen</b>, always in the same place: along the bottom of the screen, across its whole width.
      While it is there the program is laid out as on a screen that much lower &ndash; the navigation panel, the page and the side page end at its top and
@@ -1095,13 +1096,17 @@ onto those rows; a text of the translation file wins.</p>
 <p><span class="lvl l3">Admin</span> The HMI's <b>optional parts</b>, the last tab of HMI Settings (named as a machine's Options tab). Each one is a row: its name,
 what it does <b>now</b> in grey under it, and its <b>switch</b> at the right end &ndash; blue with the knob at the right: on; grey with the knob at the left: off.
 A click on the switch or anywhere on the row turns it over; it is switched for this panel, for everyone, at once &ndash; no restart &ndash; and written in
-the log. Both are <b>off</b> until switched on. What each one does is here, not on the page:</p>
+the log. All are <b>off</b> until switched on. What each one does is here, not on the page:</p>
 <table>
 <tr><th>Option</th><th>On</th><th>Off</th></tr>
 <tr><td>Industry 4 logging in the HMI</td><td>The HMI takes each machine's states, events and alarms from its PLC into the machine's log database &ndash; the
   Industry 4 service's job &ndash; and keeps its own log (sign-ins, writes, settings) in the same database (<a href="#i4log">11a</a>). Each machine's logging is set
   in its Machine Parameters &rsaquo; Options (Industry 4 Logging); its PLC log area is set in its program. <i>Now</i> gives each machine's logger's state.</td><td>The Industry 4 service logs (where it is
   installed); the HMI's log is in its files, as before.</td></tr>
+<tr><td>Machine details from the HMI (new machines)</td><td>A <b>new machine</b>: the HMI takes its details itself (<a href="#records">11b</a>) &ndash; its cylinders'
+  times, its axes' alarms and overloads, its inverters' faults and loads, and why it stood still (the operator is asked). Usable only with the Industry 4
+  logging in the HMI on. The same program runs on older and new machines: this row says which one this panel's is.</td><td>An <b>older machine</b>: its PLC
+  logs its details (the records switched on its Machine Parameters &rsaquo; Options), as before.</td></tr>
 <tr><td>Touch screen</td><td>This PC's screen has a touch function (<a href="#touch">1a</a>): the &#128433; / &#128070; button is on the caption bar, to switch
   between a mouse and a finger, and Users and Preferences has <i>Screen used with</i>. <i>Now</i> says whether it is used by touch or with a mouse.</td><td>No touch
   function: used with a mouse; neither the button nor the preference is shown.</td></tr>
@@ -1193,7 +1198,7 @@ stop the service &ndash; or uninstall it &ndash; once the HMI logs.</div>
      At the right end, <b>Industry 4 Logging</b> &ndash; only while <b>HMI Settings &rsaquo; Options</b> has the Industry 4 logging in the HMI on
      (<a href="#features">9b</a>; the Industry 4 service sets these itself otherwise):
      <ul>
-      <li>A switch for each record the machine's PLC logs &ndash; FA2010: the machine closed, operation not active, operation active, on pause,
+      <li>A switch for each record the machine's PLC logs &ndash; for example: the machine closed, operation not active, operation active, on pause,
           an error, emergency stop, profile changed, cutting done, waste profile emerged, bar length measured, profile not recognised, profile measured.
           On, the PLC logs it: the switch is the record's PLC bit (<code>L1000</code> &hellip;), kept by the PLC, written at once like an option's.
           The first three are the machine's states and are <b>always logged</b> &ndash; shown, not switched: the HMI switches them on when it connects to
@@ -1203,6 +1208,9 @@ stop the service &ndash; or uninstall it &ndash; once the HMI logs.</div>
           waiting for the PLC, waiting while the Industry 4 service runs &hellip; &ndash; the <b>PLC log area</b> it names is set in the machine's program by
           the PLC programmer, not on the screen),
           and the <b>KMSystem</b> lookup of a record's Process ID with its connection. A machine with no log database says so. See <a href="#i4log">11a</a>.</li>
+      <li>A <b>new machine</b> (<i>Machine details from the HMI</i>, <a href="#features">9b</a>): under them, <b>Taken by the HMI</b> &ndash; a switch row for
+          each record the HMI takes itself, a row for each limit, <b>Learn the normal times again</b> (after a repair) and how many normal times are
+          learned. Each is kept as it is changed. See <a href="#records">11b</a>.</li>
      </ul></li>
  <li><b>Alarms:</b> the severity of each alarm and its <b>helper links</b> &ndash; <b>several</b> documents, drawings, pages or web addresses
      opened from the alarm. Double-click the cell (or &#9999;&#65039;) for the list: <i>Add files&hellip;</i>, a link typed in, remove, up and down;
@@ -1361,7 +1369,7 @@ the HMI does it, record for record as the service did, on its own connection to 
      Machine Parameters &rsaquo; Options (Industry 4 Logging) and on HMI Settings &rsaquo; Options: <i>Taking the records from PLC station 1 (R27000): 120 written
      since the start</i>, <i>Waiting for the PLC: not connected</i>, <i>Switched off</i> &hellip;</li>
  <li><b>The log area</b>: a word device of the PLC (<code>R27000</code>) &ndash; its first word the records waiting, the next the HMI's answer, the records from its
-     tenth word, ten words each. Each machine has its own, set in the machine's program by the PLC programmer (FA2010: <code>R27000</code>) &ndash; not a setting on the screen.</li>
+     tenth word, ten words each. Each machine has its own, set in the machine's program by the PLC programmer (as <code>R27000</code>) &ndash; not a setting on the screen.</li>
  <li>Each record is a row of the database, with the PLC's date, and its values as details &ndash; divided as the state map says, 32-bit values from two words,
      each named bit that was on a detail of its own. The answer to the PLC is written with it: if it is refused, nothing is kept and the PLC sends it again.
      The answers are not in the PLC write log (a handshake for every record, not a user's write); the audit log says when a logger starts.</li>
@@ -1374,6 +1382,48 @@ the HMI does it, record for record as the service did, on its own connection to 
      <b>1002</b> connection, <b>1003</b> a control's write, <b>1004</b> a problem, <b>1005</b> settings, <b>1006</b> a device written; the machine's own are
      0 &ndash; 157). The daily files are still written first, and brought into the database at the start. The dashboard, its counts and the reports leave
      the HMI's rows out &ndash; the report files are as they were; <i>All logs</i> and the log tables read them back.</li>
+</ul>
+
+<h3 id="records">11b. The HMI's own records of a new machine</h3>
+<p>An older machine's PLC logs its details itself (the records switched on its Options page). On a <b>new machine</b> &ndash; <b>HMI Settings &rsaquo; Options</b>,
+<i>Machine details from the HMI</i> on (<a href="#features">9b</a>) &ndash; the PLC still logs the machine's states and its cuts (they must not be lost when the
+connection drops), and the HMI takes the details itself, from what it reads anyway: its cylinders, axes and inverters. Each record is written into the
+machine's log database as the machine's own (codes <b>1100</b> and up, named as below) &ndash; the dashboard lists them with the PLC's, as the machine's
+events, translated. Each is switched on or off, and its limits set, in the machine's Industry 4 Logging frame (<a href="#params">10</a>); all are on at first.</p>
+<table>
+<tr><th>Record</th><th>When</th><th>Its values</th></tr>
+<tr><td>Slow cylinder movement</td><td>A movement slower than its <b>normal time</b> by more than the limit (50 %, and by 0.3 s at least) &ndash; wear before it is a
+  fault: seals, a sticking valve, low air. One record a movement in 10 minutes at most.</td><td>The unit, the movement, its time, its normal, how much slower,
+  how many were slow since the last record.</td></tr>
+<tr><td>Cylinder movement not confirmed</td><td>Its sensors did not confirm it within its delay (its alarm's, <a href="#genalarms">6a</a>) &ndash; recorded
+  whether the HMI or the PLC raises the alarm.</td><td>The unit, the movement, the time waited, which signal failed.</td></tr>
+<tr><td>Cylinder movement times</td><td>At the end of each <b>shift</b> (the dashboard's shifts; midnight without).</td><td>Each movement's count, average and
+  longest time, its normal, where the period started.</td></tr>
+<tr><td>Axis alarm</td><td>A servo alarm or an axis error comes.</td><td>The code, the position, what the axis was doing (as its help says), its loads.</td></tr>
+<tr><td>Axis overload</td><td>The motion module's <b>effective load</b> over its limit (100 % of the rated) for a time (10 s), or its <b>peak torque</b> over its
+  limit (250 %) &ndash; a sticking guide, a dry ball screw, a crash. Again only after its loads were back under 90 % for 10 s, 5 minutes on.</td><td>The axis, the
+  position, its effective, peak and regenerative load, the limit it was over, how long.</td></tr>
+<tr><td>Inverter fault</td><td>Its fault code comes.</td><td>The fault, its current and value then, how long the motor had been running.</td></tr>
+<tr><td>High motor load</td><td>A run's peak current over the motor's normal peak by more than the limit (50 %) &ndash; a dull saw blade or tool, a tight
+  bearing. Measured while the unit's <i>LoadWhileAddress</i> is on (the saw's feed), else while it runs from a second after it started.</td><td>The motor,
+  its peak and average current, how long, its normal peak, how much higher.</td></tr>
+<tr><td>Motor loads</td><td>At the end of each shift.</td><td>Each motor's runs, its average and highest peak current, its normal.</td></tr>
+<tr><td>Machine stop</td><td>The machine stood still (out of <i>Operation is active</i>) longer than the limit (5 min) &ndash; see below.</td><td>Dated at its
+  start: how long, the state it stood in, the reason, its kind (planned, setup, unplanned), who answered.</td></tr>
+</table>
+<ul>
+ <li><b>The normal time</b> of a movement (and a motor's normal peak) is learned from its first 20 (their middle value) and kept on the panel
+     (<code>MovementNormals.cfg</code>). After a repair, <b>Learn the normal times again</b> in the frame: they are learned from the next ones.</li>
+ <li>The cylinders are read and timed for these records even while the HMI's own cylinder alarms are off (when the PLC raises them); the axes' loads
+     (Md.109 &ndash; Md.111) and the inverters' current only while the records are taken.</li>
+ <li>A motor's load needs its current: the inverter unit's <b>CurrentAddress</b> (the word the PLC copies the inverter's output current into) and
+     <b>CurrentDivisor</b> (100: 0.01 A). Without it only the inverter's faults are recorded.</li>
+ <li><b>Why did the machine stop?</b> Once a stop has lasted the limit, a window comes up over the pages (not in their way: they go on working behind it):
+     since when the machine has stood still, in which state, and the reasons as large buttons &ndash; <i>Break / meal</i>, <i>Planned maintenance /
+     cleaning</i> (planned), <i>Setup / profile change</i>, <i>Saw blade / tool change</i> (setup), <i>Waiting for material</i>, <i>Machine fault</i>,
+     <i>Waiting for the operator</i>, <i>Quality check</i>, <i>Other</i> (unplanned). Anyone may answer. Answered during the stop, the record is written at its
+     end; <i>Later</i> hides the window until the stop ends &ndash; then it is asked again, and <i>Later</i> then writes it without a reason. A stop shorter than the
+     limit is not recorded. The stops come from the PLC's state records: the HMI must be taking the machine's log (<a href="#i4log">11a</a>).</li>
 </ul>
 
 <h3 id="dashboard">The dashboard</h3>
