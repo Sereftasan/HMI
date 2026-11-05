@@ -1424,6 +1424,13 @@ events, translated. Each is switched on or off, and its limits set, in the machi
      <i>Waiting for the operator</i>, <i>Quality check</i>, <i>Other</i> (unplanned). Anyone may answer. Answered during the stop, the record is written at its
      end; <i>Later</i> hides the window until the stop ends &ndash; then it is asked again, and <i>Later</i> then writes it without a reason. A stop shorter than the
      limit is not recorded. The stops come from the PLC's state records: the HMI must be taking the machine's log (<a href="#i4log">11a</a>).</li>
+ <li><b>The machine's own records, taken by the HMI</b> &ndash; what an older machine's PLC program writes into its log area (a record's code, then its
+     values, when a bit comes on) is done by the HMI on a new machine. Each one is a <b>record row</b> (LogRecordHMI) on the machine's Options page,
+     in its Industry 4 Logging frame, set in the page's designer: its <b>code</b> (the PLC's, e.g. 16 for <i>Bar length measured</i> &ndash; the dashboard
+     then treats it as that record &ndash; or one of its own, 1200 &ndash; 1299, named by its text), its <b>trigger</b> (as a control's EnableTrigger: a bit
+     ON or OFF, a value in a range &ndash; the record is taken the moment it becomes true) and its <b>values</b>, in order: numbers (a numeric display's word or
+     two, divided) and lamps (a bit: 1 or 0). On a new machine these rows are shown, a switch each (on: taken), and the PLC's switches of the same records
+     are hidden; on an older machine it is the other way round.</li>
 </ul>
 
 <h3 id="dashboard">The dashboard</h3>

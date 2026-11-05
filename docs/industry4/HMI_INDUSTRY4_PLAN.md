@@ -110,7 +110,12 @@ best set from a baseline measured at commissioning (what the machine does when i
 - Each switched and limited in the machine's Industry 4 Logging frame (Machine Parameters > Options), with "Learn the normal times again".
 - The cylinders are timed for the records even with the HMI's cylinder alarms off; the axes' loads (Md.109 - Md.111) and the inverters'
   current are read only while the records are taken.
-- Not yet: the PLC's detail records of a new machine (6, 15, 16, 20, 22) stay with the PLC until the HMI has triggers for them; the
+- The machine's own records by HMI triggers (your answer: "We need to define a trigger device and additional info devices for each
+  one ... just like 'EnableTrigger' ... a collection lamp HMI and numerical display HMI controls"): LogRecordHMI rows in the Industry 4
+  Logging frame - code, trigger, values - shown on a new machine instead of the PLC's switches of the same records. FA2010: 15, 16, 22
+  (from your PLC program's MakineLogKayit calls); FireBoyu, BoyOkundu, ProfilOlcum_OK, Profil_OkunanGenislik, Profil_OkunanYukseklik and
+  Profil_Dogru still need their devices; 6 and 20 need theirs too.
+- Not yet: the PLC's detail records 6 and 20 as HMI records (their trigger and value devices); the
   inverters' current needs the PLC to read it (FA2010 has no current word yet); the axis load trend, travel and moves, the cylinders'
   cycles and sensor faults, the cycle / quality / consumable records of section 2.
 

@@ -1426,6 +1426,13 @@ makinenin olayları olarak, çevrilmiş listeler. Her biri makinenin Industry 4 
      bekleniyor</i>, <i>Kalite kontrol</i>, <i>Diğer</i> (plansız). Herkes yanıtlayabilir. Duruş sırasında yanıtlanırsa kayıt duruşun sonunda yazılır;
      <i>Sonra</i> pencereyi duruş bitene kadar gizler &ndash; o zaman yeniden sorulur ve <i>Sonra</i> onu nedensiz yazar. Sınırdan kısa bir duruş kaydedilmez.
      Duruşlar PLC'nin durum kayıtlarından gelir: HMI makinenin kaydını alıyor olmalıdır (<a href="#i4log">11a</a>).</li>
+ <li><b>Makinenin kendi kayıtları, HMI tarafından alınır</b> &ndash; eski bir makinenin PLC programının kayıt alanına yazdığını (bir bit açıldığında bir
+     kaydın kodu, ardından değerleri) yeni bir makinede HMI yapar. Her biri makinenin Seçenekler sayfasında, Industry 4 Kaydı çerçevesinde bir <b>kayıt
+     satırıdır</b> (LogRecordHMI), sayfanın tasarımcısında ayarlanır: <b>kodu</b> (PLC'ninki, ör. <i>Bar boyu ölçüldü</i> için 16 &ndash; gösterge paneli onu o
+     kayıt gibi işler &ndash; ya da kendine ait bir kod, 1200 &ndash; 1299, metniyle adlandırılır), <b>tetikleyicisi</b> (bir kontrolün EnableTrigger'ı gibi:
+     bir bit AÇIK veya KAPALI, bir aralıktaki bir değer &ndash; kayıt bu doğru olduğu anda alınır) ve sırayla <b>değerleri</b>: sayılar (bir sayısal göstergenin
+     bir veya iki kelimesi, bölünmüş) ve lambalar (bir bit: 1 veya 0). Yeni bir makinede bu satırlar gösterilir, her biri bir anahtarla (açık: alınır) ve
+     PLC'nin aynı kayıtlar için anahtarları gizlenir; eski bir makinede tersi.</li>
 </ul>
 
 <h3 id="dashboard">Gösterge paneli</h3>
