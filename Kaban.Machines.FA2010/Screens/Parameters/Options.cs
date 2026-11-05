@@ -35,6 +35,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             grpIndustry4Logging.Controls.Add(machineLog);
             // the frame as tall as its rows and the settings under them
             machineLog.SizeChanged += (s, e) => grpIndustry4Logging.Height = machineLog.Bottom + grpIndustry4Logging.Padding.Bottom;
+            grpIndustry4Logging.Height = machineLog.Bottom + grpIndustry4Logging.Padding.Bottom;
             Kaban.UI.Dashboard.MachineLogSettings.ShownWhileLogging(grpIndustry4Logging);
         }
     }

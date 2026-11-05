@@ -326,6 +326,7 @@
     <Compile Include="Dashboard\LogDatabase.cs" />
     <Compile Include="Dashboard\MachineLogFeed.cs" />
     <Compile Include="Dashboard\MachineLogger.cs" />
+    <Compile Include="Dashboard\MachineRecords.cs" />
     <Compile Include="Dashboard\MachineLogSettings.cs">
       <SubType>Component</SubType>
     </Compile>

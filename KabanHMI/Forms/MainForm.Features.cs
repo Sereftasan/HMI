@@ -20,6 +20,8 @@ namespace Kaban.UI.Forms
             catch (Exception ex) { AuditLogger.Log("Machine log: could not start: " + ex.Message); }
             try { if (Kaban.UI.Dashboard.HmiLogStore.AutoStart) Kaban.UI.Dashboard.HmiLogStore.Start(); }
             catch (Exception ex) { AuditLogger.Log("HMI log: the log database could not be used: " + ex.Message); }
+            // the HMI's own records of the machines (a new machine: HMI Settings > Options, 5 November) - they decide as they come
+            Kaban.UI.Dashboard.MachineRecords.Install();
         }
 
         /// <summary>Both stopped: the Windows service logs again, the HMI's log is in its files.</summary>
@@ -27,6 +29,7 @@ namespace Kaban.UI.Forms
         {
             try { Kaban.UI.Dashboard.MachineLoggers.StopAll(); } catch { }
             try { Kaban.UI.Dashboard.HmiLogStore.Stop(); } catch { }
+            try { Kaban.UI.Dashboard.MachineRecords.Stop(); } catch { }
         }
 
         /// <summary>The mouse / touch button on the top bar only while the touch screen is switched on.</summary>

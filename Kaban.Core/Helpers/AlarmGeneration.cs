@@ -150,6 +150,47 @@ namespace Kaban.Core.Helpers
             OnWatchesChanged();
         }
 
+        // ---- the HMI's records of a machine (5 November) ------------------------------
+        //
+        // "So we can create triggers to take logs for each axis unit or other pneumatic controls as well": the
+        // watches above see every movement, code and fault - the HMI's records of a machine (KabanHMI's
+        // MachineRecords, while HMI Settings > Options has "Machine details from the HMI" on) are told of them.
+        // While a machine's records are taken its cylinders are read and timed even with the HMI's cylinder
+        // alarms off (FA2010: the PLC raises them) - nothing is raised then, only told.
+
+        /// <summary>What the HMI's records hear from the watches (KabanHMI's MachineRecords).</summary>
+        public interface IRecordsObserver
+        {
+            /// <summary>The HMI takes its records of this machine now.</summary>
+            bool On(string moduleId);
+            /// <summary>A movement confirmed by its feedback, <paramref name="seconds"/> after it was commanded.</summary>
+            void MovementDone(Cylinder c, CylinderSide s, double seconds, DateTime now);
+            /// <summary>A movement not confirmed within its delay (<paramref name="sub"/>: which signal failed, as the alarm's sub-code).</summary>
+            void MovementTooLong(Cylinder c, CylinderSide s, double seconds, int sub, DateTime now);
+            /// <summary>A station's scan evaluated: its axes and inverters as they are now.</summary>
+            void Scanned(int station, Func<string, int> lookup, DateTime now);
+        }
+
+        /// <summary>The HMI's records (null: none - a test, the designer).</summary>
+        public static IRecordsObserver Records;
+
+        /// <summary>The HMI takes its records of the machine now.</summary>
+        public static bool RecordsOn(string moduleId)
+        {
+            var r = Records;
+            if (r == null) return false;
+            try { return r.On(moduleId); } catch { return false; }
+        }
+
+        /// <summary>Tells the records - never stopping the scan.</summary>
+        private static void Tell(Action<IRecordsObserver> what)
+        {
+            var r = Records;
+            if (r == null) return;
+            try { what(r); }
+            catch (Exception ex) { AuditLogger.Log("machine records: " + ex.Message); }
+        }
+
         // ---- what is watched -----------------------------------------------------------
 
         /// <summary>A sensor of a movement.</summary>
@@ -429,7 +470,7 @@ namespace Kaban.Core.Helpers
         {
             foreach (var c in _cylinders)
             {
-                if (!EnabledFor(c.ModuleId)) continue;
+                if (!EnabledFor(c.ModuleId) && !RecordsOn(c.ModuleId)) continue;
                 foreach (var s in c.Sides)
                 {
                     foreach (var a in new[] { s.Drive, s.OtherDrive, s.Position }.Concat(s.MustOn.Select(x => x.Address)).Concat(s.MustOff.Select(x => x.Address)))
@@ -622,8 +663,11 @@ namespace Kaban.Core.Helpers
             {
                 if (c.Station != station) continue;
                 var settings = Peek(c.ModuleId);
-                if (!settings.Enabled) { foreach (var s in c.Sides) { s.Since = null; s.Seen = false; Drop(s); } continue; }
-                foreach (var s in c.Sides) EvaluateSide(c, s, settings, lookup, now);
+                // timed for the HMI's alarms, or for its records only (nothing raised then)
+                bool alarms = settings.Enabled;
+                if (!alarms && !RecordsOn(c.ModuleId)) { foreach (var s in c.Sides) { s.Since = null; s.Seen = false; Drop(s); } continue; }
+                if (!alarms) foreach (var s in c.Sides) Drop(s);
+                foreach (var s in c.Sides) EvaluateSide(c, s, settings, lookup, now, alarms);
             }
             foreach (var x in _axes)
             {
@@ -645,6 +689,8 @@ namespace Kaban.Core.Helpers
                 if (!AxisAlarmsFor(v.ModuleId)) { DropInverter(v); continue; }
                 EvaluateInverter(v, lookup, now);
             }
+            // the HMI's records: the station's axes and inverters as they are now
+            if (Records != null) Tell(r => r.Scanned(station, lookup, now));
         }
 
         private static bool On(Func<string, int> lookup, string address)
@@ -693,7 +739,7 @@ namespace Kaban.Core.Helpers
             if (s.Raised != null) { AlarmManager.ClearGenerated(s.Raised); s.Raised = null; }
         }
 
-        private static void EvaluateSide(Cylinder c, CylinderSide s, Settings settings, Func<string, int> lookup, DateTime now)
+        private static void EvaluateSide(Cylinder c, CylinderSide s, Settings settings, Func<string, int> lookup, DateTime now, bool alarms = true)
         {
             if (string.IsNullOrWhiteSpace(s.Drive)) return;
             bool drive = On(lookup, s.Drive);
@@ -743,15 +789,19 @@ namespace Kaban.Core.Helpers
             }
             if (confirmed)
             {
+                double took = (now - s.Since.Value).TotalSeconds;
                 s.Since = null;
                 if (s.Raised != null) Drop(s);
+                if (RecordsOn(c.ModuleId)) Tell(r => r.MovementDone(c, s, took, now));
                 return;
             }
-            if ((now - s.Since.Value).TotalSeconds < DelayOf(c, s, settings)) return;
+            double waited = (now - s.Since.Value).TotalSeconds;
+            if (waited < DelayOf(c, s, settings)) return;
 
             s.Since = null;
             int sub = Diagnose(s, lookup, now);
-            Raise(c, s, sub, lookup, now);
+            if (RecordsOn(c.ModuleId)) Tell(r => r.MovementTooLong(c, s, waited, sub, now));
+            if (alarms) Raise(c, s, sub, lookup, now);
         }
 
         /// <summary>The machine conditions of a cylinder's PositionWhile.</summary>

@@ -149,7 +149,31 @@ namespace Kaban.UI.Dashboard
                 m.ReadMap(File.ReadAllText(stateMapFile, Encoding.UTF8));
             if (!string.IsNullOrEmpty(translationFile) && File.Exists(translationFile))
                 m.ReadTranslations(File.ReadAllText(translationFile, Encoding.UTF8));
+            if (m.Count > 0) m.AddHmiRecords();
             return m;
+        }
+
+        /// <summary>
+        /// The HMI's own records of the machine (MachineRecords, codes 1100 - 1199: 5 November) - named and translated as the
+        /// HMI's texts are (CommonTranslations), their values' names too, so the dashboard lists them with the PLC's records.
+        /// </summary>
+        public void AddHmiRecords()
+        {
+            foreach (var k in MachineRecords.Kinds)
+                if (!_entries.ContainsKey(k.Code)) _entries[k.Code] = new Entry { Code = k.Code, Description = k.Text };
+            var texts = MachineRecords.Kinds.Select(k => new KeyValuePair<string, string>(k.Text, k.TextKey)).Concat(MachineRecords.DetailNames).ToList();
+            foreach (var lang in LanguageColumns)
+            {
+                Dictionary<string, string> map;
+                if (!_texts.TryGetValue(lang.Value, out map)) _texts[lang.Value] = map = new Dictionary<string, string>(StringComparer.Ordinal);
+                foreach (var t in texts)
+                {
+                    string had;
+                    if (map.TryGetValue(t.Key, out had) && had != t.Key) continue;      // the machine's own file says it
+                    var own = Kaban.Core.Helpers.LanguageManager.GetStringIn(lang.Key, t.Value);
+                    map[t.Key] = string.IsNullOrEmpty(own) ? t.Key : own;
+                }
+            }
         }
 
         public void ReadMap(string json)

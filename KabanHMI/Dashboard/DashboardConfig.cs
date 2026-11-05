@@ -183,6 +183,30 @@ namespace Kaban.UI.Dashboard
             set { _raw["kmsystem_connection"] = value ?? ""; }
         }
 
+        // ---- the HMI's own records of the machine (5 November, MachineRecords) - "hmi_records": { "cylinder_slow": true, "slow_percent": 50 ... } ----
+
+        private IDictionary<string, object> RecordSettings { get { return Json.Object(_raw, "hmi_records"); } }
+
+        private IDictionary<string, object> OwnRecordSettings()
+        {
+            var o = RecordSettings;
+            if (o == null) _raw["hmi_records"] = o = new Dictionary<string, object>(StringComparer.Ordinal);
+            return o;
+        }
+
+        /// <summary>A kind of the HMI's records taken (on until switched off).</summary>
+        public bool RecordOn(string kind) { return Json.Bool(RecordSettings, kind ?? "", true); }
+        public void SetRecordOn(string kind, bool on) { OwnRecordSettings()[kind ?? ""] = on; }
+
+        /// <summary>A limit of the HMI's records ("slow_percent" ...), its default when none is set.</summary>
+        public double RecordLimit(string key, double fallback)
+        {
+            var n = Json.Number(RecordSettings, key ?? "");
+            return n.HasValue && n.Value > 0 ? n.Value : fallback;
+        }
+
+        public void SetRecordLimit(string key, double value) { OwnRecordSettings()[key ?? ""] = value; }
+
         /// <summary>The report due next ("required_report_end_date"), null when none is set.</summary>
         public DateTime? RequiredReportEnd
         {

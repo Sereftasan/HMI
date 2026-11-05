@@ -22,6 +22,9 @@ namespace Kaban.UI.Dashboard
     /// Enter is pressed. Kept in the machine's dashboard settings (Logs and Reports keeps its database and reports).
     ///
     /// Its frame is shown only while HMI Settings > Options has the Industry 4 logging in the HMI on (ShownWhileLogging).
+    ///
+    /// A new machine (HMI Settings > Options: "Machine details from the HMI", 5 November): under them, what the HMI takes itself
+    /// (MachineRecords) - a switch row a record, a row a limit, and "Learn the normal times again" (after a repair).
     /// </summary>
     public sealed class MachineLogSettings : Panel
     {
@@ -39,6 +42,13 @@ namespace Kaban.UI.Dashboard
         private readonly Label _none = new Label { Name = "noLogDatabase" };
         private readonly Timer _clock = new Timer { Interval = 1000 };
         private bool _filling;
+
+        // ---- what the HMI takes itself (a new machine) ----
+        private readonly List<Control> _recordRows = new List<Control>();
+        private readonly Dictionary<string, CheckBoxHMI> _kinds = new Dictionary<string, CheckBoxHMI>(StringComparer.Ordinal);
+        private readonly Dictionary<string, NumericUpDown> _limits = new Dictionary<string, NumericUpDown>(StringComparer.Ordinal);
+        private readonly Label _normals = new Label { Name = "normalsState" };
+        private EventHandler _onFeatures;
 
         /// <summary>The machine's dashboard (null: the machine keeps no log database).</summary>
         public MachineDashboard Machine { get { return _machine; } }
@@ -71,6 +81,32 @@ namespace Kaban.UI.Dashboard
                 rows.Add(_km);
                 rows.Add(new SettingRow(T("Plg_KmConnection", "KMSystem connection"), _kmConnection));
 
+                // what the HMI takes itself - a new machine (HMI Settings > Options: "Machine details from the HMI")
+                var head = Words(new Label { Name = "recordsHead", Text = T("Rec_Head", "Taken by the HMI (a new machine)"), Font = UiStyle.FontVariant(UiStyle.Body, FontStyle.Bold) });
+                head.Padding = new Padding(8, 14, 8, 4);
+                _recordRows.Add(head);
+                _recordRows.Add(KindRow(MachineRecords.CylinderSlow,
+                    T("Rec_CylinderSlowTip", "A cylinder's movement slower than its normal time by more than the limit - wear before it is a fault " +
+                      "(seals, a sticking valve, low air). Its normal: learned from its first 20 movements.")));
+                _recordRows.Add(LimitRow("slow_percent", T("Rec_SlowPercent", "Slow: slower than its normal by (%)"), MachineRecords.DefaultSlowPercent, 10, 500,
+                    T("Rec_SlowPercentTip", "How much slower than its normal time a movement must be to be recorded (and by 0.3 s at least).")));
+                _recordRows.Add(KindRow(MachineRecords.CylinderNotConfirmed,
+                    T("Rec_CylinderNotConfirmedTip", "A cylinder's movement its sensors did not confirm within its delay - which signal failed.")));
+                _recordRows.Add(KindRow(MachineRecords.CylinderTimes,
+                    T("Rec_CylinderTimesTip", "At the end of each shift: each movement's count, average and longest time, with its normal.")));
+                var learn = UiStyle.TextButton(T("Rec_Learn", "Learn the normal times again"), 0, (s, e) => LearnAgain());
+                learn.Name = "learnNormals";
+                UiStyle.SetTip(_tips, learn, T("Rec_LearnTip", "After a repair: the normal times are learned again from the next movements."));
+                _recordRows.Add(new SettingRow("", learn, true));
+                _normals.ForeColor = Color.FromArgb(110, 116, 124);
+                _recordRows.Add(Words(_normals));
+                rows.AddRange(_recordRows);
+                _onFeatures = (s, e) =>
+                {
+                    try { if (IsHandleCreated && InvokeRequired) BeginInvoke((Action)ShowRecords); else ShowRecords(); } catch { }
+                };
+                HmiFeatures.Changed += _onFeatures;
+
                 _on.CheckedChanged += (s, e) => Keep();
                 _km.CheckedChanged += (s, e) => Keep();
                 _kmConnection.Leave += (s, e) => Keep();
@@ -92,8 +128,82 @@ namespace Kaban.UI.Dashboard
                 if (Height != y) Height = y;
             };
             VisibleChanged += (s, e) => { if (Visible && _machine != null) { ShowState(); _clock.Start(); } else _clock.Stop(); };
-            Disposed += (s, e) => _clock.Dispose();
+            Disposed += (s, e) => { _clock.Dispose(); if (_onFeatures != null) HmiFeatures.Changed -= _onFeatures; };
+            ShowRecords();
         }
+
+        // ---- what the HMI takes itself -------------------------------------------------------------------
+
+        /// <summary>A record's switch row (on until switched off), kept at once.</summary>
+        private CheckBoxHMI KindRow(int code, string tip)
+        {
+            var kind = MachineRecords.KindOf(code);
+            var box = new CheckBoxHMI { Name = "rec:" + kind.Key };
+            Switch(box, kind.Shown, tip);
+            _kinds[kind.Key] = box;
+            box.CheckedChanged += (s, e) =>
+            {
+                if (_filling || _machine == null) return;
+                bool on = box.Checked;
+                _machine.Change(c => c.SetRecordOn(kind.Key, on));
+                AuditLogger.Log("Machine records (" + _machine.ModuleId + "): " + kind.Text + " " + (on ? "taken" : "not taken") + ".");
+            };
+            return box;
+        }
+
+        /// <summary>A limit's row: its caption at the left, the number at the right end - kept as it is changed.</summary>
+        private SettingRow LimitRow(string key, string caption, double fallback, int min, int max, string tip)
+        {
+            var n = new NumericUpDown { Name = "lim:" + key, Width = 80, Minimum = min, Maximum = max, Tag = fallback };
+            _limits[key] = n;
+            n.ValueChanged += (s, e) =>
+            {
+                if (_filling || _machine == null) return;
+                double v = (double)n.Value;
+                _machine.Change(c => c.SetRecordLimit(key, v));
+                AuditLogger.Log("Machine records (" + _machine.ModuleId + "): " + key + " = " + v.ToString(System.Globalization.CultureInfo.InvariantCulture) + ".");
+            };
+            var row = new SettingRow(caption, n);
+            UiStyle.SetTip(_tips, row, tip);
+            UiStyle.SetTip(_tips, n, tip);
+            return row;
+        }
+
+        /// <summary>The HMI's records shown only for a new machine (HMI Settings > Options).</summary>
+        private void ShowRecords()
+        {
+            if (IsDisposed || _machine == null) return;
+            bool on = HmiFeatures.RecordsOn;
+            foreach (var r in _recordRows) r.Visible = on;
+            ShowNormals();
+            PerformLayout();
+        }
+
+        private void ShowNormals()
+        {
+            if (_machine == null) return;
+            int n = MachineRecords.Normals.CountOf(_machine.ModuleId);
+            _normals.Text = n == 0 ? T("Rec_NormalsNone", "No normal time learned yet: each movement's comes with its first 20.")
+                                   : string.Format(T("Rec_Normals", "Normal times learned: {0}."), n);
+        }
+
+        /// <summary>After a repair: the machine's normal times forgotten, learned again from the next movements.</summary>
+        public void LearnAgain()
+        {
+            if (_machine == null) return;
+            int n = MachineRecords.Normals.Forget(_machine.ModuleId);
+            AuditLogger.Log("Machine records (" + _machine.ModuleId + "): the normal times (" + n + ") to be learned again.");
+            ShowNormals();
+        }
+
+        /// <summary>A record's switch (tests).</summary>
+        public CheckBoxHMI RecordSwitch(string kind) { CheckBoxHMI b; return _kinds.TryGetValue(kind, out b) ? b : null; }
+
+        /// <summary>A limit's field (tests).</summary>
+        public NumericUpDown LimitField(string key) { NumericUpDown n; return _limits.TryGetValue(key, out n) ? n : null; }
+
+        /// <summary>The line under the button (tests).</summary>
+        public string NormalsText { get { return _normals.Text; } }
 
         /// <summary>A switch row of its own (no PLC bit: a setting of the HMI's).</summary>
         private void Switch(CheckBoxHMI box, string text, string tip)
@@ -121,10 +231,10 @@ namespace Kaban.UI.Dashboard
             private readonly Label _caption;
             private readonly Control _field;
 
-            public SettingRow(string caption, Control field)
+            public SettingRow(string caption, Control field, bool fieldAtLeft = false)
             {
                 _field = field;
-                Size = new Size(RowW, UiStyle.SettingRowHeight);
+                Size = new Size(RowW, UiStyle.SettingRowHeight + (fieldAtLeft ? 6 : 0));
                 BackColor = Color.White;
                 _caption = new Label { Text = caption, AutoSize = false, TextAlign = ContentAlignment.MiddleLeft, AutoEllipsis = true };
                 Controls.Add(_caption);
@@ -132,6 +242,14 @@ namespace Kaban.UI.Dashboard
                 Layout += (s, e) =>
                 {
                     int pad = UiScale.For(this, 8);
+                    if (fieldAtLeft)
+                    {
+                        // a button: at the rows' left, as wide as its words
+                        if (_field is Button) _field.Width = Math.Max(_field.Width, TextRenderer.MeasureText(_field.Text, _field.Font).Width + UiScale.For(this, 28));
+                        _field.Location = new Point(pad, (Height - _field.Height) / 2);
+                        _caption.SetBounds(_field.Right + pad, 0, Math.Max(10, Width - _field.Right - 2 * pad), Height - 1);
+                        return;
+                    }
                     _field.Location = new Point(Width - pad - _field.Width, (Height - _field.Height) / 2);
                     _caption.SetBounds(pad, 0, Math.Max(10, _field.Left - 2 * pad), Height - 1);
                 };
@@ -172,6 +290,12 @@ namespace Kaban.UI.Dashboard
                 _on.Checked = c.PlcLogging;
                 _km.Checked = c.KmSystemLookup;
                 _kmConnection.Text = c.KmSystemConnection;
+                foreach (var kv in _kinds) kv.Value.Checked = c.RecordOn(kv.Key);
+                foreach (var kv in _limits)
+                {
+                    double v = c.RecordLimit(kv.Key, (double)kv.Value.Tag);
+                    kv.Value.Value = Math.Max(kv.Value.Minimum, Math.Min(kv.Value.Maximum, (decimal)v));
+                }
             }
             finally { _filling = false; }
             ShowState();
