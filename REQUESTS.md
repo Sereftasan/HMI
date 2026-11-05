@@ -6,6 +6,16 @@ Claude reads this file at the start of every batch, does the items, and moves ea
 ## To do
 
 ## Done
+- 5 November, night (the answers: "Your suggestion", older / new machines on the Options page, ask the stop's reason):
+  - 06176cf - HMI Settings > Options: Machine details from the HMI (new machines) - on, the HMI takes the details itself; off, the PLC.
+  - f0f8c47 - The HMI's own records (codes 1100+, the dashboard's events): slow cylinder movement (over its learned normal by 50 %),
+    cylinder movement not confirmed, cylinder movement times per shift; in the Industry 4 Logging frame with "Learn the normal times again".
+  - facf83e - Axis alarm (code, position, what it was doing, loads) and axis overload (effective load 100 % for 10 s, peak torque 250 %).
+  - 2fa0e82 - Inverter fault, high motor load and motor loads per shift (InverterUnitHMI.CurrentAddress - none on FA2010 yet).
+  - d29c88f - Why the machine stood still: a window after a 5-minute stop, nine reasons, written as a Machine stop record.
+  - b9160cf - switched on or off: the scanner reads what they need at once.
+  - f488e58, c352ff8 - Manual 9b, 10, 11b (EN, TR); CLAUDE.md; the plan's section 5 (what is built, what is not yet).
+  - 9b3ba89, 6d413bb - tests.
 - 5 November, evening (the log area, the answers on the plan, what to log):
   - 38ecf68 - The PLC log area (R27000) is the machine program's (DashboardDefinition.LogArea): no field for it in the
     Industry 4 Logging frame any more; the frame's state and Logs and Reports name it.
