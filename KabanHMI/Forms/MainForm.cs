@@ -1392,6 +1392,7 @@ namespace Kaban.UI.Forms
             if (psi == null) return;
             try
             {
+                Helpers.SingleInstance.Release();   // one copy at a time: the new one takes it over
                 StartProcess(psi);
                 AuditLogger.Log("[RESTART] new instance started, after the stations were closed.");
             }
@@ -2644,6 +2645,9 @@ namespace Kaban.UI.Forms
         /// texts on when it is built kept them. Both now come before the first page is
         /// made (the load reads the texts again and finds the language already in force).
         /// </summary>
+        /// <summary>The texts and the kept language, before the window - for a message shown before it (SingleInstance).</summary>
+        internal static void PrepareLanguageEarly() { PrepareLanguage(); }
+
         private static void PrepareLanguage()
         {
             try

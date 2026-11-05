@@ -33,6 +33,8 @@ namespace Kaban.Machines.H800
             // holds - MX Component refuses the second opener. Waits only when
             // this process was actually started by a restart.
             Kaban.UI.AppBootstrap.AwaitPreviousInstance(args);
+            // one copy of the HMI at a time: another running is brought to the front, this one ends
+            if (!Kaban.UI.Helpers.SingleInstance.Take(args)) return;
 
             UnitManager.EnsureDefaults();
             // the engineer's device list: labels for the monitor and the AI prompt,

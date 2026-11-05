@@ -130,6 +130,7 @@
     <Compile Include="Helpers\HmiAiPrompt.cs" />
     <Compile Include="Helpers\PlcPopupHost.cs" />
     <Compile Include="Helpers\StopReasonHost.cs" />
+    <Compile Include="Helpers\SingleInstance.cs" />
     <Compile Include="Helpers\ShownPick.cs" />
     <Compile Include="Helpers\UnitCoupling.cs" />
     <Compile Include="Helpers\UnitCycling.cs" />

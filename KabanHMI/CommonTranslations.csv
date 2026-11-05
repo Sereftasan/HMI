@@ -23,6 +23,9 @@ Unit_lbs;lbs;libre;lbs;lbs;lbs;lbs
 Sys_NoData;Waiting for PLC data.;PLC verisi bekleniyor.;Ожидание данных ПЛК.;Warte auf SPS-Daten.;In attesa dei dati PLC.;Esperando datos del PLC.
 Btn_Login;Login;Giriş;Вход;Anmelden;Accedi;Iniciar sesión
 Ttl_Login;HMI Login;HMI Giriş;Вход в HMI;HMI-Anmeldung;Accesso HMI;Inicio de sesión HMI
+Msg_OneCopyRunning;The HMI is already running ({0}, opened at {1}) - it is brought to the front.;HMI zaten çalışıyor ({0}, {1} saatinde açıldı) - öne getirildi.;;;;
+Msg_OneCopyStarting;The HMI is already running, or still closing. Wait a few seconds and start it again.;HMI zaten çalışıyor ya da hâlâ kapanıyor. Birkaç saniye bekleyip yeniden başlatın.;;;;
+Msg_OneCopyWhy;Only one copy of the HMI runs at a time: two copies would read and write the same PLCs and save the same settings and lists over each other's.;HMI'nin aynı anda yalnız bir kopyası çalışır: iki kopya aynı PLC'leri okuyup yazar ve aynı ayarları ve listeleri birbirinin üzerine kaydeder.;;;;
 Msg_PickUser;Choose a user.;Bir kullanıcı seçin.;Выберите пользователя.;Wählen Sie einen Benutzer.;Scegli un utente.;Elija un usuario.
 Btn_Logout;Logout;Oturumu kapat;Выйти;Abmelden;Esci;Cerrar sesión
 Sys_NotLoggedIn;No user logged;Oturum açılmadı;Пользователь не вошёл;Nicht angemeldet;Nessun utente;Sin sesión iniciada
@@ -131,6 +134,7 @@ Drv_Simulation;Simulation (in-memory);Simülasyon (bellek içi);Симуляци
 Drv_Mitsubishi;Mitsubishi (MX Component);Mitsubishi (MX Component);Mitsubishi (MX Component);Mitsubishi (MX Component);Mitsubishi (MX Component);Mitsubishi (MX Component)
 Drv_Siemens;Siemens S7-1200/1500 (TCP);Siemens S7-1200/1500 (TCP);Siemens S7-1200/1500 (TCP);Siemens S7-1200/1500 (TCP);Siemens S7-1200/1500 (TCP);Siemens S7-1200/1500 (TCP)
 Drv_Delta;Delta AS/DVP (Modbus TCP);Delta AS/DVP (Modbus TCP);Delta AS/DVP (Modbus TCP);Delta AS/DVP (Modbus TCP);Delta AS/DVP (Modbus TCP);Delta AS/DVP (Modbus TCP)
+Ttl_OneCopy;The HMI is already running;HMI zaten çalışıyor;;;;
 Ttl_SimMonitor;PLC Monitor - live device memory;PLC Monitörü - canlı cihaz belleği;Монитор ПЛК - память устройств;SPS-Monitor - Live-Gerätespeicher;Monitor PLC - memoria dispositivi;Monitor PLC - memoria de dispositivos
 Msg_SimMonitorHelp;One tab per machine controller. Values update live, edit a cell (or double-click a row) to change one.;Her makine kontrolörü için bir sekme. Değerler canlı güncellenir, değiştirmek için hücreyi düzenleyin (veya satıra çift tıklayın).;По вкладке на каждый контроллер. Значения обновляются вживую, измените ячейку или дважды щёлкните строку.;Ein Reiter je Steuerung. Werte laufen live, Zelle bearbeiten oder Zeile doppelklicken.;Una scheda per controllore. Valori in tempo reale, modificare una cella o doppio clic sulla riga.;Una pestaña por controlador. Valores en vivo, edite una celda o haga doble clic en la fila.
 Tab_NoStations;No controllers;Kontrolör yok;Нет контроллеров;Keine Steuerungen;Nessun controllore;Sin controladores

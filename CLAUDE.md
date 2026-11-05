@@ -130,6 +130,9 @@ analogue sensor SN115 (wire 705, U19 FX5-8AD channel 6, sheet 34.5). L35 makes t
 valve a 5/3 open centre (CylinderUnitHMI.OptionValveType / OptionValveConditions).
 - A machine condition judged off its page (a unit's help from the alarm list): MachineConditionMap.ReadAlways (read on
   every scan) and MetNow.
+- One copy of the HMI at a time (5 November, the user's choice): every machine's exe holds the mutex `Global\Kaban.HMI.OneCopy`
+  (Helpers\SingleInstance, right after AppBootstrap.AwaitPreviousInstance in each Program.Main); a second start brings the running
+  one to the front, says why and ends; a restart's new instance waits for it (the old one lets it go just before starting it).
 - "Unable to copy ... Kaban.Machines.H500.exe ... locked by: Kaban.Machine.FA2010": an instance of the program is still
   running - close it (Task Manager: Kaban.Machines.FA2010.exe) and build again. A Restart of an instance Visual Studio
   debugs starts the new one outside the debugger; it says so when it starts. The FA2010 project checks first now

@@ -74,10 +74,13 @@ class RO {
         var started = new List<ProcessStartInfo>();
         int liveAtStart = -1;
         string logAtStart = "";
+        bool released = false, releasedAtStart = false;
+        typeof(SingleInstance).GetField("Release", Any).SetValue(null, (Action)(() => released = true));
         var seam = typeof(MainForm).GetField("StartProcess", Any);
         Check("the start goes through one place (MainForm.StartProcess)", seam != null);
         seam.SetValue(null, (Action<ProcessStartInfo>)(psi => {
             started.Add(psi);
+            releasedAtStart = released;
             liveAtStart = scripted ? (int)CF("Live").GetValue(null) : 0;
             logAtStart = File.ReadAllText(AuditLogger.TodayFile);
         }));
@@ -104,6 +107,8 @@ class RO {
         int iClosed = log.LastIndexOf("all 4 station(s) closed"), iStarted = log.LastIndexOf("[RESTART] new instance started");
         Check("the log: stations closed, then the new instance started", iClosed >= 0 && iStarted > iClosed);
         Check("the old window is gone", form.IsDisposed);
+        // 5 November: one copy of the HMI at a time - the old one lets the new one have it
+        Check("the one-copy mutex let go before the new instance was started", releasedAtStart);
 
         if (scripted) Ctl.GetMethod("Reset").Invoke(null, null);
         try { Directory.Delete(dir, true); } catch { }
