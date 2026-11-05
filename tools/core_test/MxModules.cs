@@ -68,6 +68,23 @@ class MxModules {
         sw.Stop();
         Check("  the next scan: at once, the module not read meanwhile", ok && sw.ElapsedMilliseconds < 500 && (int)F("Gets").GetValue(null) == gets, sw.ElapsedMilliseconds + " ms");
 
+        Console.WriteLine("--- one device the random read refuses (\"a read of 553 device(s) did not come back in 1000 ms\") ---");
+        F("GetDelayMs").SetValue(null, 10);
+        F("RefuseInRandom").SetValue(null, "D9999");
+        var big = new List<string>();
+        for (int i = 0; i < 300; i++) big.Add("D" + (1000 + i));
+        big.Insert(137, "D9999");
+        int g0 = (int)F("Gets").GetValue(null);
+        sw.Restart();
+        ok = drv.TryReadMulti(big.ToArray(), out v);
+        sw.Stop();
+        int g1 = (int)F("Gets").GetValue(null);
+        Check("found and read alone - the other 300 in one call (was: all 301 one by one, 3 s)", ok && drv.IsConnected && g1 - g0 == 1 && sw.ElapsedMilliseconds < 1000,
+              (g1 - g0) + " one-by-one, " + sw.ElapsedMilliseconds + " ms");
+        log = File.ReadAllText(AuditLogger.TodayFile);
+        Check("  named in the log", log.Contains("refused in it: D9999 - read one by one from now on"));
+        ok = drv.TryReadMulti(big.ToArray(), out v);
+        Check("  the next scan: one random read and D9999 alone (remembered)", ok && (int)F("Gets").GetValue(null) - g1 == 1);
         F("GetDelayMs").SetValue(null, 0);
         drv.Dispose();
         Ctl.GetMethod("Reset").Invoke(null, null);

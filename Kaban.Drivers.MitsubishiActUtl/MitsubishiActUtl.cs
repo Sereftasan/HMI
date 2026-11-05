@@ -615,33 +615,79 @@ namespace Kaban.Drivers.MitsubishiActUtl // <-- Updated Namespace
             // round trip this PLC reports that is over two seconds per scan, which
             // starved the whole HMI. ReadDeviceRandom fetches the entire list in a
             // SINGLE call instead, so a scan costs one round trip rather than 170.
-            try
+            // THE DEVICES A RANDOM READ REFUSES (5 November, found on the panel: "a read of 553 device(s) did not come back in
+            // 1000 ms" on GX Simulator3, every minute or two). One device the random read refuses failed the whole list, and
+            // the fallback read all 553 one by one - past the second, the link taken down. The refused ones are found once
+            // (the list halved until they are), said in the log, kept for this connection's life, and read one by one; the
+            // rest stay ONE call.
+            var refused = new System.Collections.Generic.List<int>();
+            var asked = new System.Collections.Generic.List<int>();
+            for (int i = 0; i < addresses.Length; i++) (_randomRefused.Contains(addresses[i]) ? refused : asked).Add(i);
+            bool allOk = true;
+            if (asked.Count > 0)
             {
-                var joined = string.Join("\n", addresses);
-                var buffer = new int[addresses.Length];
-                int rc = _plc.ReadDeviceRandom(joined, addresses.Length, out buffer[0]);
+                int[] got;
+                int rc = RandomRead(asked.Select(i => addresses[i]).ToArray(), out got);
                 if (rc == 0)
+                    for (int k = 0; k < asked.Count; k++) values[asked[k]] = got[k];
+                else
                 {
-                    for (int i = 0; i < addresses.Length; i++) values[i] = buffer[i];
-                    _lastOpOk = true;
-                    return true;
+                    var found = new System.Collections.Generic.List<string>();
+                    FindRefused(asked.Select(i => addresses[i]).ToList(), found, 0);
+                    foreach (var a in found) _randomRefused.Add(a);
+                    Kaban.Core.Helpers.AuditLogger.Log($"[PLC DIAG] Mitsubishi station {_stationNumber}: a random read of {asked.Count} device(s) was refused " +
+                        $"(0x{rc:X8}); " + (found.Count == 0 ? "no single device found - read one by one this time." :
+                        $"refused in it: {string.Join(", ", found.Take(20))}{(found.Count > 20 ? " ..." : "")} - read one by one from now on, the rest in one call."));
+                    if (found.Count == 0)
+                    {
+                        foreach (int i in asked) { int v; allOk &= TryRead(addresses[i], out v); values[i] = v; }
+                        return allOk;
+                    }
+                    var rest = asked.Where(i => !_randomRefused.Contains(addresses[i])).ToList();
+                    refused.AddRange(asked.Where(i => _randomRefused.Contains(addresses[i])));
+                    if (rest.Count > 0)
+                    {
+                        if (RandomRead(rest.Select(i => addresses[i]).ToArray(), out got) == 0)
+                            for (int k = 0; k < rest.Count; k++) values[rest[k]] = got[k];
+                        else foreach (int i in rest) { int v; allOk &= TryRead(addresses[i], out v); values[i] = v; }
+                    }
                 }
             }
-            catch
-            {
-                // fall through to the per-address path below
-            }
-
-            // FALLBACK: some devices/addresses are not valid for a random read, so
-            // keep the old behaviour rather than losing the scan entirely.
-            bool allOk = true;
-            for (int i = 0; i < addresses.Length; i++)
-            {
-                int v;
-                allOk &= TryRead(addresses[i], out v);
-                values[i] = v;
-            }
+            // the refused ones: one by one (the PLC's answer for each - a device it does not have stays a failed read)
+            foreach (int i in refused) { int v; TryRead(addresses[i], out v); values[i] = v; }
+            _lastOpOk = allOk;
             return allOk;
+        }
+
+        /// <summary>The devices a random read refuses on this connection (found once, kept).</summary>
+        private readonly System.Collections.Generic.HashSet<string> _randomRefused =
+            new System.Collections.Generic.HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+        /// <summary>One random read: 0, or MX Component's code (-1 when it threw).</summary>
+        private int RandomRead(string[] list, out int[] values)
+        {
+            values = new int[list.Length];
+            if (list.Length == 0) return 0;
+            try
+            {
+                var buffer = new int[list.Length];
+                int rc = _plc.ReadDeviceRandom(string.Join("\n", list), list.Length, out buffer[0]);
+                if (rc == 0) values = buffer;
+                return rc;
+            }
+            catch { return -1; }
+        }
+
+        /// <summary>The list halved until the devices it refuses are found (a few calls, once).</summary>
+        private void FindRefused(System.Collections.Generic.List<string> list, System.Collections.Generic.List<string> found, int depth)
+        {
+            if (list.Count == 0 || depth > 12 || found.Count > 50) return;
+            int[] v;
+            if (RandomRead(list.ToArray(), out v) == 0) return;
+            if (list.Count == 1) { found.Add(list[0]); return; }
+            int half = list.Count / 2;
+            FindRefused(list.GetRange(0, half), found, depth + 1);
+            FindRefused(list.GetRange(half, list.Count - half), found, depth + 1);
         }
 
         /// <summary>How long a module's words may take (read one by one where the random read refuses them).</summary>
