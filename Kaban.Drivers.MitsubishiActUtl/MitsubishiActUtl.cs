@@ -173,7 +173,7 @@ namespace Kaban.Drivers.MitsubishiActUtl // <-- Updated Namespace
                     return new ReadOne { Ok = ok, Value = v };
                 }, CallWaitMs, out r, out started))
             {
-                if (started) Stalled();           // it ran and did not come back: the link; never ran: only busy
+                if (started) Stalled("a read of " + address);    // it ran and did not come back: the link; never ran: only busy
                 return false;
             }
             value = r.Value;
@@ -186,6 +186,29 @@ namespace Kaban.Drivers.MitsubishiActUtl // <-- Updated Namespace
             if (_worker.IsWorkerThread) return TryReadMultiDirect(addresses, out values);
             if (!_isConnected) return false;              // no link: answer at once
 
+            // A MODULE'S BUFFER MEMORY IN A CALL OF ITS OWN (5 November, found on the panel: PLC 1 on GX Simulator3 "lost"
+            // every minute or two on the Machine Parameters pages and with the machine details on - the axes' loads, U0\G2478 ...).
+            // A connection that does not take them in a random read reads them one by one, and that took the whole call past
+            // its second: the link was taken down for words the PLC's own devices did not need. Now the PLC's devices are one
+            // call, judged as before; the module's words another, given longer and never taking the link down.
+            if (addresses != null && addresses.Length > 1)
+            {
+                var plainIdx = new System.Collections.Generic.List<int>();
+                var moduleIdx = new System.Collections.Generic.List<int>();
+                for (int i = 0; i < addresses.Length; i++) (IsModule(addresses[i]) ? moduleIdx : plainIdx).Add(i);
+                if (moduleIdx.Count > 0 && plainIdx.Count > 0)
+                {
+                    int[] a, b;
+                    bool okA = TryReadMulti(plainIdx.Select(i => addresses[i]).ToArray(), out a);
+                    values = new int[addresses.Length];
+                    if (a != null) for (int k = 0; k < plainIdx.Count; k++) values[plainIdx[k]] = a[k];
+                    if (!okA) return false;
+                    if (ReadModuleWords(moduleIdx.Select(i => addresses[i]).ToArray(), out b))
+                        for (int k = 0; k < moduleIdx.Count; k++) values[moduleIdx[k]] = b[k];
+                    return true;
+                }
+            }
+
             ReadMany r;
             bool started;
             if (!_worker.TryRun(() =>
@@ -195,7 +218,7 @@ namespace Kaban.Drivers.MitsubishiActUtl // <-- Updated Namespace
                     return new ReadMany { Ok = ok, Values = v };
                 }, CallWaitMs, out r, out started))
             {
-                if (started) Stalled();           // it ran and did not come back: the link; never ran: only busy
+                if (started) Stalled("a read of " + addresses.Length + " device(s)");   // it ran and did not come back: the link; never ran: only busy
                 return false;
             }
             values = r.Values;
@@ -215,7 +238,7 @@ namespace Kaban.Drivers.MitsubishiActUtl // <-- Updated Namespace
             bool started;
             if (!_worker.TryRun(() => WriteDirect(address, value), CallWaitMs, out rc, out started))
             {
-                if (started) Stalled();
+                if (started) Stalled("a write of " + address);
                 return -1;
             }
             return rc;
@@ -229,8 +252,9 @@ namespace Kaban.Drivers.MitsubishiActUtl // <-- Updated Namespace
         /// worker once the stuck call has finished, so the fresh control is built
         /// - and the old one released - when nothing is using it.
         /// </summary>
-        private void Stalled()
+        private void Stalled(string what = "a call")
         {
+            Kaban.Core.Helpers.AuditLogger.Log($"[PLC DIAG] Mitsubishi station {_stationNumber}: {what} did not come back in {CallWaitMs} ms - the connection is opened again.");
             _isConnected = false;
             _needsFreshControl = true;
             _lastOpOk = false;
@@ -619,6 +643,50 @@ namespace Kaban.Drivers.MitsubishiActUtl // <-- Updated Namespace
             }
             return allOk;
         }
+
+        /// <summary>How long a module's words may take (read one by one where the random read refuses them).</summary>
+        private const int ModuleWaitMs = 5000;
+        /// <summary>Until when a module's words are not asked again (they did not come back in time).</summary>
+        private int _modulesRestUntil;
+
+        /// <summary>
+        /// A module's buffer words, in a call of their own: slow or refused, they are only missing (zeros, false) - the link
+        /// is judged by the PLC's own devices. One that did not come back in time rests 30 s, so the scans do not queue behind it.
+        /// </summary>
+        private bool ReadModuleWords(string[] addresses, out int[] values)
+        {
+            values = new int[addresses.Length];
+            if (_modulesRestUntil != 0 && Environment.TickCount - _modulesRestUntil < 0) return false;
+            _modulesRestUntil = 0;
+            ReadMany r;
+            bool started;
+            int t0 = Environment.TickCount;
+            if (!_worker.TryRun(() =>
+                {
+                    int[] v;
+                    bool ok = TryReadMultiDirect(addresses, out v);
+                    return new ReadMany { Ok = ok, Values = v };
+                }, ModuleWaitMs, out r, out started))
+            {
+                if (started)
+                {
+                    _modulesRestUntil = Environment.TickCount + 30000;
+                    Kaban.Core.Helpers.AuditLogger.Log($"[PLC DIAG] Mitsubishi station {_stationNumber}: {addresses.Length} word(s) of a module's " +
+                        $"buffer ({addresses[0]} ...) did not come back in {ModuleWaitMs / 1000} s - not asked again for 30 s; the connection kept.");
+                }
+                return false;
+            }
+            int took = Environment.TickCount - t0;
+            if (took > CallWaitMs && !_slowModulesSaid)
+            {
+                _slowModulesSaid = true;
+                Kaban.Core.Helpers.AuditLogger.Log($"[PLC DIAG] Mitsubishi station {_stationNumber}: {addresses.Length} word(s) of a module's buffer " +
+                    $"({addresses[0]} ...) took {took} ms - read in a call of their own, so the connection is not judged by them.");
+            }
+            if (r.Values != null) values = r.Values;
+            return r.Ok;
+        }
+        private bool _slowModulesSaid;
 
         private static bool IsModule(string address)
         {
