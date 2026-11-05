@@ -259,7 +259,7 @@ class ML {
         Console.WriteLine("--- its settings in the Options page's Industry 4 Logging frame ---");
         HmiFeatures.SettingsPath = Path.Combine(dir, "Features.cfg");
         HmiFeatures.Reload();
-        board.Change(c => { c.PlcLogging = true; c.PlcLogArea = ""; });
+        board.Change(c => c.PlcLogging = true);
         var frame = new Panel { Name = "frame" };
         var page = new MachineLogSettings("FA2010");
         frame.Controls.Add(page);
@@ -273,26 +273,25 @@ class ML {
         Pump(100);
         Check("  shown once it does", frame.Visible);
         var on = All(page).OfType<CheckBox>().First(b => b.Name == "plcLogging");
-        var area = All(page).OfType<TextBox>().First(b => b.Name == "logArea");
-        Check("the switch on, the area the machine's own (R27000); rows of the settings pages' size", on.Checked && area.Text == "R27000" &&
-              on.Width == 450 && on.Height == Kaban.UI.Controls.UiStyle.SettingRowHeight && page.Width == 450, area.Text);
+        Check("the switch on; rows of the settings pages' size", on.Checked && on.Width == 450 && on.Height == Kaban.UI.Controls.UiStyle.SettingRowHeight && page.Width == 450);
+        // 5 November: "'R27000' should not be a setting to change on the screen by the user ... it is set by the PLC programmer"
+        var old = DashboardConfig.FromText("{ \"plc_log_area\": \"D7000\" }");
+        Check("the PLC log area: no field for it - the machine program's (R27000), a settings file's of before not read",
+              !All(page).OfType<TextBox>().Any(b => b.Name == "logArea") && MachineLogger.Area(board) == "R27000" &&
+              board.LogArea == "R27000" && page.StateText.Contains("R27000") == (MachineLoggers.Of("FA2010") != null) &&
+              old.ToText().Contains("D7000"), page.StateText);
         SecurityManager.Login("setter", SecurityLevel.Maintenance);
-        Action<TextBox> enter = box => typeof(Control).GetMethod("OnKeyDown", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
-                                                      .Invoke(box, new object[] { new KeyEventArgs(Keys.Enter) });
-        area.Text = "D7000"; enter(area); Pump(50);
-        Check("another area, Enter: kept at once (D7000)", board.Config.PlcLogArea == "D7000" && MachineLogger.Area(board.Config, board) == "D7000" &&
-              page.ProblemText == "");
-        area.Text = "M100"; enter(area); Pump(50);
-        Check("  M100: refused, said under the rows, nothing written", page.ProblemText.Contains("word device") && board.Config.PlcLogArea == "D7000", page.ProblemText);
-        area.Text = "R27000";
-        typeof(Control).GetMethod("OnLeave", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).Invoke(area, new object[] { EventArgs.Empty });
+        var connection = All(page).OfType<TextBox>().First(b => b.Name == "kmConnection");
+        connection.Text = "Server=km;Port=5432;";
+        typeof(Control).GetMethod("OnKeyDown", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
+                       .Invoke(connection, new object[] { new KeyEventArgs(Keys.Enter) });
         Pump(50);
-        Check("  the machine's own again, the field left: kept as \"\" (follows the machine), the problem gone", board.Config.PlcLogArea == "" && page.ProblemText == "");
+        Check("the KMSystem connection, Enter: kept at once", board.Config.KmSystemConnection == "Server=km;Port=5432;");
         on.Checked = false; Pump(50);
         Check("  the switch off: kept at once - the machine not logged", !board.Config.PlcLogging);
-        board.Change(c => c.PlcLogging = true);
+        board.Change(c => { c.PlcLogging = true; c.KmSystemConnection = DashboardConfig.DefaultKmSystemConnection; });
         page.Fill();
-        Check("  filled again from the settings", on.Checked && board.Config.PlcLogging);
+        Check("  filled again from the settings", on.Checked && board.Config.PlcLogging && connection.Text == DashboardConfig.DefaultKmSystemConnection);
         form.Close();
         var none = new MachineLogSettings("H500");
         Check("a machine with no log database: says so", none.Machine == null && All(none).OfType<Label>().Any(l => l.Name == "noLogDatabase" && l.Text.Contains("no log database")));

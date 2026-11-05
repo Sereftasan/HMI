@@ -16,10 +16,10 @@ namespace Kaban.UI.Dashboard
     /// the alarms of Machine Parameters > Alarms and Logs (30 October).
     ///
     /// Settings rows as the page's (450 wide, UiStyle.SettingRowHeight high, a light line under each): whether the HMI takes
-    /// this machine's log from its PLC, its PLC log area (empty: the machine's own), what the logger does now, and the KMSystem
-    /// lookup of a record's Process ID with its connection. The page has no Save: each is kept as it is changed - a switch at
-    /// once, a field when it is left or Enter is pressed (a log area that is no word device is not kept, said under it).
-    /// Kept in the machine's dashboard settings (Logs and Reports keeps its database and reports).
+    /// this machine's log from its PLC, what the logger does now (its PLC log area in it: the machine program's, set by the PLC
+    /// programmer - 5 November: not a setting on the screen), and the KMSystem lookup of a record's Process ID with its
+    /// connection. The page has no Save: each is kept as it is changed - a switch at once, the connection when it is left or
+    /// Enter is pressed. Kept in the machine's dashboard settings (Logs and Reports keeps its database and reports).
     ///
     /// Its frame is shown only while HMI Settings > Options has the Industry 4 logging in the HMI on (ShownWhileLogging).
     /// </summary>
@@ -33,11 +33,9 @@ namespace Kaban.UI.Dashboard
         private readonly MachineDashboard _machine;
         private readonly ToolTip _tips = UiStyle.Tips();
         private readonly CheckBoxHMI _on = new CheckBoxHMI { Name = "plcLogging" };
-        private readonly TextBox _area = new TextBox { Name = "logArea", Width = 110 };
         private readonly CheckBoxHMI _km = new CheckBoxHMI { Name = "kmLookup" };
         private readonly TextBox _kmConnection = new TextBox { Name = "kmConnection", Width = 250 };
         private readonly Label _state = new Label { Name = "loggerState" };
-        private readonly Label _problem = new Label { Name = "logProblem" };
         private readonly Label _none = new Label { Name = "noLogDatabase" };
         private readonly Timer _clock = new Timer { Interval = 1000 };
         private bool _filling;
@@ -65,9 +63,6 @@ namespace Kaban.UI.Dashboard
                 Switch(_on, T("Plg_SwitchRow", "The HMI takes the log from the PLC"),
                        T("Plg_Switch", "The HMI takes the machine's states, events and alarms from its PLC into its log database"));
                 rows.Add(_on);
-                rows.Add(new SettingRow(T("Plg_Area", "PLC log area"), _area));
-                UiStyle.SetTip(_tips, _area, T("Plg_AreaTip",
-                    "The Industry 4 service's device group and reference device (R27000): its first word the records waiting, the next the HMI's answer, the records from its tenth word. Empty: the machine's own."));
                 _state.ForeColor = Color.FromArgb(30, 100, 190);
                 rows.Add(Words(_state));
                 Switch(_km, T("Plg_KmRow", "Process ID: its profile from KMSystem"),
@@ -75,17 +70,11 @@ namespace Kaban.UI.Dashboard
                        T("Plg_KmNote", "Needs Npgsql.dll beside the program, as the Industry 4 service had it."));
                 rows.Add(_km);
                 rows.Add(new SettingRow(T("Plg_KmConnection", "KMSystem connection"), _kmConnection));
-                _problem.ForeColor = Color.Firebrick;
-                _problem.Visible = false;
-                rows.Add(Words(_problem));
 
                 _on.CheckedChanged += (s, e) => Keep();
                 _km.CheckedChanged += (s, e) => Keep();
-                foreach (var box in new[] { _area, _kmConnection })
-                {
-                    box.Leave += (s, e) => Keep();
-                    box.KeyDown += (s, e) => { if (e.KeyCode == Keys.Enter) { e.SuppressKeyPress = true; Keep(); } };
-                }
+                _kmConnection.Leave += (s, e) => Keep();
+                _kmConnection.KeyDown += (s, e) => { if (e.KeyCode == Keys.Enter) { e.SuppressKeyPress = true; Keep(); } };
                 _clock.Tick += (s, e) => ShowState();
                 Fill();
             }
@@ -181,7 +170,6 @@ namespace Kaban.UI.Dashboard
             {
                 var c = _machine.Config;
                 _on.Checked = c.PlcLogging;
-                _area.Text = MachineLogger.Area(c, _machine);
                 _km.Checked = c.KmSystemLookup;
                 _kmConnection.Text = c.KmSystemConnection;
             }
@@ -199,53 +187,30 @@ namespace Kaban.UI.Dashboard
         /// <summary>What the logger does now (tests).</summary>
         public string StateText { get { return _state.Text; } }
 
-        /// <summary>Why the last change was not kept ("" when it was) - tests.</summary>
-        public string ProblemText { get { return _problem.Visible ? _problem.Text : ""; } }
-
-        /// <summary>A change kept at once: written, or why not said under the rows.</summary>
+        /// <summary>A change kept at once.</summary>
         private void Keep()
         {
             if (_filling || _machine == null) return;
-            string problem;
-            bool ok = Save(out problem);
-            _problem.Text = problem;
-            _problem.Visible = !ok;
-            PerformLayout();
+            Save();
             ShowState();
         }
 
-        /// <summary>
-        /// The fields into the machine's settings, written. False, and why, when the area is no word device - nothing is
-        /// written then.
-        /// </summary>
-        public bool Save(out string problem)
+        /// <summary>The fields into the machine's settings, written (when they changed).</summary>
+        public void Save()
         {
-            problem = "";
-            if (_machine == null) return true;
-            string area = (_area.Text ?? "").Trim().ToUpperInvariant();
-            string prefix;
-            long number;
-            if (area.Length > 0 && !(PlcAddressHelper.TrySplit(area, out prefix, out number) && !PlcAddressHelper.IsBitDevice(area)))
-            {
-                problem = T("Plg_BadArea", "The PLC log area is a word device (R27000, D7000):") + " \"" + area + "\".";
-                return false;
-            }
+            if (_machine == null) return;
             bool on = _on.Checked, km = _km.Checked;
             string connection = (_kmConnection.Text ?? "").Trim();
-            string kept = area == (_machine.LogArea ?? "").ToUpperInvariant() ? "" : area;   // the machine's own: follows the machine
             var c0 = _machine.Config;
-            if (c0.PlcLogging == on && c0.PlcLogArea == kept && c0.KmSystemLookup == km && c0.KmSystemConnection == connection) return true;
+            if (c0.PlcLogging == on && c0.KmSystemLookup == km && c0.KmSystemConnection == connection) return;
             _machine.Change(c =>
             {
                 c.PlcLogging = on;
-                c.PlcLogArea = kept;
                 c.KmSystemLookup = km;
                 c.KmSystemConnection = connection;
             });
-            AuditLogger.Log("Machine log (" + _machine.ModuleId + "): " + (on ? "taken" : "not taken") + " from its PLC, log area " +
-                            (kept.Length > 0 ? kept : MachineLogger.Area(_machine.Config, _machine) + " (the machine's own)") +
-                            ", KMSystem lookup " + (km ? "on" : "off") + ".");
-            return true;
+            AuditLogger.Log("Machine log (" + _machine.ModuleId + "): " + (on ? "taken" : "not taken") + " from its PLC (log area " +
+                            MachineLogger.Area(_machine) + "), KMSystem lookup " + (km ? "on" : "off") + ".");
         }
     }
 }

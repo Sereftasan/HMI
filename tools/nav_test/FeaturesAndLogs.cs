@@ -106,10 +106,10 @@ class FL {
         var machineLog = All(frame).OfType<MachineLogSettings>().Single();
         Check("  Industry 4 logging in the HMI off: the frame not shown", !frame.Visible && machineLog.Machine != null);
         HmiFeatures.Set(HmiFeatures.Industry4Logging, true); Pump(1500);
-        var areaBox = All(machineLog).OfType<TextBox>().First(b => b.Name == "logArea");
         var drv = PlcManager.Instance.GetDriver(1);
-        Check("  on: shown - FA2010's log area R27000, its logger's state", frame.Visible && areaBox.Text == "R27000" &&
-              machineLog.StateText.Contains("(R27000)"), areaBox.Text + " / " + machineLog.StateText);
+        // 5 November: "'R27000' should not be a setting to change on the screen by the user ... it is set by the PLC programmer"
+        Check("  on: shown - its logger's state, on FA2010's log area R27000 (its program's: no field for it)", frame.Visible &&
+              machineLog.StateText.Contains("(R27000)") && !All(machineLog).OfType<TextBox>().Any(b => b.Name == "logArea"), machineLog.StateText);
         Check("  the three always logged switched on by the HMI as it connects (L1000 - L1002), the others left as the PLC keeps them",
               drv.Read("L1000") == 1 && drv.Read("L1001") == 1 && drv.Read("L1002") == 1 && drv.Read("L1006") == 0,
               "L1000 " + drv.Read("L1000") + " L1002 " + drv.Read("L1002") + " L1006 " + drv.Read("L1006"));
@@ -118,13 +118,6 @@ class FL {
         Check("  'Profile changed' switched on: its bit L1006 written at once (no Save - as an option)", drv.Read("L1006") == 1 && profileChanged.Checked);
         typeof(Control).GetMethod("OnClick", Any).Invoke(profileChanged, new object[] { EventArgs.Empty }); Pump(100);
         Check("    and off", drv.Read("L1006") == 0);
-        areaBox.Text = "R28000";
-        typeof(Control).GetMethod("OnKeyDown", Any).Invoke(areaBox, new object[] { new KeyEventArgs(Keys.Enter) }); Pump(100);
-        var board = DashboardService.Find("FA2010");
-        Check("  another log area, Enter: kept at once (R28000) - the logger takes it", board.Config.PlcLogArea == "R28000" &&
-              MachineLogger.Area(board.Config, board) == "R28000");
-        Pump(1500);
-        Check("    its state says so", machineLog.StateText.Contains("(R28000)"), machineLog.StateText);
         var shotDir = Environment.GetEnvironmentVariable("TOUCH_SHOTS");
         if (!string.IsNullOrEmpty(shotDir))
         {
@@ -135,10 +128,6 @@ class FL {
                 Path.Combine(shotDir, "industry4_frame.png") + "')\"") { UseShellExecute = false });
             p.WaitForExit(10000);
         }
-        areaBox.Text = "M5";
-        typeof(Control).GetMethod("OnKeyDown", Any).Invoke(areaBox, new object[] { new KeyEventArgs(Keys.Enter) }); Pump(50);
-        Check("  a bit device: not kept, said under the rows", board.Config.PlcLogArea == "R28000" && machineLog.ProblemText.Contains("word device"), machineLog.ProblemText);
-        board.Change(c => c.PlcLogArea = "");
         HmiFeatures.Set(HmiFeatures.Industry4Logging, false); Pump(200);
         Check("  logging off again: hidden", !frame.Visible);
         ahost.Close(); ahost.Dispose();
@@ -147,7 +136,7 @@ class FL {
         logs.Dock = DockStyle.Fill; lhost.Controls.Add(logs); lhost.Show(); Pump(300);
         Check("Logs and Reports: the log area no more - where it is now, said", logs.MachineSettings == null ||
               (!All(logs.MachineSettings).OfType<TextBox>().Any(b => b.Text == "R27000") &&
-               All(logs.MachineSettings).OfType<Label>().Any(l => l.Text == "Its PLC log area: Machine Parameters > Options (Industry 4 Logging).")));
+               All(logs.MachineSettings).OfType<Label>().Any(l => l.Text == "Its PLC log area: R27000 (set in the machine's program).")));
         lhost.Close(); lhost.Dispose();
 
         Console.WriteLine("--- Alarms > History: the machine's alarms from its log database ---");

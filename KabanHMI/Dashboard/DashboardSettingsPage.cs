@@ -95,10 +95,10 @@ namespace Kaban.UI.Dashboard
             Note("Dsh_SetTimeZoneNote", "The database keeps UTC. The dashboard shows the times of this zone.");
 
             // The machine's log taken from its PLC by the HMI (29 October): its settings are the machine's -
-            // Machine Parameters > Options, its Industry 4 Logging frame (5 November; Alarms and Logs from 30 October), while
-            // HMI Settings > Options has it on.
+            // Machine Parameters > Options, its Industry 4 Logging frame (5 November), while HMI Settings > Options has it on; its PLC
+            // log area is the machine program's (5 November: set by the PLC programmer, not on the screen).
             Note("Plg_WhoNote", "Written by the Industry 4 service or the HMI (HMI Settings > Options).");
-            Note("Plg_AreaNote", "Its PLC log area: Machine Parameters > Options (Industry 4 Logging).");
+            Add(NewNote(string.Format(T("Plg_AreaNote", "Its PLC log area: {0} (set in the machine's program)."), MachineLogger.Area(_machine))));
 
             Heading("Dsh_SetLogicHead", "\U0001F9E0", "Data logic");
             CheckRow(_barcoded, "Dsh_SetBarcoded", "Use only barcoded cutting logs");

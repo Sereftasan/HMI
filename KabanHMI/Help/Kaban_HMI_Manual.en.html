@@ -941,8 +941,8 @@ Values are always <b>stored</b> in the machine's units and only <b>shown</b> in 
   and how the screen shows things for everyone or as a user's own: the <b>screen scale</b>, the <b>language</b>, captions, numbers, dates, the <b>units of measure</b> (see 8),
   tables, tooltips, the page after sign-in, an alarm's sound, the AI prompt.</td></tr>
 <tr><td>Logs and Reports</td><td><span class="lvl l2">Maintenance</span></td><td>The settings of the logs: the HMI's log, and each machine's log database and its reports
-  (see <a href="#diag">11</a>). The logs themselves are read on the Dashboard page. Who writes a machine's log is said there; its PLC log area is on
-  Machine Parameters &rsaquo; Options, its Industry 4 Logging frame (<a href="#params">10</a>).
+  (see <a href="#diag">11</a>). The logs themselves are read on the Dashboard page. Who writes a machine's log is said there, and its PLC log area
+  (set in the machine's program); the rest of its logging is on Machine Parameters &rsaquo; Options, its Industry 4 Logging frame (<a href="#params">10</a>).
   Switching the HMI's log off and how many days it is kept: <span class="lvl l3">Admin</span>.</td></tr>
 <tr><td>PLC Connections</td><td><span class="lvl l2">Maintenance</span></td><td>The controllers' table: each one's name with its <b>Active</b> tick (<a href="#conn">7</a>), its driver, station
   and address (changed by an <span class="lvl l3">Admin</span>), and its state &ndash; once connected, with the CPU's model and the program version: <i>Connected - FX5UCCPU (Version: 1.41)</i>
@@ -1099,8 +1099,8 @@ the log. Both are <b>off</b> until switched on. What each one does is here, not 
 <table>
 <tr><th>Option</th><th>On</th><th>Off</th></tr>
 <tr><td>Industry 4 logging in the HMI</td><td>The HMI takes each machine's states, events and alarms from its PLC into the machine's log database &ndash; the
-  Industry 4 service's job &ndash; and keeps its own log (sign-ins, writes, settings) in the same database (<a href="#i4log">11a</a>). Each machine's PLC log area
-  is in its Machine Parameters &rsaquo; Options (Industry 4 Logging). <i>Now</i> gives each machine's logger's state.</td><td>The Industry 4 service logs (where it is
+  Industry 4 service's job &ndash; and keeps its own log (sign-ins, writes, settings) in the same database (<a href="#i4log">11a</a>). Each machine's logging is set
+  in its Machine Parameters &rsaquo; Options (Industry 4 Logging); its PLC log area is set in its program. <i>Now</i> gives each machine's logger's state.</td><td>The Industry 4 service logs (where it is
   installed); the HMI's log is in its files, as before.</td></tr>
 <tr><td>Touch screen</td><td>This PC's screen has a touch function (<a href="#touch">1a</a>): the &#128433; / &#128070; button is on the caption bar, to switch
   between a mouse and a finger, and Users and Preferences has <i>Screen used with</i>. <i>Now</i> says whether it is used by touch or with a mouse.</td><td>No touch
@@ -1198,10 +1198,10 @@ stop the service &ndash; or uninstall it &ndash; once the HMI logs.</div>
           On, the PLC logs it: the switch is the record's PLC bit (<code>L1000</code> &hellip;), kept by the PLC, written at once like an option's.
           The first three are the machine's states and are <b>always logged</b> &ndash; shown, not switched: the HMI switches them on when it connects to
           the PLC. On pause, an error and emergency stop complete the state charts; cutting done is the production's log; the others are details.</li>
-      <li>Under them, the machine's log settings, each kept as it is changed (a field when it is left or Enter is pressed): whether the HMI takes this
-          machine's log from its PLC, its <b>PLC log area</b> &ndash; the word device the PLC keeps its records at (<code>R27000</code>; each machine its own:
-          the field shows the one in force, emptied it goes back to the machine's own; no word device, it is not kept, said under the rows),
-          <i>Now</i> (what the machine's logger does: taking the records, waiting for the PLC, waiting while the Industry 4 service runs &hellip;),
+      <li>Under them, the machine's log settings, each kept as it is changed (the connection when it is left or Enter is pressed): whether the HMI
+          takes this machine's log from its PLC, <i>Now</i> (what the machine's logger does: taking the records from PLC station 1 (<code>R27000</code>),
+          waiting for the PLC, waiting while the Industry 4 service runs &hellip; &ndash; the <b>PLC log area</b> it names is set in the machine's program by
+          the PLC programmer, not on the screen),
           and the <b>KMSystem</b> lookup of a record's Process ID with its connection. A machine with no log database says so. See <a href="#i4log">11a</a>.</li>
      </ul></li>
  <li><b>Alarms:</b> the severity of each alarm and its <b>helper links</b> &ndash; <b>several</b> documents, drawings, pages or web addresses
@@ -1239,7 +1239,7 @@ stop the service &ndash; or uninstall it &ndash; once the HMI logs.</div>
        and how many days are kept. &#128194; opens the log folder.</li>
    <li>&#128452;&#65039; <b>Log database and reports</b>: choose a machine; below it, on the page, its log database and reports &ndash; the dashboard's
        settings (<a href="#dashboard">The dashboard</a>). The page says who writes the log &ndash; the Industry 4 service or the HMI (<a href="#features">9b</a>) &ndash;
-       and that the machine's PLC log area is in its Machine Parameters &rsaquo; Options (Industry 4 Logging). What the database holds is looked at as the page opens &ndash; <i>12,345 logs,
+       and the machine's PLC log area (<i>R27000 (set in the machine's program)</i>). What the database holds is looked at as the page opens &ndash; <i>12,345 logs,
        2026-09-01 08:00 - 2026-10-01 09:12</i> &ndash; or, in red, why it cannot be read: not found, not a machine log (no <code>main_log</code> table &ndash;
        another program's database), no logs yet, dates it cannot read, a file that is no database. &#128269; looks again.</li>
    <li>A program whose machines keep no log database has no Dashboard page: the HMI's log is read here, in the table below.</li>
@@ -1361,7 +1361,7 @@ the HMI does it, record for record as the service did, on its own connection to 
      Machine Parameters &rsaquo; Options (Industry 4 Logging) and on HMI Settings &rsaquo; Options: <i>Taking the records from PLC station 1 (R27000): 120 written
      since the start</i>, <i>Waiting for the PLC: not connected</i>, <i>Switched off</i> &hellip;</li>
  <li><b>The log area</b>: a word device of the PLC (<code>R27000</code>) &ndash; its first word the records waiting, the next the HMI's answer, the records from its
-     tenth word, ten words each. Each machine has its own, set in its Options page's Industry 4 Logging frame (empty: the one the machine's program gives).</li>
+     tenth word, ten words each. Each machine has its own, set in the machine's program by the PLC programmer (FA2010: <code>R27000</code>) &ndash; not a setting on the screen.</li>
  <li>Each record is a row of the database, with the PLC's date, and its values as details &ndash; divided as the state map says, 32-bit values from two words,
      each named bit that was on a detail of its own. The answer to the PLC is written with it: if it is refused, nothing is kept and the PLC sends it again.
      The answers are not in the PLC write log (a handshake for every record, not a user's write); the audit log says when a logger starts.</li>
@@ -1462,7 +1462,7 @@ and their flags (<code>Flags</code>): <code>C:\ProgramData\KabanHMI\Translations
 <tr><td>The PLC labels and the structured data types</td><td><code>PlcLabels.csv</code> and <code>StructuredTypes.csv</code> beside each machine's program (sub-machines in their own folder)</td></tr>
 <tr><td>The AI chats of the help lists</td><td><code>C:\ProgramData\KabanHMI\AiChats.cfg</code></td></tr>
 <tr><td>The optional parts switched on (HMI Settings &rsaquo; Options)</td><td><code>C:\ProgramData\KabanHMI\Features.cfg</code></td></tr>
-<tr><td>A machine's log taken from its PLC: on or off, its log area, the KMSystem lookup</td><td>The machine's dashboard settings, <code>C:\ProgramData\KabanHMI\Dashboard\&lt;machine&gt;.json</code></td></tr>
+<tr><td>A machine's log taken from its PLC: on or off, the KMSystem lookup</td><td>The machine's dashboard settings, <code>C:\ProgramData\KabanHMI\Dashboard\&lt;machine&gt;.json</code></td></tr>
 <tr><td>The files Config Import replaced</td><td><code>Backup_&lt;date&gt;</code> in the program's folder</td></tr>
 <tr><td>The PLC's messages to the operator (texts, buttons, values, in every language)</td><td><code>Popups.json</code> beside the machine's program</td></tr>
 <tr><td>The alarms the HMI raises itself, per machine: the cylinder alarms on or off and their delay, the axis alarms on or off</td><td><code>C:\ProgramData\KabanHMI\AlarmGeneration.cfg</code></td></tr>

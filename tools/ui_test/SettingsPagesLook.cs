@@ -109,10 +109,10 @@ class SPL {
         Check("  the first three always logged - shown, not switched (the HMI switches them on)",
               recs.Take(3).All(c => c.DisplayOnly) && recs.Skip(3).All(c => !c.DisplayOnly && c.RequiredSecurity == SecurityLevel.Maintenance && c.LogAction));
         var log = frame.Controls.OfType<Kaban.UI.Dashboard.MachineLogSettings>().SingleOrDefault();
-        Check("  the machine's log settings under them: its switch, the PLC log area, the logger's state, the KMSystem lookup and connection; the frame round them",
-              log != null && log.Top >= recs.Last().Bottom && log.Machine != null && log.Controls.Find("logArea", true).Length == 1 &&
+        Check("  the machine's log settings under them: its switch, the logger's state, the KMSystem lookup and connection (no PLC log area: the program's); the frame round them",
+              log != null && log.Top >= recs.Last().Bottom && log.Machine != null && log.Controls.Find("logArea", true).Length == 0 &&
               log.Controls.Find("kmConnection", true).Length == 1 && log.Controls.OfType<CheckBoxHMI>().All(c => c.Width == 450 && c.DrawnAsRow) &&
-              frame.Height == log.Bottom + frame.Padding.Bottom && ((TextBox)log.Controls.Find("logArea", true)[0]).Text == "R27000",
+              frame.Height == log.Bottom + frame.Padding.Bottom,
               log == null ? "none" : log.Bounds + " in " + frame.Size);
         Shot(form, "settings_Options_logging");
         HmiFeatures.Set(HmiFeatures.Industry4Logging, false); Pump(200);

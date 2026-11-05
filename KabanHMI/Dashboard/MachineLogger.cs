@@ -159,7 +159,7 @@ namespace Kaban.UI.Dashboard
                 {
                     var cfg = Machine.Config;
                     var map = Machine.Map;
-                    string area = Area(cfg, Machine);
+                    string area = Area(Machine);
                     if (!cfg.PlcLogging)
                     {
                         Say(T("Plg_Off", "Switched off: the machine's log is not taken from its PLC."));
@@ -246,11 +246,14 @@ namespace Kaban.UI.Dashboard
             CloseDb();
         }
 
-        /// <summary>The log area of the settings, else the machine's own, else R27000.</summary>
-        public static string Area(DashboardConfig cfg, MachineDashboard machine)
+        /// <summary>
+        /// The machine's log area, as its program gives it (DashboardDefinition.LogArea: R27000), else R27000 - set by the PLC programmer,
+        /// not on the screen (5 November: "'R27000' should not be a setting to change on the screen by the user"); a settings file's
+        /// "plc_log_area" of before is not read.
+        /// </summary>
+        public static string Area(MachineDashboard machine)
         {
-            string a = cfg != null ? cfg.PlcLogArea : "";
-            if (string.IsNullOrWhiteSpace(a) && machine != null) a = machine.LogArea;
+            string a = machine != null ? machine.LogArea : "";
             return string.IsNullOrWhiteSpace(a) ? DefaultArea : a.Trim().ToUpperInvariant();
         }
 

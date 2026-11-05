@@ -167,17 +167,6 @@ namespace Kaban.UI.Dashboard
             set { Set("plc_logging", value); }
         }
 
-        /// <summary>
-        /// The PLC's log area, as the Industry 4 service's DeviceGroup + RefDevice ("R27000"):
-        /// its first word the records waiting, the next the PLC busy - and the HMI's answer,
-        /// the records taken - from the tenth on the records, ten words each. "" = the machine's own.
-        /// </summary>
-        public string PlcLogArea
-        {
-            get { return Json.Text(_raw, "plc_log_area", ""); }
-            set { _raw["plc_log_area"] = (value ?? "").Trim().ToUpperInvariant(); }
-        }
-
         /// <summary>A record's "Process ID" looked up in KMSystem's PostgreSQL database: its Profile Code and Profile Data (the service's Postgresql setting).</summary>
         public bool KmSystemLookup
         {
