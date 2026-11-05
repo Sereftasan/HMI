@@ -48,6 +48,8 @@ namespace Kaban.UI.Dashboard
     ///                              a cylinder's, from its first 20 runs. One record in 10 minutes at most.
     ///   Motor loads                at the end of each shift: each motor's runs, its average and highest peak, its normal.
     /// Without CurrentAddress (FA2010's PLC does not read the inverters' current yet) only its faults are recorded.
+    ///
+    /// Why the machine stood still - asked of the operator after a stop of 5 minutes: StopReasons ("Machine stop").
     /// </summary>
     public static class MachineRecords
     {
@@ -61,6 +63,7 @@ namespace Kaban.UI.Dashboard
         public const int CylinderSlow = 1101, CylinderNotConfirmed = 1102, CylinderTimes = 1103;
         public const int AxisAlarm = 1111, AxisOverload = 1112;
         public const int InverterFault = 1121, HighMotorLoad = 1122, MotorLoads = 1123;
+        public const int MachineStop = 1131;
 
         public static bool IsRecord(int code) { return code >= First && code <= Last; }
 
@@ -84,6 +87,7 @@ namespace Kaban.UI.Dashboard
             new Kind { Code = InverterFault, Key = "inverter_fault", TextKey = "Rec_InverterFault", Text = "Inverter fault", Group = "Inverters" },
             new Kind { Code = HighMotorLoad, Key = "motor_high_load", TextKey = "Rec_HighMotorLoad", Text = "High motor load", Group = "Inverters" },
             new Kind { Code = MotorLoads, Key = "motor_loads", TextKey = "Rec_MotorLoads", Text = "Motor loads", Group = "Inverters" },
+            new Kind { Code = MachineStop, Key = "machine_stop", TextKey = "Rec_MachineStop", Text = "Machine stop", Group = "Stops" },
         };
 
         public static Kind KindOf(int code) { return Kinds.FirstOrDefault(k => k.Code == code); }
@@ -127,7 +131,13 @@ namespace Kaban.UI.Dashboard
             new KeyValuePair<string, string>(DRuns, "RecD_Runs"),
             new KeyValuePair<string, string>(DAveragePeak, "RecD_AveragePeak"),
             new KeyValuePair<string, string>(DHighestPeak, "RecD_HighestPeak"),
+            new KeyValuePair<string, string>(DDurationMin, "RecD_DurationMin"),
+            new KeyValuePair<string, string>(DState, "RecD_State"),
+            new KeyValuePair<string, string>(DReason, "RecD_Reason"),
+            new KeyValuePair<string, string>(DKind, "RecD_Kind"),
+            new KeyValuePair<string, string>(DUser, "RecD_User"),
         };
+        public const string DDurationMin = "Duration (min)", DState = "State", DReason = "Reason", DKind = "Kind of stop", DUser = "User";
         public const string DMotor = "Motor", DFault = "Fault", DCurrent = "Current (A)", DValue = "Value", DRunningFor = "Running for (s)",
                             DPeakCurrent = "Peak current (A)", DAverageCurrent = "Average current (A)", DDuration = "Duration (s)",
                             DNormalPeak = "Normal peak (A)", DHigher = "Higher (%)", DHighSince = "High since the last record", DRuns = "Runs",
@@ -195,8 +205,16 @@ namespace Kaban.UI.Dashboard
 
         private static readonly Observer _observer = new Observer();
 
-        /// <summary>Listens to the watches (once; the option decides what is taken).</summary>
-        public static void Install() { AlarmGeneration.Records = _observer; }
+        private static bool _installed;
+
+        /// <summary>Listens to the watches and to the machines' states (once; the option decides what is taken).</summary>
+        public static void Install()
+        {
+            AlarmGeneration.Records = _observer;
+            if (_installed) return;
+            _installed = true;
+            MachineLogger.StateLogged += StopReasons.StateLogged;
+        }
 
         /// <summary>The shifts' times written so far, what waits written - the window closing.</summary>
         public static void Stop()
@@ -744,8 +762,14 @@ namespace Kaban.UI.Dashboard
         /// <summary>The records written since the start.</summary>
         public static int Written { get; private set; }
 
-        /// <summary>A record of the machine taken: written into its database by the writer's thread.</summary>
+        /// <summary>A record of the machine taken: written into its database by the writer's thread (its time: the panel's clock).</summary>
         public static void Add(string moduleId, int code, DateTime time, IList<LogDatabase.Detail> details)
+        {
+            AddDated(moduleId, code, ToUtc(time), details);
+        }
+
+        /// <summary>The same dated as the database dates the machine's records (UTC; a stop: the PLC's date of its start).</summary>
+        public static void AddDated(string moduleId, int code, DateTime dbDate, IList<LogDatabase.Detail> details)
         {
             var c = ConfigOf(moduleId);
             string path = c == null ? "" : (c.DatabasePath ?? "").Trim();
@@ -753,7 +777,7 @@ namespace Kaban.UI.Dashboard
             lock (_queue)
             {
                 if (_queue.Count >= 20000) _queue.RemoveAt(0);          // a database gone for days: the oldest go
-                _queue.Add(new Pending { Path = path, Code = code, Date = LogDatabase.ToDb(ToUtc(time)), Details = details.ToList() });
+                _queue.Add(new Pending { Path = path, Code = code, Date = LogDatabase.ToDb(dbDate), Details = details.ToList() });
             }
             StartWriter();
             var h = Recorded;

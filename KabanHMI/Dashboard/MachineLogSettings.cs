@@ -122,6 +122,11 @@ namespace Kaban.UI.Dashboard
                     T("Rec_LoadPercentTip", "How much higher than its normal peak current a run's peak must be to be recorded.")));
                 _recordRows.Add(KindRow(MachineRecords.MotorLoads,
                     T("Rec_MotorLoadsTip", "At the end of each shift: each motor's runs, its average and highest peak current, its normal.")));
+                // why it stood still
+                _recordRows.Add(KindRow(MachineRecords.MachineStop,
+                    T("Rec_MachineStopTip", "A stop longer than the limit: the operator is asked why (a window over the pages) - written with how long it lasted.")));
+                _recordRows.Add(LimitRow("stop_minutes", T("Rec_StopMinutes", "Ask why after a stop of (min)"), StopReasons.DefaultMinutes, 1, 120,
+                    T("Rec_StopMinutesTip", "How long the machine must stand still (out of 'Operation is active') before the operator is asked why.")));
                 rows.AddRange(_recordRows);
                 _onFeatures = (s, e) =>
                 {

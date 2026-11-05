@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Diagnostics;
@@ -120,6 +120,9 @@ namespace Kaban.UI.Dashboard
 
         public event EventHandler StatusChanged;
 
+        /// <summary>A state record (0 - 5) written: the machine, its code, its date as the PLC sent it - on the logger's thread (StopReasons).</summary>
+        public static event Action<string, int, DateTime> StateLogged;
+
         private static string T(string key, string text) { return LanguageManager.GetString(key, text); }
 
         public void Start()
@@ -221,6 +224,10 @@ namespace Kaban.UI.Dashboard
                                     Records += r.Written;
                                     LastRecord = r.Date;
                                     wait = 20;              // more may be waiting
+                                    // the machine's state, for why it stood still (StopReasons)
+                                    var h = StateLogged;
+                                    if (h != null && r.Date.HasValue && StateMap.IsState(r.Code))
+                                        try { h(Machine.ModuleId, r.Code, r.Date.Value); } catch (Exception ex) { AuditLogger.Log("Machine log: " + ex.Message); }
                                 }
                                 if (!string.IsNullOrEmpty(r.Problem) && r.Problem != lastProblem)
                                     AuditLogger.Log("Machine log (" + Machine.ModuleId + "): " + r.Problem);
@@ -338,6 +345,8 @@ namespace Kaban.UI.Dashboard
             public int Skipped;
             /// <summary>The date of the record written.</summary>
             public DateTime? Date;
+            /// <summary>Its code.</summary>
+            public int Code = -1;
             /// <summary>What went wrong, in words ("" when nothing did).</summary>
             public string Problem = "";
         }
@@ -431,6 +440,7 @@ namespace Kaban.UI.Dashboard
             }
             r.Written = 1;
             r.Date = date;
+            r.Code = firstCode;
             return r;
         }
 

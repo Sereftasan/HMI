@@ -651,6 +651,8 @@ namespace Kaban.UI.Forms
                 using (var login = new LoginForm()) login.ShowDialog(owner);
             };
             Kaban.UI.Helpers.PlcPopupHost.Attach(this);
+            // why a machine stood still - asked of the operator for a new machine (StopReasons, 5 November)
+            Kaban.UI.Helpers.StopReasonHost.Attach(this);
             FormClosed += (s5, e5) => AlarmManager.AlarmsChanged -= OnHmiAlarmsChanged;
 
             try

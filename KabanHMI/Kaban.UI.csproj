@@ -129,6 +129,7 @@
     </Compile>
     <Compile Include="Helpers\HmiAiPrompt.cs" />
     <Compile Include="Helpers\PlcPopupHost.cs" />
+    <Compile Include="Helpers\StopReasonHost.cs" />
     <Compile Include="Helpers\ShownPick.cs" />
     <Compile Include="Helpers\UnitCoupling.cs" />
     <Compile Include="Helpers\UnitCycling.cs" />
@@ -197,6 +198,9 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\PlcPopupForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\StopReasonForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\LoginForm.cs">
@@ -327,6 +331,7 @@
     <Compile Include="Dashboard\MachineLogFeed.cs" />
     <Compile Include="Dashboard\MachineLogger.cs" />
     <Compile Include="Dashboard\MachineRecords.cs" />
+    <Compile Include="Dashboard\StopReasons.cs" />
     <Compile Include="Dashboard\MachineLogSettings.cs">
       <SubType>Component</SubType>
     </Compile>

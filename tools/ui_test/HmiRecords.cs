@@ -286,6 +286,86 @@ class HR {
         var bare = new Kaban.UI.Controls.InverterUnitHMI { PlcNumber = 1, TitleTextKey = "Conveyor Motor", FaultCodeAddress = "D671" }.BuildInverterWatch();
         Check("an inverter without a current word (FA2010's now): only its fault word read", bare.Current == "" && bare.LoadWhile == "");
 
+        Console.WriteLine("--- why the machine stood still ---");
+        SecurityManager.Login("setter", SecurityLevel.Maintenance);
+        var main = new Form { ClientSize = new Size(1200, 800), StartPosition = FormStartPosition.Manual, Location = new Point(0, 0), Text = "main" };
+        main.Show(); Pump(100);
+        Kaban.UI.Helpers.StopReasonHost.Attach(main);
+        DateTime clock = new DateTime(2026, 11, 5, 10, 30, 0);
+        StopReasons.Clock = () => clock;
+        var t0 = new DateTime(2026, 11, 5, 7, 0, 0);          // the PLC's dates (as the dashboard reads them: UTC here)
+        StopReasons.StateLogged("FA2010", 2, t0);
+        StopReasons.StateLogged("FA2010", 1, t0.AddMinutes(30));
+        var stop = StopReasons.Of("FA2010");
+        Check("out of 'Operation is active': a stop, from the PLC's date of its record", stop != null && stop.State == 1 && stop.Start == t0.AddMinutes(30) && !stop.Asked);
+        clock = clock.AddMinutes(4.9); StopReasons.Check(); Pump(100);
+        Check("  not asked before its limit (5 min)", Kaban.UI.Helpers.StopReasonHost.OpenFor("FA2010") == null && !stop.Asked);
+        clock = clock.AddMinutes(0.2); StopReasons.Check(); Pump(200);
+        var ask = Kaban.UI.Helpers.StopReasonHost.OpenFor("FA2010");
+        Check("5 minutes: asked - a window over the main window, not modal: since when, how long so far, the machine and its state",
+              ask != null && ask.Visible && !ask.Modal && ask.Owner == main && ask.Text == "Why did the machine stop?" &&
+              ask.MessageText == "It has stood still since 07:30 - 5 min so far." && ask.MachineText.EndsWith("Operation is not active"),
+              ask == null ? "none" : ask.MessageText + " / " + ask.MachineText);
+        var reasons = All(ask).OfType<Button>().Where(b => b.Tag is StopReasons.Reason).ToList();
+        Check("  the reasons as large buttons, three a row, and Later", reasons.Count == 9 && reasons.All(b => b.Height >= 40) &&
+              reasons[0].Text == "Break / meal" && reasons[5].Text == "Machine fault" && reasons[0].Top == reasons[2].Top && reasons[3].Top > reasons[0].Top &&
+              All(ask).OfType<Button>().Any(b => b.Name == "btnLater"), string.Join(", ", reasons.Select(b => b.Text + "@" + b.Height)));
+        Shot(ask, "stop_reason");
+        reasons[5].PerformClick(); Pump(100);
+        Check("'Machine fault' during the stop: the window closed, the reason kept until the stop ends - nothing written yet",
+              Kaban.UI.Helpers.StopReasonHost.OpenFor("FA2010") == null && stop.Given != null && stop.Given.Number == 6 && !taken.Contains("FA2010:1131"));
+        StopReasons.StateLogged("FA2010", 2, t0.AddMinutes(42));
+        Check("  active again: written", taken.Count(x => x == "FA2010:1131") == 1 && StopReasons.Of("FA2010") == null);
+        MachineRecords.Flush();
+        var st = Records(1131);
+        var sd = Details(Convert.ToInt64(st[0][0]));
+        Check("  dated at its start (the PLC's): how long, the state, the reason, its kind, who answered",
+              Convert.ToString(st[0][1]) == "2026-11-05 07:30:00" &&
+              sd == "Duration (min):12 | State:Operation is not active | Reason:Machine fault | Kind of stop:Unplanned stop | User:setter", Convert.ToString(st[0][1]) + " " + sd);
+        StopReasons.StateLogged("FA2010", 3, t0.AddMinutes(60));
+        clock = clock.AddMinutes(3); StopReasons.Check(); Pump(50);
+        StopReasons.StateLogged("FA2010", 2, t0.AddMinutes(63));
+        Check("a stop of 3 minutes: not asked, not written", Kaban.UI.Helpers.StopReasonHost.OpenFor("FA2010") == null && taken.Count(x => x == "FA2010:1131") == 1);
+        StopReasons.StateLogged("FA2010", 4, t0.AddMinutes(120));
+        clock = clock.AddMinutes(6); StopReasons.Check(); Pump(100);
+        ask = Kaban.UI.Helpers.StopReasonHost.OpenFor("FA2010");
+        All(ask).OfType<Button>().First(b => b.Name == "btnLater").PerformClick(); Pump(100);
+        Check("'Later' during a stop: hidden", Kaban.UI.Helpers.StopReasonHost.OpenFor("FA2010") == null && StopReasons.Of("FA2010") != null);
+        StopReasons.StateLogged("FA2010", 2, t0.AddMinutes(140)); Pump(100);
+        ask = Kaban.UI.Helpers.StopReasonHost.OpenFor("FA2010");
+        Check("  asked again at its end: from - to", ask != null && ask.MessageText == "It stood still 09:00 - 09:20 (20 min)." && ask.MachineText.EndsWith("There is an error") ||
+              ask != null && ask.MessageText == "It stood still 09:00 - 09:20 (20 min).", ask == null ? "none" : ask.MessageText + " / " + ask.MachineText);
+        All(ask).OfType<Button>().First(b => b.Name == "btnLater").PerformClick(); Pump(100);
+        MachineRecords.Flush();
+        Check("  'Later' then: written without a reason", taken.Count(x => x == "FA2010:1131") == 2 &&
+              Details(Convert.ToInt64(Records(1131)[1][0])).StartsWith("Duration (min):20 | State:") &&
+              Details(Convert.ToInt64(Records(1131)[1][0])).EndsWith("| Reason:Not given"), Details(Convert.ToInt64(Records(1131)[1][0])));
+        StopReasons.StateLogged("FA2010", 1, t0.AddMinutes(180));
+        StopReasons.StateLogged("FA2010", 2, t0.AddMinutes(190)); Pump(100);
+        Check("a stop over, its window waiting for an answer -", Kaban.UI.Helpers.StopReasonHost.OpenFor("FA2010") != null);
+        StopReasons.StateLogged("FA2010", 3, t0.AddMinutes(200)); Pump(100);
+        Check("  a new stop: the last one written without its reason, its window closed", taken.Count(x => x == "FA2010:1131") == 3 &&
+              Kaban.UI.Helpers.StopReasonHost.OpenFor("FA2010") == null && StopReasons.Of("FA2010") != null && StopReasons.Of("FA2010").State == 3);
+        StopReasons.StateLogged("FA2010", 2, t0.AddMinutes(201));
+        board.Change(c => c.SetRecordOn("machine_stop", false));
+        StopReasons.StateLogged("FA2010", 1, t0.AddMinutes(300));
+        clock = clock.AddMinutes(30); StopReasons.Check(); Pump(50);
+        Check("its record switched off: not asked", StopReasons.Of("FA2010") == null && Kaban.UI.Helpers.StopReasonHost.OpenFor("FA2010") == null);
+        StopReasons.StateLogged("FA2010", 2, t0.AddMinutes(330));
+        board.Change(c => c.SetRecordOn("machine_stop", true));
+        LanguageManager.ChangeLanguage("TR");
+        StopReasons.StateLogged("FA2010", 1, t0.AddMinutes(400));
+        clock = clock.AddMinutes(6); StopReasons.Check(); Pump(100);
+        ask = Kaban.UI.Helpers.StopReasonHost.OpenFor("FA2010");
+        Check("in Turkish", ask != null && ask.Text == "Makine neden durdu?" && ask.MessageText == "13:40 saatinden beri duruyor - şimdiye kadar 6 dk." &&
+              All(ask).OfType<Button>().Any(b => b.Text == "Makine arızası") && All(ask).OfType<Button>().Any(b => b.Name == "btnLater" && b.Text == "Sonra"),
+              ask == null ? "none" : ask.MessageText);
+        Shot(ask, "stop_reason_tr");
+        All(ask).OfType<Button>().First(b => b.Name == "reason1").PerformClick(); Pump(50);
+        StopReasons.StateLogged("FA2010", 2, t0.AddMinutes(410));
+        LanguageManager.ChangeLanguage("EN");
+        main.Close();
+
         Console.WriteLine("--- the dashboard lists them as the machine's events ---");
         var map = board.Map;
         Check("the state map names them (EN, TR) - not records the PLC can be told to log",
@@ -323,6 +403,7 @@ class HR {
               page.LimitField("overload_percent").Value == 100 && page.LimitField("overload_seconds").Value == 10 && page.LimitField("peak_percent").Value == 250);
         Check("  the inverters' records and their limit (50 %)", page.RecordSwitch("inverter_fault").Checked && page.RecordSwitch("motor_high_load").Checked &&
               page.RecordSwitch("motor_loads").Checked && page.LimitField("load_percent").Value == 50);
+        Check("  why it stood still: its switch, after how long it asks (5 min)", page.RecordSwitch("machine_stop").Checked && page.LimitField("stop_minutes").Value == 5);
         Check("  'Learn the normal times again', how many are learned under it", All(page).OfType<Button>().Any(b => b.Name == "learnNormals" && b.Visible) &&
               page.NormalsText == "Normal times learned: 3.", page.NormalsText);
         Shot(form, "records_frame");
