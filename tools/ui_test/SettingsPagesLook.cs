@@ -115,6 +115,18 @@ class SPL {
               frame.Height == log.Bottom + frame.Padding.Bottom,
               log == null ? "none" : log.Bounds + " in " + frame.Size);
         Shot(form, "settings_Options_logging");
+        // 5 November, found on the panel: every scan (UpdateState) showed again the rows the page had hidden - a switch with no
+        // conditions of its own is its page's to show or hide
+        Action scan = () =>
+        {
+            Action<Control> walk = null;
+            walk = c => { foreach (Control k in c.Controls) { var b = k as CheckBoxHMI; if (b != null) b.UpdateState(a => 0, cond => true); walk(k); } };
+            walk(frame); Pump(100);
+        };
+        scan();
+        var hmiKinds = new[] { "cylinder_slow", "machine_stop" }.Select(k => log.RecordSwitch(k)).ToList();
+        Check("  an older machine, after a scan: the HMI's records still hidden (they were shown again by every scan)",
+              hmiKinds.All(r => r != null && !r.Visible) && recs.All(c => c.Visible) && frame.Height == log.Bottom + frame.Padding.Bottom);
         // 5 November: a new machine (HMI Settings > Options) - what the HMI takes itself, under the settings
         Kaban.UI.Helpers.PageScroll.Enable(page);
         HmiFeatures.Set(HmiFeatures.MachineRecords, true); Pump(400);
@@ -136,12 +148,18 @@ class SPL {
               shownRows.Count == 12 && shownRows.Zip(shownRows.Skip(1), (x, y) => y.Top - x.Bottom).All(g => g == 0) && shownRows[0].Top == recs[0].Top &&
               shownRows.Last() == hmiRecs.Last() && log.Top == hmiRecs.Last().Bottom + 8,
               string.Join(", ", shownRows.Select(c => c.Name + "@" + c.Top)));
+        scan();
+        var shownAfter = frame.Controls.Cast<Control>().Where(c => (c is CheckBoxHMI || c is LogRecordHMI) && c.Visible).OrderBy(c => c.Top).ToList();
+        Check("  after a scan: the PLC's switches of 6, 15, 16, 20, 22 still hidden (on the panel they came back over the rows moved up: \"Profile changed\" twice)",
+              shownAfter.SequenceEqual(shownRows) && recs.Where(c => new[] { "L1006", "L1015", "L1016", "L1020", "L1022" }.Contains(c.Address)).All(c => !c.Visible) &&
+              recs.Single(c => c.Address == "L1008").Visible, string.Join(", ", shownAfter.Select(c => c.Name + "@" + c.Top)));
         Shot(form, "settings_Options_records_rows");
         ((ScrollableControl)page).AutoScrollPosition = new Point(0, frame.Bottom); Pump(200);
         Shot(form, "settings_Options_records");
         HmiFeatures.Set(HmiFeatures.MachineRecords, false); Pump(200);
-        Check("  an older machine again: gone, the frame as before - the PLC's twelve switches", !recRows[0].Visible && frame.Height == log.Bottom + frame.Padding.Bottom &&
-              recs.All(c => c.Visible) && hmiRecs.All(r => !r.Visible) && log.Top == recs.Last().Bottom + 8);
+        scan();
+        Check("  an older machine again: gone, the frame as before - the PLC's twelve switches (after a scan too)", !recRows[0].Visible && frame.Height == log.Bottom + frame.Padding.Bottom &&
+              recRows.All(r => !r.Visible) && recs.All(c => c.Visible) && hmiRecs.All(r => !r.Visible) && log.Top == recs.Last().Bottom + 8);
         HmiFeatures.Set(HmiFeatures.Industry4Logging, false); Pump(200);
         Check("  off again: hidden", !frame.Visible);
         form.Close(); form.Dispose();

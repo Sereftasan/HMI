@@ -653,13 +653,29 @@ namespace Kaban.UI.Controls
             ConnectionMonitor.ConnectionChanged += OnConnectionChanged;
         }
 
+        /// <summary>
+        /// Hidden by its page, whatever its conditions say (5 November, found on the panel: the Industry 4 Logging frame hid the PLC's
+        /// switch of a record the HMI takes on a new machine - MachineLogSettings.Arrange - and the next scan showed it again, ON TOP of
+        /// the rows moved up into its place: "Profile changed" twice, "Cutting done" gone). The page sets it, never the designer.
+        /// </summary>
+        [System.ComponentModel.Browsable(false)]
+        [System.ComponentModel.DesignerSerializationVisibility(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        public bool HiddenByPage
+        {
+            get { return _hiddenByPage; }
+            set { _hiddenByPage = value; if (value && Visible) Visible = false; }
+        }
+        private bool _hiddenByPage;
+
         public void UpdateState(Func<string, int> readPlc, Func<SystemCondition, bool> checkGlobal)
         {
             if (!_tipBuilt) RefreshTooltip();
+            if (_hiddenByPage) { if (Visible) Visible = false; return; }
             if (checkGlobal != null)
             {
+                // shown or hidden by its conditions only when it has some: without, its page decides (it was shown again on every scan)
                 bool vis = VisibilityConditions == SystemCondition.None || checkGlobal(VisibilityConditions);
-                if (Visible != vis) Visible = vis;
+                if (VisibilityConditions != SystemCondition.None && Visible != vis) Visible = vis;
                 if (!vis) return;
                 bool condOk = EnableConditions == SystemCondition.None || checkGlobal(EnableConditions);
                 bool trigOk = EnableTrigger == null || string.IsNullOrEmpty(EnableTrigger.MonitorAddress) || EnableTrigger.Check(readPlc);

@@ -340,6 +340,8 @@ namespace Kaban.UI.Dashboard
                 {
                     var box = r as CheckBoxHMI;
                     bool show = r is LogRecordHMI ? newMachine : !(box != null && replaced.Contains((box.Address ?? "").Trim()));
+                    // a PLC switch: hidden by the page - its scan's UpdateState would show it again (VisibilityConditions none)
+                    if (box != null) box.HiddenByPage = !show;
                     r.Visible = show;
                     if (!show) continue;
                     if (r.Top != y) r.Top = y;
