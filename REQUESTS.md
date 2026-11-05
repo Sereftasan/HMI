@@ -9,7 +9,9 @@ Claude reads this file at the start of every batch, does the items, and moves ea
 - 5 November, late night (the answers: the record trigger tool; the inverters' current later; test on the PC):
   - 9982221 - LogRecordHMI: a record the HMI takes when its trigger comes - code, Trigger (as EnableTrigger), Values (numbers and
     lamps); FA2010's 15, 16, 22 in the Industry 4 Logging frame (devices partly to be set), instead of the PLC's switches on a new machine.
-  - Test on the PC: Rebuild Solution - 13 succeeded, 0 failed; the HMI started in the debugger; the test stopped there (computer use stopped).
+  - Test on the PC: Rebuild Solution - 13 succeeded, 0 failed; the HMI ran against GX Simulator. Found: switching on the machine
+    details brought "PLC COMMUNICATION LOST" (PLC 2 switched off on the panel) - fixed in d4d7462.
+  - The PLC Monitor's lists lost at a restart for the screen scale - fixed (pending names kept, another writer's list kept aside).
 - 5 November, night (the answers: "Your suggestion", older / new machines on the Options page, ask the stop's reason):
   - 06176cf - HMI Settings > Options: Machine details from the HMI (new machines) - on, the HMI takes the details itself; off, the PLC.
   - f0f8c47 - The HMI's own records (codes 1100+, the dashboard's events): slow cylinder movement (over its learned normal by 50 %),
