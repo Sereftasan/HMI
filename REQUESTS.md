@@ -11,6 +11,11 @@ Claude reads this file at the start of every batch, does the items, and moves ea
   - 8775b82 - FA2010, a new machine: records 6 and 20 taken as L1006 / L1020 come on; the measured width / height D481 / D482 for 20 and 22.
   - 679a66b - Found on the panel: the frame showed "Profile changed" twice and no "Cutting done" (each scan showed the hidden switches again) - fixed.
   - 9799d33 - Found on the panel: PLC 1 dropped every minute or two ("PLC COMMUNICATION LOST") - a read that waited behind another call was judged a dead link; fixed.
+  - b8f3049, a49e4ce, 91eb475 - the cause, found from the log: GX Simulator3 answered a random read of 553 devices in over a second. Long lists
+    are read in parts of 128, a module's buffer words in a call of their own, devices a random read refuses found once and read alone.
+    On the panel after it: no drop in the scans of 699 devices (before: every few seconds).
+- To do next (asked in the report): the profile parameters of the old program (FA2010, R25600 ...) on the Profiles page's details, and
+  the profile group / accessory group templates.
 - 5 November, late night (the answers: the record trigger tool; the inverters' current later; test on the PC):
   - 9982221 - LogRecordHMI: a record the HMI takes when its trigger comes - code, Trigger (as EnableTrigger), Values (numbers and
     lamps); FA2010's 15, 16, 22 in the Industry 4 Logging frame (devices partly to be set), instead of the PLC's switches on a new machine.
