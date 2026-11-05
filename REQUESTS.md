@@ -6,6 +6,11 @@ Claude reads this file at the start of every batch, does the items, and moves ea
 ## To do
 
 ## Done
+- 5 November, evening (the log area, the answers on the plan, what to log):
+  - 38ecf68 - The PLC log area (R27000) is the machine program's (DashboardDefinition.LogArea): no field for it in the
+    Industry 4 Logging frame any more; the frame's state and Logs and Reports name it.
+  - 5db4089 - docs\industry4\HMI_INDUSTRY4_PLAN.md: your answers, and what is worth logging for the axes, the cylinders,
+    the inverters and the machine (with the sources) - for you to choose what to build first.
 - 5 November, afternoon (the answers, the Industry 4 frame):
   - dea020a - FA2010's state map: 12 is Axis overload, 20 Profile not recognised (L1020), as MachineLog_DeviceList.xlsx
     (kept in docs\industry4).

@@ -1797,27 +1797,24 @@ Par_Diameter;KabanHMI\Profiles\LibraryEditorForm.cs;436;Text;case "diameter_mm":
 Par_Length;KabanHMI\Profiles\LibraryEditorForm.cs;438;Text;case "length_mm": return T("Par_Length", "Length (along the bar)");
 Par_Path;KabanHMI\Profiles\LibraryEditorForm.cs;442;Text;case "path": return T("Par_Path", "Path (LINE, CONTOUR)");
 Par_Width;KabanHMI\Profiles\LibraryEditorForm.cs;439;Text;case "width_mm": return T("Par_Width", "Width");
-Plg_Area;KabanHMI\Dashboard\MachineLogSettings.cs;68;Text;rows.Add(new SettingRow(T("Plg_Area", "PLC log area"), _area));
-Plg_AreaNote;KabanHMI\Dashboard\DashboardSettingsPage.cs;101;Text;Note("Plg_AreaNote", "Its PLC log area: Machine Parameters > Options (Industry 4 Logging).");
-Plg_AreaTip;KabanHMI\Dashboard\MachineLogSettings.cs;69;Tooltip;UiStyle.SetTip(_tips, _area, T("Plg_AreaTip",
-Plg_BadArea;KabanHMI\Dashboard\MachineLogSettings.cs;230;Text;problem = T("Plg_BadArea", "The PLC log area is a word device (R27000, D7000):") + " \"" + area + "\".";
+Plg_AreaNote;KabanHMI\Dashboard\DashboardSettingsPage.cs;101;Text;Add(NewNote(string.Format(T("Plg_AreaNote", "Its PLC log area: {0} (set in the machine's program)."), MachineLogger.Area(_machine))));
 Plg_Error;KabanHMI\Dashboard\MachineLogger.cs;237;Text;Say(T("Plg_Error", "Could not take the records:") + " " + ex.Message);
-Plg_Km;KabanHMI\Dashboard\MachineLogSettings.cs;74;Text;T("Plg_Km", "A record's Process ID: its Profile Code and Profile Data from KMSystem (PostgreSQL)") + "\n" +
-Plg_KmConnection;KabanHMI\Dashboard\MachineLogSettings.cs;77;Text;rows.Add(new SettingRow(T("Plg_KmConnection", "KMSystem connection"), _kmConnection));
-Plg_KmNote;KabanHMI\Dashboard\MachineLogSettings.cs;75;Text;T("Plg_KmNote", "Needs Npgsql.dll beside the program, as the Industry 4 service had it."));
-Plg_KmRow;KabanHMI\Dashboard\MachineLogSettings.cs;73;Text;Switch(_km, T("Plg_KmRow", "Process ID: its profile from KMSystem"),
+Plg_Km;KabanHMI\Dashboard\MachineLogSettings.cs;69;Text;T("Plg_Km", "A record's Process ID: its Profile Code and Profile Data from KMSystem (PostgreSQL)") + "\n" +
+Plg_KmConnection;KabanHMI\Dashboard\MachineLogSettings.cs;72;Text;rows.Add(new SettingRow(T("Plg_KmConnection", "KMSystem connection"), _kmConnection));
+Plg_KmNote;KabanHMI\Dashboard\MachineLogSettings.cs;70;Text;T("Plg_KmNote", "Needs Npgsql.dll beside the program, as the Industry 4 service had it."));
+Plg_KmRow;KabanHMI\Dashboard\MachineLogSettings.cs;68;Text;Switch(_km, T("Plg_KmRow", "Process ID: its profile from KMSystem"),
 Plg_Last;KabanHMI\Dashboard\MachineLogger.cs;230;Text;LastRecord.HasValue ? ", " + T("Plg_Last", "the last of") + " " + LastRecord.Value.ToString(DashboardData.DbFormat, CultureInfo.InvariantCulture) + " (UTC)" : ""));
-Plg_NoDatabase;KabanHMI\Dashboard\MachineLogSettings.cs;59;Text;_none.Text = T("Plg_NoDatabase", "This machine keeps no log database (HMI Settings > Logs and Reports): nothing is taken from its PLC.");
+Plg_NoDatabase;KabanHMI\Dashboard\MachineLogSettings.cs;57;Text;_none.Text = T("Plg_NoDatabase", "This machine keeps no log database (HMI Settings > Logs and Reports): nothing is taken from its PLC.");
 Plg_NoMap;KabanHMI\Dashboard\MachineLogger.cs;172;Text;Say(T("Plg_NoMap", "The machine has no state map (Dashboard\\StateMap.json): nothing to log."));
 Plg_NotConnected;KabanHMI\Dashboard\MachineLogger.cs;190;Text;Say(T("Plg_NotConnected", "Waiting for the PLC: not connected."));
-Plg_NotStarted;KabanHMI\Dashboard\MachineLogSettings.cs;196;Text;_state.Text = T("Plg_State", "Now") + ": " + (l != null ? l.Status : T("Plg_NotStarted", "Not running in this program (it starts with the main window)."));
+Plg_NotStarted;KabanHMI\Dashboard\MachineLogSettings.cs;184;Text;_state.Text = T("Plg_State", "Now") + ": " + (l != null ? l.Status : T("Plg_NotStarted", "Not running in this program (it starts with the main window)."));
 Plg_NotStarted;KabanHMI\Settings\FeaturesControl.cs;148;Text;lines.Add(m.Name + ": " + (l != null ? l.Status : T("Plg_NotStarted", "Not running in this program (it starts with the main window).")));
 Plg_Off;KabanHMI\Dashboard\MachineLogger.cs;165;Text;Say(T("Plg_Off", "Switched off: the machine's log is not taken from its PLC."));
 Plg_Running;KabanHMI\Dashboard\MachineLogger.cs;228;Text;Say(string.Format(CultureInfo.CurrentCulture, T("Plg_Running",
 Plg_Service;KabanHMI\Dashboard\MachineLogger.cs;180;Text;Say(T("Plg_Service", "Waiting: the Industry 4 service runs on this PC and takes the records - stop it (or uninstall it) and the HMI takes them."));
-Plg_State;KabanHMI\Dashboard\MachineLogSettings.cs;196;Text;_state.Text = T("Plg_State", "Now") + ": " + (l != null ? l.Status : T("Plg_NotStarted", "Not running in this program (it starts with the main window)."));
-Plg_Switch;KabanHMI\Dashboard\MachineLogSettings.cs;66;Text;T("Plg_Switch", "The HMI takes the machine's states, events and alarms from its PLC into its log database"));
-Plg_SwitchRow;KabanHMI\Dashboard\MachineLogSettings.cs;65;Text;Switch(_on, T("Plg_SwitchRow", "The HMI takes the log from the PLC"),
+Plg_State;KabanHMI\Dashboard\MachineLogSettings.cs;184;Text;_state.Text = T("Plg_State", "Now") + ": " + (l != null ? l.Status : T("Plg_NotStarted", "Not running in this program (it starts with the main window)."));
+Plg_Switch;KabanHMI\Dashboard\MachineLogSettings.cs;64;Text;T("Plg_Switch", "The HMI takes the machine's states, events and alarms from its PLC into its log database"));
+Plg_SwitchRow;KabanHMI\Dashboard\MachineLogSettings.cs;63;Text;Switch(_on, T("Plg_SwitchRow", "The HMI takes the log from the PLC"),
 Plg_WhoNote;KabanHMI\Dashboard\DashboardSettingsPage.cs;100;Text;Note("Plg_WhoNote", "Written by the Industry 4 service or the HMI (HMI Settings > Options).");
 Pop_Cancel;KabanHMI\Forms\PlcPopupForm.cs;93;Text;case "cancel": return T("Pop_Cancel", "Cancel");
 Pop_Continue;KabanHMI\Forms\PlcPopupForm.cs;96;Text;case "continue": return T("Pop_Continue", "Continue");
