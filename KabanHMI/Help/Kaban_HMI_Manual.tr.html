@@ -1203,7 +1203,11 @@ HMI kaydetmeye başlayınca servisi durdurun &ndash; ya da kaldırın.</div>
       <li><b>Makinenin PLC'den kaydı</b>, anahtarların altında &ndash; yalnızca <b>HMI Ayarları &rsaquo; Seçenekler</b>'de HMI'de Industry 4 kaydı
           açıkken (<a href="#features">9b</a>): HMI'nin bu makinenin kaydını PLC'sinden alıp almadığı, <b>PLC kayıt alanı</b> &ndash; PLC'nin kayıtlarını tuttuğu
           word cihazı (<code>R27000</code>; her makinenin kendisininki vardır &ndash; alan geçerli olanı gösterir, boşaltılırsa makinenin kendisininkine döner), <i>Şu an</i> (makinenin kaydedicisinin ne yaptığı: kayıtları alıyor,
-          PLC'yi bekliyor, Industry 4 servisi çalışırken bekliyor &hellip;), ve bir kaydın Process ID'sinin bağlantısıyla <b>KMSystem</b> araması.
+          PLC'yi bekliyor, Industry 4 servisi çalışırken bekliyor &hellip;), bir kaydın Process ID'sinin bağlantısıyla <b>KMSystem</b> araması
+          ve <b>Kaydedilecek kayıtlar</b> (<i>24 kayıttan 7</i>): <b>Seç&hellip;</b> PLC'nin kaydedebileceği her kaydı listeler &ndash; her biri bir satır, anahtarından
+          önce kodu ve PLC biti (<code>4 &middot; L1004</code>); açıksa PLC onu kaydeder. <i>Makinenin dosyasındaki gibi</i> makinenin kendi seçimini (durum haritası)
+          geri getirir; başka bir kayda devam eden kayıt (hatanın ikinci kaydı, bir eksenin <i>verisi (2)</i>) onunla birlikte kaydedilir. HMI bitleri PLC'ye
+          bağlandığında ve sayfa kaydedildiğinde yeniden, seçildiği gibi ayarlar.
           Sayfanın &#128190;'si onları saklar ve kaydedici yeni alanı hemen alır; word cihazı olmayan bir kayıt alanı bunu söyleyerek reddedilir. Kayıt
           veritabanı olmayan bir makine bunu söyler. Bkz. <a href="#i4log">11a</a>.</li>
      </ul></li>

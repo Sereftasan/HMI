@@ -107,6 +107,52 @@ class FL {
               MachineLogger.Area(board.Config, board) == "R28000");
         Pump(1500);
         Check("    its state says so", alarms.MachineLog.StateText.Contains("(R28000)"), alarms.MachineLog.StateText);
+
+        // 5 November: "We need to add the controls for the selection of which events to be logged to the database when 'Industry 4
+        // logging in the HMI' activated ... 'ActiveDevice' shows which device to activate for which log"
+        Console.WriteLine("--- the records to log ---");
+        var drv = PlcManager.Instance.GetDriver(1);
+        Check("the records logged: as FA2010's state map has them (7 of 24), the PLC told so (L1002 on, L1006 off)",
+              alarms.MachineLog.RecordsText == "7 of 24" && drv.Read("L1002") == 1 && drv.Read("L1006") == 0,
+              alarms.MachineLog.RecordsText + " / L1002 " + drv.Read("L1002") + " L1006 " + drv.Read("L1006"));
+        int rows = 0; string caption = "", note = "", cutting = ""; bool asRow = false; Size size = Size.Empty;
+        MachineLogSettings.AskRecords = f =>
+        {
+            f.Show(); Pump(150);
+            var r4 = f.Rows[4];
+            rows = f.Rows.Count; caption = r4.CaptionShown; note = r4.RowNote; asRow = r4.DrawnAsRow; size = r4.Size;
+            cutting = f.Rows[8].CaptionShown;
+            if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("TOUCH_SHOTS")))
+            {
+                var at = f.PointToScreen(Point.Empty);
+                System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo("python3",
+                    "-c \"from PIL import ImageGrab; ImageGrab.grab(bbox=(" + at.X + "," + at.Y + "," + (at.X + f.ClientSize.Width) + "," + (at.Y + f.ClientSize.Height) +
+                    "), xdisplay=':99').save('" + Path.Combine(Environment.GetEnvironmentVariable("TOUCH_SHOTS"), "records_to_log.png") + "')\"") { UseShellExecute = false }).WaitForExit(10000);
+            }
+            f.Rows[6].Checked = true;                 // Profile changed: logged
+            f.Rows[3].Checked = false;                // On pause mode: not
+            return DialogResult.OK;
+        };
+        alarms.MachineLog.ChooseRecords(); Pump(50);
+        Check("  its window: a row for each (24), its words, its code and bit before the switch, as the settings rows",
+              rows == 24 && caption.StartsWith("There is an error") && note == "4 \u00b7 L1004" && asRow && size == new Size(450, UiStyle.SettingRowHeight),
+              caption + " / " + note + " / " + size);
+        Check("  two records of the same words: the state map's parenthesis after them (Cutting done (Processing Centre))",
+              cutting.EndsWith("(Processing Centre)"), cutting);
+        Check("  chosen: 7 of 24 still (one on, one off), the page's Save on - nothing written yet",
+              alarms.MachineLog.RecordsText == "7 of 24" && alarms.MachineLog.LoggedChoices[6] && !alarms.MachineLog.LoggedChoices[3] && save.Enabled &&
+              drv.Read("L1006") == 0 && board.Config.LoggedRecord(6) == null);
+        typeof(AlarmSettingsControl).GetMethod("Save", Any).Invoke(alarms, null); Pump(1500);
+        Check("  saved: kept in the machine's settings (only the two chosen otherwise), the PLC told at once (L1006 on, L1003 off)",
+              board.Config.LoggedRecord(6) == true && board.Config.LoggedRecord(3) == false && board.Config.LoggedRecord(2) == null &&
+              drv.Read("L1006") == 1 && drv.Read("L1003") == 0 && drv.Read("L1002") == 1,
+              "L1006 " + drv.Read("L1006") + " L1003 " + drv.Read("L1003"));
+        MachineLogSettings.AskRecords = f => { f.Show(); Pump(100); ((Button)f.Controls.Find("recordsFile", true)[0]).PerformClick(); return DialogResult.OK; };
+        alarms.MachineLog.ChooseRecords();
+        typeof(AlarmSettingsControl).GetMethod("Save", Any).Invoke(alarms, null); Pump(1500);
+        Check("  'As the machine's file', saved: the choices gone, the PLC told the map's own (L1006 off, L1003 on)",
+              board.Config.LoggedRecord(6) == null && board.Config.LoggedRecord(3) == null && drv.Read("L1006") == 0 && drv.Read("L1003") == 1);
+        MachineLogSettings.AskRecords = null;
         var shotDir = Environment.GetEnvironmentVariable("TOUCH_SHOTS");
         if (!string.IsNullOrEmpty(shotDir))
         {

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 using Kaban.Core.Helpers;
 using Kaban.UI.Controls;
@@ -16,8 +17,9 @@ namespace Kaban.UI.Dashboard
     ///
     /// Shown only while HMI Settings > Options has the Industry 4 logging in the HMI on: whether this
     /// machine's log is taken, its PLC log area (empty: the machine's own), the KMSystem lookup of a
-    /// record's Process ID, and what its logger does now. Kept in the machine's dashboard settings
-    /// (Logs and Reports keeps its database and reports) - the page's Save writes them.
+    /// record's Process ID, what its logger does now, and the records the PLC logs (5 November: chosen in a
+    /// window - LoggedRecordsForm). Kept in the machine's dashboard settings (Logs and Reports keeps its
+    /// database and reports) - the page's Save writes them, and the logger tells the PLC the records again.
     /// </summary>
     public sealed class MachineLogSettings : FlowLayoutPanel
     {
@@ -31,6 +33,12 @@ namespace Kaban.UI.Dashboard
         private readonly TextBox _kmConnection = new TextBox { Name = "kmConnection", Width = 460 };
         private readonly Label _state = new Label { Name = "loggerState" };
         private readonly Label _none = new Label { Name = "noLogDatabase" };
+        private readonly Label _records = new Label { Name = "recordsCount" };
+        private Button _choose;
+        private Dictionary<int, bool> _logged = new Dictionary<int, bool>();
+
+        /// <summary>The window of the records to log, answered (tests: an answer of their own; null - shown).</summary>
+        public static Func<LoggedRecordsForm, DialogResult> AskRecords;
         private readonly Timer _clock = new Timer { Interval = 1000 };
         private readonly EventHandler _onFeatures;
         private bool _filling;
@@ -102,6 +110,21 @@ namespace Kaban.UI.Dashboard
                     AutoSize = true, ForeColor = Color.FromArgb(110, 116, 124), Margin = new Padding(2, 0, 2, 2)
                 });
 
+                // the records the PLC logs (5 November: "the selection of which events to be logged to the database")
+                var rec = Row();
+                rec.Name = "recordsRow";
+                var recCaption = Caption(T("Plg_Records", "Records to log"));
+                recCaption.Margin = new Padding(14, 7, 4, 2);          // (in line with "PLC log area")
+                rec.Controls.Add(recCaption);
+                _records.AutoSize = true;
+                _records.Margin = new Padding(2, 7, 10, 2);
+                rec.Controls.Add(_records);
+                _choose = UiStyle.TextButton(T("Plg_RecordsChoose", "Choose..."), 0, (s, e) => ChooseRecords());
+                _choose.Name = "recordsChoose";
+                _choose.Margin = new Padding(2, 1, 2, 1);
+                rec.Controls.Add(_choose);
+                Controls.Add(rec);
+
                 EventHandler edited = (s, e) => { if (!_filling) { var h = Edited; if (h != null) h(this, EventArgs.Empty); } };
                 _on.CheckedChanged += edited;
                 _area.TextChanged += edited;
@@ -151,10 +174,42 @@ namespace Kaban.UI.Dashboard
                 _area.Text = MachineLogger.Area(c, _machine);
                 _km.Checked = c.KmSystemLookup;
                 _kmConnection.Text = c.KmSystemConnection;
+                _logged = _machine.Map.Switchable.ToDictionary(e => e.Code, e => MachineLogger.IsLogged(e, c));
+                ShowRecords();
             }
             finally { _filling = false; }
             ShowState();
         }
+
+        /// <summary>"9 of 24" - the records logged of those that can be.</summary>
+        private void ShowRecords()
+        {
+            _records.Text = _logged.Count == 0 ? T("Plg_RecordsNone", "none - the machine has no state map")
+                                               : string.Format(T("Plg_RecordsCount", "{0} of {1}"), _logged.Count(kv => kv.Value), _logged.Count);
+            if (_choose != null) _choose.Enabled = _logged.Count > 0;
+        }
+
+        /// <summary>The records to log, chosen in their window: the page to be saved when they changed.</summary>
+        public void ChooseRecords()
+        {
+            if (_machine == null || _logged.Count == 0) return;
+            using (var f = new LoggedRecordsForm(_machine.Map, _logged, _machine.ModuleId))
+            {
+                var answer = AskRecords != null ? AskRecords(f) : f.ShowDialog(FindForm());
+                if (answer != DialogResult.OK) return;
+                var now = f.Chosen;
+                bool changed = now.Any(kv => { bool was; return !_logged.TryGetValue(kv.Key, out was) || was != kv.Value; });
+                _logged = now;
+                ShowRecords();
+                if (changed) { var h = Edited; if (h != null) h(this, EventArgs.Empty); }
+            }
+        }
+
+        /// <summary>The records chosen now, not yet saved maybe (tests).</summary>
+        public IDictionary<int, bool> LoggedChoices { get { return _logged; } }
+
+        /// <summary>"9 of 24" (tests).</summary>
+        public string RecordsText { get { return _records.Text; } }
 
         private void ShowState()
         {
@@ -185,16 +240,28 @@ namespace Kaban.UI.Dashboard
             bool on = _on.Checked, km = _km.Checked;
             string connection = (_kmConnection.Text ?? "").Trim();
             string kept = area == (_machine.LogArea ?? "").ToUpperInvariant() ? "" : area;   // the machine's own: follows the machine
+            // the records: only those chosen otherwise than the machine's state map has them
+            var own = new Dictionary<int, bool>();
+            foreach (var e in _machine.Map.Switchable)
+            {
+                bool logged;
+                if (_logged.TryGetValue(e.Code, out logged) && logged != e.Active) own[e.Code] = logged;
+            }
             _machine.Change(c =>
             {
                 c.PlcLogging = on;
                 c.PlcLogArea = kept;
                 c.KmSystemLookup = km;
                 c.KmSystemConnection = connection;
+                c.SetLoggedRecords(own);
             });
+            // the PLC told the records again (its bits: ActiveDevice), at the logger's next look
+            var logger = MachineLoggers.Of(_machine.ModuleId);
+            if (logger != null) logger.TellPlcAgain();
             AuditLogger.Log("Machine log (" + _machine.ModuleId + "): " + (on ? "taken" : "not taken") + " from its PLC, log area " +
                             (kept.Length > 0 ? kept : MachineLogger.Area(_machine.Config, _machine) + " (the machine's own)") +
-                            ", KMSystem lookup " + (km ? "on" : "off") + ".");
+                            ", KMSystem lookup " + (km ? "on" : "off") + ", records logged " + _logged.Count(kv => kv.Value) + " of " + _logged.Count +
+                            (own.Count > 0 ? " (chosen otherwise than its state map: " + string.Join(", ", own.Select(kv => kv.Key + (kv.Value ? " on" : " off"))) + ")" : "") + ".");
             return true;
         }
     }

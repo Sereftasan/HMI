@@ -128,6 +128,15 @@ namespace Kaban.UI.Controls
                      "the slide is the deliberate action.")]
         public bool ConfirmWrite { get; set; }
 
+        /// <summary>A row's note: small grey words before its switch (a record's code and PLC bit on the records-to-log list).</summary>
+        [Browsable(false)]
+        public string RowNote
+        {
+            get { return _rowNote; }
+            set { _rowNote = value ?? ""; Invalidate(); }
+        }
+        private string _rowNote = "";
+
         /// <summary>How far, at factor 1, the switch is slid before it changes.</summary>
         public const int SwipeDistance = 18;
 
@@ -494,7 +503,18 @@ namespace Kaban.UI.Controls
                     // the row lit under the pointer - while the whole row answers (ActiveArea.Row)
                     if (_over && live && _activeArea == ActiveArea.Row) using (var back = new SolidBrush(UiStyle.RowHoverFill)) g.FillRectangle(back, 0, 0, Width, Height - 1);
                     var t = SwitchTrack;
-                    var text = new Rectangle(8, 0, Math.Max(10, (int)t.Left - 16), Height - 1);
+                    int wordsEnd = (int)t.Left - 8;
+                    if (!string.IsNullOrEmpty(RowNote))
+                    {
+                        // a note before the switch, small and grey (the PLC bit of a record to log: "4 · L1004")
+                        var small = UiStyle.Small;
+                        var flags = TextFormatFlags.Right | TextFormatFlags.VerticalCenter | TextFormatFlags.SingleLine | TextFormatFlags.NoPrefix;
+                        int w = TextRenderer.MeasureText(g, RowNote, small, Size.Empty, flags).Width;
+                        var note = new Rectangle((int)t.Left - 12 - w, 0, w, Height - 1);
+                        TextRenderer.DrawText(g, RowNote, small, note, grey, flags);
+                        wordsEnd = note.Left - 8;
+                    }
+                    var text = new Rectangle(8, 0, Math.Max(10, wordsEnd - 8), Height - 1);
                     TextRenderer.DrawText(g, CaptionShown, font, text, ink,
                         TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis | TextFormatFlags.SingleLine | TextFormatFlags.NoPrefix);
                     ToggleSwitch.Draw(g, t, Checked, live);

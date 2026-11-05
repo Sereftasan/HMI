@@ -83,7 +83,10 @@ namespace Kaban.UI.Dashboard
         private volatile bool _stop;
         private readonly object _sync = new object();
         private string _status = "";
-        private bool _activeWritten;
+        private volatile bool _activeWritten;
+
+        /// <summary>The PLC told again which records to log - at the next look (the choices were saved: Alarms and Logs).</summary>
+        public void TellPlcAgain() { _activeWritten = false; }
         private DbConnection _db;
         private string _dbPath = "";
         private KmSystem _km;
@@ -193,7 +196,7 @@ namespace Kaban.UI.Dashboard
                             {
                                 if (!_activeWritten)
                                 {
-                                    var written = WriteActive(link, map);
+                                    var written = WriteActive(link, map, cfg);
                                     _activeWritten = true;
                                     AuditLogger.Log("Machine log (" + Machine.ModuleId + "): taken from PLC station " + Station + ", log area " + area +
                                                     " - the PLC told which records to log (" + written + ").");
@@ -309,15 +312,21 @@ namespace Kaban.UI.Dashboard
             }
         }
 
-        /// <summary>Each state that starts a record: its ActiveDevice set to its Active. How many were written, in words.</summary>
-        public static string WriteActive(ILink link, StateMap map)
+        /// <summary>Logged: the record's own choice in the machine's settings (Alarms and Logs), else the state map's Active.</summary>
+        public static bool IsLogged(StateMap.Entry e, DashboardConfig cfg)
+        {
+            var own = cfg != null ? cfg.LoggedRecord(e.Code) : null;
+            return own ?? e.Active;
+        }
+
+        /// <summary>
+        /// Each state that starts a record: its ActiveDevice set to whether it is logged (IsLogged). How many were written, in words.
+        /// </summary>
+        public static string WriteActive(ILink link, StateMap map, DashboardConfig cfg = null)
         {
             int ok = 0, failed = 0;
-            foreach (var e in map.Entries)
-            {
-                if (e.PreviousCode.HasValue || string.IsNullOrWhiteSpace(e.ActiveDevice)) continue;
-                if (link.Write(e.ActiveDevice.Trim(), e.Active ? 1 : 0) == 0) ok++; else failed++;
-            }
+            foreach (var e in map.Switchable)
+                if (link.Write(e.ActiveDevice.Trim(), IsLogged(e, cfg) ? 1 : 0) == 0) ok++; else failed++;
             return ok + " written" + (failed > 0 ? ", " + failed + " refused" : "");
         }
 

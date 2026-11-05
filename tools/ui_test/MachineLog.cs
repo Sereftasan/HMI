@@ -104,6 +104,22 @@ class ML {
               plc.Writes.Contains("L1002=1") && plc.Writes.Contains("L1010=0") && plc.Writes.Contains("L1000=1") &&
               !plc.Writes.Any(w => w.StartsWith("=")) && plc.Writes.Count == map.Entries.Count(e => !e.PreviousCode.HasValue && e.ActiveDevice.Length > 0),
               said + ": " + string.Join(",", plc.Writes.Take(6)));
+        // 5 November: "add the controls for the selection of which events to be logged" - a record's own choice in the
+        // machine's settings stands before the state map's Active
+        var chosen = DashboardConfig.FromText("{}");
+        chosen.SetLoggedRecords(new Dictionary<int, bool> { { 2, false }, { 10, true } });
+        var again = DashboardConfig.FromText(chosen.ToText());
+        plc.Writes.Clear();
+        MachineLogger.WriteActive(plc, map, again);
+        Check("a record chosen otherwise (Operation is active off, Welding done on): its bit so - the others as the map has them",
+              plc.Writes.Contains("L1002=0") && plc.Writes.Contains("L1010=1") && plc.Writes.Contains("L1000=1") && plc.Writes.Contains("L1006=0") &&
+              again.LoggedRecord(2) == false && again.LoggedRecord(10) == true && again.LoggedRecord(0) == null && chosen.ToText().Contains("\"logged_records\""),
+              string.Join(",", plc.Writes.Take(12)));
+        Check("  the records that can be chosen: those that start one and have a bit (24 of FA2010's 34) - a continuation logged with its first",
+              map.Switchable.Count() == 24 && !map.Switchable.Any(e => e.PreviousCode.HasValue) && map.ContinuationsOf(4).Single().Code == 14 &&
+              map.ContinuationsOf(100).Single().Code == 150, map.Switchable.Count() + "");
+        chosen.SetLoggedRecords(new Dictionary<int, bool>());
+        Check("  none chosen otherwise: kept nowhere", !chosen.ToText().Contains("logged_records"));
 
         Console.WriteLine("--- nothing waiting ---");
         bool opened = false;

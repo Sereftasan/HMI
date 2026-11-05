@@ -91,6 +91,15 @@ namespace Kaban.UI.Dashboard
             new Dictionary<string, Dictionary<string, string>>(StringComparer.OrdinalIgnoreCase);
 
         public IEnumerable<Entry> Entries { get { return _entries.Values.OrderBy(e => e.Code); } }
+
+        /// <summary>The records the PLC can be told to log or not: each that starts a record and has its bit (ActiveDevice).</summary>
+        public IEnumerable<Entry> Switchable
+        {
+            get { return Entries.Where(e => !e.PreviousCode.HasValue && !string.IsNullOrWhiteSpace(e.ActiveDevice)); }
+        }
+
+        /// <summary>The records that continue one (its code: "There is an error (2)" continues 4) - logged with it.</summary>
+        public IEnumerable<Entry> ContinuationsOf(int code) { return Entries.Where(e => e.PreviousCode == code); }
         public int Count { get { return _entries.Count; } }
 
         public Entry Find(int code)

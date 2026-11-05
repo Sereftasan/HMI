@@ -194,6 +194,32 @@ namespace Kaban.UI.Dashboard
             set { _raw["kmsystem_connection"] = value ?? ""; }
         }
 
+        // ---- the records the PLC is told to log (5 November: "add the controls for the selection of which events to be logged
+        // to the database when 'Industry 4 logging in the HMI' activated ... 'ActiveDevice' shows which device to activate for
+        // which log") ----
+
+        /// <summary>
+        /// A record's own choice, made on Machine Parameters > Alarms and Logs: logged (true) or not (false); null - none made,
+        /// the state map's Active stands. Kept as "logged_records": { "6": true, ... } - only the codes chosen otherwise than the
+        /// map has them.
+        /// </summary>
+        public bool? LoggedRecord(int code)
+        {
+            var o = Json.Object(_raw, "logged_records");
+            object v;
+            if (o == null || !o.TryGetValue(code.ToString(CultureInfo.InvariantCulture), out v) || !(v is bool)) return null;
+            return (bool)v;
+        }
+
+        /// <summary>The choices kept (code -> logged); none: the key is taken away.</summary>
+        public void SetLoggedRecords(IDictionary<int, bool> choices)
+        {
+            if (choices == null || choices.Count == 0) { _raw.Remove("logged_records"); return; }
+            var o = new Dictionary<string, object>();
+            foreach (var kv in choices.OrderBy(k => k.Key)) o[kv.Key.ToString(CultureInfo.InvariantCulture)] = kv.Value;
+            _raw["logged_records"] = o;
+        }
+
         /// <summary>The report due next ("required_report_end_date"), null when none is set.</summary>
         public DateTime? RequiredReportEnd
         {

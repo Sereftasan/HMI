@@ -1202,7 +1202,11 @@ stop the service &ndash; or uninstall it &ndash; once the HMI logs.</div>
       <li><b>The machine's log from its PLC</b>, under the switches &ndash; only while <b>HMI Settings &rsaquo; Options</b> has the Industry 4 logging in the HMI
           on (<a href="#features">9b</a>): whether the HMI takes this machine's log from its PLC, its <b>PLC log area</b> &ndash; the word device the PLC keeps
           its records at (<code>R27000</code>; each machine has its own &ndash; the field shows the one in force, emptied it goes back to the machine's own), <i>Now</i> (what the machine's logger does: taking the records,
-          waiting for the PLC, waiting while the Industry 4 service runs &hellip;), and the <b>KMSystem</b> lookup of a record's Process ID with its connection.
+          waiting for the PLC, waiting while the Industry 4 service runs &hellip;), the <b>KMSystem</b> lookup of a record's Process ID with its connection,
+          and the <b>Records to log</b> (<i>7 of 24</i>): <b>Choose&hellip;</b> lists every record the PLC can log &ndash; a row each, its code and its PLC bit
+          (<code>4 &middot; L1004</code>) before its switch; on, the PLC logs it. <i>As the machine's file</i> puts back the machine's own choice (its state map);
+          a record continued by another (<i>There is an error (2)</i>, an axis's <i>data (2)</i>) is logged with it. The HMI sets the bits as chosen when it
+          connects to the PLC, and again when the page is saved.
           The page's &#128190; keeps them, and the logger takes the new area at once; a log area that is no word device is refused, saying so. A machine with no
           log database says so. See <a href="#i4log">11a</a>.</li>
      </ul></li>
