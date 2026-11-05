@@ -1,11 +1,11 @@
-# Industry 4 logging in the HMI - plan (5 November; your answers and the research added the same day)
+# Industry 4 logging in the HMI - plan (5 November; your answers, the research and the first records added the same day)
 
 What you asked for: "combine HMI and PLC logging together so we could just take time sensitive logs from PLC (to prevent info loss
 caused by the HMI connection failures) and log the rest of them from the HMI itself. So we can create triggers to take logs for each
 axis unit or other pneumatic controls as well", "the user would see logs for only machine by machine", and "make a
 search about what logs would be useful for these controls so we could apply them".
 
-Nothing of section 3 is built yet.
+Built (5 November, "Your suggestion"): section 4's first records, the older / new machine choice and the stop reasons - see section 5.
 
 ## 1. Decided
 
@@ -80,13 +80,39 @@ best set from a baseline measured at commissioning (what the machine does when i
    limit editable for Maintenance.
 4. **The dashboard**: a machine's log shows its records from both; trends (movement times, loads, counts) as charts per unit.
 
-## 4. For you to choose
+## 4. Your choice (5 November)
 
-- Which records of section 2 to build first. Our suggestion: the cylinders' slow movement, overtime and movement time trend (the HMI
-  times them already - no PLC change), the axis alarm snapshot and overload, the inverter fault snapshot and load per cut.
-- Which machine is the first "new machine" (HMI triggers instead of the PLC's detail records).
-- Whether the operator should pick a reason for a long stop on the screen (downtime reasons need the operator; everything else is
-  automatic).
+- First: "Your suggestion" - the cylinders' slow movement, overtime and movement time trend, the axis alarm snapshot and overload, the
+  inverter fault snapshot and load per cut.
+- Older or new machine: "this same HMI program is gonna be deployed to the currently operating old machines as well as the new producing
+  ones. So it should be selected at the HMI setting's option page".
+- A long stop: "Yes, we could ask it to enter the reason".
+
+## 5. What is built (5 November)
+
+- HMI Settings > Options: **Machine details from the HMI (new machines)** - off: an older machine (its PLC logs the details); on: a new
+  machine (the HMI takes them). Only with the Industry 4 logging in the HMI on.
+- The HMI's records (`KabanHMI\Dashboard\MachineRecords.cs`), written into the machine's log database as its own records (codes 1100+,
+  named - the dashboard lists them as the machine's events, in each language):
+
+| Code | Record | Limit (default) |
+|---|---|---|
+| 1101 | Slow cylinder movement | slower than its normal by 50 % (and 0.3 s); its normal learned from its first 20 movements |
+| 1102 | Cylinder movement not confirmed | its alarm's delay |
+| 1103 | Cylinder movement times (per shift) | - |
+| 1111 | Axis alarm | - |
+| 1112 | Axis overload | effective load 100 % for 10 s, or peak torque 250 % |
+| 1121 | Inverter fault | - |
+| 1122 | High motor load | peak current over its normal peak by 50 % (needs the inverter's current word) |
+| 1123 | Motor loads (per shift) | - |
+| 1131 | Machine stop | asked after 5 minutes: nine reasons (planned, setup, unplanned) |
+
+- Each switched and limited in the machine's Industry 4 Logging frame (Machine Parameters > Options), with "Learn the normal times again".
+- The cylinders are timed for the records even with the HMI's cylinder alarms off; the axes' loads (Md.109 - Md.111) and the inverters'
+  current are read only while the records are taken.
+- Not yet: the PLC's detail records of a new machine (6, 15, 16, 20, 22) stay with the PLC until the HMI has triggers for them; the
+  inverters' current needs the PLC to read it (FA2010 has no current word yet); the axis load trend, travel and moves, the cylinders'
+  cycles and sensor faults, the cycle / quality / consumable records of section 2.
 
 ## Sources
 

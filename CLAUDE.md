@@ -74,6 +74,14 @@
   PLC programmer - 5 November: never a setting on the screen) - with a switch row on each record's PLC bit (FA2010: codes 0 - 6,
   8, 15, 16, 20, 22; L1000 + code), the PLC keeping them; 0 - 2 (the machine's states) always logged: the HMI switches them
   on as it connects (MachineLogger.WriteRequired). FA2010's records: docs\industry4\MachineLog_DeviceList.xlsx.
+- Older and new machines (5 November): HMI Settings > Options, "Machine details from the HMI (new machines)" (HmiFeatures.MachineRecords,
+  only with the Industry 4 logging on). Off, an older machine: its PLC logs the details. On, a new machine: the HMI takes them itself -
+  MachineRecords (codes 1100+ in the machine's log database, named kinds - never the PLC's old codes; the dashboard lists them as events,
+  StateMap.AddHmiRecords names them): slow / not confirmed cylinder movements and their times per shift (normal times learned from the first
+  20, MovementNormals.cfg), axis alarms and overloads (Md.109 - 111 read only then), inverter faults, high motor loads and loads per shift
+  (InverterUnitHMI.CurrentAddress - none on FA2010 yet), and why the machine stood still (StopReasons: a window after a 5-minute stop, from the
+  PLC's state records). Switched and limited in the Industry 4 Logging frame (DashboardConfig "hmi_records"). The PLC keeps the states and the
+  cuts on both. The plan: docs\industry4\HMI_INDUSTRY4_PLAN.md.
 - Tick boxes (30 October, the user's choice): on / off switches. CheckBoxHMI is a switch row by default (Look; narrower
   than 120 px: the switch alone, its caption beside it); every plain CheckBox is drawn as a switch (TouchInput.Sizes,
   PaintSwitchBox). Lay a list of options out as rows: as wide as the column, 38 - 46 high, touching.
