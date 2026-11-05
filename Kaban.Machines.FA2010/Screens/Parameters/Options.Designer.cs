@@ -77,7 +77,7 @@
             this.optCooling.Name = "optCooling";
             this.optCooling.PlcNumber = 1;
             this.optCooling.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            this.optCooling.Size = new System.Drawing.Size(600, 38);
+            this.optCooling.Size = new System.Drawing.Size(450, 38);
             this.optCooling.TabIndex = 61;
             this.optCooling.ToolTipCaption = null;
             // 
@@ -103,7 +103,7 @@
             this.optProfile_Carrying_Roller_Sensor.Name = "optProfile_Carrying_Roller_Sensor";
             this.optProfile_Carrying_Roller_Sensor.PlcNumber = 1;
             this.optProfile_Carrying_Roller_Sensor.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            this.optProfile_Carrying_Roller_Sensor.Size = new System.Drawing.Size(600, 38);
+            this.optProfile_Carrying_Roller_Sensor.Size = new System.Drawing.Size(450, 38);
             this.optProfile_Carrying_Roller_Sensor.TabIndex = 62;
             this.optProfile_Carrying_Roller_Sensor.ToolTipCaption = null;
             // 
@@ -129,7 +129,7 @@
             this.optProfile_Recog_Carrying_Roller.Name = "optProfile_Recog_Carrying_Roller";
             this.optProfile_Recog_Carrying_Roller.PlcNumber = 1;
             this.optProfile_Recog_Carrying_Roller.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            this.optProfile_Recog_Carrying_Roller.Size = new System.Drawing.Size(600, 38);
+            this.optProfile_Recog_Carrying_Roller.Size = new System.Drawing.Size(450, 38);
             this.optProfile_Recog_Carrying_Roller.TabIndex = 63;
             this.optProfile_Recog_Carrying_Roller.ToolTipCaption = null;
             // 
@@ -155,7 +155,7 @@
             this.optMilling_Carrying_Roller.Name = "optMilling_Carrying_Roller";
             this.optMilling_Carrying_Roller.PlcNumber = 1;
             this.optMilling_Carrying_Roller.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            this.optMilling_Carrying_Roller.Size = new System.Drawing.Size(600, 38);
+            this.optMilling_Carrying_Roller.Size = new System.Drawing.Size(450, 38);
             this.optMilling_Carrying_Roller.TabIndex = 64;
             this.optMilling_Carrying_Roller.ToolTipCaption = null;
             // 
@@ -181,7 +181,7 @@
             this.optExit_Carrying_Roller.Name = "optExit_Carrying_Roller";
             this.optExit_Carrying_Roller.PlcNumber = 1;
             this.optExit_Carrying_Roller.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            this.optExit_Carrying_Roller.Size = new System.Drawing.Size(600, 38);
+            this.optExit_Carrying_Roller.Size = new System.Drawing.Size(450, 38);
             this.optExit_Carrying_Roller.TabIndex = 65;
             this.optExit_Carrying_Roller.ToolTipCaption = null;
             // 
@@ -207,7 +207,7 @@
             this.optLeft_Profile_Recognition.Name = "optLeft_Profile_Recognition";
             this.optLeft_Profile_Recognition.PlcNumber = 1;
             this.optLeft_Profile_Recognition.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            this.optLeft_Profile_Recognition.Size = new System.Drawing.Size(600, 38);
+            this.optLeft_Profile_Recognition.Size = new System.Drawing.Size(450, 38);
             this.optLeft_Profile_Recognition.TabIndex = 66;
             this.optLeft_Profile_Recognition.ToolTipCaption = null;
             // 
@@ -233,7 +233,7 @@
             this.optSliding_Conveyor_Rollers.Name = "optSliding_Conveyor_Rollers";
             this.optSliding_Conveyor_Rollers.PlcNumber = 1;
             this.optSliding_Conveyor_Rollers.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            this.optSliding_Conveyor_Rollers.Size = new System.Drawing.Size(600, 38);
+            this.optSliding_Conveyor_Rollers.Size = new System.Drawing.Size(450, 38);
             this.optSliding_Conveyor_Rollers.TabIndex = 67;
             this.optSliding_Conveyor_Rollers.ToolTipCaption = null;
             // 
@@ -259,7 +259,7 @@
             this.optReverse_Machine.Name = "optReverse_Machine";
             this.optReverse_Machine.PlcNumber = 1;
             this.optReverse_Machine.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            this.optReverse_Machine.Size = new System.Drawing.Size(600, 38);
+            this.optReverse_Machine.Size = new System.Drawing.Size(450, 38);
             this.optReverse_Machine.TabIndex = 68;
             this.optReverse_Machine.ToolTipCaption = null;
             // 
@@ -285,7 +285,7 @@
             this.optSpecial_Reverse_Machine.Name = "optSpecial_Reverse_Machine";
             this.optSpecial_Reverse_Machine.PlcNumber = 1;
             this.optSpecial_Reverse_Machine.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            this.optSpecial_Reverse_Machine.Size = new System.Drawing.Size(600, 38);
+            this.optSpecial_Reverse_Machine.Size = new System.Drawing.Size(450, 38);
             this.optSpecial_Reverse_Machine.TabIndex = 69;
             this.optSpecial_Reverse_Machine.ToolTipCaption = null;
             // 
@@ -311,7 +311,7 @@
             this.optCutting_Right_Top_Clamping_Long.Name = "optCutting_Right_Top_Clamping_Long";
             this.optCutting_Right_Top_Clamping_Long.PlcNumber = 1;
             this.optCutting_Right_Top_Clamping_Long.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            this.optCutting_Right_Top_Clamping_Long.Size = new System.Drawing.Size(600, 38);
+            this.optCutting_Right_Top_Clamping_Long.Size = new System.Drawing.Size(450, 38);
             this.optCutting_Right_Top_Clamping_Long.TabIndex = 70;
             this.optCutting_Right_Top_Clamping_Long.ToolTipCaption = null;
             // 
@@ -337,7 +337,7 @@
             this.optMajor_Profile_Ejection_Tray_Operates_Individually.Name = "optMajor_Profile_Ejection_Tray_Operates_Individually";
             this.optMajor_Profile_Ejection_Tray_Operates_Individually.PlcNumber = 1;
             this.optMajor_Profile_Ejection_Tray_Operates_Individually.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            this.optMajor_Profile_Ejection_Tray_Operates_Individually.Size = new System.Drawing.Size(600, 38);
+            this.optMajor_Profile_Ejection_Tray_Operates_Individually.Size = new System.Drawing.Size(450, 38);
             this.optMajor_Profile_Ejection_Tray_Operates_Individually.TabIndex = 71;
             this.optMajor_Profile_Ejection_Tray_Operates_Individually.ToolTipCaption = null;
             // 
@@ -363,7 +363,7 @@
             this.optTop_Clamping_Reclamp.Name = "optTop_Clamping_Reclamp";
             this.optTop_Clamping_Reclamp.PlcNumber = 1;
             this.optTop_Clamping_Reclamp.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            this.optTop_Clamping_Reclamp.Size = new System.Drawing.Size(600, 38);
+            this.optTop_Clamping_Reclamp.Size = new System.Drawing.Size(450, 38);
             this.optTop_Clamping_Reclamp.TabIndex = 72;
             this.optTop_Clamping_Reclamp.ToolTipCaption = null;
             // 
@@ -384,12 +384,12 @@
             this.optGripper_0_90_Degree_Turn.EnableTrigger.ValA = 0D;
             this.optGripper_0_90_Degree_Turn.EnableTrigger.ValB = 0D;
             this.optGripper_0_90_Degree_Turn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.optGripper_0_90_Degree_Turn.Location = new System.Drawing.Point(648, 260);
+            this.optGripper_0_90_Degree_Turn.Location = new System.Drawing.Point(510, 260);
             this.optGripper_0_90_Degree_Turn.LogAction = true;
             this.optGripper_0_90_Degree_Turn.Name = "optGripper_0_90_Degree_Turn";
             this.optGripper_0_90_Degree_Turn.PlcNumber = 1;
             this.optGripper_0_90_Degree_Turn.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            this.optGripper_0_90_Degree_Turn.Size = new System.Drawing.Size(600, 38);
+            this.optGripper_0_90_Degree_Turn.Size = new System.Drawing.Size(450, 38);
             this.optGripper_0_90_Degree_Turn.TabIndex = 73;
             this.optGripper_0_90_Degree_Turn.ToolTipCaption = null;
             // 
@@ -410,12 +410,12 @@
             this.optClamping_Mould.EnableTrigger.ValA = 0D;
             this.optClamping_Mould.EnableTrigger.ValB = 0D;
             this.optClamping_Mould.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.optClamping_Mould.Location = new System.Drawing.Point(648, 298);
+            this.optClamping_Mould.Location = new System.Drawing.Point(510, 298);
             this.optClamping_Mould.LogAction = true;
             this.optClamping_Mould.Name = "optClamping_Mould";
             this.optClamping_Mould.PlcNumber = 1;
             this.optClamping_Mould.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            this.optClamping_Mould.Size = new System.Drawing.Size(600, 38);
+            this.optClamping_Mould.Size = new System.Drawing.Size(450, 38);
             this.optClamping_Mould.TabIndex = 74;
             this.optClamping_Mould.ToolTipCaption = null;
             // 
@@ -436,12 +436,12 @@
             this.optCross_Roller.EnableTrigger.ValA = 0D;
             this.optCross_Roller.EnableTrigger.ValB = 0D;
             this.optCross_Roller.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.optCross_Roller.Location = new System.Drawing.Point(648, 336);
+            this.optCross_Roller.Location = new System.Drawing.Point(510, 336);
             this.optCross_Roller.LogAction = true;
             this.optCross_Roller.Name = "optCross_Roller";
             this.optCross_Roller.PlcNumber = 1;
             this.optCross_Roller.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            this.optCross_Roller.Size = new System.Drawing.Size(600, 38);
+            this.optCross_Roller.Size = new System.Drawing.Size(450, 38);
             this.optCross_Roller.TabIndex = 75;
             this.optCross_Roller.ToolTipCaption = null;
             // 
@@ -462,12 +462,12 @@
             this.optCutting_Left_Front_Encoder.EnableTrigger.ValA = 0D;
             this.optCutting_Left_Front_Encoder.EnableTrigger.ValB = 0D;
             this.optCutting_Left_Front_Encoder.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.optCutting_Left_Front_Encoder.Location = new System.Drawing.Point(648, 374);
+            this.optCutting_Left_Front_Encoder.Location = new System.Drawing.Point(510, 374);
             this.optCutting_Left_Front_Encoder.LogAction = true;
             this.optCutting_Left_Front_Encoder.Name = "optCutting_Left_Front_Encoder";
             this.optCutting_Left_Front_Encoder.PlcNumber = 1;
             this.optCutting_Left_Front_Encoder.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            this.optCutting_Left_Front_Encoder.Size = new System.Drawing.Size(600, 38);
+            this.optCutting_Left_Front_Encoder.Size = new System.Drawing.Size(450, 38);
             this.optCutting_Left_Front_Encoder.TabIndex = 76;
             this.optCutting_Left_Front_Encoder.ToolTipCaption = null;
             // 
@@ -488,12 +488,12 @@
             this.optCutting_Right_Front_Vertical_Without_Encoder.EnableTrigger.ValA = 0D;
             this.optCutting_Right_Front_Vertical_Without_Encoder.EnableTrigger.ValB = 0D;
             this.optCutting_Right_Front_Vertical_Without_Encoder.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.optCutting_Right_Front_Vertical_Without_Encoder.Location = new System.Drawing.Point(648, 412);
+            this.optCutting_Right_Front_Vertical_Without_Encoder.Location = new System.Drawing.Point(510, 412);
             this.optCutting_Right_Front_Vertical_Without_Encoder.LogAction = true;
             this.optCutting_Right_Front_Vertical_Without_Encoder.Name = "optCutting_Right_Front_Vertical_Without_Encoder";
             this.optCutting_Right_Front_Vertical_Without_Encoder.PlcNumber = 1;
             this.optCutting_Right_Front_Vertical_Without_Encoder.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            this.optCutting_Right_Front_Vertical_Without_Encoder.Size = new System.Drawing.Size(600, 38);
+            this.optCutting_Right_Front_Vertical_Without_Encoder.Size = new System.Drawing.Size(450, 38);
             this.optCutting_Right_Front_Vertical_Without_Encoder.TabIndex = 77;
             this.optCutting_Right_Front_Vertical_Without_Encoder.ToolTipCaption = null;
             // 
@@ -514,12 +514,12 @@
             this.optCutting_Left_Front_Air_Exhaust.EnableTrigger.ValA = 0D;
             this.optCutting_Left_Front_Air_Exhaust.EnableTrigger.ValB = 0D;
             this.optCutting_Left_Front_Air_Exhaust.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.optCutting_Left_Front_Air_Exhaust.Location = new System.Drawing.Point(648, 450);
+            this.optCutting_Left_Front_Air_Exhaust.Location = new System.Drawing.Point(510, 450);
             this.optCutting_Left_Front_Air_Exhaust.LogAction = true;
             this.optCutting_Left_Front_Air_Exhaust.Name = "optCutting_Left_Front_Air_Exhaust";
             this.optCutting_Left_Front_Air_Exhaust.PlcNumber = 1;
             this.optCutting_Left_Front_Air_Exhaust.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            this.optCutting_Left_Front_Air_Exhaust.Size = new System.Drawing.Size(600, 38);
+            this.optCutting_Left_Front_Air_Exhaust.Size = new System.Drawing.Size(450, 38);
             this.optCutting_Left_Front_Air_Exhaust.TabIndex = 78;
             this.optCutting_Left_Front_Air_Exhaust.ToolTipCaption = null;
             // 
@@ -535,11 +535,11 @@
             this.groupBoxMullionNotching.Emoji = "";
             this.groupBoxMullionNotching.EnableAddress = "";
             this.groupBoxMullionNotching.EnableConditions = Kaban.Core.Enums.SystemCondition.None;
-            this.groupBoxMullionNotching.Location = new System.Drawing.Point(648, 16);
+            this.groupBoxMullionNotching.Location = new System.Drawing.Point(498, 16);
             this.groupBoxMullionNotching.Name = "groupBoxMullionNotching";
             this.groupBoxMullionNotching.Padding = new System.Windows.Forms.Padding(10, 22, 10, 8);
             this.groupBoxMullionNotching.PlcNumber = 1;
-            this.groupBoxMullionNotching.Size = new System.Drawing.Size(600, 228);
+            this.groupBoxMullionNotching.Size = new System.Drawing.Size(474, 228);
             this.groupBoxMullionNotching.TabIndex = 77;
             this.groupBoxMullionNotching.TitleText = "Mullion Notching";
             this.groupBoxMullionNotching.TitleTextKey = "Mullion Notching";
@@ -568,7 +568,7 @@
             this.checkBoxWithBladeBackFinishCut.Name = "checkBoxWithBladeBackFinishCut";
             this.checkBoxWithBladeBackFinishCut.PlcNumber = 1;
             this.checkBoxWithBladeBackFinishCut.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            this.checkBoxWithBladeBackFinishCut.Size = new System.Drawing.Size(576, 38);
+            this.checkBoxWithBladeBackFinishCut.Size = new System.Drawing.Size(450, 38);
             this.checkBoxWithBladeBackFinishCut.TabIndex = 70;
             this.checkBoxWithBladeBackFinishCut.ToolTipCaption = null;
             // 
@@ -594,7 +594,7 @@
             this.checkBoxWithBladeLeftBackFinishCut.Name = "checkBoxWithBladeLeftBackFinishCut";
             this.checkBoxWithBladeLeftBackFinishCut.PlcNumber = 1;
             this.checkBoxWithBladeLeftBackFinishCut.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            this.checkBoxWithBladeLeftBackFinishCut.Size = new System.Drawing.Size(576, 38);
+            this.checkBoxWithBladeLeftBackFinishCut.Size = new System.Drawing.Size(450, 38);
             this.checkBoxWithBladeLeftBackFinishCut.TabIndex = 68;
             this.checkBoxWithBladeLeftBackFinishCut.ToolTipCaption = null;
             // 
@@ -620,7 +620,7 @@
             this.checkBoxWithBladeSingleSideCut.Name = "checkBoxWithBladeSingleSideCut";
             this.checkBoxWithBladeSingleSideCut.PlcNumber = 1;
             this.checkBoxWithBladeSingleSideCut.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            this.checkBoxWithBladeSingleSideCut.Size = new System.Drawing.Size(576, 38);
+            this.checkBoxWithBladeSingleSideCut.Size = new System.Drawing.Size(450, 38);
             this.checkBoxWithBladeSingleSideCut.TabIndex = 66;
             this.checkBoxWithBladeSingleSideCut.ToolTipCaption = null;
             // 
@@ -647,7 +647,7 @@
             this.optVithBlade.Name = "optVithBlade";
             this.optVithBlade.PlcNumber = 1;
             this.optVithBlade.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            this.optVithBlade.Size = new System.Drawing.Size(576, 38);
+            this.optVithBlade.Size = new System.Drawing.Size(450, 38);
             this.optVithBlade.TabIndex = 64;
             this.optVithBlade.ToolTipCaption = null;
             // 
@@ -673,7 +673,7 @@
             this.optMullionNotching.Name = "optMullionNotching";
             this.optMullionNotching.PlcNumber = 1;
             this.optMullionNotching.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            this.optMullionNotching.Size = new System.Drawing.Size(576, 38);
+            this.optMullionNotching.Size = new System.Drawing.Size(450, 38);
             this.optMullionNotching.TabIndex = 62;
             this.optMullionNotching.ToolTipCaption = null;
             // 
@@ -700,7 +700,7 @@
             this.Controls.Add(this.optCutting_Right_Front_Vertical_Without_Encoder);
             this.Controls.Add(this.optCutting_Left_Front_Air_Exhaust);
             this.Name = "Options";
-            this.Size = new System.Drawing.Size(1269, 833);
+            this.Size = new System.Drawing.Size(996, 512);
             this.groupBoxMullionNotching.ResumeLayout(false);
             this.groupBoxMullionNotching.PerformLayout();
             this.ResumeLayout(false);

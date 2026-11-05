@@ -111,8 +111,11 @@ class SPL {
             Shot(form, "settings_" + n + (UiScale.Active ? "_" + (int)Math.Round(UiScale.Factor * 100) : ""));
             if (n == "Options" && !UiScale.Active) {
                 var rows = All(page).OfType<CheckBoxHMI>().ToList();
-                Check("Options: every switch a row " + UiStyle.SettingRowHeight + " high (46 before: 'a little less')", rows.Count == 23 &&
-                      rows.All(r => r.DrawnAsRow && r.Height == UiStyle.SettingRowHeight), string.Join(" ", rows.Select(r => r.Height).Distinct()));
+                // (5 November: "The width of the check box HMI controls ... should be set suitable to the other machine setting page
+                // numerical input controls" - 450, as the value rows)
+                Check("Options: every switch a row " + UiStyle.SettingRowHeight + " high (46 before: 'a little less'), 450 wide as the value rows", rows.Count == 23 &&
+                      rows.All(r => r.DrawnAsRow && r.Height == UiStyle.SettingRowHeight && r.Width == 450),
+                      string.Join(" ", rows.Select(r => r.Height).Distinct()) + " / " + string.Join(" ", rows.Select(r => r.Width).Distinct()));
                 // each column's rows touching: one under the other, none apart, none over another
                 var apart = new List<string>();
                 foreach (var col in rows.GroupBy(r => new { r.Parent, r.Left })) {
@@ -122,7 +125,7 @@ class SPL {
                 Check("  the rows of a column touching", apart.Count == 0, string.Join(" ", apart));
                 var group = All(page).OfType<GroupBoxHMI>().First();
                 var inGroup = rows.Where(r => r.Parent == group).ToList();
-                var below = rows.Where(r => r.Parent == page && r.Left == group.Left).OrderBy(r => r.Top).ToList();
+                var below = rows.Where(r => r.Parent == page && r.Left == group.Left + 12).OrderBy(r => r.Top).ToList();
                 Check("  the Mullion Notching frame round its five rows, the right column's rows under it", inGroup.Count == 5 &&
                       group.Height == inGroup.Max(r => r.Bottom) + 8 && below.Count == 6 && below[0].Top == group.Bottom + 16,
                       group.Height + " / " + below.Select(r => r.Top).FirstOrDefault());
