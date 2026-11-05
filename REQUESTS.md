@@ -6,6 +6,13 @@ Claude reads this file at the start of every batch, does the items, and moves ea
 ## To do
 
 ## Done
+- 5 November, afternoon (the answers, the Industry 4 frame):
+  - dea020a - FA2010's state map: 12 is Axis overload, 20 Profile not recognised (L1020), as MachineLog_DeviceList.xlsx
+    (kept in docs\industry4).
+  - 4c4ae43 - Machine Parameters > Options: an Industry 4 Logging frame at the right end (while the HMI does the logging) -
+    a switch row on the PLC bit of each of FA2010's twelve records (0 - 2 always logged), the machine's log settings under
+    them; the Alarms page the alarms only again. The records window of the morning is gone.
+  - (plan) docs\industry4\HMI_INDUSTRY4_PLAN.md - one log per machine, PLC and HMI records together: questions.
 - 5 November (switch rows as wide as the value rows, the records to log):
   - a2ff14a - Machine Settings > Options: the switch rows 450 wide, as the value rows (the Mullion Notching frame 474).
   - f97241d - Machine Parameters > Alarms and Logs (while the Industry 4 logging in the HMI is on): Records to log - Choose...
