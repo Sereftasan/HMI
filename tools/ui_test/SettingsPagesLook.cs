@@ -115,6 +115,19 @@ class SPL {
               frame.Height == log.Bottom + frame.Padding.Bottom,
               log == null ? "none" : log.Bounds + " in " + frame.Size);
         Shot(form, "settings_Options_logging");
+        // 5 November: a new machine (HMI Settings > Options) - what the HMI takes itself, under the settings
+        Kaban.UI.Helpers.PageScroll.Enable(page);
+        HmiFeatures.Set(HmiFeatures.MachineRecords, true); Pump(400);
+        var recRows = new[] { "cylinder_slow", "cylinder_not_confirmed", "cylinder_times", "axis_alarm", "axis_overload", "inverter_fault",
+                              "motor_high_load", "motor_loads", "machine_stop" }.Select(k => log.RecordSwitch(k)).ToList();
+        Check("a new machine: the HMI's records under the settings, switch rows as the others; the frame round them, the page scrolls to its end",
+              recRows.All(r => r != null && r.Visible && r.Width == 450 && r.DrawnAsRow) && frame.Height == log.Bottom + frame.Padding.Bottom &&
+              ((ScrollableControl)page).AutoScroll && page.DisplayRectangle.Height >= frame.Bottom,
+              frame.Bounds + " page " + page.DisplayRectangle);
+        ((ScrollableControl)page).AutoScrollPosition = new Point(0, frame.Bottom); Pump(200);
+        Shot(form, "settings_Options_records");
+        HmiFeatures.Set(HmiFeatures.MachineRecords, false); Pump(200);
+        Check("  an older machine again: gone, the frame as before", !recRows[0].Visible && frame.Height == log.Bottom + frame.Padding.Bottom);
         HmiFeatures.Set(HmiFeatures.Industry4Logging, false); Pump(200);
         Check("  off again: hidden", !frame.Visible);
         form.Close(); form.Dispose();
