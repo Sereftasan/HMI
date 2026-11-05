@@ -6,6 +6,11 @@ Claude reads this file at the start of every batch, does the items, and moves ea
 ## To do
 
 ## Done
+- 5 November (switch rows as wide as the value rows, the records to log):
+  - a2ff14a - Machine Settings > Options: the switch rows 450 wide, as the value rows (the Mullion Notching frame 474).
+  - f97241d - Machine Parameters > Alarms and Logs (while the Industry 4 logging in the HMI is on): Records to log - Choose...
+    lists FA2010's 24 records the PLC can log (code and PLC bit: 4 · L1004), as sample_R27000_FA20xx_ZC20xx.json has them
+    on by default; kept in the machine's settings, the PLC told on save.
 - 3 November, afternoon (the days at the right end, value rows 450, the AI table):
   - 0fcbd67 - HMI Settings > AI: the table fills its width again with its kept widths (Active was out of sight, no scroll
     bar) - every table that fills its width keeps doing so; a scroll bar along the bottom if ever needed.
