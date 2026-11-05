@@ -182,6 +182,9 @@ namespace Kaban.Core.Helpers
             try { return r.On(moduleId); } catch { return false; }
         }
 
+        /// <summary>The records switched on or off (HMI Settings > Options): the scanner reads the devices they need, or no longer.</summary>
+        public static void RecordsChanged() { OnWatchesChanged(); }
+
         /// <summary>Tells the records - never stopping the scan.</summary>
         private static void Tell(Action<IRecordsObserver> what)
         {

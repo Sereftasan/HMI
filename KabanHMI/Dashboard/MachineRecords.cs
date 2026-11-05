@@ -214,6 +214,8 @@ namespace Kaban.UI.Dashboard
             if (_installed) return;
             _installed = true;
             MachineLogger.StateLogged += StopReasons.StateLogged;
+            // switched on or off: the scanner reads what they need (the cylinders with the HMI's alarms off, the loads), or no longer
+            HmiFeatures.Changed += (s, e) => AlarmGeneration.RecordsChanged();
         }
 
         /// <summary>The shifts' times written so far, what waits written - the window closing.</summary>

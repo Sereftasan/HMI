@@ -114,7 +114,10 @@ class HR {
         Check("  its movements not timed, nothing taken", taken.Count == 0 && MachineRecords.Normals.Learning(clampKey) == 0 && MachineRecords.Normals.Of(clampKey) == null);
 
         Console.WriteLine("--- a new machine: the HMI times its cylinders for its records ---");
+        int watchChanges = 0;
+        AlarmGeneration.WatchesChanged += (s, e) => watchChanges++;
         HmiFeatures.Set(HmiFeatures.MachineRecords, true);
+        Check("switched on: the scanner told to read its list again", watchChanges >= 1);
         Scan();         // a movement commanded before it was watched is not timed: from the next scan
         Check("on (HMI Settings > Options): its outputs and sensors read, with the HMI's alarms still off",
               HmiFeatures.RecordsOn && MachineRecords.On("FA2010") && AlarmGeneration.Addresses().Any(a => a.Value == "Y32") &&
