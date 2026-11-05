@@ -21,6 +21,9 @@ namespace Kaban.Drivers.MitsubishiActUtl // <-- Updated Namespace
         /// </summary>
         private const int ConnectWaitMs = 150;
 
+        /// <summary>The most devices one random read asks for (a longer list is read in parts).</summary>
+        internal const int MaxRandomPoints = 128;
+
         /// <summary>How long the UI waits for a read or write.</summary>
         private const int CallWaitMs = 1000;
 
@@ -207,6 +210,25 @@ namespace Kaban.Drivers.MitsubishiActUtl // <-- Updated Namespace
                         for (int k = 0; k < moduleIdx.Count; k++) values[moduleIdx[k]] = b[k];
                     return true;
                 }
+            }
+
+            // A LONG LIST IN PARTS (5 November, found on the panel: "a read of 553 device(s) did not come back in 1000 ms" -
+            // GX Simulator3 answers a random read of that many in over a second, and the link was taken down every few
+            // seconds on the Machine Parameters pages). Each part is one call, judged by the second as before; a button's
+            // write gets its turn between them.
+            if (addresses != null && addresses.Length > MaxRandomPoints)
+            {
+                values = new int[addresses.Length];
+                for (int at = 0; at < addresses.Length; at += MaxRandomPoints)
+                {
+                    int n = Math.Min(MaxRandomPoints, addresses.Length - at);
+                    var part = new string[n];
+                    Array.Copy(addresses, at, part, 0, n);
+                    int[] got;
+                    if (!TryReadMulti(part, out got)) return false;
+                    Array.Copy(got, 0, values, at, n);
+                }
+                return true;
             }
 
             ReadMany r;

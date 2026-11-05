@@ -68,6 +68,15 @@ class MxModules {
         sw.Stop();
         Check("  the next scan: at once, the module not read meanwhile", ok && sw.ElapsedMilliseconds < 500 && (int)F("Gets").GetValue(null) == gets, sw.ElapsedMilliseconds + " ms");
 
+        Console.WriteLine("--- a long list in parts (GX Simulator3: 553 devices took over a second in one random read) ---");
+        F("RefuseInRandom").SetValue(null, null);
+        var many = new List<string>();
+        for (int i = 0; i < 553; i++) many.Add("M" + i);
+        int rr = (int)F("RandomReads").GetValue(null);
+        ok = drv.TryReadMulti(many.ToArray(), out v);
+        Check("553 devices: five random reads of at most 128, all answered, the connection kept",
+              ok && v.Length == 553 && (int)F("RandomReads").GetValue(null) - rr == 5 && drv.IsConnected, ((int)F("RandomReads").GetValue(null) - rr).ToString());
+
         Console.WriteLine("--- one device the random read refuses (\"a read of 553 device(s) did not come back in 1000 ms\") ---");
         F("GetDelayMs").SetValue(null, 10);
         F("RefuseInRandom").SetValue(null, "D9999");
