@@ -188,6 +188,8 @@ namespace Kaban.Machines.FA2010.Screens
             VisibleChanged += (s, e) => { if (Visible) EnsureLibrary(); };
             FillRecent();
             ApplyAccess();
+            // the milling units' requests for the steps of the bar sent last - answered from the start, the page shown or not
+            JobMilling.Start();
             Status(T("Job_Hint", "Open a job file (.kbn) - the bars, their pieces and what each sends to the machine are shown."));
         }
 
@@ -474,9 +476,13 @@ namespace Kaban.Machines.FA2010.Screens
                     notes.Add(string.Format(T("Job_LeftoverNote", "Leftover {0} mm, {1} step(s) (IDs {2} - {3}), {4} milling operation(s)."),
                         plan.Layout.Leftover.ToString("0.#", CI), plan.Steps.Count, plan.FirstNo, plan.LastNo, plan.Milling.Count));
                 foreach (var m in plan.Milling)
-                    notes.Add(string.Format(CI, "  {0}: {1} ({2}) - {3}{4}, Y {5:0.##} Z {6:0.##}, length {7:0.##}, speed {8:0.##}  [{9}]", m.Index, m.Label, m.MacroText,
+                {
+                    notes.Add(string.Format(CI, "  {0}: {1} ({2}) - {3}{4}, approach Y {5:0.##} Z {6:0.##}, length {7:0.##}, {8:0.##} m/min  [{9}]", m.Index, m.Label, m.MacroText,
                         m.Tool != null ? "tool " + m.ToolNo + " " + m.Tool.Position : "no tool", m.Face != null ? " at " + m.Face.Angle.ToString("0.#", CI) + "\u00B0" : "",
                         m.Y, m.Z, m.Length, m.Speed, m.Status));
+                    // its steps, as the unit gets them when it asks (L101 / L103)
+                    for (int k = 0; k < m.Steps.Count; k++) notes.Add("        " + (k + 1).ToString(CI) + ". " + m.Steps[k]);
+                }
             }
             if (Job.Problems.Count > 0) { notes.Add(""); notes.AddRange(Job.Problems.Select(p => "\u26A0 " + p)); }
             _notes.Text = string.Join("\r\n", notes);

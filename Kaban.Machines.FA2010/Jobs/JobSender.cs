@@ -22,8 +22,8 @@ namespace Kaban.Machines.FA2010.Jobs
     ///   PC_ProfilBar_IlkKesimSonu_Poz D95   the first right cut's position + 1 mm }  the user (6 November): "You need to write, yes"
     ///   PC_ProfilBar_SonKesim_Poz  D97      the last right cut's position + 1 mm  }
     ///
-    /// The job list is written whole (500 steps): what a longer bar before left behind is cleared. The milling steps themselves (the
-    /// G-code the PLC asks for with L101 / L103, R0 / R12800) are not sent yet.
+    /// The job list is written whole (500 steps): what a longer bar before left behind is cleared. The milling steps themselves go when a
+    /// unit asks for them (L101 / L103 - JobMilling): the bar's operations are handed to it once the bar is written.
     /// </summary>
     internal static class JobSender
     {
@@ -206,6 +206,8 @@ namespace Kaban.Machines.FA2010.Jobs
                 }
             }
             r.Ok = true;
+            // the units ask for these operations' steps from now on
+            JobMilling.Take(plan, string.Format(CI, "bar {0} of {1} ({2})", plan.Bar.Title, jobName, plan.Bar.Code));
             AuditLogger.Log(string.Format(CI, "[JOB] {0} sent: {1} steps (IDs {2} - {3}), {4} milling operation(s), {5} pieces", source,
                 plan.Steps.Count, plan.FirstNo, plan.LastNo, plan.Milling.Count, plan.Bar.Pieces.Count));
             return r;

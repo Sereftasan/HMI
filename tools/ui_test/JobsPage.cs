@@ -60,6 +60,9 @@ class JP {
         var asm = typeof(Kaban.Machines.FA2010.Screens.JobsScreen).Assembly;
         var screenType = typeof(Kaban.Machines.FA2010.Screens.JobsScreen);
         screenType.GetField("StatePath", Any).SetValue(null, Path.Combine(dir, "Jobs.cfg"));
+        var milling = asm.GetType("Kaban.Machines.FA2010.Jobs.JobMilling");
+        milling.GetField("StatePath", Any).SetValue(null, Path.Combine(dir, "JobMilling.cfg"));
+        Call(milling, "Reset");
 
         // the example library; its FA2010 tools given diameters, two profiles given the points their accessories are placed from
         string why;
@@ -158,18 +161,56 @@ class JP {
               (w[0] & 1) == 1 && w[1] == 80 && w[4] == 1250, w[0] + " " + w[1] + " " + w[4]);
         var op1 = ops[0];
         sim.TryReadBlock("R26000", 10 * ops.Count, out w);
-        Check("  R26000: milling operation 1 - its tool (1 - 4), angle x100, Y / Z x100, speed (the feed, as the old program)",
+        Check("  R26000: milling operation 1 - its tool (1 - 4), angle x100, approach Y / Z x100, speed (m/min x100, as the steps)",
               w[0] == (int)Get(op1, "ToolNo") && w[0] >= 1 && w[0] <= 4 && w[1] == (short)Math.Round(((Kaban.Profiles.Machining.Face)Get(op1, "Face")).Angle * 100) &&
-              w[3] == (short)Math.Round((double)Get(op1, "Y") * 100) && w[4] == (short)Math.Round((double)Get(op1, "Z") * 100) && w[5] == (short)Math.Round((double)Get(op1, "Speed")),
-              string.Join(",", w.Take(10)));
+              w[3] == (short)Math.Round((double)Get(op1, "Y") * 100) && w[4] == (short)Math.Round((double)Get(op1, "Z") * 100) &&
+              w[5] == (short)Math.Round((double)Get(op1, "Speed") * 100) && w[5] > 0 && w[5] < 1000, string.Join(",", w.Take(10)));
         var rights = steps.Cast<object>().Where(x => (int)Get(x, "Code") == 2350).Select(x => (double)Get(x, "Position")).ToList();
         sim.TryReadBlock("D106", 2, out w);
         Check("  D106: the bar's length x10000 (as the old program)", Dw(w, 0) == 65000000, Dw(w, 0).ToString());
         sim.TryReadBlock("D95", 4, out w);
         Check("  D95 / D97: the first and the last right cut x10000 + 1 mm", Dw(w, 0) == (int)(rights[0] * 10000 + 10000) && Dw(w, 2) == (int)(rights.Last() * 10000 + 10000),
               Dw(w, 0) + " " + Dw(w, 2));
+
+        // ---- the milling steps when a unit asks ----
+        Check("the bar's milling operations kept for the units' requests", (int)Get(milling, "Count") == ops.Count);
+        var opSteps = (System.Collections.IList)Get(op1, "Steps");
+        Check("  every operation has its steps", ops.Cast<object>().All(o => ((System.Collections.IList)Get(o, "Steps")).Count > 0), opSteps.Count.ToString());
+        sim.Write("D60", 1);
+        sim.Write("L101", 1);
+        Call(milling, "Poll");
+        var expected = Kaban.Profiles.Machining.PlcSteps.Words((System.Collections.Generic.IList<Kaban.Profiles.Machining.PlcStep>)opSteps);
+        sim.TryReadBlock("R0", expected.Length, out w);
+        Check("unit 1 asks (L101, D60 = 1): operation 1's steps written to R0 - code 0 after the last - and L102 on",
+              w.SequenceEqual(expected) && w[opSteps.Count * 16] == 0 && sim.Read("L102") == 1, w[0] + " " + sim.Read("L102"));
+        sim.Write("R0", 0);
+        Call(milling, "Poll");
+        Check("  asked once: not written again while L101 stays on", sim.Read("R0") == 0);
+        sim.Write("L101", 0);
+        Call(milling, "Poll");
+        Check("  L101 off: L102 off", sim.Read("L102") == 0);
+        sim.Write("D61", 2);
+        sim.Write("L103", 1);
+        Call(milling, "Poll");
+        sim.TryReadBlock("R12800", 16, out w);
+        var op2steps = (System.Collections.Generic.IList<Kaban.Profiles.Machining.PlcStep>)Get(ops[1], "Steps");
+        Check("unit 2 (L103, D61 = 2): operation 2's steps to R12800, L104 on", w[0] == op2steps[0].Code && w[0] != 0 && sim.Read("L104") == 1, w[0] + " " + sim.Read("L104"));
+        sim.Write("L103", 0);
+        Call(milling, "Poll");
+        sim.Write("D60", 77);
+        sim.Write("L101", 1);
+        sim.Write("R0", 0);
+        Call(milling, "Poll");
+        string log = string.Join("\n", Directory.GetFiles(AuditLogger.LogDirectory).Select(File.ReadAllText));
+        Check("an operation the bar has not (77): not answered - L102 stays off, the log says why", sim.Read("L102") == 0 && sim.Read("R0") == 0 &&
+              log.Contains("operation 77") && log.Contains("not answered"));
+        sim.Write("L101", 0);
+        Call(milling, "Poll");
+        Call(milling, "Reset");
+        Call(milling, "Start");
+        Check("  kept over a restart (JobMilling.cfg): the operations read back", (int)Get(milling, "Count") == ops.Count, Get(milling, "Count").ToString());
         Check("  the bar's state: sent", Convert.ToString(grid.Rows[0].Cells["state"].Value).Contains("sent"));
-        var log = string.Join("\n", Directory.GetFiles(AuditLogger.LogDirectory).Select(File.ReadAllText));
+        log = string.Join("\n", Directory.GetFiles(AuditLogger.LogDirectory).Select(File.ReadAllText));
         Check("  the audit log has it", log.Contains("[JOB] Jobs: bar 1 of JobSample_Library (ML8-F-4501) sent"), log.Length > 300 ? log.Substring(log.Length - 300) : log);
 
         // a shorter bar after it: the rest of the list cleared

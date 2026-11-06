@@ -69,7 +69,7 @@ Tool Angle;Word [Signed];1;;Takım Açısı - xxx.xx;100;2
 Operation Length;Word [Signed];2;;İşlem Uzunluğu - xxx.xx mm;100;2
 Profile Approach Y;Word [Signed];3;;Profil Yaklaşma Y - xxx.xx mm;100;2
 Profile Approach Z;Word [Signed];4;;Profil Yaklaşma Z - xxx.xx mm;100;2
-Milling Speed;Word [Signed];5;;Freze Hızı - as the old program writes it (x1; the device list says xxx.xx)
+Milling Speed;Word [Signed];5;;Freze Hızı - xxx.xx m/min (as the milling steps);100;2
 [Special Cut Parameters];5;<> KESİM İŞLEM PARAMETRELERİ - İşlem No 1001-1010: R25650 + 5 each
 #formerly;Cutting Operation Parameters
 Cut Angle;Word [Signed];0;;Kesim Açısı - xxx.x;10;1

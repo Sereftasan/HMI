@@ -181,6 +181,7 @@
       <DependentUpon>AxisSettings.cs</DependentUpon>
     </Compile>
     <Compile Include="Screens\GeneratedPage.cs" />
+    <Compile Include="Jobs\JobMilling.cs" />
     <Compile Include="Jobs\JobPlan.cs" />
     <Compile Include="Jobs\JobSender.cs" />
     <Compile Include="Screens\JobsScreen.cs">

@@ -490,9 +490,10 @@ namespace Kaban.Profiles.Machining
             return b.Wall < b.Feed.ThinMm ? f * b.Feed.ThinFactor : f;
         }
 
-        private struct Pt2 { public double X, Y; public Pt2(double x, double y) { X = x; Y = y; } }
-        private sealed class Seg { public double X, Y, I, J; public bool Arc; }
-        private sealed class ToolPath { public Pt2 Start; public readonly List<Seg> Moves = new List<Seg>(); }
+        internal struct Pt2 { public double X, Y; public Pt2(double x, double y) { X = x; Y = y; } }
+        /// <summary>A move to (X, Y) - an arc (G2, clockwise in the face's frame) about the point I, J from where it starts.</summary>
+        internal sealed class Seg { public double X, Y, I, J; public bool Arc; }
+        internal sealed class ToolPath { public Pt2 Start; public readonly List<Seg> Moves = new List<Seg>(); }
 
         /// <summary>
         /// The tool centre's path of one pass, relative to the operation's centre
@@ -500,7 +501,7 @@ namespace Kaban.Profiles.Machining
         /// slot and a pocket are lines side by side (stepping 60 % of the tool) and
         /// a pocket's outline.
         /// </summary>
-        private static ToolPath Path(SideOperation op, double D, bool mirrored)
+        internal static ToolPath Path(SideOperation op, double D, bool mirrored)
         {
             var m = op.Macro;
             double rot = (op.Rotation + (m.P("angle_deg") ?? 0)) * Math.PI / 180;
