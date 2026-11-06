@@ -600,6 +600,7 @@ Log_MachineSettingsTitle;Log database and reports;Kayıt veritabanı ve raporlar
 Log_MachineReading;reading its log...;kaydı okunuyor...;чтение журнала...;Protokoll wird gelesen...;lettura del registro...;leyendo su registro...
 Log_MachineStill;still;sürüyor;продолжается;dauert an;in corso;en curso
 Log_MachineTooMany;{0:#,0} machine logs in this period - too many to list: choose a shorter period.;Bu dönemde {0:#,0} makine kaydı var - listelemek için çok fazla: daha kısa bir dönem seçin.;{0:#,0} записей станка за период - слишком много для списка: выберите более короткий период.;{0:#,0} Maschinenprotokolle in diesem Zeitraum - zu viele für die Liste: einen kürzeren Zeitraum wählen.;{0:#,0} registri macchina in questo periodo - troppi da elencare: scegli un periodo più breve.;{0:#,0} registros de la máquina en este periodo - demasiados para listar: elija un periodo más corto.
+LCol_AccGroup;Accessory group;Aksesuar grubu;;;;
 LCol_AccType;Accessory type;Aksesuar tipi;Тип фурнитуры;Beschlagtyp;Tipo di accessorio;Tipo de accesorio
 LCol_Accessory;Accessory;Aksesuar;Фурнитура;Beschlag;Accessorio;Accesorio
 LCol_Active;In use;Kullanımda;Используется;In Gebrauch;In uso;En uso
@@ -631,11 +632,13 @@ LCol_Name;Name;Ad;Название;Name;Nome;Nombre
 LCol_Note;Note;Not;Примечание;Notiz;Nota;Nota
 LCol_OffsetY;Offset Y;Kaydırma Y;Смещение Y;Versatz Y;Offset Y;Desplazamiento Y
 LCol_OffsetZ;Offset Z;Kaydırma Z;Смещение Z;Versatz Z;Offset Z;Desplazamiento Z
+LCol_On;On;Açık;;;;
 LCol_Params;Shape;Şekil;Форма;Form;Forma;Forma
 LCol_Plunge;Drill plunge;Delme dalışı;Врезание сверла;Bohrvorschub;Affondo foratura;Penetración de taladro
 LCol_Position;Place;Yer;Место;Platz;Posizione;Posición
 LCol_PositionMode;Measured;Ölçüm şekli;Способ измерения;Bemaßung;Misurato;Medido
 LCol_Profile;Profile;Profil;Профиль;Profil;Profilo;Perfil
+LCol_ProfileGroup;Profile group;Profil grubu;;;;
 LCol_ProfileType;Profile type;Profil tipi;Тип профиля;Profiltyp;Tipo di profilo;Tipo de perfil
 LCol_Ratio;Ratio;Oran;Коэффициент;Verhältnis;Rapporto;Proporción
 LCol_RefProfile;Reference profile;Referans profil;Эталонный профиль;Referenzprofil;Profilo di riferimento;Perfil de referencia
@@ -661,6 +664,7 @@ LCol_XBase;X (mm);X (mm);X (мм);X (mm);X (mm);X (mm)
 LCol_XCount;Count;Adet;Количество;Anzahl;Numero;Cantidad
 LCol_XPitch;Pitch (mm);Aralık (mm);Шаг (мм);Abstand (mm);Passo (mm);Paso (mm)
 LCol_XStrategy;Along the bar;Profil boyunca;Вдоль профиля;Entlang des Stabs;Lungo la barra;A lo largo de la barra
+Lib_AccGroupLinks;Accessory groups of the profile groups;Profil gruplarının aksesuar grupları;;;;
 Lib_AccGroups;Accessory groups;Aksesuar grupları;Группы фурнитуры;Beschlaggruppen;Gruppi di accessori;Grupos de accesorios
 Lib_AccSeries;Hardware series;Aksesuar serileri;Серии фурнитуры;Beschlagserien;Serie di accessori;Series de herrajes
 Lib_AccVendors;Hardware vendors;Aksesuar üreticileri;Производители фурнитуры;Beschlaghersteller;Produttori di accessori;Fabricantes de herrajes
@@ -677,6 +681,7 @@ Lib_Faces;Machine faces;Makine yüzeyleri;Стороны обработки;Masc
 Lib_Families;Machining families;İşleme aileleri;Семейства обработки;Bearbeitungsfamilien;Famiglie di lavorazione;Familias de mecanizado
 Lib_Feeds;Feeds;İlerlemeler;Подачи;Vorschübe;Avanzamenti;Avances
 Lib_Groups;Groups;Gruplar;Группы;Gruppen;Gruppi;Grupos
+Lib_HintAccGroupLinks;An accessory group attached to a profile group: every accessory of it - those added to it later too - goes on every profile of the profile group.;Bir profil grubuna bağlanan aksesuar grubu: onun her aksesuarı - sonradan eklenenler de - profil grubunun her profiline gelir.;;;;
 Lib_HintAccGroups;Hinge, handle, drainage ...;Menteşe, kol, drenaj ...;Петля, ручка, дренаж ...;Band, Griff, Entwässerung ...;Cerniera, maniglia, drenaggio ...;Bisagra, manilla, drenaje ...
 Lib_HintAccSeries;A hardware vendor's range, and the interface it fits.;Bir aksesuar üreticisinin ürün serisi ve uyduğu arayüz.;Линейка производителя фурнитуры и интерфейс, к которому она подходит.;Das Programm eines Beschlagherstellers und die Schnittstelle, zu der es passt.;La gamma di un produttore di accessori e l'interfaccia a cui si adatta.;La gama de un fabricante de herrajes y la interfaz a la que se ajusta.
 Lib_HintAccVendors;Who makes the hardware.;Aksesuarı kim üretiyor.;Кто производит фурнитуру.;Wer die Beschläge herstellt.;Chi produce gli accessori.;Quién fabrica los herrajes.
@@ -2226,3 +2231,9 @@ Stp_Unplanned;Unplanned stop;Plansız duruş;;;;
 Rcd_Hmi;HMI record;HMI kaydı;;;;
 Rcd_Record;Record;Kayıt;;;;
 Rcd_Values;values;değer;;;;
+Prf_AccGroupOff;The accessory group {0} is off the group {1} (an accessory given to it one by one stays).;{0} aksesuar grubu {1} grubundan kaldırıldı (tek tek verilen aksesuar kalır).;;;;
+Prf_AccGroupOn;Every accessory of {0} - and every one added to it later - is on every profile of the group {1}: their placements are worked out - check and confirm them.;{0} grubunun her aksesuarı - sonradan eklenen her biri de - {1} grubunun her profilinde: yerleşimleri hesaplandı - kontrol edip onaylayın.;;;;
+Prf_AccGroupsHead;Accessory groups on the group {0} (every accessory of them, now and later);{0} grubundaki aksesuar grupları (her aksesuarları, şimdi ve sonra);;;;
+Prf_AccOneByOne;One accessory;Tek bir aksesuar;;;;
+Prf_AccViaGroup;with the accessory group {0};{0} aksesuar grubuyla;;;;
+Prf_AccViaGroupRemove;{0} comes with the accessory group {1}: switch it off here for this group, or take the accessory group off with + .;{0}, {1} aksesuar grubuyla geliyor: bu grup için buradan kapatın ya da aksesuar grubunu + ile kaldırın.;;;;

@@ -192,8 +192,10 @@ namespace Kaban.Machines.FA2010.Screens
                 _lblGroupAcc.Text = string.Format(T("Prf_GroupAccessories", "of the group {0}"), _current.Group);
                 foreach (var r in Library.GroupAccessories(_current.GroupId))
                 {
+                    string via = Library.Text(r, "via_group");
                     int i = _accGrid.Rows.Add((Library.Id(r, "is_enabled") ?? 1) != 0, Library.Text(r, "accessory_type"), Library.Text(r, "code"),
-                                              Library.Text(r, "description"), Library.Text(r, "operations"));
+                                              Library.Text(r, "description") + (string.IsNullOrEmpty(via) ? "" : "   (" + string.Format(T("Prf_AccViaGroup", "with the accessory group {0}"), via) + ")"),
+                                              Library.Text(r, "operations"));
                     _accGrid.Rows[i].Tag = Library.Id(r, "accessory_id").Value;
                     if (Library.Id(r, "accessory_id").Value == keepAcc) _accGrid.Rows[i].Selected = true;
                 }
@@ -473,6 +475,23 @@ namespace Kaban.Machines.FA2010.Screens
         {
             if (_current == null || !CanEdit) return;
             var menu = UiStyle.Menu();
+            // 6 November: whole accessory groups - every accessory of one, those added later too, on every profile of the group
+            var groups = Library.AccessoryGroupsOf(_current.GroupId);
+            if (groups.Count > 0)
+            {
+                menu.Items.Add(UiStyle.MenuHeader(string.Format(T("Prf_AccGroupsHead", "Accessory groups on the group {0} (every accessory of them, now and later)"), _current.Group)));
+                foreach (var g in groups)
+                {
+                    long gid = Library.Id(g, "id").Value;
+                    bool on = (Library.Id(g, "attached") ?? 0) != 0;
+                    string gname = Library.Text(g, "name");
+                    var it = new ToolStripMenuItem(gname + "   (" + Library.Text(g, "accessory_type") + ", " + (Library.Id(g, "accessories") ?? 0) + ")",
+                                                   null, (s, e) => AttachAccessoryGroup(gid, gname, !on)) { Checked = on };
+                    menu.Items.Add(it);
+                }
+                menu.Items.Add(new ToolStripSeparator());
+                menu.Items.Add(UiStyle.MenuHeader(T("Prf_AccOneByOne", "One accessory")));
+            }
             var list = Library.AccessoriesFor(_current.GroupId);
             if (list.Count == 0) menu.Items.Add(new ToolStripMenuItem(T("Prf_NoMoreAcc", "Every accessory of the library is on the group already.")) { Enabled = false });
             string lastType = null;
@@ -506,11 +525,30 @@ namespace Kaban.Machines.FA2010.Screens
             Status(string.Format(T("Prf_AccAdded", "{0} is on every profile of the group {1}: its placements are worked out - check and confirm them."), code, _current.Group));
         }
 
+        internal void AttachAccessoryGroup(long accessoryGroupId, string name, bool attach)
+        {
+            if (_current == null || !CanEdit) return;
+            Library.AttachAccessoryGroup(_current.GroupId, accessoryGroupId, attach);
+            AuditLogger.Log("profile library: the accessory group " + name + (attach ? " attached to " : " taken off ") + "the profile group " + _current.Group + ".");
+            LoadProfile(_current.Id, true);
+            RefreshRow();
+            Status(string.Format(attach
+                ? T("Prf_AccGroupOn", "Every accessory of {0} - and every one added to it later - is on every profile of the group {1}: their placements are worked out - check and confirm them.")
+                : T("Prf_AccGroupOff", "The accessory group {0} is off the group {1} (an accessory given to it one by one stays)."), name, _current.Group));
+        }
+
         private void RemoveAccessory()
         {
             long id = SelectedAccessoryId();
             if (_current == null || id <= 0 || !CanEdit) return;
             string code = Convert.ToString(_accGrid.SelectedRows[0].Cells["code"].Value);
+            var via = Library.GroupAccessories(_current.GroupId).FirstOrDefault(r => Library.Id(r, "accessory_id") == id && !string.IsNullOrEmpty(Library.Text(r, "via_group")));
+            if (via != null)
+            {
+                Ask.Tell(FindForm(), T("Prf_Title", "Profiles"), string.Format(T("Prf_AccViaGroupRemove",
+                    "{0} comes with the accessory group {1}: switch it off here for this group, or take the accessory group off with + ."), code, Library.Text(via, "via_group")));
+                return;
+            }
             if (!Ask.YesNo(FindForm(), T("Prf_Title", "Profiles"), string.Format(T("Prf_AskRemoveAcc",
                 "Take {0} off the group {1}? It goes from every profile of the group (switch it off instead to keep it)."), code, _current.Group))) return;
             Library.UnassignAccessory(_current.GroupId, id);

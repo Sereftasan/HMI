@@ -58,6 +58,10 @@
   line under each (UiStyle.RowRule, lighter than a table's GridRule) - every row 450 wide (the user's choice; a frame 474,
   its rows 12 in) - a switch: CheckBoxHMI SwitchRow; a value: NumericInputHMI.RowWidth (its caption is the row, words at the
   left, the field 8 px in from the right end). The Axis and Encoders tables: the same light line between their rows (UiStyle.RulesBetweenRows).
+- The profile library, schema 3 (6 November): an ACCESSORY GROUP attached to a PROFILE GROUP (group_accessory_group; the Profiles page's
+  Accessories + menu, the library editor's "Accessory groups of the profile groups") - every accessory of it, those added later too, on every
+  profile of the group; the resolver and the counts read v_group_accessory (one by one or with their group; switched off for the group: off).
+  profile_machine_setting: a profile's machine settings (FA2010's profile parameters) per machine instance.
 - FA2010's PlcLabels.csv is kept by hand since 22 October (tools\build_plc_labels.py would lose its tail): the structured labels of
   FA2010_DeviceList's Profiles & Operations (StructuredTypes.csv: Profile Parameters R25600 with R25615 Profile Correction Position, the job
   list D5000 / D6000 / D7000, milling parameters and steps, special cuts, mullion notching) and every PC_ device of its ManualMovement sheet,

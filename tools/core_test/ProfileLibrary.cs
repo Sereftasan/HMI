@@ -59,7 +59,7 @@ class PL {
         bool asked = false;
         Check("opened, built and seeded when asked", Library.Open(() => { asked = true; return true; }, out why), why);
         Check("  it asked, being new", asked);
-        Check("  schema 2", Library.Use(c => SchemaInstaller.InstalledVersion(c)) == 2);
+        Check("  schema 3", Library.Use(c => SchemaInstaller.InstalledVersion(c)) == SchemaInstaller.SchemaVersion && SchemaInstaller.SchemaVersion == 3);
         Check("  foreign keys are on", Throws(() => Library.Exec("INSERT INTO profile (group_id, code, dxf_status, is_active, created_at) VALUES (9999,'X','NONE',1,'x')")));
         asked = false;
         Library.Open(() => { asked = true; return true; }, out why);
@@ -83,7 +83,7 @@ class PL {
             Db.Execute(c, "INSERT INTO schema_info VALUES (1, 'x')");
         });
         Check("a schema 1 library opens", Library.Open(null, out why), why);
-        Check("  and is schema 2, with the new columns", Library.Use(c => SchemaInstaller.InstalledVersion(c)) == 2 &&
+        Check("  and is schema 3, with the new columns", Library.Use(c => SchemaInstaller.InstalledVersion(c)) == 3 &&
               Library.Rows("SELECT entry_side, depth_mode FROM accessory_operation").Count == 0 && Library.Rows("SELECT * FROM machine_face").Count == 0);
         Db.ConnectionTarget = Path.Combine(dir, "Kaban.db");
 

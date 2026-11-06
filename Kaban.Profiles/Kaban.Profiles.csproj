@@ -57,6 +57,7 @@
     <EmbeddedResource Include="sql\schema_machines.sql" />
     <EmbeddedResource Include="sql\seed_data.sql" />
     <EmbeddedResource Include="sql\upgrade_2.sql" />
+    <EmbeddedResource Include="sql\upgrade_3.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DataLayerTests.cs" />

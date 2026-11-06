@@ -968,7 +968,7 @@ namespace Kaban.Machines.FA2010.Screens
                 var refs = Library.Rows("SELECT profile_id, COUNT(*) AS n, SUM(CASE WHEN confirmed_by IS NULL THEN 1 ELSE 0 END) AS open FROM profile_reference GROUP BY profile_id")
                                   .ToDictionary(r => Library.Id(r, "profile_id").Value, r => r);
                 var expected = Library.Rows(@"SELECT p.id, COUNT(op.id) AS n FROM profile p
-                        JOIN group_accessory_assignment ga ON ga.profile_group_id = p.group_id AND ga.is_enabled = 1
+                        JOIN v_group_accessory ga ON ga.profile_group_id = p.group_id
                         JOIN accessory_operation op ON op.accessory_id = ga.accessory_id GROUP BY p.id")
                                       .ToDictionary(r => Library.Id(r, "id").Value, r => (int)(Library.Id(r, "n") ?? 0));
                 foreach (var p in Library.Profiles(_showInactive))

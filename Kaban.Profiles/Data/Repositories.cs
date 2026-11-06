@@ -21,7 +21,7 @@ namespace Kaban.Profiles.Data
         /// older program meeting a newer file says so instead of failing on a
         /// column it does not know about.
         /// </summary>
-        public const int SchemaVersion = 2;
+        public const int SchemaVersion = 3;
 
         private static string ReadResource(string name)
         {
@@ -320,7 +320,7 @@ SELECT op.id, a.id, a.code, op.seq, m.code, op.position_mode, op.reference_code,
        op.offset_y_mm, op.offset_z_mm, op.ratio,
        op.x_strategy, op.x_base_mm, op.x_pitch_mm, op.x_count
 FROM   profile p
-JOIN   group_accessory_assignment ga ON ga.profile_group_id = p.group_id AND ga.is_enabled = 1
+JOIN   v_group_accessory ga ON ga.profile_group_id = p.group_id
 JOIN   accessory a            ON a.id = ga.accessory_id AND a.is_active = 1
 JOIN   accessory_operation op ON op.accessory_id = a.id
 JOIN   macro m                ON m.id = op.macro_id

@@ -189,6 +189,14 @@ namespace Kaban.UI.Profiles
                 BuildAccessories);
             Section(acc, "acc_groups", T("Lib_AccGroups", "Accessory groups"), T("Lib_HintAccGroups", "Hinge, handle, drainage ..."), () => Table("accessory_group", "name", ed => ed
                 .Text("name", T("LCol_Name", "Name"), 220, true).Choice("accessory_type", T("LCol_Type", "Type"), AccessoryTypes, 160, true, "OTHER")));
+            // 6 November: "Why can't we attach accessory groups to the profile groups directly so any accessory would be attached to all
+            // the profiles as soon as they are defined using their accessory and profile groups"
+            Section(acc, "acc_group_links", T("Lib_AccGroupLinks", "Accessory groups of the profile groups"),
+                T("Lib_HintAccGroupLinks", "An accessory group attached to a profile group: every accessory of it - those added to it later too - goes on every profile of the profile group."),
+                () => Table("group_accessory_group", "profile_group_id, accessory_group_id", ed => ed
+                .Lookup("profile_group_id", T("LCol_ProfileGroup", "Profile group"), "SELECT id, name FROM profile_group ORDER BY name", 200, true)
+                .Lookup("accessory_group_id", T("LCol_AccGroup", "Accessory group"), "SELECT id, name FROM accessory_group ORDER BY name", 200, true)
+                .Bool("is_enabled", T("LCol_On", "On"), 60, true)));
             Section(acc, "acc_vendors", T("Lib_AccVendors", "Hardware vendors"), T("Lib_HintAccVendors", "Who makes the hardware."), () => Table("accessory_vendor", "name", ed => ed
                 .Text("code", T("LCol_Code", "Code"), 110, true).Text("name", T("LCol_Name", "Name"), 240, true)));
             Section(acc, "acc_series", T("Lib_AccSeries", "Hardware series"), T("Lib_HintAccSeries", "A hardware vendor's range, and the interface it fits."), () => Table("accessory_series", "name", ed => ed

@@ -511,7 +511,7 @@ JOIN   macro m                ON m.id = op.macro_id";
             // leaves a placement nobody should see as current.
             Exec(@"DELETE FROM resolved_placement WHERE profile_id=@p0 AND status IN ('AUTO','PROPOSED')
                    AND operation_id NOT IN (SELECT op.id FROM profile p
-                        JOIN group_accessory_assignment ga ON ga.profile_group_id = p.group_id AND ga.is_enabled = 1
+                        JOIN v_group_accessory ga ON ga.profile_group_id = p.group_id
                         JOIN accessory_operation op ON op.accessory_id = ga.accessory_id WHERE p.id = @p0)", profileId);
             return result;
         }
@@ -634,16 +634,27 @@ ORDER BY pc.id DESC", p.SeriesId, p.GroupId, p.Id);
             Resolve(profileId);
         }
 
-        /// <summary>The accessories of the profile's group, with whether each is on.</summary>
+        /// <summary>
+        /// The accessories of the profile's group, with whether each is on: given one by one, or with an accessory group attached to it
+        /// (<c>via_group</c>: that group's name) - an accessory added to that accessory group later is there at once.
+        /// </summary>
         public static List<Dictionary<string, object>> GroupAccessories(long groupId)
         {
-            return Rows(@"SELECT ga.id, a.id AS accessory_id, a.code, a.description, ag.accessory_type, ga.is_enabled,
+            return Rows(@"SELECT ga.id, a.id AS accessory_id, a.code, a.description, ag.accessory_type, ga.is_enabled, NULL AS via_group,
                                  (SELECT COUNT(*) FROM accessory_operation op WHERE op.accessory_id = a.id) AS operations
                           FROM group_accessory_assignment ga JOIN accessory a ON a.id = ga.accessory_id JOIN accessory_group ag ON ag.id = a.group_id
-                          WHERE ga.profile_group_id = @p0 ORDER BY ag.accessory_type, a.code", groupId);
+                          WHERE ga.profile_group_id = @p0
+                          UNION ALL
+                          SELECT NULL, a.id, a.code, a.description, ag.accessory_type, 1, ag.name,
+                                 (SELECT COUNT(*) FROM accessory_operation op WHERE op.accessory_id = a.id)
+                          FROM group_accessory_group gg JOIN accessory_group ag ON ag.id = gg.accessory_group_id
+                          JOIN accessory a ON a.group_id = ag.id AND a.is_active = 1
+                          WHERE gg.profile_group_id = @p0 AND gg.is_enabled = 1
+                            AND NOT EXISTS (SELECT 1 FROM group_accessory_assignment x WHERE x.profile_group_id = @p0 AND x.accessory_id = a.id)
+                          ORDER BY 5, 3", groupId);
         }
 
-        /// <summary>Accessories the group can take: those of its hardware interface first, then the rest.</summary>
+        /// <summary>Accessories the group can take: those of its hardware interface first, then the rest (not those it has already).</summary>
         public static List<Dictionary<string, object>> AccessoriesFor(long groupId)
         {
             return Rows(@"SELECT a.id, a.code, a.description, ag.accessory_type,
@@ -651,7 +662,34 @@ ORDER BY pc.id DESC", p.SeriesId, p.GroupId, p.Id);
                           FROM accessory a JOIN accessory_group ag ON ag.id = a.group_id LEFT JOIN accessory_series s ON s.id = a.series_id
                           JOIN profile_group g ON g.id = @p0
                           WHERE a.is_active = 1 AND a.id NOT IN (SELECT accessory_id FROM group_accessory_assignment WHERE profile_group_id = @p0)
+                            AND a.id NOT IN (SELECT accessory_id FROM v_group_accessory WHERE profile_group_id = @p0)
                           ORDER BY compatible DESC, ag.accessory_type, a.code", groupId);
+        }
+
+        /// <summary>Every accessory group, with whether it is attached to the profile group (<c>attached</c> 1) and how many accessories it has.</summary>
+        public static List<Dictionary<string, object>> AccessoryGroupsOf(long groupId)
+        {
+            return Rows(@"SELECT ag.id, ag.name, ag.accessory_type,
+                                 CASE WHEN EXISTS (SELECT 1 FROM group_accessory_group gg WHERE gg.profile_group_id = @p0 AND gg.accessory_group_id = ag.id
+                                                   AND gg.is_enabled = 1) THEN 1 ELSE 0 END AS attached,
+                                 (SELECT COUNT(*) FROM accessory a WHERE a.group_id = ag.id AND a.is_active = 1) AS accessories
+                          FROM accessory_group ag ORDER BY ag.accessory_type, ag.name", groupId);
+        }
+
+        /// <summary>
+        /// Attaches an accessory group to a profile group (or takes it off): its accessories - now and those added to it later - on
+        /// every profile of the group. The profiles' placements are worked out again as each is shown.
+        /// </summary>
+        public static void AttachAccessoryGroup(long groupId, long accessoryGroupId, bool attached)
+        {
+            Transaction(c =>
+            {
+                if (!attached) { Db.Execute(c, "DELETE FROM group_accessory_group WHERE profile_group_id=@p0 AND accessory_group_id=@p1", groupId, accessoryGroupId); return; }
+                if (Db.Count(c, "SELECT COUNT(*) FROM group_accessory_group WHERE profile_group_id=@p0 AND accessory_group_id=@p1", groupId, accessoryGroupId) > 0)
+                    Db.Execute(c, "UPDATE group_accessory_group SET is_enabled=1 WHERE profile_group_id=@p0 AND accessory_group_id=@p1", groupId, accessoryGroupId);
+                else
+                    Db.Execute(c, "INSERT INTO group_accessory_group (profile_group_id, accessory_group_id, is_enabled) VALUES (@p0,@p1,1)", groupId, accessoryGroupId);
+            });
         }
 
         public static void AssignAccessory(long groupId, long accessoryId, bool enabled)
