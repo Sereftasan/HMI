@@ -54,6 +54,73 @@ namespace Kaban.Core.Helpers
             return true;
         }
 
+        /// <summary>
+        /// MANY DEVICES IN FEW CALLS (6 November: the PLC Monitor's job list and milling tables - 500 double words each - read with
+        /// every refresh): the runs of a word device (D, R, ZR ... decimal), <paramref name="minRun"/> devices or more with at most
+        /// <paramref name="maxGap"/> between them, read as blocks (<paramref name="maxBlock"/> words a call at most); the rest - and a
+        /// block the controller refuses - in the random read as before. A random read of thousands of devices took several calls
+        /// of 128 and seconds on GX Simulator; a block of 960 words is one call.
+        /// </summary>
+        public static bool ReadMany(IPlcDriver driver, string[] addresses, out int[] values, int minRun = 32, int maxGap = 4, int maxBlock = 960)
+        {
+            values = new int[addresses == null ? 0 : addresses.Length];
+            if (driver == null || addresses == null) return false;
+            var block = driver as IPlcBlockAccess;
+            if (block == null || addresses.Length < minRun) return driver.TryReadMulti(addresses, out values);
+            // the word devices by their letters: number -> the places it is asked at
+            var byPrefix = new Dictionary<string, SortedDictionary<long, List<int>>>(StringComparer.OrdinalIgnoreCase);
+            var rest = new List<int>();
+            for (int i = 0; i < addresses.Length; i++)
+            {
+                string prefix; long n;
+                string a = addresses[i] ?? "";
+                if (a.Contains(".") || a.Contains("@") || !PlcAddressHelper.TrySplit(a, out prefix, out n) || PlcAddressHelper.IsBitDevice(a) ||
+                    PlcAddressHelper.IsDoubleWordDevice(a) || prefix.EndsWith("\\G") || PlcAddressHelper.BaseOf(prefix) != 10)
+                { rest.Add(i); continue; }
+                SortedDictionary<long, List<int>> nums;
+                if (!byPrefix.TryGetValue(prefix, out nums)) byPrefix[prefix] = nums = new SortedDictionary<long, List<int>>();
+                List<int> at;
+                if (!nums.TryGetValue(n, out at)) nums[n] = at = new List<int>();
+                at.Add(i);
+            }
+            var result = values;
+            bool ok = true;
+            foreach (var kv in byPrefix)
+            {
+                var nums = kv.Value.Keys.ToList();
+                int s = 0;
+                while (s < nums.Count)
+                {
+                    int e = s;
+                    while (e + 1 < nums.Count && nums[e + 1] - nums[e] <= maxGap + 1 && nums[e + 1] - nums[s] < maxBlock) e++;
+                    long first = nums[s], span = nums[e] - first + 1;
+                    bool read = false;
+                    if (e - s + 1 >= minRun)
+                    {
+                        short[] w;
+                        bool got;
+                        try { got = block.TryReadBlock(PlcAddressHelper.Compose(kv.Key, first), (int)span, out w); } catch { got = false; w = null; }
+                        if (got && w != null && w.Length >= span)
+                        {
+                            for (int k = s; k <= e; k++)
+                                foreach (int i in kv.Value[nums[k]]) result[i] = w[nums[k] - first];
+                            read = true;
+                        }
+                    }
+                    if (!read) for (int k = s; k <= e; k++) rest.AddRange(kv.Value[nums[k]]);
+                    s = e + 1;
+                }
+            }
+            if (rest.Count > 0)
+            {
+                int[] got;
+                bool r = driver.TryReadMulti(rest.Select(i => addresses[i]).ToArray(), out got);
+                if (got != null) for (int k = 0; k < rest.Count && k < got.Length; k++) result[rest[k]] = got[k];
+                ok &= r;
+            }
+            return ok;
+        }
+
         public static int WriteByDevice(IPlcDriver driver, string first, short[] values)
         {
             if (driver == null || values == null) return -1;

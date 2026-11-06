@@ -149,8 +149,10 @@ class PS {
         Check("the array unfolded: its steps, each folded", grid.Rows[e1].Visible && !grid.Rows[x1].Visible &&
               Convert.ToString(grid.Rows[e1].Cells["Label"].Value) == "      ▸ Recipe[1]", Convert.ToString(grid.Rows[e1].Cells["Label"].Value));
         Call(form, "ToggleArray", mon, sh, els[1]);
-        Check("a step unfolded: its members, indented one more, each with its own type and address",
-              grid.Rows[x1].Visible && Convert.ToString(grid.Rows[x1].Cells["Label"].Value) == "            Recipe[1].X" &&
+        // 6 November: "There is no need to mention the label name at each line of their sub properties" - the member's own name, the whole in its tip
+        Check("a step unfolded: its members, indented one more, each its own name (the whole in its tip), type and address",
+              grid.Rows[x1].Visible && Convert.ToString(grid.Rows[x1].Cells["Label"].Value) == "            X" &&
+              grid.Rows[x1].Cells["Label"].ToolTipText == "Recipe[1].X" &&
               Convert.ToString(grid.Rows[x1].Cells["DataType"].Value) == "Double Word [Signed]" && Convert.ToString(grid.Rows[x1].Cells["Address"].Value) == "R17" &&
               Convert.ToString(grid.Rows[Rows(sh).IndexOf(m1[8])].Cells["Address"].Value) == "R31.3" && !grid.Rows[Rows(sh).IndexOf(Kids(els[2], "Members")[0])].Visible,
               Convert.ToString(grid.Rows[x1].Cells["Label"].Value));

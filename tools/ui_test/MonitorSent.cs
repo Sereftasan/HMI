@@ -43,6 +43,8 @@ class MSent {
         Directory.CreateDirectory(dir);
         MonType.GetField("WatchFolder", Any).SetValue(null, dir);
         int n = PlcLabelTable.Load(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "PlcLabels.csv"));
+        StructuredTypes.FilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "StructuredTypes.csv");     // FA2010's (no machine mounted here)
+        StructuredTypes.Reload();
         Check("the FA2010 label list read", n > 60, n.ToString());
         var pp = PlcLabelTable.ByLabel("PC_ProfilParametreleri");
         Check("  the profile's parameters: a structured label at R25600, under its heading",
@@ -74,9 +76,49 @@ class MSent {
         Check("  under the list's headings: the job and the profile, the options, the job's other devices, what the PLC gives back",
               heads.Count >= 4 && heads[0].StartsWith("The job and the profile") && heads.Any(h => h.StartsWith("The machine's options")) &&
               heads.Any(h => h.StartsWith("What the PLC gives back")), string.Join(" | ", heads));
-        Check("  the profile's parameters, the job list, the milling and cutting steps, the options, the G-code numbers",
-              new[] { "R25600", "D5000", "D6000", "D7000", "R26000", "R25650", "R0", "R12800", "R25700", "L24", "D60", "D386" }.All(a => rows.Any(r => addr(r) == a)),
-              string.Join(",", rows.Select(addr).Where(a => a.Length > 0).Take(30)));
+        var tables = ((IList)Get(Get(sh, "Tables"), "Rows")).Cast<object>().ToList();
+        Check("  in its list: the profile's parameters, the options, the G-code numbers",
+              new[] { "R25600", "L24", "D60", "D386" }.All(a => rows.Any(r => addr(r) == a)), string.Join(",", rows.Select(addr).Where(a => a.Length > 0).Take(30)));
+        // 6 November: "PC job list labels should be an array (the length is 500) and they should come together in one table view"
+        Check("  the arrays as tables, not in the list: the job list, the milling and cutting parameters and steps",
+              new[] { "D5000", "D6000", "D7000", "R26000", "R25650", "R0", "R12800", "R25700" }.All(a => tables.Any(r => addr(r) == a) && !rows.Any(r => addr(r) == a)),
+              string.Join(",", tables.Where(r => !(bool)Get(r, "IsElement") && !(bool)Get(r, "IsMember")).Select(addr).Where(a => a.Length > 0).Distinct()));
+        var groups = ((System.Collections.IEnumerable)MonType.GetMethod("TableGroups", Any).Invoke(null, new[] { sh })).Cast<IList>().ToList();
+        var job = groups.FirstOrDefault(gr => addr(gr[0]) == "D5000");
+        Check("  the job list ONE table: ID, position, code - 500 lines", job != null && job.Count == 3 && addr(job[1]) == "D6000" && addr(job[2]) == "D7000" &&
+              (int)Get(job[0], "EffectiveCount") == 500, job == null ? "none" : string.Join("+", job.Cast<object>().Select(addr)));
+        var stepsTable = groups.FirstOrDefault(gr => addr(gr[0]) == "R0");
+        Check("  the milling steps (400 x 16 words): their first 25 lines (the old program's 400 words), the milling parameters all 100",
+              stepsTable != null && (int)Get(stepsTable[0], "EffectiveCount") == 25 && (int)Get(groups.First(gr => addr(gr[0]) == "R26000")[0], "EffectiveCount") == 100);
+        Check("  the tables under their headings", tables.Any(r => comment(r).StartsWith("The job and the profile")));
+
+        // a structure's members by their own names ("Tool No" is enough)
+        var pr = rows.First(r => addr(r) == "R25600");
+        pr.GetType().GetField("Expanded", Any).SetValue(pr, true);
+        Call(form, "Render", mon, sh); Pump(50);
+        var grid = (DataGridView)Get(sh, "Grid");
+        var labels = grid.Rows.Cast<DataGridViewRow>().Select(r => Convert.ToString(r.Cells["Label"].Value)).ToList();
+        Check("a structure's members under it by their own names: 'Conveyor Speed', not 'PC_ProfilParametreleri.Conveyor Speed'",
+              labels.Any(l => l.Trim() == "Conveyor Speed") && !labels.Any(l => l.Contains("PC_ProfilParametreleri.")),
+              string.Join(" | ", labels.Take(8)));
+        var memberRow = grid.Rows.Cast<DataGridViewRow>().First(r => Convert.ToString(r.Cells["Label"].Value).Trim() == "Conveyor Speed");
+        Check("  its whole name in the tooltip", memberRow.Cells["Label"].ToolTipText == "PC_ProfilParametreleri.Conveyor Speed", memberRow.Cells["Label"].ToolTipText);
+        pr.GetType().GetField("Expanded", Any).SetValue(pr, false);
+
+        // a tab made before the arrays were tables: its job list a single row of the list - put right
+        var tRows = (IList)Get(Get(sh, "Tables"), "Rows");
+        tRows.Clear();
+        var listRows = (IList)Get(sh, "Rows");
+        var old = Activator.CreateInstance(rows[0].GetType());
+        old.GetType().GetField("Station").SetValue(old, 22);
+        old.GetType().GetField("Address").SetValue(old, "D5000");
+        old.GetType().GetField("DataTypeOverride").SetValue(old, "Double Word [Signed](0..499)");
+        listRows.Insert(0, old);
+        Call(form, "FillSentTab", mon, false); Pump(50);
+        var after = ((IList)Get(sh, "Rows")).Cast<object>().ToList();
+        groups = ((System.Collections.IEnumerable)MonType.GetMethod("TableGroups", Any).Invoke(null, new[] { sh })).Cast<IList>().ToList();
+        Check("a tab made before (the job list a single row): the row gone, the job list a table again", !after.Any(r => addr(r) == "D5000") &&
+              groups.Any(gr => addr(gr[0]) == "D5000" && gr.Count == 3), string.Join(",", after.Select(addr).Where(a => a.Length > 0).Take(10)));
         Check("  not the label list's other devices (MAN_, IN_ ...)", !rows.Any(r => addr(r) == "M604") && !rows.Any(r => addr(r) == "M200"));
         var swr = System.Diagnostics.Stopwatch.StartNew();
         Call(form, "RefreshValues"); Pump(50);
@@ -84,7 +126,8 @@ class MSent {
         Check("  its values read quickly (arrays folded)", swr.ElapsedMilliseconds < 3000, swr.ElapsedMilliseconds + " ms");
         int count = rows.Count;
         Call(form, "CollectSent"); Pump(100);
-        Check("again: the same tab, nothing twice", ((IList)Get(sh, "Rows")).Count == count && ((IList)Get(mon, "Sheets")).Count == sheets.Count);
+        Check("again: the same tab, nothing twice", ((IList)Get(sh, "Rows")).Count == count && ((IList)Get(mon, "Sheets")).Count == sheets.Count &&
+              ((IList)Get(Get(sh, "Tables"), "Rows")).Count == tables.Count);
         form.Close();
         Console.WriteLine(fail == 0 ? "MONITOR SENT ALL PASS" : "MONITOR SENT " + fail + " FAILED");
         Environment.Exit(fail == 0 ? 0 : 1);

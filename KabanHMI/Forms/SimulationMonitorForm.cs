@@ -1026,6 +1026,16 @@ namespace Kaban.UI.Forms
             {
                 try { FillSentTab(mon, false); } catch (Exception ex) { AuditLogger.Log("monitor: the tab HMI -> PLC not made - " + ex.Message); }
                 mon.Made.Add("sent");
+                mon.Made.Add("sent-tables");
+                SaveWatchList(mon);
+            }
+            // a tab made before its arrays were tables (6 November): put right once - still there, never made again
+            else if (!mon.Made.Contains("sent-tables") && SentEntries(mon.Station).Count > 0)
+            {
+                string sentName = T("Tab_MonSent", "HMI -> PLC");
+                if (mon.Sheets.Any(x => string.Equals(x.Name, sentName, StringComparison.OrdinalIgnoreCase)))
+                    try { FillSentTab(mon, false); } catch (Exception ex) { AuditLogger.Log("monitor: the tab HMI -> PLC not put right - " + ex.Message); }
+                mon.Made.Add("sent-tables");
                 SaveWatchList(mon);
             }
 
@@ -2975,10 +2985,24 @@ namespace Kaban.UI.Forms
             Report(added, entries.Count);
         }
 
-        /// <summary>The elements of a long array the tab HMI -> PLC shows at first.</summary>
+        /// <summary>The elements of a long array the tab HMI -> PLC shows at first (one too big to read on every refresh).</summary>
         internal const int SentArrayShown = 10;
+        /// <summary>An array of more words than this shows its first elements in the tab HMI -> PLC (its count typed bigger when wanted).</summary>
+        internal const int SentTableWords = 2000;
 
-        /// <summary>Fills the tab HMI -> PLC (made at the end when there is none); the devices added.</summary>
+        /// <summary>A label of the tab HMI -> PLC shown as a table: an array - of a structure, or of a simple type (the job list).</summary>
+        internal static bool SentAsTable(PlcLabelTable.Entry e)
+        {
+            return e != null && StructuredTypes.CountIn(e.DataType) > 1;
+        }
+
+        /// <summary>
+        /// Fills the tab HMI -> PLC (made at the end when there is none); the devices added. 6 November ("PC job list labels should be an
+        /// array (the length is 500) and they should come together in one table view ... We'd better create these kind of array labels in
+        /// table view when automatically created"): an ARRAY is a table of its own under its heading - its elements the lines, a structure's
+        /// members the columns - and arrays of a simple type of one length one after another (the job list's ID, position, code) ONE table;
+        /// the rest are the list's rows under their headings. A tab made before (the arrays its list's single rows) is put right.
+        /// </summary>
         private int FillSentTab(MonitorTab mon, bool select)
         {
             var entries = SentEntries(mon.Station);
@@ -2990,25 +3014,62 @@ namespace Kaban.UI.Forms
                 else { sh = new Sheet { Name = name }; AttachSheet(mon, sh, mon.SheetTabs.TabPages.Count); }
             }
             if (select) mon.SheetTabs.SelectedTab = sh.Page;
+            Func<WatchRow, PlcLabelTable.Entry, bool> isOf = (r, e) => r.IsDevice && string.Equals(r.Address, e.Address, StringComparison.OrdinalIgnoreCase) &&
+                (r.LabelOverride.Length == 0 || string.Equals(r.LabelOverride, e.Label, StringComparison.Ordinal));
+            // an array made a single row of the list before: off the list - it comes back as a table
+            foreach (var e in entries.Where(SentAsTable))
+                foreach (var r in sh.Rows.Where(r => isOf(r, e)).ToList()) sh.Rows.Remove(r);
             int added = 0;
+            var items = TableItems(sh);
+            int tablesBefore = items.Count;
             foreach (var g in entries.GroupBy(e => e.Heading.Length > 0 ? e.Heading : T("Hdr_MonSentOther", "The PC's other devices (PC_)"))
                                      .OrderBy(g => g.First().Heading.Length == 0 ? 1 : 0))
             {
-                var devices = g.Select(e => new DeviceCollector.Device { Station = mon.Station, Address = e.Address, DataType = e.DataType }).ToList();
+                // the list's rows
+                var list = g.Where(e => !SentAsTable(e)).ToList();
+                var devices = list.Select(e => new DeviceCollector.Device { Station = mon.Station, Address = e.Address, DataType = e.DataType }).ToList();
                 foreach (var d in devices.Where(d => sh.Rows.Any(r => r.IsDevice && string.Equals(r.Address, d.Address, StringComparison.OrdinalIgnoreCase))).ToList())
                     devices.Remove(d);
                 bool headed = sh.Rows.Any(r => r.Comment == g.Key);
-                added += AddDevices(mon, sh, devices, headed ? null : g.Key);
-                foreach (var e in g)
+                if (devices.Count > 0) added += AddDevices(mon, sh, devices, headed ? null : g.Key);
+                foreach (var e in list)
                 {
                     var row = sh.Rows.LastOrDefault(r => r.IsDevice && string.Equals(r.Address, e.Address, StringComparison.OrdinalIgnoreCase));
                     if (row != null && row.LabelOverride != e.Label && sh.Rows.Count(r => r.IsDevice && string.Equals(r.Address, e.Address, StringComparison.OrdinalIgnoreCase)) == 1)
                         ApplyNames(mon, row, e.Label, e.DataType);
-                    // a long array (the milling steps: 400 x 16 words) shows its first elements - its count typed bigger when wanted;
-                    // the whole of it read on every refresh made the tab (and a simulated station's every read) crawl
-                    if (row != null && row.EffectiveCount > SentArrayShown) { row.ArrayCount = SentArrayShown; row.Expanded = false; }
                 }
+
+                // the tables: a heading line above them, an array a table - simple ones of one length joined
+                var made = new List<List<WatchRow>>();
+                WatchRow lastSimple = null;
+                foreach (var e in g.Where(SentAsTable))
+                {
+                    if (sh.Tables.Rows.Any(r => isOf(r, e))) { lastSimple = null; continue; }
+                    var row = FromLabelList(mon, e);
+                    if (string.IsNullOrEmpty(row.LabelOverride) && PlcLabelTable.ByAddress(mon.Station, row.Address) == null) row.LabelOverride = e.Label;
+                    var st = StructuredTypes.Find(StructuredTypes.BaseName(e.DataType), mon.Station);
+                    int size = st != null ? Math.Max(st.Size, st.MinimumSize) : Math.Max(1, StructuredTypes.WordsOf(StructuredTypes.BaseName(e.DataType)));
+                    // a long one (the milling steps: 400 x 16 words) its first elements: the old program's 400 words, 10 at least
+                    if (row.ArrayCount * size > SentTableWords) row.ArrayCount = Math.Max(SentArrayShown, 400 / size);
+                    if (st == null && lastSimple != null && lastSimple.ArrayCount == row.ArrayCount)
+                    {
+                        row.Joined = true;
+                        made[made.Count - 1].Add(row);
+                    }
+                    else made.Add(new List<WatchRow> { row });
+                    lastSimple = st == null ? row : null;
+                    added++;
+                }
+                if (made.Count == 0) continue;
+                if (!items.Any(i => i[0].IsComment && i[0].Comment == g.Key))
+                    items.Add(new List<WatchRow> { new WatchRow { Station = mon.Station, Comment = g.Key } });
+                // after its group's heading (and the tables already there under it)
+                int at = items.FindIndex(i => i[0].IsComment && i[0].Comment == g.Key) + 1;
+                while (at < items.Count && !items[at][0].IsComment) at++;
+                items.InsertRange(at, made);
             }
+            if (items.Count != tablesBefore) SetTableItems(sh, items);
+            EnsureBlankRow(sh);
             SaveWatchList(mon);
             Render(mon, sh);
             return added;
@@ -3434,8 +3495,10 @@ namespace Kaban.UI.Forms
             var now = DateTime.Now;
             var seenNames = mon.Values.Keys.ToList();
             var seenValues = mon.Values.Values.ToList();
+            // (a set to look in: a table of thousands of devices made a list's Contains of each a long wait)
+            var seen = new HashSet<string>(seenNames, StringComparer.OrdinalIgnoreCase);
             foreach (var w in mon.Sheets.SelectMany(s => s.AllRows).Where(r => r.IsDevice && !r.IsGroup).SelectMany(WordsOf).Concat(FindWords(mon)))
-                if (!mon.Values.ContainsKey(w) && !seenNames.Contains(w)) { seenNames.Add(w); seenValues.Add(0); }
+                if (!mon.Values.ContainsKey(w) && seen.Add(w)) { seenNames.Add(w); seenValues.Add(0); }
             DeviceHistory.Observe(mon.Station, seenNames, seenValues, now, now);
 
             // An array's elements are listed, even one added a moment ago (a table's too).
@@ -3448,7 +3511,10 @@ namespace Kaban.UI.Forms
                 mon.Sheets.SelectMany(s => s.AllRows).Where(r => r.IsDevice).SelectMany(r => WordsOf(r).Skip(1))
                    .Concat(mon.Sheets.SelectMany(s => s.AllRows).Where(r => r.Structure != null).SelectMany(StructureWords)),
                 StringComparer.OrdinalIgnoreCase);
-            var discovered = mon.Values.Keys.Where(a => !mon.Hidden.Contains(a) && !mon.Listed(a) && !highWords.Contains(a))
+            // (the listed devices as a set: looking each value up in every row was 800 ms a refresh with the job list's tables)
+            var listed = new HashSet<string>(mon.Sheets.SelectMany(s => s.AllRows).Select(r => r.Address).Where(a => !string.IsNullOrEmpty(a)),
+                                             StringComparer.OrdinalIgnoreCase);
+            var discovered = mon.Values.Keys.Where(a => !mon.Hidden.Contains(a) && !listed.Contains(a) && !highWords.Contains(a))
                                 .OrderBy(a => a, StringComparer.OrdinalIgnoreCase).ToList();
             var first = mon.Sheets.FirstOrDefault();
             if (discovered.Count == 0 || first == null) return;
@@ -3489,7 +3555,8 @@ namespace Kaban.UI.Forms
                 bool ok = false;
                 var refused = new List<string>();
                 var started = DateTime.Now;
-                try { ok = driver.TryReadMulti(batch, out values); }
+                // a table's runs of devices (the job list's 500 double words) as blocks: one call each, not thousands at random
+                try { ok = PlcBlocks.ReadMany(driver, batch, out values); }
                 catch (Exception ex) { AuditLogger.Log("monitor read failed: " + ex.Message); }
                 // ONE DEVICE THE CONTROLLER DOES NOT ANSWER failed the whole batch, and every row showed "-"
                 // (23 October): then each is asked on its own - the others' values kept, that one left out a while
@@ -3608,7 +3675,11 @@ namespace Kaban.UI.Forms
                 string indent = new string(' ', 6 * model.Depth);
                 if (model.IsArray) label = (model.Expanded ? "\u25BE " : "\u25B8 ") + label + "   [" + model.EffectiveCount + "]";
                 else if (model.Structure != null) label = indent + (model.Expanded ? "\u25BE " : "\u25B8 ") + label;
+                // a structure's member: its own name under its structure (6 November: "There is no need to mention the label name at
+                // each line of their sub properties - 'Tool No' is enough") - the whole name in its tooltip
+                else if (model.IsMember) label = indent + model.Member.Name;
                 else if (model.IsElement) label = indent + label;
+                if (model.IsMember) Tip(row.Cells["Label"], model.EffectiveLabel);
                 if (!(sh.Editing && grid.CurrentCell != null && grid.CurrentCell.RowIndex == i)) Set(row.Cells["Label"], label);
                 var wantLabelColour = model.IsUnknownToLabelTable ? ColLabelUnknown : ColLabelKnown;
                 if (row.Cells["Label"].Style.ForeColor != wantLabelColour) row.Cells["Label"].Style.ForeColor = wantLabelColour;
