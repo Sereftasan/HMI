@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -30,6 +30,17 @@ namespace Kaban.UI.Dashboard
             public readonly List<RecordValue> Values = new List<RecordValue>();
             /// <summary>The trigger the scan before (null: not read yet - a trigger already true at the start is not a record).</summary>
             internal bool? Was;
+            /// <summary>The HMI turns the trigger off once the record is in the database (the PLC waits for it).</summary>
+            public bool ResetTrigger = true;
+            /// <summary>The handshake: 0 waiting for the trigger, 1 taken (being written), 2 written - the trigger being turned off.</summary>
+            internal volatile int Stage;
+            internal DateTime ResetAsked;
+
+            /// <summary>A bit that comes ON - the only trigger the HMI can turn off again.</summary>
+            public bool Resettable
+            {
+                get { return ResetTrigger && HasTrigger && Trigger.TriggerType == Kaban.Core.Enums.TriggerType.ON; }
+            }
 
             public bool HasTrigger { get { return Trigger != null && Trigger.TriggerType != Kaban.Core.Enums.TriggerType.None && !string.IsNullOrWhiteSpace(Trigger.MonitorAddress); } }
         }
@@ -46,7 +57,7 @@ namespace Kaban.UI.Dashboard
             var d = new Definition
             {
                 ModuleId = c.ModuleId ?? "", Station = c.PlcNumber, Code = c.RecordCode, TextKey = c.TextKey ?? "",
-                Trigger = Copy(c.Trigger)
+                Trigger = Copy(c.Trigger), ResetTrigger = c.ResetTrigger
             };
             foreach (var v in c.Values)
             {
@@ -128,9 +139,24 @@ namespace Kaban.UI.Dashboard
             foreach (var d in All)
             {
                 if (d.Station != station) continue;
-                if (!d.HasTrigger || !Taken(d)) { d.Was = null; continue; }
+                if (!d.HasTrigger || !Taken(d)) { d.Was = null; d.Stage = 0; continue; }
                 bool on;
                 try { on = d.Trigger.Check(lookup); } catch { continue; }
+                if (d.Resettable)
+                {
+                    // THE HANDSHAKE (6 November: "The log recording triggers should be reset by the HMI after the recording so the
+                    // PLC knows the HMI recorded it and doesn't start the next operation until the HMI record completed"): the PLC
+                    // holds the bit; the HMI takes the record while it is on (on its first scan too - the PLC is waiting), turns it
+                    // off once the record is in the database, and takes the next only after it has seen it off.
+                    if (d.Stage == 0 && on) { d.Stage = 1; Take(d, lookup, now); }
+                    else if (d.Stage == 2)
+                    {
+                        if (!on) d.Stage = 0;
+                        else if ((DateTime.UtcNow - d.ResetAsked).TotalSeconds >= 2) ResetNow(d);    // the write did not take: again
+                    }
+                    d.Was = on;
+                    continue;
+                }
                 bool rising = d.Was.HasValue && !d.Was.Value && on;
                 d.Was = on;
                 if (rising) Take(d, lookup, now);
@@ -153,7 +179,51 @@ namespace Kaban.UI.Dashboard
                 if (name.Length == 0) name = (v.Address ?? "").Trim();
                 details.Add(new LogDatabase.Detail(name, Math.Round(value.Value, 6), null));
             }
-            MachineRecords.Add(d.ModuleId, d.Code, now, details);
+            if (!d.Resettable) { MachineRecords.Add(d.ModuleId, d.Code, now, details); return; }
+            var def = d;
+            int done = 0;
+            Action<bool> finished = written => { if (System.Threading.Interlocked.Exchange(ref done, 1) == 0) Recorded(def, written); };
+            MachineRecords.AddDated(d.ModuleId, d.Code, MachineRecords.ToUtc(now), details, finished);
+            // the database not answering: the record stays queued, the machine is not held for it
+            if (System.Threading.Volatile.Read(ref done) == 0)
+                new System.Threading.Timer(_ =>
+                {
+                    if (System.Threading.Interlocked.Exchange(ref done, 1) != 0) return;
+                    AuditLogger.Log("Machine records (" + def.ModuleId + "): record " + def.Code + " not in the database after " + WriteWaitMs / 1000 +
+                                    " s - kept to be written; " + def.Trigger.MonitorAddress + " turned off so the machine goes on.");
+                    Recorded(def, true);
+                }, null, WriteWaitMs, System.Threading.Timeout.Infinite);
+        }
+
+        /// <summary>How long the PLC waits for a record the database does not take (it stays queued) before the trigger is turned off anyway.</summary>
+        internal static int WriteWaitMs = 5000;
+
+        /// <summary>The trigger turned off - the record written (or kept queued, its database not answering).</summary>
+        private static void Recorded(Definition d, bool written)
+        {
+            if (d.Stage != 1) return;
+            d.Stage = 2;
+            if (!written) AuditLogger.Log("Machine records (" + d.ModuleId + "): record " + d.Code + " not written (no log database set) - " + d.Trigger.MonitorAddress + " turned off so the machine goes on.");
+            ResetNow(d);
+        }
+
+        /// <summary>Writes the trigger's bit 0 (PLC <c>station</c>).</summary>
+        internal static Func<int, string, bool> WriteOff = (station, address) =>
+        {
+            var drv = PlcManager.Instance.GetDriverForWrite(station);
+            if (drv == null) return false;
+            using (Kaban.UI.Helpers.WriteSource.For("Machine records: the record taken, its trigger turned off"))
+                return drv.Write(address, 0) == 0;
+        };
+
+        private static void ResetNow(Definition d)
+        {
+            d.ResetAsked = DateTime.UtcNow;
+            string a = d.Trigger.MonitorAddress.Trim();
+            int st = PlcAddressHelper.StationOf(d.Station, a);
+            bool ok = false;
+            try { ok = WriteOff(st, PlcAddressHelper.DeviceOf(a)); } catch { }
+            if (!ok) AuditLogger.Log("Machine records (" + d.ModuleId + "): record " + d.Code + " taken, but " + a + " could not be turned off - tried again.");
         }
     }
 }

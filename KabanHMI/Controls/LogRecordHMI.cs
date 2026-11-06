@@ -216,6 +216,13 @@ namespace Kaban.UI.Controls
         public PlcTrigger Trigger { get; set; } = new PlcTrigger();
 
         [Category(" Record")]
+        [DefaultValue(true)]
+        [Description("The HMI turns the trigger bit OFF once the record is in the database, so the PLC knows it was recorded and waits for " +
+                     "it (6 November). The PLC sets the bit and holds it; the HMI takes the record, then resets the bit. Only a bit that comes ON " +
+                     "(Trigger ON). False: taken as the trigger becomes true, nothing written back.")]
+        public bool ResetTrigger { get; set; } = true;
+
+        [Category(" Record")]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         [Editor(typeof(Kaban.UI.Design.RecordValuesEditor), typeof(UITypeEditor))]
         [Description("What is read when it comes, in order: RecordNumber (a numeric display's word, or two, divided) and RecordLamp (a lamp's bit).")]

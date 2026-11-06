@@ -1,4 +1,5 @@
-using System;
+﻿using System;
+using System.Reflection;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
@@ -406,13 +407,23 @@ class HR {
         HmiFeatures.Set(HmiFeatures.MachineRecords, false);
         Check("  an older machine: not read", !AlarmGeneration.Addresses().Any(a => a.Value == "M500"));
         HmiFeatures.Set(HmiFeatures.MachineRecords, true);
-        mem["M500"] = 1; mem["D89"] = 0x2345; mem["D90"] = 1; Scan(); Scan();
-        Check("its trigger already on when watched: not a record", !taken.Contains("FA2010:16"));
-        mem["M500"] = 0; Scan(); mem["M500"] = 1; Scan();
-        Check("it comes (ON): recorded at once", taken.Count(x => x == "FA2010:16") == 1);
+        // 6 November: "The log recording triggers should be reset by the HMI after the recording so the PLC knows the HMI recorded it
+        // and doesn't start the next operation until the HMI record completed"
+        var offs = new List<string>();
+        typeof(RecordTriggers).GetField("WriteOff", BindingFlags.NonPublic | BindingFlags.Static)
+            .SetValue(null, (Func<int, string, bool>)((stn, a) => { offs.Add(stn + ":" + a); mem[a] = 0; return true; }));
+        Check("the trigger turned off by the HMI after the record (ResetTrigger, on by default)", barRec.ResetTrigger && RecordTriggers.All.First(d => d.Code == 16).Resettable);
+        mem["M500"] = 1; mem["D89"] = 0x2345; mem["D90"] = 1; Scan();
+        Check("its trigger already on when watched: the PLC is waiting - recorded", taken.Count(x => x == "FA2010:16") == 1);
         Scan(); Scan();
-        Check("  staying on: once", taken.Count(x => x == "FA2010:16") == 1);
-        MachineRecords.Flush();
+        Check("  still on while it is written: once, the bit not turned off before the record is in", taken.Count(x => x == "FA2010:16") == 1);
+        MachineRecords.Flush(); Pump(50);
+        Check("  in the database: M500 turned off (the PLC goes on)", offs.Count == 1 && offs[0] == "1:M500" && mem["M500"] == 0, string.Join(",", offs));
+        Scan(); mem["M500"] = 1; Scan();
+        Check("the PLC's next: recorded, turned off again", taken.Count(x => x == "FA2010:16") == 2);
+        MachineRecords.Flush(); Pump(50);
+        Check("  M500 off again", offs.Count == 2 && mem["M500"] == 0);
+        Scan();
         var bl = Details(Convert.ToInt64(Records(16).Last()[0]));
         Check("  as the PLC's record 16: its code, the state map's name of its value, the two words", bl == "Bar Length:74565", bl);
         mem["D600"] = 2; Scan(); mem["D601"] = 37; mem["M601"] = 1; mem["D600"] = 3; Scan();
@@ -426,7 +437,7 @@ class HR {
               barRec.Switch.Checked && ownRec.Switch.Checked && barRec.Shown.StartsWith("Bar length") && ownRec.Shown == "Glue checked" && barRec.Width == 450);
         barRec.Switch.Toggle(); Pump(50);
         mem["M500"] = 0; Scan(); mem["M500"] = 1; Scan();
-        Check("  switched off: kept in the machine's settings, not taken", !board.Config.RecordOn("record_16") && taken.Count(x => x == "FA2010:16") == 1 &&
+        Check("  switched off: kept in the machine's settings, not taken", !board.Config.RecordOn("record_16") && taken.Count(x => x == "FA2010:16") == 2 &&
               !AlarmGeneration.Addresses().Any(a => a.Value == "M500"));
         barRec.Switch.Toggle(); Pump(50);
         host2.Close();

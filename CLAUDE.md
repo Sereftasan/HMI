@@ -84,7 +84,8 @@
   cuts on both. The plan: docs\industry4\HMI_INDUSTRY4_PLAN.md.
   A machine's own records on a new machine (5 November, the PLC program's MOV K16 / DMOV / CALL MakineLogKayit done by the HMI):
   LogRecordHMI rows in the Industry 4 Logging frame - RecordCode (the PLC's code: the dashboard treats it as that record; or 1200 - 1299),
-  Trigger (a PlcTrigger as EnableTrigger: taken as it becomes true), Values (RecordNumber / RecordLamp, written into the designer file as
+  Trigger (a PlcTrigger as EnableTrigger; a bit ON with ResetTrigger - the default, 6 November - is a HANDSHAKE: the PLC holds it, the
+  HMI takes the record and turns the bit off once it is in the database, 5 s at most if the database does not answer), Values (RecordNumber / RecordLamp, written into the designer file as
   "Values.Add(new RecordNumber(...))"); discovered with the pages (RecordTriggers), shown instead of the PLC's switch of the same record
   (MachineLogSettings.Arrange). FA2010: 6, 15, 16, 20, 22 - 6 and 20 come with L1006 / L1020 (the user's answer: the records' devices in
   MachineLog_DeviceList.xlsx); the measured width / height D481 / D482; FireBoyu, BoyOkundu, ProfilOlcum_OK, Profil_Dogru, the profile code

@@ -757,6 +757,7 @@ namespace Kaban.UI.Dashboard
             public int Code;
             public string Date = "";
             public List<LogDatabase.Detail> Details;
+            public Action Done;
         }
 
         private static readonly List<Pending> _queue = new List<Pending>();
@@ -779,13 +780,23 @@ namespace Kaban.UI.Dashboard
         /// <summary>The same dated as the database dates the machine's records (UTC; a stop: the PLC's date of its start).</summary>
         public static void AddDated(string moduleId, int code, DateTime dbDate, IList<LogDatabase.Detail> details)
         {
+            AddDated(moduleId, code, dbDate, details, null);
+        }
+
+        /// <summary>
+        /// The same; <paramref name="done"/> runs once the record is in the database (the writer's thread) - or at once, true for
+        /// "not written", when there is no database to write it into (a machine must not wait for a log that is not set up).
+        /// </summary>
+        public static void AddDated(string moduleId, int code, DateTime dbDate, IList<LogDatabase.Detail> details, Action<bool> done)
+        {
             var c = ConfigOf(moduleId);
             string path = c == null ? "" : (c.DatabasePath ?? "").Trim();
-            if (path.Length == 0) return;
+            if (path.Length == 0) { if (done != null) try { done(false); } catch { } return; }
             lock (_queue)
             {
                 if (_queue.Count >= 20000) _queue.RemoveAt(0);          // a database gone for days: the oldest go
-                _queue.Add(new Pending { Path = path, Code = code, Date = LogDatabase.ToDb(dbDate), Details = details.ToList() });
+                _queue.Add(new Pending { Path = path, Code = code, Date = LogDatabase.ToDb(dbDate), Details = details.ToList(),
+                                         Done = done == null ? null : (Action)(() => done(true)) });
             }
             StartWriter();
             var h = Recorded;
@@ -835,6 +846,7 @@ namespace Kaban.UI.Dashboard
                             }
                             lock (_queue) foreach (var p in g) _queue.Remove(p);
                             Written += g.Count();
+                            foreach (var p in g) if (p.Done != null) try { p.Done(); } catch { }
                         }
                         Problem = "";
                     }
@@ -879,7 +891,7 @@ namespace Kaban.UI.Dashboard
 
         // ------------------------------------------------------------------ time
 
-        private static DateTime ToUtc(DateTime local)
+        internal static DateTime ToUtc(DateTime local)
         {
             try { return TimeZoneInfo.ConvertTimeToUtc(DateTime.SpecifyKind(local, DateTimeKind.Unspecified), TimeZoneInfo.Local); }
             catch { return local.ToUniversalTime(); }
