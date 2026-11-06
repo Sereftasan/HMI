@@ -6,6 +6,11 @@ Claude reads this file at the start of every batch, does the items, and moves ea
 ## To do
 
 ## Done
+- 6 November, late night (the job list's labels as one table, the conditions' column):
+  - e3c9437 - PLC Monitor, the tab HMI -> PLC: every array a table under its heading - the job list's ID / position / code ONE table of
+    500 lines, the milling parameters 100, the milling and cutting steps their first lines; a member shows its own name (Tool No).
+    A table is read in blocks (one call each); a tab made before is put right once.
+  - b5621c5 - PLC Monitor, Machine conditions: a Met when column before Condition (M100 OFF, D300 <= 3 ...).
 - 6 November (the answers: the job list from the old program, R25615, attach accessory groups to profile groups; the labels of what the HMI writes):
   - af23ca3 - Never two copies, a restart's included: the old process waited for and ended if it lingers; a closed window's process ends in 5 s.
   - eedcb04 - LogRecordHMI: the HMI turns the trigger off once the record is in the database (ResetTrigger, the default) - the PLC waits for it.
