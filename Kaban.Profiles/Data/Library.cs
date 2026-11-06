@@ -502,6 +502,59 @@ JOIN   macro m                ON m.id = op.macro_id";
             });
         }
 
+        // ---- a profile's machine settings (FA2010: the old program's profile parameters, R25600 ...) ---------------------------------------
+
+        /// <summary>A machine setting of a profile: its value, and where it came from ("" its own; else the profile it was taken from).</summary>
+        public sealed class MachineValue
+        {
+            public string Code = "", Value = "", From = "";
+            public bool Own { get { return From.Length == 0; } }
+        }
+
+        /// <summary>
+        /// The profile's machine settings for a machine: its own; for one it has not, its GROUP'S TEMPLATE's - the group's reference profile,
+        /// else its first profile (the old program's "first profile of the group") - then its base profile's. A new profile of a group so
+        /// starts with the group's values, and only what differs is entered.
+        /// </summary>
+        public static Dictionary<string, MachineValue> MachineSettings(long profileId, long instance)
+        {
+            var result = new Dictionary<string, MachineValue>(StringComparer.OrdinalIgnoreCase);
+            var chain = new List<long> { profileId };
+            var template = Scalar(@"SELECT COALESCE(g.reference_profile_id, (SELECT MIN(q.id) FROM profile q WHERE q.group_id = g.id AND q.is_active = 1))
+                                    FROM profile p JOIN profile_group g ON g.id = p.group_id WHERE p.id = @p0", profileId);
+            if (template != null && template != DBNull.Value) chain.Add(Convert.ToInt64(template));
+            long at = profileId;
+            for (int i = 0; i < 10; i++)
+            {
+                var b = Scalar("SELECT base_profile_id FROM profile WHERE id=@p0", at);
+                if (b == null || b == DBNull.Value) break;
+                at = Convert.ToInt64(b);
+                chain.Add(at);
+            }
+            foreach (long pid in chain.Distinct())
+            {
+                string from = pid == profileId ? "" : Convert.ToString(Scalar("SELECT code FROM profile WHERE id=@p0", pid));
+                foreach (var r in Rows("SELECT code, value FROM profile_machine_setting WHERE profile_id=@p0 AND instance_id=@p1", pid, instance))
+                {
+                    string code = Text(r, "code");
+                    if (!result.ContainsKey(code)) result[code] = new MachineValue { Code = code, Value = Text(r, "value"), From = from ?? "" };
+                }
+            }
+            return result;
+        }
+
+        /// <summary>A machine setting of the profile kept (null or "": its own taken away - the template's again).</summary>
+        public static void SetMachineSetting(long profileId, long instance, string code, string value)
+        {
+            Transaction(c =>
+            {
+                Db.Execute(c, "DELETE FROM profile_machine_setting WHERE profile_id=@p0 AND instance_id=@p1 AND code=@p2", profileId, instance, code);
+                if (!string.IsNullOrWhiteSpace(value))
+                    Db.Execute(c, "INSERT INTO profile_machine_setting (profile_id, instance_id, code, value, updated_at) VALUES (@p0,@p1,@p2,@p3,@p4)",
+                               profileId, instance, code, value.Trim(), Db.Now());
+            });
+        }
+
         /// <summary>Works out every placement of the profile again (confirmed ones stay as they are).</summary>
         public static ProfileResolver.Result Resolve(long profileId)
         {

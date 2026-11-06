@@ -192,6 +192,10 @@
       <DependentUpon>ProfilesScreen.cs</DependentUpon>
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="Screens\ProfilesScreen.Machine.cs">
+      <DependentUpon>ProfilesScreen.cs</DependentUpon>
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Screens\ProfilesScreen.Drawing.cs">
       <DependentUpon>ProfilesScreen.cs</DependentUpon>
       <SubType>UserControl</SubType>

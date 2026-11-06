@@ -149,6 +149,7 @@ namespace Kaban.Machines.FA2010.Screens
 
             BuildTable();
             BuildDetails();
+            BuildMachineTab();
             BuildDrawing();
             BuildAccessories();
             BuildPrograms();
@@ -1080,6 +1081,7 @@ namespace Kaban.Machines.FA2010.Screens
                 _placements = Library.Placements(_current.Id);
             }
             FillDetails();
+            FillMachine();
             FillReferences();
             ShowDrawing();
             FillAccessories();
