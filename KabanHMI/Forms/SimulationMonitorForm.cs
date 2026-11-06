@@ -317,6 +317,8 @@ namespace Kaban.UI.Forms
             /// engineer removed would otherwise come straight back.
             /// </summary>
             public readonly HashSet<string> Hidden = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            /// <summary>What the program made in this list once ("sent": the tab HMI -> PLC) - not made again when deleted.</summary>
+            public readonly HashSet<string> Made = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
             /// <summary>Latest values, by address. Filled by the refresh.</summary>
             public readonly Dictionary<string, int> Values = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
@@ -1018,6 +1020,14 @@ namespace Kaban.UI.Forms
             if (mon.Sheets.Count == 0 && mon.SavedTabCount != 0) mon.Sheets.Add(new Sheet { Name = T("Tab_MonMain", "Main") });
             foreach (var sh in mon.Sheets.ToList()) AttachSheet(mon, sh, mon.SheetTabs.TabPages.Count);
             WireTabDrag(mon);
+            // 6 November: "I don't see any label created on the label list, I want you to create them for me" - the tab of what the HMI
+            // writes to the PLC made in every controller's list that has such labels, once (a tab deleted stays deleted)
+            if (!mon.Made.Contains("sent") && SentEntries(mon.Station).Count > 0)
+            {
+                try { FillSentTab(mon, false); } catch (Exception ex) { AuditLogger.Log("monitor: the tab HMI -> PLC not made - " + ex.Message); }
+                mon.Made.Add("sent");
+                SaveWatchList(mon);
+            }
 
             mon.EmptyHint = new Label
             {
@@ -2940,14 +2950,20 @@ namespace Kaban.UI.Forms
             Report(added, devices.Count);
         }
 
+        /// <summary>The label list's labels of what the HMI writes to the PLC: under a "#heading;" line, or named PC_.</summary>
+        internal static List<PlcLabelTable.Entry> SentEntries(int station)
+        {
+            return PlcLabelTable.EntriesFor(station)
+                .Where(e => !string.IsNullOrWhiteSpace(e.Address) && (e.Heading.Length > 0 || e.Label.StartsWith("PC_", StringComparison.OrdinalIgnoreCase)))
+                .ToList();
+        }
+
         /// <summary>The tab of what the HMI writes to the PLC: made (or found) and filled from the label list, under its headings.</summary>
         internal void CollectSent()
         {
             var mon = CurrentMonitor;
             if (mon == null) return;
-            var entries = PlcLabelTable.EntriesFor(mon.Station)
-                .Where(e => !string.IsNullOrWhiteSpace(e.Address) && (e.Heading.Length > 0 || e.Label.StartsWith("PC_", StringComparison.OrdinalIgnoreCase)))
-                .ToList();
+            var entries = SentEntries(mon.Station);
             if (entries.Count == 0)
             {
                 MessageBox.Show(DialogOwner, T("Msg_MonSentNone", "The label list (PlcLabels.csv) of this controller names nothing the HMI writes (no PC_ label, no heading)."),
@@ -2955,15 +2971,30 @@ namespace Kaban.UI.Forms
                 return;
             }
             Remember(T("Undo_Collect", "add the devices"), mon);
+            int added = FillSentTab(mon, true);
+            Report(added, entries.Count);
+        }
+
+        /// <summary>The elements of a long array the tab HMI -> PLC shows at first.</summary>
+        internal const int SentArrayShown = 10;
+
+        /// <summary>Fills the tab HMI -> PLC (made at the end when there is none); the devices added.</summary>
+        private int FillSentTab(MonitorTab mon, bool select)
+        {
+            var entries = SentEntries(mon.Station);
             string name = T("Tab_MonSent", "HMI -> PLC");
-            var sh = mon.Sheets.FirstOrDefault(x => string.Equals(x.Name, name, StringComparison.OrdinalIgnoreCase)) ?? AddSheet(mon, name, mon.Sheets.Count);
-            mon.SheetTabs.SelectedTab = sh.Page;
+            var sh = mon.Sheets.FirstOrDefault(x => string.Equals(x.Name, name, StringComparison.OrdinalIgnoreCase));
+            if (sh == null)
+            {
+                if (select) sh = AddSheet(mon, name, mon.Sheets.Count);
+                else { sh = new Sheet { Name = name }; AttachSheet(mon, sh, mon.SheetTabs.TabPages.Count); }
+            }
+            if (select) mon.SheetTabs.SelectedTab = sh.Page;
             int added = 0;
             foreach (var g in entries.GroupBy(e => e.Heading.Length > 0 ? e.Heading : T("Hdr_MonSentOther", "The PC's other devices (PC_)"))
                                      .OrderBy(g => g.First().Heading.Length == 0 ? 1 : 0))
             {
                 var devices = g.Select(e => new DeviceCollector.Device { Station = mon.Station, Address = e.Address, DataType = e.DataType }).ToList();
-                // a structured label: the label's own type (its members shown under it); two labels on one address (R25700): each its own row
                 foreach (var d in devices.Where(d => sh.Rows.Any(r => r.IsDevice && string.Equals(r.Address, d.Address, StringComparison.OrdinalIgnoreCase))).ToList())
                     devices.Remove(d);
                 bool headed = sh.Rows.Any(r => r.Comment == g.Key);
@@ -2973,11 +3004,14 @@ namespace Kaban.UI.Forms
                     var row = sh.Rows.LastOrDefault(r => r.IsDevice && string.Equals(r.Address, e.Address, StringComparison.OrdinalIgnoreCase));
                     if (row != null && row.LabelOverride != e.Label && sh.Rows.Count(r => r.IsDevice && string.Equals(r.Address, e.Address, StringComparison.OrdinalIgnoreCase)) == 1)
                         ApplyNames(mon, row, e.Label, e.DataType);
+                    // a long array (the milling steps: 400 x 16 words) shows its first elements - its count typed bigger when wanted;
+                    // the whole of it read on every refresh made the tab (and a simulated station's every read) crawl
+                    if (row != null && row.EffectiveCount > SentArrayShown) { row.ArrayCount = SentArrayShown; row.Expanded = false; }
                 }
             }
             SaveWatchList(mon);
             Render(mon, sh);
-            Report(added, entries.Count);
+            return added;
         }
 
         /// <summary>
@@ -3985,6 +4019,7 @@ namespace Kaban.UI.Forms
         private const string SheetPrefix = "#sheet:";
         private const string HiddenPrefix = "#hidden:";
         private const string TabsPrefix = "#tabs:";
+        private const string MadePrefix = "#made:";
 
         internal static List<string> Serialize(MonitorTab mon)
         {
@@ -4013,6 +4048,7 @@ namespace Kaban.UI.Forms
                                           : string.Join(";", Csv(r.LabelOverride), Csv(r.DataTypeOverride), Csv(r.Address), "", Extras(r)).TrimEnd(';'));
             }
             foreach (var a in mon.Hidden.OrderBy(a => a, StringComparer.OrdinalIgnoreCase)) lines.Add(HiddenPrefix + a);
+            foreach (var m in mon.Made.OrderBy(a => a, StringComparer.OrdinalIgnoreCase)) lines.Add(MadePrefix + m);
             return lines;
         }
 
@@ -4024,6 +4060,7 @@ namespace Kaban.UI.Forms
             {
                 var line = raw.Trim();
                 if (line.StartsWith(HiddenPrefix, StringComparison.OrdinalIgnoreCase)) { mon.Hidden.Add(line.Substring(HiddenPrefix.Length).Trim()); continue; }
+                if (line.StartsWith(MadePrefix, StringComparison.OrdinalIgnoreCase)) { mon.Made.Add(line.Substring(MadePrefix.Length).Trim()); continue; }
                 if (line.StartsWith(TablePrefix, StringComparison.OrdinalIgnoreCase))
                 {
                     // a tab shown whole as a table (a list of 22 October): its arrays made tables below

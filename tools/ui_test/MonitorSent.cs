@@ -59,6 +59,10 @@ class MSent {
         var mon = ((IList)Get(form, "_monitors")).Cast<object>().First(m => (int)Get(m, "Station") == 22);
         ((TabControl)Get(form, "_tabs")).SelectedIndex = ((IList)Get(form, "_monitors")).IndexOf(mon);
         Pump(100);
+        // 6 November: "I don't see any label created on the label list, I want you to create them for me"
+        var made = ((IList)Get(mon, "Sheets")).Cast<object>().FirstOrDefault(x => (string)Get(x, "Name") == "HMI -> PLC");
+        string file = File.ReadAllText(Directory.GetFiles(dir, "*.csv").First());
+        Check("made by itself when the monitor opens (once: kept in the list's file)", made != null && file.Contains("#made:sent") && file.Contains("#sheet:HMI -> PLC"));
         Call(form, "CollectSent"); Pump(100);
         var sheets = ((IList)Get(mon, "Sheets")).Cast<object>().ToList();
         var sh = sheets.FirstOrDefault(x => (string)Get(x, "Name") == "HMI -> PLC");
@@ -74,6 +78,10 @@ class MSent {
               new[] { "R25600", "D5000", "D6000", "D7000", "R26000", "R25650", "R0", "R12800", "R25700", "L24", "D60", "D386" }.All(a => rows.Any(r => addr(r) == a)),
               string.Join(",", rows.Select(addr).Where(a => a.Length > 0).Take(30)));
         Check("  not the label list's other devices (MAN_, IN_ ...)", !rows.Any(r => addr(r) == "M604") && !rows.Any(r => addr(r) == "M200"));
+        var swr = System.Diagnostics.Stopwatch.StartNew();
+        Call(form, "RefreshValues"); Pump(50);
+        swr.Stop();
+        Check("  its values read quickly (arrays folded)", swr.ElapsedMilliseconds < 3000, swr.ElapsedMilliseconds + " ms");
         int count = rows.Count;
         Call(form, "CollectSent"); Pump(100);
         Check("again: the same tab, nothing twice", ((IList)Get(sh, "Rows")).Count == count && ((IList)Get(mon, "Sheets")).Count == sheets.Count);
