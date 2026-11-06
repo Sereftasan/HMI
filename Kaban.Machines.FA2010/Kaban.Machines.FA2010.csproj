@@ -181,6 +181,11 @@
       <DependentUpon>AxisSettings.cs</DependentUpon>
     </Compile>
     <Compile Include="Screens\GeneratedPage.cs" />
+    <Compile Include="Jobs\JobPlan.cs" />
+    <Compile Include="Jobs\JobSender.cs" />
+    <Compile Include="Screens\JobsScreen.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Screens\ProfilesScreen.cs">
       <SubType>UserControl</SubType>
     </Compile>

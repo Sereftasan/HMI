@@ -229,6 +229,15 @@ namespace Kaban.Machines.FA2010
                 // Machine-specific: Role = "" keeps its own button (the DXF workbench).
                 Extra = new[]
                 {
+                    // The job list (6 November): the window software's job files, each bar sent to the machine.
+                    new MachineScreen
+                    {
+                        TitleKey = "Btn_Jobs",
+                        TitleFallback = "Jobs",
+                        Icon = () => Kaban.UI.Properties.Resources.check_box_24,
+                        SortOrder = 25,
+                        CreateView = () => new Screens.JobsScreen()
+                    },
                     new MachineScreen
                     {
                         TitleKey = "Btn_Profiles",
