@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
@@ -65,11 +65,19 @@ class OC {
         free = true;
         Check("waits for the old one to let go (up to 15 s), then runs",
               SingleInstance.Take(new[] { "--await-exit", "1234" }) && waits.Count == 1 && waits[0] == 15000 && told == null, string.Join(",", waits));
+        // 6 November: "We have to make sure the application get closed before opening again" - never beside another copy
         free = false; waits.Clear();
-        Check("  the old one never let go: this one runs anyway (a machine has to come back up), nothing asked",
-              SingleInstance.Take(new[] { "--await-exit", "1234" }) && told == null);
-        log = File.ReadAllText(AuditLogger.TodayFile);
-        Check("  said in the log", log.Contains("[ONE COPY] a restart found another copy still running"));
+        other = Tuple.Create("Kaban.Machines.FA2010", (DateTime?)new DateTime(2026, 11, 6, 9, 0, 0), new IntPtr(99));
+        Check("  another copy still holds it after the wait: this one ends too (was: ran anyway)",
+              !SingleInstance.Take(new[] { "--await-exit", "1234" }) && told != null);
+
+        Console.WriteLine("--- a start by hand while a copy is closing (no window any more) ---");
+        told = null; waits.Clear();
+        other = Tuple.Create("Kaban.Machines.FA2010", (DateTime?)null, IntPtr.Zero);
+        int tries = 0;
+        Set("TryHold", (Func<int, bool>)(ms => { waits.Add(ms); return ++tries > 1; }));
+        Check("waits for it to close (up to 10 s), then runs", SingleInstance.Take(new string[0]) && told == null &&
+              waits.Count == 2 && waits[0] == 0 && waits[1] == 10000, string.Join(",", waits));
 
         try { Directory.Delete(dir, true); } catch { }
         Console.WriteLine(fail == 0 ? "ONE COPY ALL PASS" : "ONE COPY " + fail + " FAILED");

@@ -97,10 +97,22 @@ namespace Kaban.UI.Controls
         // Disabled controls still fall back to the arrow (CursorFollowsEnabled).
 
         private static bool _handCursorsOn;
-        private static readonly HashSet<Control> _sweptForms = new HashSet<Control>(new ReferenceComparer());
-        private static readonly HashSet<Control> _watched = new HashSet<Control>(new ReferenceComparer());
-        private static readonly HashSet<Control> _handCued = new HashSet<Control>(new ReferenceComparer());
-        private static readonly HashSet<Control> _menuCued = new HashSet<Control>(new ReferenceComparer());
+        /// <summary>
+        /// A set of controls safe from two threads (6 November: a test crashed in ApplyInteractionCues - "Index was outside the bounds
+        /// of the array" in HashSet.Add - a control's Disposed, which takes it out, ran while another thread added one).
+        /// </summary>
+        private sealed class SyncSet
+        {
+            private readonly HashSet<Control> _set = new HashSet<Control>(new ReferenceComparer());
+            public bool Add(Control c) { lock (_set) return _set.Add(c); }
+            public bool Remove(Control c) { lock (_set) return _set.Remove(c); }
+            public bool Contains(Control c) { lock (_set) return _set.Contains(c); }
+        }
+
+        private static readonly SyncSet _sweptForms = new SyncSet();
+        private static readonly SyncSet _watched = new SyncSet();
+        private static readonly SyncSet _handCued = new SyncSet();
+        private static readonly SyncSet _menuCued = new SyncSet();
 
         /// <summary>Turns the hand-cursor rule on for every window of the program. Call once.</summary>
         public static void EnableHandCursorsEverywhere()
@@ -567,8 +579,7 @@ namespace Kaban.UI.Controls
         /// machine page months later. Reference identity, so two controls that
         /// compare equal are still tracked separately.
         /// </summary>
-        private static readonly HashSet<Control> _cued =
-            new HashSet<Control>(new ReferenceComparer());
+        private static readonly SyncSet _cued = new SyncSet();
 
         private class ReferenceComparer : IEqualityComparer<Control>
         {

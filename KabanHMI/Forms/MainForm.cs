@@ -608,7 +608,7 @@ namespace Kaban.UI.Forms
             Kaban.Core.Helpers.HmiLayout.Load();
             Kaban.Core.Helpers.HmiLayout.DetectFrom(Screen.FromControl(this).WorkingArea.Height);
             FormClosing += MainForm_FormClosing;
-            FormClosed += (s4, e4) => StartPendingRestart();
+            FormClosed += (s4, e4) => { StartPendingRestart(); if (EndAfterClose) Kaban.UI.AppBootstrap.EndSoonAfterClose(); };
 
             // Offer the login straight away - most shifts start by signing in. It is
             // a normal dialog, so an operator who just wants to watch the machine can
@@ -1370,6 +1370,9 @@ namespace Kaban.UI.Forms
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
+
+        /// <summary>The process made to end soon after the window closes - set by each machine's Main (not in tests, which go on after a window).</summary>
+        public static bool EndAfterClose;
 
         /// <summary>The new instance, started once this one has closed its stations.</summary>
         private System.Diagnostics.ProcessStartInfo _pendingRestart;

@@ -21,6 +21,7 @@ namespace Kaban.Machines.SB3012
             Kaban.UI.AppBootstrap.AwaitPreviousInstance(args);
             // one copy of the HMI at a time: another running is brought to the front, this one ends
             if (!Kaban.UI.Helpers.SingleInstance.Take(args)) return;
+            Kaban.UI.Forms.MainForm.EndAfterClose = true;     // its window closed: the process ends (the next start waits for it)
 
             UnitManager.EnsureDefaults();
             // the engineer's device list: labels for the monitor and the AI prompt,

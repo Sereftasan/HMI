@@ -68,11 +68,16 @@ namespace Kaban.UI
                 Kaban.Core.Helpers.AuditLogger.Log(
                     "[RESTART] waiting for the previous instance (pid " + pid + ") to exit.");
 
-                // Generous ceiling: a stuck predecessor must not leave the new one
-                // hanging forever on a machine that has to come back up.
+                // 6 November: "We have to make sure the application get closed before opening again" - the old instance
+                // closed its window, saved its lists and settings and let its stations go BEFORE it started this one (MainForm
+                // starts it at FormClosed); what still holds it is threads ending. Waited for, and ENDED if it lingers - never
+                // run beside it (two copies wrote the same files: the PLC Monitor's labels were lost so).
                 if (!previous.WaitForExit(15000))
-                    Kaban.Core.Helpers.AuditLogger.Log(
-                        "[RESTART] previous instance still running after 15s; continuing anyway.");
+                {
+                    Kaban.Core.Helpers.AuditLogger.Log("[RESTART] previous instance still running after 15 s, its window closed: it is ended.");
+                    try { previous.Kill(); previous.WaitForExit(5000); }
+                    catch (Exception ex) { Kaban.Core.Helpers.AuditLogger.Log("[RESTART] could not end the previous instance: " + ex.Message); }
+                }
                 else
                     Kaban.Core.Helpers.AuditLogger.Log("[RESTART] previous instance exited.");
             }
@@ -86,6 +91,22 @@ namespace Kaban.UI
             {
                 Kaban.Core.Helpers.AuditLogger.Log("[RESTART] could not wait for the previous instance: " + ex.Message);
             }
+        }
+
+        /// <summary>
+        /// THE PROCESS ENDS once its window has closed (6 November): everything is saved by then (FormClosing / FormClosed); a
+        /// thread still running (a PLC call, a log writer) must not keep a closed HMI alive - the next start waits for it. Ended
+        /// after <paramref name="graceMs"/> if it is still there.
+        /// </summary>
+        public static void EndSoonAfterClose(int graceMs = 5000)
+        {
+            var t = new System.Threading.Thread(() =>
+            {
+                System.Threading.Thread.Sleep(graceMs);
+                try { Kaban.Core.Helpers.AuditLogger.Log("[EXIT] the window closed " + graceMs / 1000 + " s ago and the process was still running: it is ended."); } catch { }
+                Environment.Exit(0);
+            }) { IsBackground = true, Name = "End after close" };
+            t.Start();
         }
 
         public static void InstallGlobalExceptionHandlers()

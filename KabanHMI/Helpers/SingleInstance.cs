@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -78,6 +78,16 @@ namespace Kaban.UI.Helpers
             catch { }
         };
 
+        /// <summary>How long a start by hand waits for a copy that is closing (no window any more).</summary>
+        internal static int ClosingWaitMs = 10000;
+
+        /// <summary>Another copy runs without a window: it is closing (or still starting) - worth waiting for.</summary>
+        private static bool ClosingOther()
+        {
+            var o = FindOther();
+            return o != null && o.Item3 == IntPtr.Zero;
+        }
+
         /// <summary>Says so (a test reads it instead).</summary>
         internal static Action<string, string> Tell = (text, caption) =>
             MessageBox.Show(text, caption, MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -89,22 +99,17 @@ namespace Kaban.UI.Helpers
         public static bool Take(string[] args)
         {
             bool restart = args != null && args.Any(a => string.Equals(a, AppBootstrap.AwaitExitSwitch, StringComparison.OrdinalIgnoreCase));
-            // a restart: the old copy let it go before starting this one, and AwaitPreviousInstance waited for it to end -
-            // a few seconds more for one still closing; a start by hand: at once
-            if (TryHold(restart ? 15000 : 0))
+            // a restart: the old copy let it go before starting this one, and AwaitPreviousInstance waited for it to end (and
+            // ended it if it lingered) - a few seconds more; a start by hand: at once, unless the other copy is still closing
+            if (TryHold(restart ? 15000 : 0) || (!restart && ClosingOther() && TryHold(ClosingWaitMs)))
             {
                 Application.ApplicationExit += (s, e) => Release();
                 return true;
             }
 
             var other = FindOther();
-            if (restart)
-            {
-                // the old copy did not end: a machine has to come back up - this one runs, as AwaitPreviousInstance does
-                AuditLogger.Log("[ONE COPY] a restart found another copy still running (" + (other == null ? "?" : other.Item1) +
-                                ") after 15 s; this one starts anyway.");
-                return true;
-            }
+            // 6 November: "We have to make sure the application get closed before opening again, the created label loss was
+            // probably caused by it" - never two copies, a restart's included: it ends as a second start does
             AuditLogger.Log("[ONE COPY] the HMI was started while another copy runs (" + (other == null ? "still starting or closing" : other.Item1) +
                             "): that one is brought to the front, this one ends.");
             Kaban.UI.Forms.MainForm.PrepareLanguageEarly();

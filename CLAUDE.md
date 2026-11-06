@@ -135,6 +135,9 @@ valve a 5/3 open centre (CylinderUnitHMI.OptionValveType / OptionValveConditions
 - One copy of the HMI at a time (5 November, the user's choice): every machine's exe holds the mutex `Global\Kaban.HMI.OneCopy`
   (Helpers\SingleInstance, right after AppBootstrap.AwaitPreviousInstance in each Program.Main); a second start brings the running
   one to the front, says why and ends; a restart's new instance waits for it (the old one lets it go just before starting it).
+  6 November ("make sure the application get closed before opening again"): never beside another copy - a restart waits 15 s for the old
+  process and ENDS it if it lingers (its window closed and everything saved by then); a closed window's process ends within 5 s
+  (AppBootstrap.EndSoonAfterClose, MainForm.EndAfterClose set by each Main); a start by hand waits up to 10 s for a copy that is closing.
 - "Unable to copy ... Kaban.Machines.H500.exe ... locked by: Kaban.Machine.FA2010": an instance of the program is still
   running - close it (Task Manager: Kaban.Machines.FA2010.exe) and build again. A Restart of an instance Visual Studio
   debugs starts the new one outside the debugger; it says so when it starts. The FA2010 project checks first now
