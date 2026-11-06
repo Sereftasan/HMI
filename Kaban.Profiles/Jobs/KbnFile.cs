@@ -17,6 +17,31 @@ namespace Kaban.Profiles.Jobs
         public string Line = "";
     }
 
+    /// <summary>
+    /// A V cut on a piece: "VCut;position x10;depth" - the V saw's cut at that place from the piece's start (the old program's VCutting: the
+    /// depth is kept, the PLC gets the code 3000 at the position).
+    /// </summary>
+    public sealed class KbnVCut
+    {
+        public double Position, Depth;
+        public int LineNo;
+        public string Line = "";
+    }
+
+    /// <summary>
+    /// A piece's special ends ("&lt;&gt;" cuts): "SpecialCut;left code;right code;left value x10;right value x10" - the code of a special cut
+    /// at either end (0: that end is an ordinary cut), and the value its recipe's formulas take as L and R (the old program's SpecialCut).
+    /// </summary>
+    public sealed class KbnSpecialCut
+    {
+        public string LeftCode = "0", RightCode = "0";
+        public double LeftParam, RightParam;
+        public int LineNo;
+        public string Line = "";
+        public bool LeftSpecial { get { return LeftCode.Length > 0 && LeftCode != "0"; } }
+        public bool RightSpecial { get { return RightCode.Length > 0 && RightCode != "0"; } }
+    }
+
     /// <summary>A piece to cut from the bar: "Profile;..." and the lines under it.</summary>
     public sealed class KbnPiece
     {
@@ -27,7 +52,10 @@ namespace Kaban.Profiles.Jobs
         public bool ReverseCut;
         public int Quantity = 1;
         public readonly List<KbnRec> Recs = new List<KbnRec>();
-        /// <summary>The lines under the piece the HMI does not take yet (VCut, SpecialCut, Screw, Hole ...) - kept, and shown.</summary>
+        /// <summary>The piece's V cuts, its special ends (null: none).</summary>
+        public readonly List<KbnVCut> VCuts = new List<KbnVCut>();
+        public KbnSpecialCut Special;
+        /// <summary>The lines under the piece the HMI does not take yet (Screw, Hole ...) - kept, and shown.</summary>
         public readonly List<string> Other = new List<string>();
         public int LineNo;
         public string Line = "";
@@ -71,6 +99,8 @@ namespace Kaban.Profiles.Jobs
     ///           accessories;frame no;reinforcement;reinforcement length x10;barcode;comment 1;comment 2;comment 3;picture;dealer;
     ///           reverse cut;left pivot x10;right pivot x10;quantity;;mid point x10
     ///   Rec;accessory code;position x10            (from the start of the piece above it)
+    ///   VCut;position x10;depth                     (a V cut of the piece)
+    ///   SpecialCut;left code;right code;left value x10;right value x10   (its special ends, 0 an ordinary one)
     ///
     /// A bar of quantity N is N bars (the old program wrote the file so). Lines starting "//" and empty ones are left out, "#" ones kept.
     /// </summary>
@@ -162,8 +192,30 @@ namespace Kaban.Profiles.Jobs
                             if (rec.Code.Length == 0) throw new FormatException("the accessory has no code");
                             piece.Recs.Add(rec);
                             break;
+                        case "vcut":
+                            // the old program's VCutting: the position in tenths, its depth as written
+                            if (piece == null && skipPiece) break;
+                            if (piece == null) throw new FormatException("a V cut before any piece");
+                            if (t.Length < 2 || Str(t, 1).Length == 0) throw new FormatException("a V cut needs its position");
+                            piece.VCuts.Add(new KbnVCut { Position = Num(t, 1) / Scale, Depth = Num(t, 2, 0), LineNo = no, Line = line });
+                            break;
+                        case "specialcut":
+                            if (piece == null && skipPiece) break;
+                            if (piece == null) throw new FormatException("a special cut before any piece");
+                            if (t.Length < 3) throw new FormatException("a special cut needs its left and right codes");
+                            if (piece.Special != null) throw new FormatException("the piece has a special cut already");
+                            var sc = new KbnSpecialCut
+                            {
+                                LeftCode = Code(Str(t, 1)), RightCode = Code(Str(t, 2)), LeftParam = Num(t, 3, 0) / Scale, RightParam = Num(t, 4, 0) / Scale,
+                                LineNo = no, Line = line
+                            };
+                            double code;
+                            foreach (var c in new[] { sc.LeftCode, sc.RightCode })
+                                if (!double.TryParse(c, NumberStyles.Float, CI, out code)) throw new FormatException("the special cut's code \"" + c + "\" is not a number");
+                            piece.Special = sc;
+                            break;
                         default:
-                            // VCut, SpecialCut, Screw, Hole ...: kept with the piece
+                            // Screw, Hole ...: kept with the piece
                             if (piece == null && skipPiece) break;
                             if (piece == null) throw new FormatException("\"" + t[0] + "\" is not a line of a job file");
                             piece.Other.Add(line);
@@ -212,6 +264,9 @@ namespace Kaban.Profiles.Jobs
                         p.Barcode, p.Comment1, p.Comment2, p.Comment3, p.Picture, p.Dealer, ""
                     })).Append("\r\n");
                     foreach (var r in p.Recs) sb.Append("Rec;").Append(r.Code).Append(';').Append(Tenths(r.Position)).Append(";\r\n");
+                    foreach (var v in p.VCuts) sb.Append("VCut;").Append(Tenths(v.Position)).Append(';').Append(v.Depth.ToString("0.###", CI)).Append(";\r\n");
+                    if (p.Special != null)
+                        sb.Append(string.Join(";", new[] { "SpecialCut", p.Special.LeftCode, p.Special.RightCode, Tenths(p.Special.LeftParam), Tenths(p.Special.RightParam) })).Append("\r\n");
                     foreach (var o in p.Other) sb.Append(o).Append("\r\n");
                 }
             }
@@ -225,6 +280,9 @@ namespace Kaban.Profiles.Jobs
         // ---- fields -------------------------------------------------------------------------------------
 
         private static string Str(string[] t, int i) { return i < t.Length ? t[i].Trim() : ""; }
+
+        /// <summary>A special cut's code as written ("" and "0" alike: none).</summary>
+        private static string Code(string s) { return s.Length == 0 ? "0" : s.Replace(',', '.'); }
 
         private static double Num(string[] t, int i, double? missing = null)
         {

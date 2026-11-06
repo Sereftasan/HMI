@@ -10,13 +10,15 @@ using Kaban.Profiles.Machining;
 namespace Kaban.Machines.FA2010.Jobs
 {
     /// <summary>
-    /// THE MILLING STEPS ON THE PLC'S REQUEST (6 November: the movement codes of FA2010_DeviceList; the old program's
+    /// THE MILLING STEPS (AND THE SPECIAL CUTS' STEPS) ON THE PLC'S REQUEST (6 November: the movement codes of FA2010_DeviceList; the old program's
     /// TransferProvider_FXCpu.WriteGCodes_ByUnitNo): a milling unit about to machine an operation of the bar asks for its steps -
     ///
     ///   unit 1: L101 on, the operation's code (1 - 100) in D60  ->  its steps into R0 (16 words a step, code 0 after the last; at least
     ///           the old program's 25 steps written, the PLC's area takes 400),
     ///           then L102 on ("sent"); L101 off -> L102 off
     ///   unit 2: L103, D61, R12800, L104 the same
+    ///   the saw (6 November: "L105/L106 with D65 (the special-cut recipes) ... yes please"; the old program's WriteSawGCodes_ByNo):
+    ///           L105 on, the special cut's code (1001 - 1010) in D65  ->  its recipe's steps into R25700 (30 steps of 10 words), then L106 on
     ///
     /// The devices are the label list's (PC_Freze_Unite1_G_Code_Gonder ...). The steps are those of the bar sent last (JobSender), kept in
     /// C:\ProgramData\KabanHMI\JobMilling.cfg - a restart of the HMI in the middle of a bar still answers. An operation the bar does not
@@ -34,7 +36,9 @@ namespace Kaban.Machines.FA2010.Jobs
         internal sealed class Unit
         {
             public int No;
-            public string Ask = "", Sent = "", Code = "", Area = "";
+            public string Name = "", Ask = "", Sent = "", Code = "", Area = "";
+            /// <summary>The codes it asks for (a milling unit 1 - 100, the saw 1001 - 1010), its steps' words.</summary>
+            public int Low = 1, High = JobPlanner.MaxMilling, WordsPerStep = PlcSteps.WordsPerStep;
             /// <summary>The request answered (L102 set) - until the PLC takes it away.</summary>
             public bool Answered;
             /// <summary>The request of an operation not had, said once.</summary>
@@ -43,8 +47,10 @@ namespace Kaban.Machines.FA2010.Jobs
 
         internal static readonly Unit[] Units =
         {
-            new Unit { No = 1, Ask = "PC_Freze_Unite1_G_Code_Gonder|L101", Sent = "PC_Freze_Unite1_G_Code_Gonderildi|L102", Code = "PC_Freze_Unite1_G_Code_No|D60", Area = "PC_Unite1_FrezeAdimlari|R0" },
-            new Unit { No = 2, Ask = "PC_Freze_Unite2_G_Code_Gonder|L103", Sent = "PC_Freze_Unite2_G_Code_Gonderildi|L104", Code = "PC_Freze_Unite2_G_Code_No|D61", Area = "PC_Unite2_FrezeAdimlari|R12800" }
+            new Unit { No = 1, Name = "milling unit 1", Ask = "PC_Freze_Unite1_G_Code_Gonder|L101", Sent = "PC_Freze_Unite1_G_Code_Gonderildi|L102", Code = "PC_Freze_Unite1_G_Code_No|D60", Area = "PC_Unite1_FrezeAdimlari|R0" },
+            new Unit { No = 2, Name = "milling unit 2", Ask = "PC_Freze_Unite2_G_Code_Gonder|L103", Sent = "PC_Freze_Unite2_G_Code_Gonderildi|L104", Code = "PC_Freze_Unite2_G_Code_No|D61", Area = "PC_Unite2_FrezeAdimlari|R12800" },
+            new Unit { No = 3, Name = "the saw", Ask = "PC_Kesim_Recete_Gonder|L105", Sent = "PC_Kesim_Recete_Gonderildi|L106", Code = "PC_Kesim_Recete_No|D65", Area = "PC_KesimAdimlari|R25700",
+                       Low = 1001, High = 1000 + Kaban.Profiles.Jobs.SpecialCuts.MaxPerBar, WordsPerStep = 10 }
         };
 
         /// <summary>The bar's operations: code -> its words (400), its name.</summary>
@@ -79,6 +85,8 @@ namespace Kaban.Machines.FA2010.Jobs
             var ops = new Dictionary<int, KeyValuePair<string, short[]>>();
             foreach (var op in plan.Milling)
                 ops[op.Index] = new KeyValuePair<string, short[]>(op.Label, PlcSteps.Words(op.Steps));
+            foreach (var sp in plan.Special)
+                ops[sp.Code] = new KeyValuePair<string, short[]>(sp.Label, sp.Words ?? JobSender.SpecialStepWords(sp, Station, new List<string>()));
             lock (Gate)
             {
                 _ops = ops;
@@ -127,42 +135,42 @@ namespace Kaban.Machines.FA2010.Jobs
             if (!asked)
             {
                 // the PLC took the answer away: "sent" off for the next request
-                if (u.Answered) using (PlcWriteLog.Source("Jobs: milling unit " + u.No + "'s request ended")) driver.Write(sent, 0);
+                if (u.Answered) using (PlcWriteLog.Source("Jobs: " + u.Name + "'s request ended")) driver.Write(sent, 0);
                 u.Answered = false;
                 u.Refused = 0;
                 return;
             }
             if (u.Answered) return;
-            KeyValuePair<string, short[]> op;
+            KeyValuePair<string, short[]> op = default(KeyValuePair<string, short[]>);
             bool have;
             string bar;
-            lock (Gate) { have = _ops.TryGetValue(no, out op); bar = _bar; }
+            lock (Gate) { have = no >= u.Low && no <= u.High && _ops.TryGetValue(no, out op); bar = _bar; }
             if (!have)
             {
                 if (u.Refused != no)
-                    AuditLogger.Log(string.Format(CI, "[JOB] milling unit {0} asked ({1}) for operation {2} ({3}) - the bar sent last ({4}) has no such operation: not answered",
-                                                  u.No, ask, no, code, bar));
+                    AuditLogger.Log(string.Format(CI, "[JOB] {0} asked ({1}) for operation {2} ({3}) - the bar sent last ({4}) has no such operation: not answered",
+                                                  u.Name, ask, no, code, bar));
                 u.Refused = no;
                 return;
             }
             string area = Device(u.Area);
             var block = driver as IPlcBlockAccess;
             int rc;
-            using (PlcWriteLog.Source(string.Format(CI, "Jobs: milling unit {0} asked for operation {1} ({2})", u.No, no, op.Key)))
+            using (PlcWriteLog.Source(string.Format(CI, "Jobs: {0} asked for operation {1} ({2})", u.Name, no, op.Key)))
             {
                 rc = block != null ? block.WriteBlock(area, op.Value) : PlcBlocks.WriteByDevice(driver, area, op.Value);
                 if (rc == 0) rc = driver.Write(sent, 1);
             }
             if (rc != 0)
             {
-                AuditLogger.Log(string.Format(CI, "[JOB] milling unit {0}: operation {1}'s steps could not be written to {2} (code {3}) - asked again", u.No, no, area, rc));
+                AuditLogger.Log(string.Format(CI, "[JOB] {0}: operation {1}'s steps could not be written to {2} (code {3}) - asked again", u.Name, no, area, rc));
                 return;
             }
             u.Answered = true;
             int steps = 0;
-            while ((steps + 1) * PlcSteps.WordsPerStep <= op.Value.Length && op.Value[steps * PlcSteps.WordsPerStep] != 0) steps++;
-            AuditLogger.Log(string.Format(CI, "[JOB] milling unit {0} asked for operation {1} ({2} of {3}): {4} step(s) written to {5}, {6} on",
-                                          u.No, no, op.Key, bar, steps, area, sent));
+            while ((steps + 1) * u.WordsPerStep <= op.Value.Length && op.Value[steps * u.WordsPerStep] != 0) steps++;
+            AuditLogger.Log(string.Format(CI, "[JOB] {0} asked for operation {1} ({2} of {3}): {4} step(s) written to {5}, {6} on",
+                                          u.Name, no, op.Key, bar, steps, area, sent));
         }
 
         // ---- kept over a restart ---------------------------------------------------------------------------
@@ -195,7 +203,9 @@ namespace Kaban.Machines.FA2010.Jobs
                     if (t.Length >= 4 && t[0] == "op" && int.TryParse(t[1], NumberStyles.Integer, CI, out no))
                     {
                         var words = t[3].Split(',').Select(x => short.Parse(x, NumberStyles.Integer, CI)).ToArray();
-                        if (words.Length > 0 && words.Length % PlcSteps.WordsPerStep == 0 && words.Length <= (PlcSteps.MaxSteps + 1) * PlcSteps.WordsPerStep) ops[no] = new KeyValuePair<string, short[]>(t[2], words);
+                        bool ok = no > 1000 ? words.Length > 0 && words.Length % 10 == 0 && words.Length <= Kaban.Profiles.Jobs.SpecialCuts.MaxSteps * 10
+                                            : words.Length > 0 && words.Length % PlcSteps.WordsPerStep == 0 && words.Length <= (PlcSteps.MaxSteps + 1) * PlcSteps.WordsPerStep;
+                        if (ok) ops[no] = new KeyValuePair<string, short[]>(t[2], words);
                     }
                 }
                 _ops = ops;

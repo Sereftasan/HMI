@@ -20,9 +20,19 @@ namespace Kaban.Profiles.Jobs
         public double MinimumLeftover;
         /// <summary>0: none. A longer leftover is cut into pieces of at most this.</summary>
         public double MaximumCutLength;
+        /// <summary>The machine's special cut recipes (none: a special end cannot be cut).</summary>
+        public List<SpecialCutRecipe> Recipes = new List<SpecialCutRecipe>();
+        /// <summary>The V saws' distance (the formulas' D) and the profile's width (W: its Cut Full Width).</summary>
+        public double VSawsDistance, ProfileWidth;
+
+        /// <summary>The values of the recipes' formulas for a joint (T the blade, O the vertical share, D, W; L and R the joint's).</summary>
+        public FormulaValues Values(SpecialJoint j)
+        {
+            return new FormulaValues { T = SawThickness, O = SawVerticalShare, D = VSawsDistance, W = ProfileWidth, L = j != null ? j.LeftParam : 0, R = j != null ? j.RightParam : 0 };
+        }
     }
 
-    public enum StepKind { LeftCut, RightCut, Accessory, LeftoverCut }
+    public enum StepKind { LeftCut, RightCut, Accessory, LeftoverCut, VCut }
 
     /// <summary>One step on the bar: a cut, or an accessory at its place.</summary>
     public sealed class LayoutStep
@@ -39,8 +49,12 @@ namespace Kaban.Profiles.Jobs
         public int Order;
         /// <summary>A right cut that is also the next piece's left end (their angles add up to 180, or both are square).</summary>
         public bool Shared;
+        /// <summary>A cut a special cut makes (its recipe's): the joint.</summary>
+        public SpecialJoint Joint;
+        /// <summary>A V cut: the job file's line.</summary>
+        public KbnVCut VCut;
 
-        public bool IsCut { get { return Kind != StepKind.Accessory; } }
+        public bool IsCut { get { return Kind != StepKind.Accessory && Kind != StepKind.VCut; } }
 
         /// <summary>
         /// The PLC's code of a cut (FA2010_DeviceList: "Kesim: 1000 + angle x 10"): the saw at the left end of a piece turns to its angle,
@@ -68,6 +82,8 @@ namespace Kaban.Profiles.Jobs
         public double Leftover;
         public readonly List<string> Problems = new List<string>();
         public readonly List<string> Notes = new List<string>();
+        /// <summary>The bar's joints a special cut makes, in order (the bar's start, between the pieces, its end).</summary>
+        public readonly List<SpecialJoint> Joints = new List<SpecialJoint>();
     }
 
     /// <summary>
@@ -92,27 +108,79 @@ namespace Kaban.Profiles.Jobs
         public static BarLayoutResult Of(KbnBar bar, CutSettings s)
         {
             var r = new BarLayoutResult();
-            var st = new State(bar, s ?? new CutSettings(), r);
-            for (int i = 0; i < bar.Pieces.Count; i++)
+            s = s ?? new CutSettings();
+            var st = new State(bar, s, r);
+            var ci = CultureInfo.InvariantCulture;
+            // the joints special cuts make: before the first piece, between the pieces, after the last (each with its recipe)
+            int n = bar.Pieces.Count;
+            var joints = new SpecialJoint[n + 1];
+            for (int k = 0; k <= n && n > 0; k++)
+            {
+                var j = k < n ? SpecialCuts.LeftOf(bar, k) : SpecialCuts.RightOf(bar, n - 1);
+                if (j == null) continue;
+                j.Recipe = SpecialCuts.Find(s.Recipes, j);
+                if (j.Recipe == null)
+                {
+                    r.Problems.Add(string.Format(ci, "{0}: no special cut recipe for it ({1}) - nor one of each end to merge (the Jobs page's special cut recipes)",
+                        Where(j), j.Describe()));
+                    continue;      // cut as an ordinary end: the layout still shown
+                }
+                joints[k] = j;
+                r.Joints.Add(j);
+            }
+            for (int i = 0; i < n; i++)
             {
                 var p = bar.Pieces[i];
-                st.LeftCut(p.LeftAngle, i, StepKind.LeftCut);
+                var lj = joints[i];
+                var rj = joints[i + 1];
+                if (lj != null) st.SpecialLeftCut(p.LeftAngle, i, Half(lj, s, r), lj);
+                else st.LeftCut(p.LeftAngle, i, StepKind.LeftCut);
                 double slip = p.LeftAngle > 90 ? Math.Abs(st.H / Math.Tan(p.LeftAngle * Rad)) : 0;
                 foreach (var rec in p.Recs)
                 {
                     if (rec.Position < 0 || rec.Position > p.CutLength)
-                        r.Notes.Add(string.Format(CultureInfo.InvariantCulture, "piece {0}: {1} at {2:0.#} mm is outside the piece ({3:0.#} mm)", i + 1, rec.Code, rec.Position, p.CutLength));
+                        r.Notes.Add(string.Format(ci, "piece {0}: {1} at {2:0.#} mm is outside the piece ({3:0.#} mm)", i + 1, rec.Code, rec.Position, p.CutLength));
                     st.Add(StepKind.Accessory, st.Length + rec.Position - slip, 0, i, rec);
                 }
-                st.RightCut(p, i);
+                // its V cuts (the old program's AddVCutting: after the accessories, the same slip)
+                foreach (var v in p.VCuts)
+                {
+                    if (v.Position < 0 || v.Position > p.CutLength)
+                        r.Notes.Add(string.Format(ci, "piece {0}: a V cut at {1:0.#} mm is outside the piece ({2:0.#} mm)", i + 1, v.Position, p.CutLength));
+                    st.Add(StepKind.VCut, st.Length + v.Position - slip, 0, i, null).VCut = v;
+                }
+                if (rj != null) st.SpecialRightCut(p, i, Half(rj, s, r), rj);
+                // a piece with a special end: its ordinary right cut without the mould difference (the old program's AddSpecialCutting)
+                else st.RightCut(p, i, lj == null);
             }
-            if (bar.Pieces.Count > 0) st.Leftover();
+            // a bar that ends in a special cut: its leftover from the recipe's angle, moved by the robot's X offset
+            if (n > 0 && joints[n] != null) st.SpecialLeftover(joints[n], s);
+            else if (n > 0) st.Leftover();
             r.Used = st.Length;
             r.Leftover = bar.Pieces.Count > 0 ? st.LastLeftover : bar.Length;
             if (bar.Pieces.Count > 0 && r.Leftover < -1e-6)
                 r.Problems.Add(string.Format(CultureInfo.InvariantCulture, "the pieces and the saw take {0:0.#} mm - the bar is {1:0.#} mm", bar.Length - r.Leftover, bar.Length));
             r.Ordered = r.Steps.OrderBy(x => x.Position).ThenBy(x => x.Order).ToList();
             return r;
+        }
+
+        /// <summary>The joint in words: "piece 2's left end", "between pieces 1 and 2", "piece 3's right end".</summary>
+        private static string Where(SpecialJoint j)
+        {
+            var ci = CultureInfo.InvariantCulture;
+            if (j.Before < 0) return string.Format(ci, "piece {0}'s left end", j.After + 1);
+            if (j.After < 0) return string.Format(ci, "piece {0}'s right end", j.Before + 1);
+            return string.Format(ci, "between pieces {0} and {1}", j.Before + 1, j.After + 1);
+        }
+
+        /// <summary>Half the width the saw takes at a special joint (its recipe's saw dust width).</summary>
+        private static double Half(SpecialJoint j, CutSettings s, BarLayoutResult r)
+        {
+            double w;
+            string why;
+            if (!SpecialCuts.Eval(j.Recipe.SawDustWidth, s.Values(j), out w, out why))
+                r.Problems.Add(string.Format(CultureInfo.InvariantCulture, "{0}: recipe {1}'s saw dust width - {2}", Where(j), j.Recipe.Title, why));
+            return w / 2;
         }
 
         private sealed class State
@@ -165,17 +233,59 @@ namespace Kaban.Profiles.Jobs
                 return Add(kind, Length, angle, piece, null);
             }
 
-            public void LeftCut(double angle, int piece, StepKind kind)
+            /// <summary>An ordinary left cut; what the profile's height slips more than the cut before it (the leftover's offset limit).</summary>
+            public double LeftCut(double angle, int piece, StepKind kind, double? prevAngle = null)
             {
                 double half = Half(angle);
-                double prev = _prev == 0 ? 90 : _prev;
+                double prev = prevAngle ?? (_prev == 0 ? 90 : _prev);
+                if (prevAngle.HasValue) _prev = prevAngle.Value;
+                double additional = 0;
                 if (_lastRightHalf > half) Length += _lastRightHalf - half;
-                if (angle + prev > 180) Length += Math.Abs(Math.Abs(Slip(angle)) - Slip(prev));
+                if (angle + prev > 180) { additional = Math.Abs(Math.Abs(Slip(angle)) - Slip(prev)); Length += additional; }
                 Cut(angle, kind, piece);
                 if (angle > 90) Length -= VerticalShare(angle);
                 else Length += VerticalShare(angle);
                 Length += half;
                 _lastRightHalf = 0;
+                return additional;
+            }
+
+            /// <summary>SpecialLeftCutting: the cut, then half the recipe's saw dust width - no vertical share, no slip.</summary>
+            public void SpecialLeftCut(double angle, int piece, double half, SpecialJoint j)
+            {
+                var c = Cut(angle, StepKind.LeftCut, piece);
+                if (c != null) c.Joint = j;
+                Length += half;
+            }
+
+            /// <summary>SpecialRightCutting: half the saw dust width, the piece's whole length (its ends' slip not taken off), the cut.</summary>
+            public void SpecialRightCut(KbnPiece p, int piece, double half, SpecialJoint j)
+            {
+                Length += half;
+                Length += p.CutLength;
+                _lastRightHalf = half;
+                var c = Cut(p.RightAngle, StepKind.RightCut, piece);
+                if (c != null) c.Joint = j;
+            }
+
+            /// <summary>
+            /// The leftover after a special right end (the old program's AddBar): squared as from the recipe's angle (180 - its starting
+            /// angle), then the robot's X offset added (no less than what the height slips) - the last cut moved there.
+            /// </summary>
+            public void SpecialLeftover(SpecialJoint j, CutSettings s)
+            {
+                double angle = 180 - j.Recipe.StartingAngle;
+                double additional = 0;
+                if (_lastCut != null && LastLeftover >= _s.MinimumLeftover && !Square(angle))
+                    additional = LeftCut(90, -1, StepKind.LeftoverCut, angle);
+                PieceUp();
+                double offset;
+                string why;
+                if (!SpecialCuts.Eval(j.Recipe.RobotXOffset, s.Values(j), out offset, out why))
+                    _r.Problems.Add("the bar's last special cut: recipe " + j.Recipe.Title + "'s robot X offset - " + why);
+                if (offset < -additional) offset = -additional;
+                Length += offset;
+                if (_r.Steps.Count > 0) _r.Steps[_r.Steps.Count - 1].Position = Length;
             }
 
             /// <summary>The piece's length along the bar (CutlengthRobot): an end over 90 degrees takes the slip of the height off.</summary>
@@ -187,13 +297,13 @@ namespace Kaban.Profiles.Jobs
                 return l;
             }
 
-            public void RightCut(KbnPiece p, int piece)
+            public void RightCut(KbnPiece p, int piece, bool mould = true)
             {
                 double angle = p.RightAngle;
                 if (angle > 90) Length += Along(p, _s.SawVerticalShare);
                 else
                 {
-                    Length += VerticalShare(angle);
+                    Length += mould ? VerticalShare(angle) : _s.SawVerticalShare / Math.Tan((angle >= 90 ? 180 - angle : angle) * Rad);
                     Length += Along(p, 0);
                 }
                 _lastRightHalf = Half(angle);
@@ -212,6 +322,12 @@ namespace Kaban.Profiles.Jobs
                 double angle = _lastCut != null ? _lastCut.Angle : 90;
                 if (_lastCut != null && LastLeftover >= _s.MinimumLeftover && !Square(angle))
                     LeftCut(90, -1, StepKind.LeftoverCut);
+                PieceUp();
+            }
+
+            /// <summary>The leftover cut into pieces the machine can take.</summary>
+            private void PieceUp()
+            {
                 double max = _s.MaximumCutLength;
                 if (max > 0) max -= _s.SawThickness;
                 if (max > 0 && LastLeftover > max) Piece(LastLeftover % max);
@@ -240,6 +356,7 @@ namespace Kaban.Profiles.Jobs
                 case StepKind.LeftCut: return "left cut " + s.Angle.ToString("0.#", ci) + "°";
                 case StepKind.RightCut: return "right cut " + s.Angle.ToString("0.#", ci) + "°" + (s.Shared ? " (also the next piece's left end)" : "");
                 case StepKind.LeftoverCut: return "leftover cut " + s.Angle.ToString("0.#", ci) + "°";
+                case StepKind.VCut: return "V cut" + (s.VCut != null && s.VCut.Depth != 0 ? " (depth " + s.VCut.Depth.ToString("0.#", ci) + ")" : "");
                 default: return s.Rec != null ? s.Rec.Code : "accessory";
             }
         }

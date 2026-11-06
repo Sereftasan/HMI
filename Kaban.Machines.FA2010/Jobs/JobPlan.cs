@@ -14,11 +14,16 @@ namespace Kaban.Machines.FA2010.Jobs
     internal sealed class JobSettings
     {
         internal const string SawThicknessCode = "job_saw_thickness_mm", VerticalShareCode = "job_saw_vertical_share_mm",
-                              SquareFromCode = "job_square_leftover_from_mm", LongestCode = "job_longest_piece_mm";
+                              SquareFromCode = "job_square_leftover_from_mm", LongestCode = "job_longest_piece_mm",
+                              VSawsCode = "job_v_saws_distance_mm", RecipesCode = "job_special_cut_recipes";
 
         /// <summary>null: not entered - nothing can be laid out.</summary>
         public double? SawThickness;
         public double VerticalShare, SquareFrom = 300, Longest;
+        /// <summary>The V saws' distance (mm) - the special cut recipes' D.</summary>
+        public double VSawsDistance;
+        /// <summary>The special cut recipes ("&lt;&gt;" cuts - the old program's saw receipts).</summary>
+        public List<SpecialCutRecipe> Recipes = new List<SpecialCutRecipe>();
 
         public static JobSettings Of(long instance)
         {
@@ -28,7 +33,15 @@ namespace Kaban.Machines.FA2010.Jobs
             s.VerticalShare = Num(Library.Setting(instance, VerticalShareCode, "")) ?? 0;
             s.SquareFrom = Num(Library.Setting(instance, SquareFromCode, "")) ?? 300;
             s.Longest = Num(Library.Setting(instance, LongestCode, "")) ?? 0;
+            s.VSawsDistance = Num(Library.Setting(instance, VSawsCode, "")) ?? 0;
+            s.Recipes = SpecialCuts.Parse(Library.Setting(instance, RecipesCode, ""));
             return s;
+        }
+
+        /// <summary>The special cut recipes kept (the Jobs page's editor).</summary>
+        public static void SaveRecipes(long instance, IEnumerable<SpecialCutRecipe> recipes)
+        {
+            Library.SetSetting(instance, RecipesCode, SpecialCuts.Format(recipes));
         }
 
         public void Save(long instance)
@@ -38,6 +51,7 @@ namespace Kaban.Machines.FA2010.Jobs
             Library.SetSetting(instance, VerticalShareCode, VerticalShare.ToString("0.###", ci));
             Library.SetSetting(instance, SquareFromCode, SquareFrom.ToString("0.###", ci));
             Library.SetSetting(instance, LongestCode, Longest.ToString("0.###", ci));
+            Library.SetSetting(instance, VSawsCode, VSawsDistance.ToString("0.###", ci));
         }
 
         internal static double? Num(string s)
@@ -71,6 +85,32 @@ namespace Kaban.Machines.FA2010.Jobs
         public string Label { get { return Accessory + " op" + Seq + " " + Macro + (Mirrored ? " (mirrored)" : ""); } }
     }
 
+    /// <summary>A step of a special cut as the PLC gets it (its formulas worked out for the joint).</summary>
+    internal sealed class SpecialStepValues
+    {
+        public int Command;
+        public double Robot1, Robot2, Angle, VCutY;
+        public bool LeftClamp, RightClamp;
+    }
+
+    /// <summary>
+    /// One special cut of the bar: its number (1 - 10, the PLC's code 1000 + it), the joint and its recipe, what goes to its parameters
+    /// (PC_KesimIslemParametreleri, R25650 + 5 x (number - 1)) and the steps the saw asks for (L105 with the code in D65 -> R25700).
+    /// </summary>
+    internal sealed class SpecialCutPlan
+    {
+        public int Number;
+        public SpecialJoint Joint;
+        public SpecialCutRecipe Recipe;
+        /// <summary>The cut's angle, the V saw's Y approach (the profile's V Cut Y Position), the exit robot's holding position, the robot's X offset.</summary>
+        public double StartingAngle, VCutY, Holding, XOffset;
+        public readonly List<SpecialStepValues> Steps = new List<SpecialStepValues>();
+        /// <summary>Its steps' words for R25700 (JobSender - 30 steps of 10 words).</summary>
+        public short[] Words;
+        public int Code { get { return 1000 + Number; } }
+        public string Label { get { return "special cut " + Number + ": recipe " + Recipe.Title; } }
+    }
+
     /// <summary>A step of the job list the PLC gets: its ID (D5000), position (D6000), code (D7000).</summary>
     internal sealed class PlanStep
     {
@@ -80,6 +120,7 @@ namespace Kaban.Machines.FA2010.Jobs
         public int Piece = -1;
         public LayoutStep Step;
         public MillingOp Op;
+        public SpecialCutPlan Special;
     }
 
     /// <summary>Everything that goes to the PLC for one bar, and why it cannot (yet).</summary>
@@ -90,6 +131,8 @@ namespace Kaban.Machines.FA2010.Jobs
         public BarLayoutResult Layout;
         public readonly List<PlanStep> Steps = new List<PlanStep>();
         public readonly List<MillingOp> Milling = new List<MillingOp>();
+        /// <summary>Its special cuts, by number.</summary>
+        public readonly List<SpecialCutPlan> Special = new List<SpecialCutPlan>();
         /// <summary>The profile's parameters (R25600): member -> value as entered (mm).</summary>
         public Dictionary<string, string> ProfileValues = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         /// <summary>What keeps the bar from being sent.</summary>
@@ -131,7 +174,9 @@ namespace Kaban.Machines.FA2010.Jobs
         internal const int MaxSteps = 499;
         internal const int MaxMilling = 100;
         internal const int EndMark = 999999;
-        internal const string MouldMember = "Ear Allowance / Mould Difference";
+        internal const string MouldMember = "Ear Allowance / Mould Difference", WidthMember = "Cut Full Width", VCutYMember = "V Cut Y Position";
+        /// <summary>The job list's code of a V cut (the old program's JobConstants.VCuttingCode).</summary>
+        internal const int VCutCode = 3000;
 
         public JobPlanner(long instance, JobSettings settings)
         {
@@ -190,7 +235,8 @@ namespace Kaban.Machines.FA2010.Jobs
             var cs = new CutSettings
             {
                 SawThickness = _settings.SawThickness ?? 0, SawVerticalShare = _settings.VerticalShare, ProfileHeight = height,
-                MouldDifference = mould, MinimumLeftover = _settings.SquareFrom, MaximumCutLength = _settings.Longest
+                MouldDifference = mould, MinimumLeftover = _settings.SquareFrom, MaximumCutLength = _settings.Longest,
+                Recipes = _settings.Recipes, VSawsDistance = _settings.VSawsDistance, ProfileWidth = MachineNum(machine, WidthMember)
             };
             plan.Layout = BarLayout.Of(bar, cs);
             plan.Problems.AddRange(plan.Layout.Problems);
@@ -198,17 +244,43 @@ namespace Kaban.Machines.FA2010.Jobs
             foreach (var p in bar.Pieces.Where(x => x.Other.Count > 0))
                 plan.Problems.Add(string.Format("piece {0}: {1} - not taken by the HMI yet", bar.Pieces.IndexOf(p) + 1,
                     string.Join(", ", p.Other.Select(o => o.Split(';')[0]).Distinct())));
+            // the special cuts: a number each different joint (the old program's dynamic receipt numbers), their formulas worked out
+            foreach (var j in plan.Layout.Joints)
+            {
+                if (plan.Special.Any(x => x.Joint.Key == j.Key)) { j.Number = plan.Special.First(x => x.Joint.Key == j.Key).Number; continue; }
+                j.Number = plan.Special.Count + 1;
+                plan.Special.Add(Special(j, cs, machine, plan.Problems));
+            }
+            if (plan.Special.Count > SpecialCuts.MaxPerBar)
+                plan.Problems.Add(string.Format("{0} different special cuts - the PLC takes {1} a bar", plan.Special.Count, SpecialCuts.MaxPerBar));
 
             // the accessories: the group's, each operation a milling operation of its own
             var group = AccessoriesOf(plan.Profile);
             var placements = PlacementsOf(plan.Profile);
             var byKey = new Dictionary<string, MillingOp>(StringComparer.OrdinalIgnoreCase);
             int no = firstNo;
+            SpecialJoint lastJoint = null;
             foreach (var s in plan.Layout.Ordered)
             {
                 if (s.IsCut)
                 {
+                    if (s.Joint != null)
+                    {
+                        // a special cut: one step for its joint (the right end's and the left end's cuts are one recipe - the old program's)
+                        if (s.Joint == lastJoint) continue;
+                        lastJoint = s.Joint;
+                        var sp = plan.Special.First(x => x.Number == s.Joint.Number);
+                        plan.Steps.Add(new PlanStep { No = no++, Position = s.Position, Code = sp.Code, Piece = s.Piece, Step = s, Special = sp,
+                                                      What = sp.Label + " (" + s.Joint.Describe() + ")" });
+                        continue;
+                    }
+                    lastJoint = null;
                     plan.Steps.Add(new PlanStep { No = no++, Position = s.Position, Code = s.CutCode, What = BarLayout.Describe(s), Piece = s.Piece, Step = s });
+                    continue;
+                }
+                if (s.Kind == StepKind.VCut)
+                {
+                    plan.Steps.Add(new PlanStep { No = no++, Position = s.Position, Code = VCutCode, What = BarLayout.Describe(s), Piece = s.Piece, Step = s });
                     continue;
                 }
                 string code = s.Rec.Code;
@@ -257,6 +329,41 @@ namespace Kaban.Machines.FA2010.Jobs
                 plan.Warnings.Add(string.Format("{0} milling operation(s) are not confirmed on the profile - they go to the machine only as a trial", unconfirmed));
             plan.LastNo = no - 1;
             return plan;
+        }
+
+        private static double MachineNum(Dictionary<string, Library.MachineValue> machine, string member)
+        {
+            Library.MachineValue v;
+            return machine.TryGetValue(member, out v) && v != null ? JobSettings.Num(v.Value) ?? 0 : 0;
+        }
+
+        /// <summary>A joint's special cut: its parameters and steps with the recipe's formulas worked out (T, D, W, O and the joint's L, R).</summary>
+        private static SpecialCutPlan Special(SpecialJoint j, CutSettings cs, Dictionary<string, Library.MachineValue> machine, List<string> problems)
+        {
+            var sp = new SpecialCutPlan { Number = j.Number, Joint = j, Recipe = j.Recipe, StartingAngle = j.Recipe.StartingAngle, VCutY = MachineNum(machine, VCutYMember) };
+            var v = cs.Values(j);
+            Func<string, string, double> eval = (what, f) =>
+            {
+                double r;
+                string why;
+                if (!SpecialCuts.Eval(f, v, out r, out why)) problems.Add(sp.Label + ", " + what + ": " + why);
+                return r;
+            };
+            sp.Holding = eval("the holding position", j.Recipe.HoldingPosition);
+            sp.XOffset = eval("the robot's X offset", j.Recipe.RobotXOffset);
+            int n = 0;
+            foreach (var st in j.Recipe.Steps)
+            {
+                n++;
+                sp.Steps.Add(new SpecialStepValues
+                {
+                    Command = st.Command, LeftClamp = st.LeftClamp, RightClamp = st.RightClamp, Angle = st.Angle,
+                    Robot1 = eval("step " + n + " robot 1", st.Robot1), Robot2 = eval("step " + n + " robot 2", st.Robot2), VCutY = eval("step " + n + " V cut Y", st.VCutY)
+                });
+            }
+            if (sp.Steps.Count == 0) problems.Add(sp.Label + ": the recipe has no steps");
+            if (sp.Steps.Count > SpecialCuts.MaxSteps) problems.Add(string.Format("{0}: {1} steps - the PLC takes {2}", sp.Label, sp.Steps.Count, SpecialCuts.MaxSteps));
+            return sp;
         }
 
         /// <summary>The tool, its angle and the rest of a placement's milling operation.</summary>

@@ -42,7 +42,9 @@ class JF {
               p1.CutLength == 1200 && p1.OtherLength == 1400 && p1.LeftAngle == 45 && p1.RightAngle == 45 && p1.OrderNo == "S2026-001" &&
               p1.Customer == "KABAN TEST" && p1.Position == "ALT" && p1.Accessories == "Su Tahliye" && p1.Barcode == "BC-01");
         Check("its accessories from the piece's start, in mm", p1.Recs.Count == 2 && p1.Recs[0].Code == "GEN-DRN-5X30" && p1.Recs[0].Position == 150 && p1.Recs[1].Position == 600);
-        Check("a VCut line kept with the piece (not taken yet)", p1.Other.Count == 1 && p1.Other[0].StartsWith("VCut"));
+        // 6 November: the V cuts and the special cuts taken (the old program's VCutting: position in tenths, depth as written)
+        Check("a VCut line: the piece's V cut at 25 mm, depth 3", p1.VCuts.Count == 1 && p1.VCuts[0].Position == 25 && p1.VCuts[0].Depth == 3 && p1.Other.Count == 0,
+              p1.VCuts.Count + " " + p1.Other.Count);
         Check("the comment kept, the // line left out", job.Comments.Count == 1 && job.Comments[0] == "# made by the test");
         Check("an accessory at 'abc', an angle of 200, a bar with no code: three problems, with their lines - what was under the bad piece and bar left out with them",
               job.Problems.Count == 3 && job.Problems[0].StartsWith("line 11:") && job.Problems[1].StartsWith("line 12:") && job.Problems[2].StartsWith("line 15:"),
@@ -54,6 +56,7 @@ class JF {
         Check("written and read again: the same bars, pieces and accessories", again.Problems.Count == 0 && again.Bars.Count == 3 &&
               again.Bars[0].Pieces[0].Recs.Count == 2 && again.Bars[0].Pieces[0].LeftAngle == 45 && again.Bars[2].Pieces.Count == 2 &&
               again.Bars[0].Pieces[0].Barcode == "BC-01" && again.Bars[0].Pieces[0].OtherLength == 1400);
+        Check("  its V cut written and read back", again.Bars[0].Pieces[0].VCuts.Count == 1 && again.Bars[0].Pieces[0].VCuts[0].Position == 25);
         Check("  angles as the window software writes them (0450), CRLF", KbnFile.Format(job.Bars).Contains(";0450;0450;") && KbnFile.Format(job.Bars).Contains("\r\n"));
 
         // ---- the library's sample job ----

@@ -50,6 +50,7 @@
     <Compile Include="Geometry\Section.cs" />
     <Compile Include="Jobs\BarLayout.cs" />
     <Compile Include="Jobs\KbnFile.cs" />
+    <Compile Include="Jobs\SpecialCuts.cs" />
     <Compile Include="Machining\FlatJson.cs" />
     <Compile Include="Machining\PlcSteps.cs" />
     <Compile Include="Machining\SideProgram.cs" />

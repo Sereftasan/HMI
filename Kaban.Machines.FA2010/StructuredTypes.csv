@@ -81,7 +81,7 @@ Cut X Offset;Word [Signed];3;;Kesim X Ofseti - xxx.xx mm;100;2
 Operation Code;Word [Signed];0;;İşlem Kodu: 1 clamps close - 2 clamps open - 3 robots carry - 4 normal cut - 5 V cut - 6 exit robot pulls the profile - 7 recipe merge
 Robot 1;Word [Signed];1;;Robot1 - xxx.xx mm;100;2
 Robot 2;Word [Signed];2;;Robot 2 - xxx.xx mm;100;2
-Angle;Word [Signed];3;;Angle - xxx.xx mm;100;2
+Angle;Word [Signed];3;;Angle - xxx.x° (the old program writes it x10; the device list says xxx.xx);10;1
 V Cut Y;Word [Signed];4;;V Cut Y - xxx.xx mm;100;2
 Left Clamp;Bit;5;0;Left Clamp
 Right Clamp;Bit;5;1;Right Clamp

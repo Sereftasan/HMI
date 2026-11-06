@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using Kaban.Core.Helpers;
 using Kaban.Core.Interfaces;
+using Kaban.Profiles.Jobs;
 
 namespace Kaban.Machines.FA2010.Jobs
 {
@@ -14,16 +15,19 @@ namespace Kaban.Machines.FA2010.Jobs
     ///
     ///   PC_ProfilParametreleri     R25600   the profile's parameters (its machine settings in the library)
     ///   PC_FrezeIslemParametreleri R26000   each milling operation's parameters, R26000 + 10 x (code - 1)
+    ///   PC_KesimIslemParametreleri R25650   each special cut's parameters, R25650 + 5 x (number - 1): its angle, the V saw's Y approach,
+    ///                                       the exit robot's holding position, the robot's X offset (the old program's WriteSpecialCuttingInfo)
     ///   PC_IsListesi_IslemID       D5000    the steps' IDs          (a double word a step, 500 steps)
     ///   PC_IsListesi_Pozisyon      D6000    the steps' positions x100, then 999999 - the end of the bar
     ///   PC_IsListesi_IslemKodu     D7000    the steps' codes: a cut 1000 + 10 x angle (2800 - 10 x angle at a right end), a milling
-    ///                                       operation its number 1 - 100
+    ///                                       operation its number 1 - 100, a special cut 1000 + its number (1001 - 1010), a V cut 3000
     ///   PC_BeslenenBarBoyu         D106     the bar's length                    } x10000 (0.0001 mm), as the old program -
     ///   PC_ProfilBar_IlkKesimSonu_Poz D95   the first right cut's position + 1 mm }  the user (6 November): "You need to write, yes"
     ///   PC_ProfilBar_SonKesim_Poz  D97      the last right cut's position + 1 mm  }
     ///
     /// The job list is written whole (500 steps): what a longer bar before left behind is cleared. The milling steps themselves go when a
-    /// unit asks for them (L101 / L103 - JobMilling): the bar's operations are handed to it once the bar is written.
+    /// unit asks for them (L101 / L103 - JobMilling), a special cut's steps when the saw asks (L105, D65 - R25700, 30 steps of 10 words):
+    /// the bar's operations are handed to it once the bar is written.
     /// </summary>
     internal static class JobSender
     {
@@ -32,7 +36,9 @@ namespace Kaban.Machines.FA2010.Jobs
                               BarLengthLabel = "PC_BeslenenBarBoyu", FirstCutLabel = "PC_ProfilBar_IlkKesimSonu_Poz", LastCutLabel = "PC_ProfilBar_SonKesim_Poz";
         /// <summary>D95 / D97 / D106 count 0.0001 mm (the old program's (mm x 100) x 100); D95 / D97 1 mm more than the cut.</summary>
         internal const int TenThousandths = 10000;
-        internal const string ProfileType = "Profile Parameters", MillingType = "Milling Parameters";
+        internal const string ProfileType = "Profile Parameters", MillingType = "Milling Parameters",
+                              SpecialParamsType = "Special Cut Parameters", SpecialStepsType = "Special Cut Steps";
+        internal const string SpecialParamsLabel = "PC_KesimIslemParametreleri", SpecialStepsLabel = "PC_KesimAdimlari";
         internal const int ListSteps = 500;
         private static readonly CultureInfo CI = CultureInfo.InvariantCulture;
 
@@ -102,6 +108,54 @@ namespace Kaban.Machines.FA2010.Jobs
             return v.ToString("R", CI);
         }
 
+        /// <summary>A special cut's parameter by the member's name (Cut Angle, V Cut Y Approach, Exit Robot Hold Position, Cut X Offset).</summary>
+        internal static string SpecialValue(SpecialCutPlan sp, StructuredTypes.Member m)
+        {
+            string n = (m.Name ?? "").ToLowerInvariant();
+            double v;
+            if (n.Contains("v cut")) v = sp.VCutY;
+            else if (n.Contains("hold")) v = sp.Holding;
+            else if (n.Contains("offset")) v = sp.XOffset;
+            else if (n.Contains("angle")) v = sp.StartingAngle;
+            else return "";
+            return v.ToString("R", CI);
+        }
+
+        /// <summary>A special cut step's value by the member's name (Operation Code, Robot 1, Robot 2, Angle, V Cut Y, Left / Right Clamp).</summary>
+        internal static string StepValue(SpecialStepValues st, StructuredTypes.Member m)
+        {
+            string n = (m.Name ?? "").ToLowerInvariant();
+            double v;
+            if (n.Contains("code")) v = st.Command;
+            else if (n.Contains("robot 1") || n.Contains("robot1")) v = st.Robot1;
+            else if (n.Contains("robot 2") || n.Contains("robot2")) v = st.Robot2;
+            else if (n.Contains("v cut")) v = st.VCutY;
+            else if (n.Contains("left") && n.Contains("clamp")) v = st.LeftClamp ? 1 : 0;
+            else if (n.Contains("right") && n.Contains("clamp")) v = st.RightClamp ? 1 : 0;
+            else if (n.Contains("angle")) v = st.Angle;
+            else return "";
+            return v.ToString("R", CI);
+        }
+
+        /// <summary>
+        /// A special cut's steps as the saw gets them in R25700 (WriteSawGCodes_ByNo): 30 steps of the structure Special Cut Steps (10 words:
+        /// the code, robot 1 and 2 x100, the angle x10, the V saw's Y x100, the clamps' bits), the rest 0.
+        /// </summary>
+        internal static short[] SpecialStepWords(SpecialCutPlan sp, int station, List<string> problems)
+        {
+            var t = StructuredTypes.Find(SpecialStepsType, station);
+            if (t == null) { problems.Add("the machine's StructuredTypes.csv has no \"" + SpecialStepsType + "\""); return new short[0]; }
+            int size = Math.Max(t.Size, t.MinimumSize);
+            var words = new short[SpecialCuts.MaxSteps * size];
+            for (int i = 0; i < sp.Steps.Count && i < SpecialCuts.MaxSteps; i++)
+            {
+                var st = sp.Steps[i];
+                var w = Encode(t, m => StepValue(st, m), problems);
+                Array.Copy(w, 0, words, i * size, Math.Min(size, w.Length));
+            }
+            return words;
+        }
+
         private static void Split(int value, short[] into, int at)
         {
             into[at] = (short)(value & 0xFFFF);
@@ -135,6 +189,26 @@ namespace Kaban.Machines.FA2010.Jobs
                         Address = Offset(first, size * (op.Index - 1)), What = "milling operation " + op.Index + ": " + op.Label,
                         Words = Encode(mt, m => MillingValue(op, m), problems)
                     });
+            }
+            // the special cuts' parameters, their steps for the saw's request
+            if (plan.Special.Count > 0)
+            {
+                var spt = StructuredTypes.Find(SpecialParamsType, station);
+                if (spt == null) problems.Add("the machine's StructuredTypes.csv has no \"" + SpecialParamsType + "\"");
+                else
+                {
+                    string first = AddressOf(station, SpecialParamsLabel, "R25650");
+                    int size = Math.Max(spt.Size, spt.MinimumSize);
+                    foreach (var sp in plan.Special)
+                    {
+                        list.Add(new Block
+                        {
+                            Address = Offset(first, size * (sp.Number - 1)), What = sp.Label,
+                            Words = Encode(spt, m => SpecialValue(sp, m), problems)
+                        });
+                        sp.Words = SpecialStepWords(sp, station, problems);
+                    }
+                }
             }
             var length = new short[2];
             Split((int)(plan.Bar.Length * TenThousandths), length, 0);
@@ -208,8 +282,8 @@ namespace Kaban.Machines.FA2010.Jobs
             r.Ok = true;
             // the units ask for these operations' steps from now on
             JobMilling.Take(plan, string.Format(CI, "bar {0} of {1} ({2})", plan.Bar.Title, jobName, plan.Bar.Code));
-            AuditLogger.Log(string.Format(CI, "[JOB] {0} sent: {1} steps (IDs {2} - {3}), {4} milling operation(s), {5} pieces", source,
-                plan.Steps.Count, plan.FirstNo, plan.LastNo, plan.Milling.Count, plan.Bar.Pieces.Count));
+            AuditLogger.Log(string.Format(CI, "[JOB] {0} sent: {1} steps (IDs {2} - {3}), {4} milling operation(s), {5} special cut(s), {6} pieces", source,
+                plan.Steps.Count, plan.FirstNo, plan.LastNo, plan.Milling.Count, plan.Special.Count, plan.Bar.Pieces.Count));
             return r;
         }
     }

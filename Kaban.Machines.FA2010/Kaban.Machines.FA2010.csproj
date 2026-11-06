@@ -184,6 +184,9 @@
     <Compile Include="Jobs\JobMilling.cs" />
     <Compile Include="Jobs\JobPlan.cs" />
     <Compile Include="Jobs\JobSender.cs" />
+    <Compile Include="Screens\SpecialCutsDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Screens\JobsScreen.cs">
       <SubType>UserControl</SubType>
     </Compile>

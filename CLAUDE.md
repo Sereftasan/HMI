@@ -62,6 +62,12 @@
   Accessories + menu, the library editor's "Accessory groups of the profile groups") - every accessory of it, those added later too, on every
   profile of the group; the resolver and the counts read v_group_accessory (one by one or with their group; switched off for the group: off).
   profile_machine_setting: a profile's machine settings (FA2010's profile parameters) per machine instance.
+- FA2010's job list (6 November, the Jobs page): Send to the machine writes the profile's parameters (R25600), the milling operations'
+  (R26000 + 10 each), the special cuts' (R25650 + 5 each), the bar's length and first / last right cut (D106, D95, D97) and the job list
+  (D5000 / D6000 / D7000, 999999 last). Codes: a cut 1000 + 10 x angle (2800 - 10 x angle at a right end), a milling operation 1 - 100, a special
+  cut 1000 + its number (1001 - 1010), a V cut 3000. On the PLC's request (JobMilling): L101 + D60 -> R0 / L102, L103 + D61 -> R12800 / L104
+  (the milling steps), L105 + D65 -> R25700 / L106 (a special cut's steps). The special cut recipes (the old program's saw receipts, formulas of
+  T D W O L R) are the machine's settings in the library - the Jobs page's Special cut recipes... (entered, or its tables imported as CSV).
 - FA2010's PlcLabels.csv is kept by hand since 22 October (tools\build_plc_labels.py would lose its tail): the structured labels of
   FA2010_DeviceList's Profiles & Operations (StructuredTypes.csv: Profile Parameters R25600 with R25615 Profile Correction Position, the job
   list D5000 / D6000 / D7000, milling parameters and steps, special cuts, mullion notching) and every PC_ device of its ManualMovement sheet,

@@ -40,9 +40,9 @@ namespace Kaban.Machines.FA2010.Screens
         private readonly ToolTip _tips = UiStyle.Tips();
         private readonly Label _lblStatus = new Label();
         private readonly ComboBox _cmbRecent = new ComboBox();
-        private readonly NumericUpDown _numSaw = Num(0, 20), _numShare = Num(-50, 50), _numSquare = Num(0, 9999), _numLongest = Num(0, 99999);
+        private readonly NumericUpDown _numSaw = Num(0, 20), _numShare = Num(-50, 50), _numSquare = Num(0, 9999), _numLongest = Num(0, 99999), _numVSaws = Num(0, 999);
         private readonly CheckBox _chkTrial = new CheckBox();
-        private Button _btnSend, _btnOpen, _btnReload;
+        private Button _btnSend, _btnOpen, _btnReload, _btnRecipes;
         private readonly DataGridView _bars = new DataGridView(), _pieces = new DataGridView(), _steps = new DataGridView();
         private readonly TextBox _notes = new TextBox();
         private readonly Label _lblBar = new Label();
@@ -129,6 +129,15 @@ namespace Kaban.Machines.FA2010.Screens
             _numLongest.Increment = 100;
             _numSquare.DecimalPlaces = 0;
             _numSquare.Increment = 50;
+            setting("Job_VSaws", "V saws' distance mm", _numVSaws, "The distance between the V saws - the special cut recipes' D");
+            // the special cut recipes ("<>" cuts - the saw asks for their steps with L105, the code in D65)
+            _btnRecipes = UiStyle.TextButton("<> " + T("Job_Recipes", "Special cut recipes..."), 0, (s, e) => EditRecipes());
+            _btnRecipes.Font = UiStyle.Small;
+            _btnRecipes.Height = 26;
+            _btnRecipes.Width = TextRenderer.MeasureText(_btnRecipes.Text, _btnRecipes.Font).Width + 28;
+            _btnRecipes.Margin = new Padding(14, 0, 0, 0);
+            _tips.SetToolTip(_btnRecipes, T("Job_TipRecipes", "The recipes of the special cuts: how the saw, the robots and the clamps make a joint of special ends"));
+            cutting.Controls.Add(_btnRecipes);
 
             // ---- the bars | the bar's pieces, its job list and notes --------------------------------------------
             GridOf(_bars, new[] { "bar", "profile", "state", "pieces", "accessories", "length", "leftover", "name", "colour" },
@@ -273,6 +282,7 @@ namespace Kaban.Machines.FA2010.Screens
                 _numShare.Value = Clamp(_numShare, s.VerticalShare);
                 _numSquare.Value = Clamp(_numSquare, s.SquareFrom);
                 _numLongest.Value = Clamp(_numLongest, s.Longest);
+                _numVSaws.Value = Clamp(_numVSaws, s.VSawsDistance);
             }
             finally { _filling = false; }
         }
@@ -290,20 +300,35 @@ namespace Kaban.Machines.FA2010.Screens
             var s = new JobSettings
             {
                 SawThickness = _numSaw.Value > 0 ? (double)_numSaw.Value : (double?)null, VerticalShare = (double)_numShare.Value,
-                SquareFrom = (double)_numSquare.Value, Longest = (double)_numLongest.Value
+                SquareFrom = (double)_numSquare.Value, Longest = (double)_numLongest.Value, VSawsDistance = (double)_numVSaws.Value
             };
             s.Save(_instance);
-            AuditLogger.Log(string.Format(CI, "[JOB] the cutting settings changed: saw blade {0} mm, vertical share {1} mm, square a leftover from {2} mm, longest piece {3} mm",
-                _numSaw.Value, _numShare.Value, _numSquare.Value, _numLongest.Value));
+            AuditLogger.Log(string.Format(CI, "[JOB] the cutting settings changed: saw blade {0} mm, vertical share {1} mm, square a leftover from {2} mm, longest piece {3} mm, V saws {4} mm",
+                _numSaw.Value, _numShare.Value, _numSquare.Value, _numLongest.Value, _numVSaws.Value));
             Replan();
         }
 
         private void ApplyAccess()
         {
-            foreach (var n in new[] { _numSaw, _numShare, _numSquare, _numLongest }) n.Enabled = CanSet;
+            foreach (var n in new[] { _numSaw, _numShare, _numSquare, _numLongest, _numVSaws }) n.Enabled = CanSet;
             _chkTrial.Enabled = CanSet;
             if (!CanSet) _chkTrial.Checked = false;
             UpdateSend();
+        }
+
+        /// <summary>The special cut recipes' editor (the Maintenance level changes them; the others see them).</summary>
+        internal void EditRecipes()
+        {
+            EnsureLibrary();
+            if (!_libraryOk) { Ask.Tell(FindForm(), T("Job_RecipesTitle", "Special cut recipes"), T("Prf_NoLibrary", "The profile library could not be opened:") + " " + _libraryWhy); return; }
+            using (var d = new SpecialCutsDialog(Settings.Recipes, CanSet))
+            {
+                if (d.ShowDialog(FindForm()) != DialogResult.OK || !CanSet) return;
+                JobSettings.SaveRecipes(_instance, d.Recipes);
+                AuditLogger.Log(string.Format(CI, "[JOB] the special cut recipes saved: {0} recipe(s) ({1})", d.Recipes.Count,
+                    string.Join(", ", d.Recipes.Select(r => r.No.ToString(CI)))));
+            }
+            Replan();
         }
 
         // =====================================================================
@@ -435,6 +460,8 @@ namespace Kaban.Machines.FA2010.Screens
         /// <summary>The selected bar's pieces, job list and notes.</summary>
         private void ShowBar()
         {
+            // the page taken apart (its grids' selection is cleared as they go): nothing to show
+            if (IsDisposed || Disposing || _steps.Columns.Count == 0 || _pieces.Columns.Count == 0) return;
             _pieces.Rows.Clear();
             _steps.Rows.Clear();
             int i = SelectedIndex;
@@ -452,9 +479,11 @@ namespace Kaban.Machines.FA2010.Screens
             for (int n = 0; n < b.Pieces.Count; n++)
             {
                 var p = b.Pieces[n];
+                var what = p.Recs.Select(r => r.Code + " @" + r.Position.ToString("0.#", CI)).ToList();
+                what.AddRange(p.VCuts.Select(v => "V @" + v.Position.ToString("0.#", CI)));
+                if (p.Special != null) what.Insert(0, "<> " + p.Special.LeftCode + " / " + p.Special.RightCode);
                 _pieces.Rows.Add(n + 1, p.CutLength.ToString("0.#", CI), p.LeftAngle.ToString("0.#", CI), p.RightAngle.ToString("0.#", CI), p.Position,
-                                 (p.OrderNo + (p.OrderLineNo.Length > 0 ? "/" + p.OrderLineNo : "")).Trim('/'), p.Customer, p.Barcode,
-                                 string.Join(", ", p.Recs.Select(r => r.Code + " @" + r.Position.ToString("0.#", CI))));
+                                 (p.OrderNo + (p.OrderLineNo.Length > 0 ? "/" + p.OrderLineNo : "")).Trim('/'), p.Customer, p.Barcode, string.Join(", ", what));
             }
             var notes = new List<string>();
             if (plan != null)
@@ -483,10 +512,34 @@ namespace Kaban.Machines.FA2010.Screens
                     // its steps, as the unit gets them when it asks (L101 / L103)
                     for (int k = 0; k < m.Steps.Count; k++) notes.Add("        " + (k + 1).ToString(CI) + ". " + m.Steps[k]);
                 }
+                // the special cuts: their parameters (R25650 ...) and the steps the saw gets when it asks (L105)
+                foreach (var sp in plan.Special)
+                {
+                    notes.Add(string.Format(CI, "  {0} (code {1}) - {2}: angle {3:0.#}\u00B0, V cut Y {4:0.##}, holding {5:0.##}, X offset {6:0.##}", sp.Label, sp.Code,
+                        sp.Joint.Describe(), sp.StartingAngle, sp.VCutY, sp.Holding, sp.XOffset));
+                    for (int k = 0; k < sp.Steps.Count; k++)
+                    {
+                        var st = sp.Steps[k];
+                        notes.Add(string.Format(CI, "        {0}. {1}{2}", k + 1, SpecialCutsDialog.CommandName(st.Command),
+                            StepText(st)));
+                    }
+                }
             }
             if (Job.Problems.Count > 0) { notes.Add(""); notes.AddRange(Job.Problems.Select(p => "\u26A0 " + p)); }
             _notes.Text = string.Join("\r\n", notes);
             UpdateSend();
+        }
+
+        private static string StepText(SpecialStepValues st)
+        {
+            var parts = new List<string>();
+            if (SpecialCutStep.Uses(st.Command, "LeftClamp") || SpecialCutStep.Uses(st.Command, "RightClamp"))
+                parts.Add((st.LeftClamp ? "left" : "") + (st.LeftClamp && st.RightClamp ? " + " : "") + (st.RightClamp ? "right" : "") + (st.LeftClamp || st.RightClamp ? " clamp" : "no clamp"));
+            if (SpecialCutStep.Uses(st.Command, "Robot1")) parts.Add(string.Format(CI, "robot 1 {0:0.##}", st.Robot1));
+            if (SpecialCutStep.Uses(st.Command, "Robot2")) parts.Add(string.Format(CI, "robot 2 {0:0.##}", st.Robot2));
+            if (SpecialCutStep.Uses(st.Command, "Angle")) parts.Add(string.Format(CI, "{0:0.#}\u00B0", st.Angle));
+            if (SpecialCutStep.Uses(st.Command, "VCutY")) parts.Add(string.Format(CI, "Y {0:0.##}", st.VCutY));
+            return parts.Count > 0 ? " - " + string.Join(", ", parts) : "";
         }
 
         private void UpdateSend()
@@ -526,6 +579,8 @@ namespace Kaban.Machines.FA2010.Screens
                                             plan.Bar.Length.ToString("0.#", CI)) + "\r\n\r\n" +
                               string.Format(T("Job_AskWhat", "{0} step(s) (IDs {1} - {2}) into the job list, {3} milling operation(s), the profile's parameters."),
                                             plan.Steps.Count, plan.FirstNo, plan.LastNo, plan.Milling.Count);
+            if (plan.Special.Count > 0)
+                question += "\r\n" + string.Format(T("Job_AskSpecial", "{0} special cut(s): their parameters - the saw gets their steps when it asks (L105)."), plan.Special.Count);
             if (trial) question += "\r\n\r\n" + T("Job_AskTrial", "TRIAL: milling positions nobody has confirmed - for a test piece only.");
             if (!Kaban.UI.Settings.PlcBackupUi.IsSimulator(Station)) question += "\r\n\r\n" + T("Msg_MonResetLive", "This is the machine's PLC: it uses the new values at once.");
             if (!Ask.YesNo(FindForm(), title, question)) return false;
