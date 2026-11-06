@@ -543,6 +543,52 @@ JOIN   macro m                ON m.id = op.macro_id";
             return result;
         }
 
+        /// <summary>The profile's group's template: its reference profile, else its first (0 when the group has none).</summary>
+        public static long GroupTemplateOf(long profileId)
+        {
+            var t = Scalar(@"SELECT COALESCE(g.reference_profile_id, (SELECT MIN(q.id) FROM profile q WHERE q.group_id = g.id AND q.is_active = 1))
+                             FROM profile p JOIN profile_group g ON g.id = p.group_id WHERE p.id = @p0", profileId);
+            return t == null || t == DBNull.Value ? 0 : Convert.ToInt64(t);
+        }
+
+        /// <summary>
+        /// A NEW profile takes its group template's machine settings as its own (6 November: "We should load the group parameter values
+        /// to the profile when we create a new one") - the ones it has already stay. The number taken.
+        /// </summary>
+        public static int TakeTemplateSettings(long profileId, long instance)
+        {
+            long template = GroupTemplateOf(profileId);
+            if (template <= 0 || template == profileId) return 0;
+            int n = 0;
+            Transaction(c =>
+            {
+                foreach (var r in Rows(c, "SELECT code, value FROM profile_machine_setting WHERE profile_id=@p0 AND instance_id=@p1", template, instance))
+                {
+                    string code = Convert.ToString(r["code"]);
+                    if (Db.Count(c, "SELECT COUNT(*) FROM profile_machine_setting WHERE profile_id=@p0 AND instance_id=@p1 AND code=@p2", profileId, instance, code) > 0) continue;
+                    Db.Execute(c, "INSERT INTO profile_machine_setting (profile_id, instance_id, code, value, updated_at) VALUES (@p0,@p1,@p2,@p3,@p4)",
+                               profileId, instance, code, r["value"], Db.Now());
+                    n++;
+                }
+            });
+            return n;
+        }
+
+        /// <summary>A profile made BASED ON another takes that one's machine settings (then its group template's for the rest).</summary>
+        public static void CopyMachineSettings(long fromProfile, long toProfile, long instance)
+        {
+            Transaction(c =>
+            {
+                foreach (var r in Rows(c, "SELECT code, value FROM profile_machine_setting WHERE profile_id=@p0 AND instance_id=@p1", fromProfile, instance))
+                {
+                    Db.Execute(c, "DELETE FROM profile_machine_setting WHERE profile_id=@p0 AND instance_id=@p1 AND code=@p2", toProfile, instance, r["code"]);
+                    Db.Execute(c, "INSERT INTO profile_machine_setting (profile_id, instance_id, code, value, updated_at) VALUES (@p0,@p1,@p2,@p3,@p4)",
+                               toProfile, instance, r["code"], r["value"], Db.Now());
+                }
+            });
+            TakeTemplateSettings(toProfile, instance);
+        }
+
         /// <summary>A machine setting of the profile kept (null or "": its own taken away - the template's again).</summary>
         public static void SetMachineSetting(long profileId, long instance, string code, string value)
         {

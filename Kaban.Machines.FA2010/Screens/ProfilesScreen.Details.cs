@@ -508,6 +508,7 @@ namespace Kaban.Machines.FA2010.Screens
             try
             {
                 long id = Library.SaveProfile(new Library.ProfileInfo { GroupId = group, Code = code.Trim(), DxfStatus = "NONE" }, User);
+                if (_instance > 0) Library.TakeTemplateSettings(id, _instance);       // the group's machine settings, its own from the start
                 AuditLogger.Log("profile library: added profile " + code.Trim() + ".");
                 _pendingSelectId = id.ToString(CI);
                 ReloadAll();
@@ -531,6 +532,7 @@ namespace Kaban.Machines.FA2010.Screens
             try
             {
                 long id = Library.CopyProfile(_current.Id, code.Trim(), User);
+                if (_instance > 0) Library.CopyMachineSettings(_current.Id, id, _instance);   // the one it is based on: its settings, then the group's
                 AuditLogger.Log("profile library: added profile " + code.Trim() + " based on " + from + ".");
                 _pendingSelectId = id.ToString(CI);
                 ReloadAll();

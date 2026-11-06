@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
@@ -12,11 +12,15 @@ namespace Kaban.Machines.FA2010.Screens
 {
     /// <summary>
     /// THE PROFILE'S MACHINE SETTINGS (6 November: the old program's profile parameters - its ucCompanyDetails, ProfileSeryProfileSetting -
-    /// "they go to the PLC at R25600 - R25649", with R25615 Profile Correction Position, "an upgrade we recently done on the machine"). One
-    /// field per member of the structured data type the label PC_ProfilParametreleri has (StructuredTypes.csv, "Profile Parameters"): the
-    /// same structure the PLC Monitor's tab HMI -> PLC shows, and the one "Send to the machine" writes with the job. A value the profile has
-    /// not is its group's template's (the group's reference profile, else its first - the old program's first profile of the group), shown
-    /// grey with where it came from; typed here, it is the profile's own; emptied, the template's again.
+    /// "they go to the PLC at R25600 - R25649", with R25615 Profile Correction Position). One row per member of the structured data type the
+    /// label PC_ProfilParametreleri has (StructuredTypes.csv, "Profile Parameters"): the structure the PLC Monitor's tab HMI -> PLC shows and
+    /// "Send to the machine" writes with the job.
+    ///
+    /// ONE TABLE (6 November, second answer: "The profile details window is not very responsive, it is very hard to set it's borders even" -
+    /// fifty rows of three controls each were laid out again at every move of the pane's border), its columns: the parameter, the profile's
+    /// value, the GROUP's (its template's - the group's reference profile, else its first: the old program's first profile of the group). A
+    /// new profile takes the template's values as its own ("We should load the group parameter values to the profile when we create a new
+    /// one"); a value that differs from the group's is in bold blue ("so the user could see the edited ones"); nothing set is 0.
     /// </summary>
     public partial class ProfilesScreen
     {
@@ -25,10 +29,8 @@ namespace Kaban.Machines.FA2010.Screens
         internal const string ParametersType = "Profile Parameters";
 
         private TabPage _machineTab;
-        private Panel _machineRows;
+        private DataGridView _machineGrid;
         private Label _machineHead;
-        private readonly Dictionary<string, Control> _machineInputs = new Dictionary<string, Control>(StringComparer.OrdinalIgnoreCase);
-        private readonly Dictionary<string, Label> _machineFrom = new Dictionary<string, Label>(StringComparer.OrdinalIgnoreCase);
         private bool _fillingMachine;
 
         /// <summary>The structure of the profile's parameters (null: the machine's StructuredTypes.csv has none).</summary>
@@ -42,9 +44,28 @@ namespace Kaban.Machines.FA2010.Screens
         {
             _machineTab = new TabPage(T("Prf_TabMachine", "Machine settings")) { BackColor = Color.White };
             _detailTabs.TabPages.Add(_machineTab);
-            _machineHead = new Label { Dock = DockStyle.Top, Height = 44, Font = UiStyle.Small, ForeColor = Color.FromArgb(70, 80, 95), Padding = new Padding(8, 4, 8, 0) };
-            _machineRows = new Panel { Dock = DockStyle.Fill, AutoScroll = true };
-            _machineTab.Controls.Add(_machineRows);
+            _machineHead = new Label { Dock = DockStyle.Top, Height = 40, Font = UiStyle.Small, ForeColor = Color.FromArgb(70, 80, 95), Padding = new Padding(8, 4, 8, 0) };
+            _machineGrid = new DataGridView
+            {
+                Dock = DockStyle.Fill, AllowUserToAddRows = false, AllowUserToDeleteRows = false, AllowUserToResizeRows = false,
+                RowHeadersVisible = false, SelectionMode = DataGridViewSelectionMode.CellSelect, MultiSelect = false,
+                AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None, EditMode = DataGridViewEditMode.EditOnEnter
+            };
+            UiStyle.StyleGrid(_machineGrid);
+            _machineGrid.Columns.Add(new DataGridViewTextBoxColumn { Name = "name", HeaderText = T("Prf_ColParameter", "Parameter"), ReadOnly = true, Width = 250, SortMode = DataGridViewColumnSortMode.NotSortable });
+            _machineGrid.Columns.Add(new DataGridViewTextBoxColumn { Name = "value", HeaderText = T("Prf_ColProfileValue", "This profile"), Width = 90, SortMode = DataGridViewColumnSortMode.NotSortable });
+            _machineGrid.Columns.Add(new DataGridViewTextBoxColumn { Name = "group", HeaderText = T("Prf_ColGroupValue", "Group"), ReadOnly = true, Width = 90, SortMode = DataGridViewColumnSortMode.NotSortable });
+            _machineGrid.Columns["value"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+            _machineGrid.Columns["group"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+            _machineGrid.Columns["group"].DefaultCellStyle.ForeColor = Color.Gray;
+            _machineGrid.CellValueChanged += (s, e) => { if (!_fillingMachine && e.RowIndex >= 0 && _machineGrid.Columns[e.ColumnIndex].Name == "value") MachineCellChanged(e.RowIndex); };
+            _machineGrid.CurrentCellDirtyStateChanged += (s, e) =>
+            {
+                // a tick is kept as it is clicked (not when the cell is left)
+                if (_machineGrid.IsCurrentCellDirty && _machineGrid.CurrentCell is DataGridViewCheckBoxCell) _machineGrid.CommitEdit(DataGridViewDataErrorContexts.Commit);
+            };
+            _machineGrid.DataError += (s, e) => { e.ThrowException = false; };
+            _machineTab.Controls.Add(_machineGrid);
             _machineTab.Controls.Add(_machineHead);
             var st = ParametersStructure();
             var label = PlcLabelTable.ByLabel(1, ParametersLabel);
@@ -53,90 +74,96 @@ namespace Kaban.Machines.FA2010.Screens
                 _machineHead.Text = T("Prf_MachineNone", "The machine's structured data types (StructuredTypes.csv) have no \"Profile Parameters\".");
                 return;
             }
-            _machineHead.Text = string.Format(T("Prf_MachineHead",
-                "Sent to the PLC with the job ({0}, {1}). Grey: the group's template's value - type one to give this profile its own, empty it to take the template's again."),
+            _machineHead.Text = string.Format(T("Prf_MachineHead2",
+                "Sent to the PLC with the job ({0}, {1}). Group: its template profile's value; bold blue: this profile's differs from it."),
                 ParametersLabel, label != null ? label.Address : "R25600");
-            int y = 4;
+            _fillingMachine = true;
             foreach (var m in st.Members.OrderBy(x => x.Offset).ThenBy(x => x.Bit))
             {
-                var row = new Panel { Left = 4, Top = y, Width = 520, Height = 30, Anchor = AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Right };
-                var cap = new Label { Text = m.Name, Left = 4, Top = 0, Width = 300, Height = 30, TextAlign = ContentAlignment.MiddleLeft, Font = UiStyle.Small, AutoEllipsis = true };
-                Control input;
+                int i = _machineGrid.Rows.Add(m.Name, "", "");
+                var row = _machineGrid.Rows[i];
+                row.Tag = m;
                 if (m.IsBit)
                 {
-                    var cb = new CheckBox { Left = 312, Top = 4, Width = 60, Height = 22 };
-                    string code = m.Name;
-                    cb.CheckedChanged += (s, e) => { if (!_fillingMachine) KeepMachineValue(code, cb.Checked ? "1" : "0"); };
-                    input = cb;
+                    row.Cells["value"] = new DataGridViewCheckBoxCell { TrueValue = "1", FalseValue = "0", Value = "0" };
+                    row.Cells["group"] = new DataGridViewCheckBoxCell { TrueValue = "1", FalseValue = "0", Value = "0" };
+                    row.Cells["group"].ReadOnly = true;
                 }
-                else
-                {
-                    var tb = new TextBox { Left = 312, Top = 3, Width = 90, Font = UiStyle.Small, TextAlign = HorizontalAlignment.Right };
-                    string code = m.Name;
-                    tb.Leave += (s, e) => { if (!_fillingMachine) KeepMachineText(code, tb); };
-                    tb.KeyDown += (s, e) => { if (e.KeyCode == Keys.Enter) { e.SuppressKeyPress = true; KeepMachineText(code, tb); } };
-                    input = tb;
-                }
-                var from = new Label { Left = 408, Top = 0, Width = 110, Height = 30, TextAlign = ContentAlignment.MiddleLeft, Font = UiStyle.Small, ForeColor = Color.Gray, AutoEllipsis = true };
                 string place = m.IsBit ? m.Offset + "." + m.Bit : m.Offset.ToString(CultureInfo.InvariantCulture);
-                _tips.SetToolTip(cap, (m.Comment ?? "") + "  (+" + place + (m.IsScaled ? ", x" + m.Divisor.ToString(CultureInfo.InvariantCulture) : "") + ")");
-                row.Controls.Add(cap); row.Controls.Add(input); row.Controls.Add(from);
-                row.Paint += (s, e) => { using (var pen = new Pen(UiStyle.RowRule)) e.Graphics.DrawLine(pen, 0, row.Height - 1, row.Width, row.Height - 1); };
-                _machineRows.Controls.Add(row);
-                _machineInputs[m.Name] = input;
-                _machineFrom[m.Name] = from;
-                y += 30;
+                row.Cells["name"].ToolTipText = (m.Comment ?? "") + "  (+" + place + (m.IsScaled ? ", x" + m.Divisor.ToString(CultureInfo.InvariantCulture) : "") + ")";
             }
+            _fillingMachine = false;
         }
 
-        /// <summary>The fields from the profile on display.</summary>
+        /// <summary>The table from the profile on display.</summary>
         private void FillMachine()
         {
-            if (_machineTab == null) return;
+            if (_machineGrid == null) return;
             _fillingMachine = true;
             try
             {
-                var values = _current != null && _libraryOk && _instance > 0 ? Library.MachineSettings(_current.Id, _instance) : new Dictionary<string, Library.MachineValue>();
-                foreach (var kv in _machineInputs)
+                bool ok = _current != null && _libraryOk && _instance > 0;
+                var values = ok ? Library.MachineSettings(_current.Id, _instance) : new Dictionary<string, Library.MachineValue>();
+                long template = ok ? Library.GroupTemplateOf(_current.Id) : 0;
+                var group = template > 0 ? Library.MachineSettings(template, _instance) : new Dictionary<string, Library.MachineValue>();
+                _machineGrid.Columns["group"].HeaderText = template > 0 && template != (_current != null ? _current.Id : 0)
+                    ? string.Format(T("Prf_ColGroupOf", "Group ({0})"), Convert.ToString(Library.Scalar("SELECT code FROM profile WHERE id=@p0", template)))
+                    : T("Prf_ColGroupValue", "Group");
+                foreach (DataGridViewRow row in _machineGrid.Rows)
                 {
-                    Library.MachineValue v;
-                    values.TryGetValue(kv.Key, out v);
-                    var cb = kv.Value as CheckBox;
-                    if (cb != null) cb.Checked = v != null && v.Value == "1";
-                    else kv.Value.Text = v != null ? v.Value : "";
-                    kv.Value.ForeColor = v != null && !v.Own ? Color.Gray : SystemColors.WindowText;
-                    kv.Value.Enabled = _current != null && CanEdit;
-                    _machineFrom[kv.Key].Text = v == null ? T("Prf_MachineUnset", "not set (0)") : v.Own ? "" : string.Format(T("Prf_MachineFrom", "from {0}"), v.From);
+                    var m = (StructuredTypes.Member)row.Tag;
+                    Library.MachineValue v, g;
+                    values.TryGetValue(m.Name, out v);
+                    group.TryGetValue(m.Name, out g);
+                    string mine = Normal(v != null ? v.Value : null), theirs = Normal(g != null ? g.Value : null);
+                    row.Cells["value"].Value = mine;
+                    row.Cells["group"].Value = theirs;
+                    bool edited = mine != theirs;
+                    row.Cells["value"].Style.ForeColor = edited ? Color.FromArgb(20, 90, 200) : SystemColors.WindowText;
+                    row.Cells["value"].Style.Font = edited ? new Font(_machineGrid.Font, FontStyle.Bold) : null;
+                    row.Cells["value"].ReadOnly = !ok || !CanEdit;
                 }
             }
             finally { _fillingMachine = false; }
         }
 
-        private void KeepMachineText(string code, TextBox tb)
+        /// <summary>A value as kept and shown: a number in the invariant culture, nothing set 0.</summary>
+        private static string Normal(string value)
         {
-            string t = (tb.Text ?? "").Trim().Replace(',', '.');
             double d;
-            if (t.Length > 0 && !double.TryParse(t, NumberStyles.Float, CultureInfo.InvariantCulture, out d))
-            {
-                Status(string.Format(T("Prf_MachineNotNumber", "{0}: \"{1}\" is not a number."), code, tb.Text));
-                FillMachine();
-                return;
-            }
-            KeepMachineValue(code, t);
+            if (string.IsNullOrWhiteSpace(value)) return "0";
+            return double.TryParse(value.Trim().Replace(',', '.'), NumberStyles.Float, CultureInfo.InvariantCulture, out d)
+                ? d.ToString("0.###", CultureInfo.InvariantCulture) : value.Trim();
         }
 
-        /// <summary>A value of the profile's own kept ("": the template's again).</summary>
+        private void MachineCellChanged(int rowIndex)
+        {
+            var row = _machineGrid.Rows[rowIndex];
+            var m = row.Tag as StructuredTypes.Member;
+            if (m == null) return;
+            string t = Convert.ToString(row.Cells["value"].Value ?? "").Trim().Replace(',', '.');
+            double d;
+            if (t.Length == 0) t = "0";
+            if (!double.TryParse(t, NumberStyles.Float, CultureInfo.InvariantCulture, out d))
+            {
+                Status(string.Format(T("Prf_MachineNotNumber", "{0}: \"{1}\" is not a number."), m.Name, t));
+                BeginInvoke((Action)FillMachine);
+                return;
+            }
+            KeepMachineValue(m.Name, Normal(t));
+        }
+
+        /// <summary>A value of the profile kept as its own.</summary>
         internal void KeepMachineValue(string code, string value)
         {
             if (_current == null || !_libraryOk || _instance <= 0 || !CanEdit) return;
             var had = Library.MachineSettings(_current.Id, _instance);
             Library.MachineValue was;
             had.TryGetValue(code, out was);
-            if (was != null && was.Own && was.Value == value) return;
-            if (was != null && !was.Own && was.Value == value) return;        // the template's value, unchanged
-            Library.SetMachineSetting(_current.Id, _instance, code, value);
-            AuditLogger.Log("profile library: " + _current.Code + " - machine setting " + code + " = " + (value.Length == 0 ? "(the template's)" : value) + ".");
-            FillMachine();
+            if (was != null && was.Own && Normal(was.Value) == Normal(value)) return;
+            Library.SetMachineSetting(_current.Id, _instance, code, Normal(value));
+            AuditLogger.Log("profile library: " + _current.Code + " - machine setting " + code + " = " + Normal(value) + ".");
+            if (IsHandleCreated) BeginInvoke((Action)FillMachine); else FillMachine();
         }
     }
 }

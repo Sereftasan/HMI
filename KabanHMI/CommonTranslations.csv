@@ -2237,8 +2237,13 @@ Prf_AccGroupsHead;Accessory groups on the group {0} (every accessory of them, no
 Prf_AccOneByOne;One accessory;Tek bir aksesuar;;;;
 Prf_AccViaGroup;with the accessory group {0};{0} aksesuar grubuyla;;;;
 Prf_AccViaGroupRemove;{0} comes with the accessory group {1}: switch it off here for this group, or take the accessory group off with + .;{0}, {1} aksesuar grubuyla geliyor: bu grup için buradan kapatın ya da aksesuar grubunu + ile kaldırın.;;;;
+Prf_ColGroupOf;Group ({0});Grup ({0});;;;
+Prf_ColGroupValue;Group;Grup;;;;
+Prf_ColParameter;Parameter;Parametre;;;;
+Prf_ColProfileValue;This profile;Bu profil;;;;
 Prf_MachineFrom;from {0};{0} profilinden;;;;
 Prf_MachineHead;Sent to the PLC with the job ({0}, {1}). Grey: the group's template's value - type one to give this profile its own, empty it to take the template's again.;İşle birlikte PLC'ye gönderilir ({0}, {1}). Gri: grubun şablonunun değeri - bu profile kendi değerini vermek için yazın, şablonunkini yeniden almak için boşaltın.;;;;
+Prf_MachineHead2;Sent to the PLC with the job ({0}, {1}). Group: its template profile's value; bold blue: this profile's differs from it.;;;;
 Prf_MachineNone;The machine's structured data types (StructuredTypes.csv) have no "Profile Parameters".;Makinenin yapılı veri tiplerinde (StructuredTypes.csv) "Profile Parameters" yok.;;;;
 Prf_MachineNotNumber;{0}: "{1}" is not a number.;{0}: "{1}" bir sayı değil.;;;;
 Prf_MachineUnset;not set (0);ayarlanmadı (0);;;;

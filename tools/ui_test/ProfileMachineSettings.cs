@@ -60,33 +60,46 @@ class PMS {
         Pump(300);
         Call(page, "EnsureLibrary");
         Pump(100);
-        // 6 November: the old program's profile parameters (R25600 ...), R25615 with them
-        var inputs = (IDictionary)Get(page, "_machineInputs");
-        Check("the Machine settings tab: a field per member of Profile Parameters (the PC_ProfilParametreleri structure), R25615 among them",
-              inputs.Count > 40 && inputs.Contains("Profile Correction Position") && inputs.Contains("Conveyor Speed") && inputs["Tool Cooling Active"] is CheckBox, inputs.Count.ToString());
+        // 6 November: the old program's profile parameters (R25600 ...), R25615 with them - one table (second answer: "The profile details
+        // window is not very responsive, it is very hard to set it's borders even")
+        var grid = (DataGridView)Get(page, "_machineGrid");
+        Func<string, DataGridViewRow> rowOf = n => grid.Rows.Cast<DataGridViewRow>().First(r => (string)r.Cells["name"].Value == n);
+        Check("the Machine settings tab: ONE table, a row per member of Profile Parameters (the PC_ProfilParametreleri structure), R25615 among them",
+              grid.Rows.Count > 40 && rowOf("Profile Correction Position") != null && rowOf("Tool Cooling Active").Cells["value"] is DataGridViewCheckBoxCell &&
+              ((TabPage)Get(page, "_machineTab")).Controls.Count == 2, grid.Rows.Count.ToString());
         var all = Library.Profiles();
         var sash = all.First(p => p.Code == "0001000104");
         long instance = (long)Get(page, "_instance");
-        Library.Exec("INSERT INTO profile (group_id, code, dxf_status, is_active, created_at) VALUES (@p0,'NEW-OF-GROUP','NONE',1,'2026-11-06')", sash.GroupId);
-        all = Library.Profiles();
-        long template = Convert.ToInt64(Library.Scalar("SELECT COALESCE(reference_profile_id, (SELECT MIN(q.id) FROM profile q WHERE q.group_id = g.id AND q.is_active = 1)) FROM profile_group g WHERE g.id=@p0", sash.GroupId));
-        var other = all.First(p => p.GroupId == sash.GroupId && p.Id != template);
+        long template = Library.GroupTemplateOf(sash.Id);
         Call(page, "SelectProfile", template); Pump(150);
         Call(page, "KeepMachineValue", "Conveyor Speed", "80");
         Call(page, "KeepMachineValue", "Tool Cooling Active", "1");
+        Pump(100);
         Check("typed on the group's template profile: its own", Library.MachineSettings(template, instance)["Conveyor Speed"].Own &&
               Library.MachineSettings(template, instance)["Conveyor Speed"].Value == "80");
-        Call(page, "SelectProfile", other.Id); Pump(150);
-        var speed = (TextBox)inputs["Conveyor Speed"];
-        var from = (Label)((IDictionary)Get(page, "_machineFrom"))["Conveyor Speed"];
-        Check("another profile of the group: the template's value, grey, saying where from", speed.Text == "80" && speed.ForeColor == Color.Gray && from.Text.Contains(Library.Profiles().First(p => p.Id == template).Code),
-              speed.Text + " / " + from.Text);
-        Check("  a switch too", ((CheckBox)inputs["Tool Cooling Active"]).Checked);
-        Call(page, "KeepMachineValue", "Conveyor Speed", "65");
-        Check("typed there: its own, the template keeps 80", Library.MachineSettings(other.Id, instance)["Conveyor Speed"].Value == "65" &&
-              Library.MachineSettings(other.Id, instance)["Conveyor Speed"].Own && Library.MachineSettings(template, instance)["Conveyor Speed"].Value == "80");
-        Call(page, "KeepMachineValue", "Conveyor Speed", "");
-        Check("emptied: the template's again", Library.MachineSettings(other.Id, instance)["Conveyor Speed"].Value == "80" && !Library.MachineSettings(other.Id, instance)["Conveyor Speed"].Own);
+        Check("  nothing set shows 0 (not \"not set\")", (string)rowOf("Cut Speed 9").Cells["value"].Value == "0" && (string)rowOf("Cut Speed 9").Cells["group"].Value == "0");
+        // a new profile of the group, as the + button makes it
+        long id = Library.SaveProfile(new Library.ProfileInfo { GroupId = sash.GroupId, Code = "NEW-OF-GROUP", DxfStatus = "NONE" }, "tester");
+        Library.TakeTemplateSettings(id, instance);
+        Check("a new profile of the group: the group's values loaded as its own (\"load the group parameter values to the profile when we create a new one\")",
+              Library.MachineSettings(id, instance)["Conveyor Speed"].Own && Library.MachineSettings(id, instance)["Conveyor Speed"].Value == "80");
+        Call(page, "ReloadAll"); Pump(150);
+        Call(page, "SelectProfile", id); Pump(150);
+        var sp = rowOf("Conveyor Speed");
+        Check("  shown with the group's beside it, the same - not marked", (string)sp.Cells["value"].Value == "80" && (string)sp.Cells["group"].Value == "80" &&
+              sp.Cells["value"].Style.Font == null && grid.Columns["group"].HeaderText.Contains(Library.Profiles().First(p => p.Id == template).Code),
+              sp.Cells["value"].Value + " / " + sp.Cells["group"].Value + " / " + grid.Columns["group"].HeaderText);
+        Check("  a switch too", (string)rowOf("Tool Cooling Active").Cells["value"].Value == "1");
+        Call(page, "KeepMachineValue", "Conveyor Speed", "65"); Pump(100);
+        sp = rowOf("Conveyor Speed");
+        Check("changed: its own, bold blue (\"so the user could see the edited ones\"); the group keeps 80",
+              Library.MachineSettings(id, instance)["Conveyor Speed"].Value == "65" && (string)sp.Cells["value"].Value == "65" && (string)sp.Cells["group"].Value == "80" &&
+              sp.Cells["value"].Style.Font != null && sp.Cells["value"].Style.Font.Bold && Library.MachineSettings(template, instance)["Conveyor Speed"].Value == "80");
+        var sw = System.Diagnostics.Stopwatch.StartNew();
+        var pane = grid.Parent;
+        for (int i = 0; i < 20; i++) { pane.Width += (i % 2 == 0 ? 37 : -37); Application.DoEvents(); }
+        sw.Stop();
+        Check("  its border moved twenty times quickly", sw.ElapsedMilliseconds < 2000, sw.ElapsedMilliseconds + " ms");
         form.Close();
         try { Directory.Delete(dir, true); } catch { }
         Console.WriteLine(fail == 0 ? "PROFILE MACHINE SETTINGS ALL PASS" : "PROFILE MACHINE SETTINGS " + fail + " FAILED");
