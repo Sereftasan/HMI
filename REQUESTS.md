@@ -6,6 +6,11 @@ Claude reads this file at the start of every batch, does the items, and moves ea
 ## To do
 
 ## Done
+- 6 November (the answers: the job list from the old program, R25615, attach accessory groups to profile groups; the labels of what the HMI writes):
+  - af23ca3 - Never two copies, a restart's included: the old process waited for and ended if it lingers; a closed window's process ends in 5 s.
+  - eedcb04 - LogRecordHMI: the HMI turns the trigger off once the record is in the database (ResetTrigger, the default) - the PLC waits for it.
+  - cd80243 - PLC Monitor: "what the HMI writes to the PLC" - the tab HMI -> PLC with the profile's parameters (R25600 ... with R25615), the job
+    list, the milling and cutting steps and every PC_ device of FA2010_DeviceList; back them up and write them back with the tab's backup.
 - 5 November, evening late (the answers: devices set by you, 6 and 20 from the device list; one copy of the HMI; the profiles next):
   - 1092b49 - One copy of the HMI at a time: a second start brings the running one to the front, says why and ends; a restart waits for the old one.
   - 8775b82 - FA2010, a new machine: records 6 and 20 taken as L1006 / L1020 come on; the measured width / height D481 / D482 for 20 and 22.
@@ -14,8 +19,6 @@ Claude reads this file at the start of every batch, does the items, and moves ea
   - b8f3049, a49e4ce, 91eb475 - the cause, found from the log: GX Simulator3 answered a random read of 553 devices in over a second. Long lists
     are read in parts of 128, a module's buffer words in a call of their own, devices a random read refuses found once and read alone.
     On the panel after it: no drop in the scans of 699 devices (before: every few seconds).
-- To do next (asked in the report): the profile parameters of the old program (FA2010, R25600 ...) on the Profiles page's details, and
-  the profile group / accessory group templates.
 - 5 November, late night (the answers: the record trigger tool; the inverters' current later; test on the PC):
   - 9982221 - LogRecordHMI: a record the HMI takes when its trigger comes - code, Trigger (as EnableTrigger), Values (numbers and
     lamps); FA2010's 15, 16, 22 in the Industry 4 Logging frame (devices partly to be set), instead of the PLC's switches on a new machine.
