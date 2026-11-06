@@ -48,6 +48,8 @@
     <Compile Include="Geometry\Fingerprint.cs" />
     <Compile Include="Geometry\ReferenceFinder.cs" />
     <Compile Include="Geometry\Section.cs" />
+    <Compile Include="Jobs\BarLayout.cs" />
+    <Compile Include="Jobs\KbnFile.cs" />
     <Compile Include="Machining\FlatJson.cs" />
     <Compile Include="Machining\SideProgram.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
