@@ -13,6 +13,11 @@ Claude reads this file at the start of every batch, does the items, and moves ea
     list, the milling and cutting steps and every PC_ device of FA2010_DeviceList; back them up and write them back with the tab's backup.
   - 29153d6 - Accessory groups attached to profile groups: every accessory of the group, one added later too, on every profile of the group.
   - 80baf27 - Profiles page, Machine settings: the profile parameters (R25600 ..., R25615 too) per profile, from the group's template profile.
+- 6 November, afternoon (the details pane, the labels, the job list's answers):
+  - b54bde2 - PLC Monitor: the tab HMI -> PLC made by itself in the list (once); long arrays show their first 10 elements. The collect
+    button is the card box (🗃) on the monitor's toolbar, not +.
+  - 14fcaf7 - Profiles page, Machine settings as one table: this profile's value and the group's beside it, the edited ones bold blue;
+    a new profile takes the group's values.
 - To do next: the job list (from the old program, JobSample.kbn) with "Send to the machine".
 - 5 November, evening late (the answers: devices set by you, 6 and 20 from the device list; one copy of the HMI; the profiles next):
   - 1092b49 - One copy of the HMI at a time: a second start brings the running one to the front, says why and ends; a restart waits for the old one.
