@@ -18,6 +18,11 @@ Claude reads this file at the start of every batch, does the items, and moves ea
     button is the card box (🗃) on the monitor's toolbar, not +.
   - 14fcaf7 - Profiles page, Machine settings as one table: this profile's value and the group's beside it, the edited ones bold blue;
     a new profile takes the group's values.
+- 6 November, night (the answers: write D95 / D97 / D106; the movement codes of the milling steps):
+  - 36029cd - Send to the machine writes D106 (the bar's length), D95 / D97 (the first and last right cut) as the old program; Profile
+    Recognition Width / Height and Cut Full Width go x10 as the old program writes them.
+  - a544c26 - The milling steps: a unit asking (L101 + D60, L103 + D61) gets the operation's steps in R0 / R12800, then L102 / L104;
+    each operation's steps are listed on the Jobs page. To be tried on a test piece (Trial).
 - 6 November, evening (the job list from the old program, a sample job of our library, 999999 after the whole bar):
   - 2dbadfe - docs/fa2010/JobSample_Library.kbn: a job file of the library's own profiles and accessories (tools/make_job_sample.py).
   - 1a1af8e - The job file (.kbn) read as the old program read it, and every cut and accessory of a bar where it put them.

@@ -778,11 +778,11 @@ Inp_PanelNote;KabanHMI\Forms\MainForm.Touch.cs;112;Text;: LanguageManager.GetStr
 IoShow_All;KabanHMI\Screens\IoMonitorPage.cs;66;Text;_show.AllText = T("IoShow_All", "All lists");
 IoShow_Inputs;KabanHMI\Screens\IoMonitorPage.cs;195;Menu;if (sec.Inputs != null) items.Add(new Kaban.UI.Dashboard.PickList.Item(sec.Station + ":I", sec.Heading.Text + " - " + T("IoShow_Inputs", "inputs")));
 IoShow_Outputs;KabanHMI\Screens\IoMonitorPage.cs;196;Menu;if (sec.Outputs != null) items.Add(new Kaban.UI.Dashboard.PickList.Item(sec.Station + ":O", sec.Heading.Text + " - " + T("IoShow_Outputs", "outputs")));
-Job_Ask;Kaban.Machines.FA2010\Screens\JobsScreen.cs;519;Text;string question = string.Format(T("Job_Ask", "Send bar {0} ({1}, {2} piece(s), {3} mm) to the machine?"), plan.Bar.Title, plan.Bar.Code, plan.Bar.Pieces.Count,
-Job_AskTrial;Kaban.Machines.FA2010\Screens\JobsScreen.cs;523;Text;if (trial) question += "\r\n\r\n" + T("Job_AskTrial", "TRIAL: milling positions nobody has confirmed - for a test piece only.");
-Job_AskWhat;Kaban.Machines.FA2010\Screens\JobsScreen.cs;521;Text;string.Format(T("Job_AskWhat", "{0} step(s) (IDs {1} - {2}) into the job list, {3} milling operation(s), the profile's parameters."),
-Job_BarHead;Kaban.Machines.FA2010\Screens\JobsScreen.cs;448;Text;_lblBar.Text = string.Format(T("Job_BarHead", "Bar {0}: {1} {2}, {3} mm"), b.Title, b.Code, b.Name, b.Length.ToString("0.#", CI)) +
-Job_CannotSend;Kaban.Machines.FA2010\Screens\JobsScreen.cs;507;Message;Ask.Tell(FindForm(), title, string.Format(T("Job_CannotSend", "Bar {0} cannot go to the machine:"), plan.Bar.Title) + "\r\n\r\n" +
+Job_Ask;Kaban.Machines.FA2010\Screens\JobsScreen.cs;525;Text;string question = string.Format(T("Job_Ask", "Send bar {0} ({1}, {2} piece(s), {3} mm) to the machine?"), plan.Bar.Title, plan.Bar.Code, plan.Bar.Pieces.Count,
+Job_AskTrial;Kaban.Machines.FA2010\Screens\JobsScreen.cs;529;Text;if (trial) question += "\r\n\r\n" + T("Job_AskTrial", "TRIAL: milling positions nobody has confirmed - for a test piece only.");
+Job_AskWhat;Kaban.Machines.FA2010\Screens\JobsScreen.cs;527;Text;string.Format(T("Job_AskWhat", "{0} step(s) (IDs {1} - {2}) into the job list, {3} milling operation(s), the profile's parameters."),
+Job_BarHead;Kaban.Machines.FA2010\Screens\JobsScreen.cs;450;Text;_lblBar.Text = string.Format(T("Job_BarHead", "Bar {0}: {1} {2}, {3} mm"), b.Title, b.Code, b.Name, b.Length.ToString("0.#", CI)) +
+Job_CannotSend;Kaban.Machines.FA2010\Screens\JobsScreen.cs;513;Message;Ask.Tell(FindForm(), title, string.Format(T("Job_CannotSend", "Bar {0} cannot go to the machine:"), plan.Bar.Title) + "\r\n\r\n" +
 Job_ColAccessories;Kaban.Machines.FA2010\Screens\JobsScreen.cs;136;Text;T("Job_ColAccessories", "Accessories"), T("Job_ColLength", "Length"), T("Job_ColLeftover", "Leftover"),
 Job_ColAccessories;Kaban.Machines.FA2010\Screens\JobsScreen.cs;142;Text;T("Job_ColOrder", "Order"), T("Job_ColCustomer", "Customer"), T("Job_ColBarcode", "Barcode"), T("Job_ColAccessories", "Accessories") },
 Job_ColBar;Kaban.Machines.FA2010\Screens\JobsScreen.cs;135;Text;new[] { T("Job_ColBar", "Bar"), T("Job_ColProfile", "Profile"), T("Job_ColState", "State"), T("Job_ColPieces", "Pieces"),
@@ -806,36 +806,36 @@ Job_ColRight;Kaban.Machines.FA2010\Screens\JobsScreen.cs;141;Text;new[] { "#", T
 Job_ColState;Kaban.Machines.FA2010\Screens\JobsScreen.cs;135;Text;new[] { T("Job_ColBar", "Bar"), T("Job_ColProfile", "Profile"), T("Job_ColState", "State"), T("Job_ColPieces", "Pieces"),
 Job_ColWhat;Kaban.Machines.FA2010\Screens\JobsScreen.cs;145;Text;new[] { T("Job_ColId", "ID (D5000)"), T("Job_ColPos", "Position (D6000)"), T("Job_ColCode", "Code (D7000)"), T("Job_ColPiece", "Piece"), T("Job_ColWhat", "What") },
 Job_Cutting;Kaban.Machines.FA2010\Screens\JobsScreen.cs;115;Text;cutting.Controls.Add(new Label { Text = T("Job_Cutting", "Cutting:"), AutoSize = true, Font = new Font(UiStyle.Small, FontStyle.Bold), Margin = new Padding(2, 6, 8, 0) });
-Job_EndMark;Kaban.Machines.FA2010\Screens\JobsScreen.cs;468;Text;int e = _steps.Rows.Add("", JobPlanner.EndMark.ToString(CI), "", "", T("Job_EndMark", "the end of the bar"));
-Job_Filter;Kaban.Machines.FA2010\Screens\JobsScreen.cs;313;Text;using (var d = new OpenFileDialog { Filter = T("Job_Filter", "Job files (*.kbn)|*.kbn|All files (*.*)|*.*"), Title = T("Job_TipOpen", "Open a job file (.kbn)") })
-Job_Hint;Kaban.Machines.FA2010\Screens\JobsScreen.cs;191;Status;Status(T("Job_Hint", "Open a job file (.kbn) - the bars, their pieces and what each sends to the machine are shown."));
-Job_LeftoverNote;Kaban.Machines.FA2010\Screens\JobsScreen.cs;474;Text;notes.Add(string.Format(T("Job_LeftoverNote", "Leftover {0} mm, {1} step(s) (IDs {2} - {3}), {4} milling operation(s)."),
-Job_LinesNotRead;Kaban.Machines.FA2010\Screens\JobsScreen.cs;365;Text;if (Job.Problems.Count > 0) text += "  " + string.Format(T("Job_LinesNotRead", "{0} line(s) of the file not read (the notes below)."), Job.Problems.Count);
+Job_EndMark;Kaban.Machines.FA2010\Screens\JobsScreen.cs;470;Text;int e = _steps.Rows.Add("", JobPlanner.EndMark.ToString(CI), "", "", T("Job_EndMark", "the end of the bar"));
+Job_Filter;Kaban.Machines.FA2010\Screens\JobsScreen.cs;315;Text;using (var d = new OpenFileDialog { Filter = T("Job_Filter", "Job files (*.kbn)|*.kbn|All files (*.*)|*.*"), Title = T("Job_TipOpen", "Open a job file (.kbn)") })
+Job_Hint;Kaban.Machines.FA2010\Screens\JobsScreen.cs;193;Status;Status(T("Job_Hint", "Open a job file (.kbn) - the bars, their pieces and what each sends to the machine are shown."));
+Job_LeftoverNote;Kaban.Machines.FA2010\Screens\JobsScreen.cs;476;Text;notes.Add(string.Format(T("Job_LeftoverNote", "Leftover {0} mm, {1} step(s) (IDs {2} - {3}), {4} milling operation(s)."),
+Job_LinesNotRead;Kaban.Machines.FA2010\Screens\JobsScreen.cs;367;Text;if (Job.Problems.Count > 0) text += "  " + string.Format(T("Job_LinesNotRead", "{0} line(s) of the file not read (the notes below)."), Job.Problems.Count);
 Job_Longest;Kaban.Machines.FA2010\Screens\JobsScreen.cs;127;Text;setting("Job_Longest", "Longest piece mm", _numLongest, "A longer leftover is cut into pieces the machine can take (0: no limit)");
-Job_NeedsTrial;Kaban.Machines.FA2010\Screens\JobsScreen.cs;514;Message;Ask.Tell(FindForm(), title, string.Format(T("Job_NeedsTrial",
-Job_NoLevel;Kaban.Machines.FA2010\Screens\JobsScreen.cs;504;Message;if (!CanSend) { Ask.Tell(FindForm(), title, T("Job_NoLevel", "Sending a job needs the Operator level.")); return false; }
-Job_ReadFailed;Kaban.Machines.FA2010\Screens\JobsScreen.cs;327;Status;Status(string.Format(T("Job_ReadFailed", "The job file could not be read: {0}"), ex.Message), true);
+Job_NeedsTrial;Kaban.Machines.FA2010\Screens\JobsScreen.cs;520;Message;Ask.Tell(FindForm(), title, string.Format(T("Job_NeedsTrial",
+Job_NoLevel;Kaban.Machines.FA2010\Screens\JobsScreen.cs;510;Message;if (!CanSend) { Ask.Tell(FindForm(), title, T("Job_NoLevel", "Sending a job needs the Operator level.")); return false; }
+Job_ReadFailed;Kaban.Machines.FA2010\Screens\JobsScreen.cs;329;Status;Status(string.Format(T("Job_ReadFailed", "The job file could not be read: {0}"), ex.Message), true);
 Job_Saw;Kaban.Machines.FA2010\Screens\JobsScreen.cs;124;Text;setting("Job_Saw", "Saw blade mm", _numSaw, "The main saw blade's thickness: half of it, at the cut's angle, on each side of every cut");
 Job_Send;Kaban.Machines.FA2010\Screens\JobsScreen.cs;98;Text;_btnSend = UiStyle.TextButton("\u25B6 " + T("Job_Send", "Send to the machine"), 0, (s, e) => SendSelected());
-Job_Send;Kaban.Machines.FA2010\Screens\JobsScreen.cs;503;Text;string title = T("Job_Send", "Send to the machine");
-Job_SendFailed;Kaban.Machines.FA2010\Screens\JobsScreen.cs;529;Message;Ask.Tell(FindForm(), title, string.Format(T("Job_SendFailed", "Bar {0} was not sent: {1}"), plan.Bar.Title, r.Message));
-Job_SendFailed;Kaban.Machines.FA2010\Screens\JobsScreen.cs;530;Message;Status(string.Format(T("Job_SendFailed", "Bar {0} was not sent: {1}"), plan.Bar.Title, r.Message), true);
-Job_Sent;Kaban.Machines.FA2010\Screens\JobsScreen.cs;538;Status;Status(string.Format(T("Job_Sent", "Bar {0} sent to the machine: {1} step(s), {2} milling operation(s){3}."), plan.Bar.Title, plan.Steps.Count, plan.Milling.Count,
+Job_Send;Kaban.Machines.FA2010\Screens\JobsScreen.cs;509;Text;string title = T("Job_Send", "Send to the machine");
+Job_SendFailed;Kaban.Machines.FA2010\Screens\JobsScreen.cs;535;Message;Ask.Tell(FindForm(), title, string.Format(T("Job_SendFailed", "Bar {0} was not sent: {1}"), plan.Bar.Title, r.Message));
+Job_SendFailed;Kaban.Machines.FA2010\Screens\JobsScreen.cs;536;Message;Status(string.Format(T("Job_SendFailed", "Bar {0} was not sent: {1}"), plan.Bar.Title, r.Message), true);
+Job_Sent;Kaban.Machines.FA2010\Screens\JobsScreen.cs;544;Status;Status(string.Format(T("Job_Sent", "Bar {0} sent to the machine: {1} step(s), {2} milling operation(s){3}."), plan.Bar.Title, plan.Steps.Count, plan.Milling.Count,
 Job_Share;Kaban.Machines.FA2010\Screens\JobsScreen.cs;125;Text;setting("Job_Share", "Vertical share mm", _numShare, "The saw's vertical share (the old program's): added at an angled cut over its tangent");
 Job_Square;Kaban.Machines.FA2010\Screens\JobsScreen.cs;126;Text;setting("Job_Square", "Square a leftover from mm", _numSquare, "A leftover this long or longer is squared (a 90 degree cut) when the last cut is not");
-Job_StateProblems;Kaban.Machines.FA2010\Screens\JobsScreen.cs;413;Text;cell.Value = "\u26A0 " + string.Format(T("Job_StateProblems", "{0} problem(s)"), plan.Problems.Count);
-Job_StateReady;Kaban.Machines.FA2010\Screens\JobsScreen.cs;428;Text;cell.Value = T("Job_StateReady", "ready");
-Job_StateSent;Kaban.Machines.FA2010\Screens\JobsScreen.cs;418;Text;cell.Value = "\u2714 " + string.Format(T("Job_StateSent", "sent {0}"), sent.Value.ToString(sent.Value.Date == DateTime.Today ? "HH:mm" : "yyyy-MM-dd HH:mm", CI));
-Job_StateTrial;Kaban.Machines.FA2010\Screens\JobsScreen.cs;423;Text;cell.Value = T("Job_StateTrial", "trial only (unconfirmed)");
-Job_Summary;Kaban.Machines.FA2010\Screens\JobsScreen.cs;364;Text;string text = string.Format(T("Job_Summary", "{0}: {1} bar(s) - {2} can go to the machine, {3} cannot."), Job.Name, Job.Bars.Count, ready, problems);
+Job_StateProblems;Kaban.Machines.FA2010\Screens\JobsScreen.cs;415;Text;cell.Value = "\u26A0 " + string.Format(T("Job_StateProblems", "{0} problem(s)"), plan.Problems.Count);
+Job_StateReady;Kaban.Machines.FA2010\Screens\JobsScreen.cs;430;Text;cell.Value = T("Job_StateReady", "ready");
+Job_StateSent;Kaban.Machines.FA2010\Screens\JobsScreen.cs;420;Text;cell.Value = "\u2714 " + string.Format(T("Job_StateSent", "sent {0}"), sent.Value.ToString(sent.Value.Date == DateTime.Today ? "HH:mm" : "yyyy-MM-dd HH:mm", CI));
+Job_StateTrial;Kaban.Machines.FA2010\Screens\JobsScreen.cs;425;Text;cell.Value = T("Job_StateTrial", "trial only (unconfirmed)");
+Job_Summary;Kaban.Machines.FA2010\Screens\JobsScreen.cs;366;Text;string text = string.Format(T("Job_Summary", "{0}: {1} bar(s) - {2} can go to the machine, {3} cannot."), Job.Name, Job.Bars.Count, ready, problems);
 Job_TipOpen;Kaban.Machines.FA2010\Screens\JobsScreen.cs;81;Tooltip;_btnOpen = UiStyle.ToolButton("\uD83D\uDCC2", T("Job_TipOpen", "Open a job file (.kbn) - the window software's job list for the machine"), _tips, (s, e) => OpenFile());
-Job_TipOpen;Kaban.Machines.FA2010\Screens\JobsScreen.cs;313;Text;using (var d = new OpenFileDialog { Filter = T("Job_Filter", "Job files (*.kbn)|*.kbn|All files (*.*)|*.*"), Title = T("Job_TipOpen", "Open a job file (.kbn)") })
+Job_TipOpen;Kaban.Machines.FA2010\Screens\JobsScreen.cs;315;Text;using (var d = new OpenFileDialog { Filter = T("Job_Filter", "Job files (*.kbn)|*.kbn|All files (*.*)|*.*"), Title = T("Job_TipOpen", "Open a job file (.kbn)") })
 Job_TipRecent;Kaban.Machines.FA2010\Screens\JobsScreen.cs;93;Tooltip;_tips.SetToolTip(_cmbRecent, T("Job_TipRecent", "The jobs opened lately"));
 Job_TipReload;Kaban.Machines.FA2010\Screens\JobsScreen.cs;95;Tooltip;_btnReload = UiStyle.ToolButton("\uD83D\uDD04", T("Job_TipReload", "Read the job file and the profile library again"), _tips, (s, e) => { if (Job != null) OpenJob(Job.Path); });
 Job_TipSend;Kaban.Machines.FA2010\Screens\JobsScreen.cs;101;Tooltip;_tips.SetToolTip(_btnSend, T("Job_TipSend", "Write the selected bar into the PLC: the profile's parameters, its milling operations, the job list"));
 Job_TipTrial;Kaban.Machines.FA2010\Screens\JobsScreen.cs;108;Tooltip;_tips.SetToolTip(_chkTrial, T("Job_TipTrial",
 Job_Trial;Kaban.Machines.FA2010\Screens\JobsScreen.cs;103;Text;_chkTrial.Text = T("Job_Trial", "Trial");
-Job_Trial;Kaban.Machines.FA2010\Screens\JobsScreen.cs;539;Status;trial ? " - " + T("Job_Trial", "Trial") : ""));
+Job_Trial;Kaban.Machines.FA2010\Screens\JobsScreen.cs;545;Status;trial ? " - " + T("Job_Trial", "Trial") : ""));
 Key_Alt;KabanHMI\Helpers\Shortcuts.cs;80;Text;if ((keys & Keys.Alt) != 0) parts.Add(T("Key_Alt", "Alt"));
 Key_Ctrl;KabanHMI\Helpers\Shortcuts.cs;78;Text;if ((keys & Keys.Control) != 0) parts.Add(T("Key_Ctrl", "Ctrl"));
 Key_Delete;KabanHMI\Helpers\Shortcuts.cs;89;Text;case Keys.Delete: return T("Key_Delete", "Del");
@@ -1512,7 +1512,7 @@ Msg_MonPickNow;KabanHMI\Forms\SimulationMonitorForm.cs;2827;Text;_pickText.Text 
 Msg_MonProgramNone;KabanHMI\Forms\SimulationMonitorForm.cs;2929;Message;MessageBox.Show(DialogOwner, string.Format(T("Msg_MonProgramNone", "No page of the program uses a device of {0}."),
 Msg_MonReset;KabanHMI\Forms\SimulationMonitorForm.cs;3149;Text;string question = string.Format(T("Msg_MonReset", "Write 0 into the {0} device(s) of {1} ({2})?"), words.Count, labels, range);
 Msg_MonResetDone;KabanHMI\Forms\SimulationMonitorForm.cs;3171;Status;SetStatus(string.Format(T("Msg_MonResetDone", "{0} device(s) set to 0."), words.Count));
-Msg_MonResetLive;Kaban.Machines.FA2010\Screens\JobsScreen.cs;524;Text;if (!Kaban.UI.Settings.PlcBackupUi.IsSimulator(Station)) question += "\r\n\r\n" + T("Msg_MonResetLive", "This is the machine's PLC: it uses the new values at once.");
+Msg_MonResetLive;Kaban.Machines.FA2010\Screens\JobsScreen.cs;530;Text;if (!Kaban.UI.Settings.PlcBackupUi.IsSimulator(Station)) question += "\r\n\r\n" + T("Msg_MonResetLive", "This is the machine's PLC: it uses the new values at once.");
 Msg_MonResetLive;KabanHMI\Forms\SimulationMonitorForm.Backup.cs;221;Text;if (real) question += "\r\n\r\n" + T("Msg_MonResetLive", "This is the machine's PLC: it uses the new values at once.");
 Msg_MonResetLive;KabanHMI\Forms\SimulationMonitorForm.cs;3153;Text;question += "\r\n\r\n" + T("Msg_MonResetLive", "This is the machine's PLC: it uses the new values at once.");
 Msg_MonResetNotRead;KabanHMI\Forms\SimulationMonitorForm.cs;3151;Text;question += "\r\n\r\n" + string.Format(T("Msg_MonResetNotRead", "{0} bit(s) stay as they are: their word is not read yet."), notRead);
@@ -1926,7 +1926,7 @@ Prf_AllFiles;Kaban.Machines.FA2010\Screens\ProfilesScreen.Program.cs;197;Text;us
 Prf_AskActivate;Kaban.Machines.FA2010\Screens\ProfilesScreen.Details.cs;553;Message;if (!Ask.YesNo(FindForm(), T("Prf_Title", "Profiles"), string.Format(T("Prf_AskActivate", "Take {0} back into use?"), _current.Code))) return;
 Prf_AskConfirmProposed;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;370;Message;string.Format(T("Prf_AskConfirmProposed", "{0} is measured from a reference point nobody has confirmed. Confirm this position anyway (checked on a trial piece)?"), p.Accessory +...
 Prf_AskDeactivate;Kaban.Machines.FA2010\Screens\ProfilesScreen.Details.cs;558;Message;if (!Ask.YesNo(FindForm(), T("Prf_Title", "Profiles"), string.Format(T("Prf_AskDeactivate",
-Prf_AskExamples;Kaban.Machines.FA2010\Screens\JobsScreen.cs;248;Message;T("Prf_AskExamples", "The profile library is new. Load the example catalogue?\r\n\r\n" +
+Prf_AskExamples;Kaban.Machines.FA2010\Screens\JobsScreen.cs;250;Message;T("Prf_AskExamples", "The profile library is new. Load the example catalogue?\r\n\r\n" +
 Prf_AskExamples;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;190;Message;T("Prf_AskExamples", "The profile library is new. Load the example catalogue?\r\n\r\n" +
 Prf_AskRemoveAcc;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;552;Message;if (!Ask.YesNo(FindForm(), T("Prf_Title", "Profiles"), string.Format(T("Prf_AskRemoveAcc",
 Prf_AskRemoveCorrection;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;463;Message;if (!Ask.YesNo(FindForm(), T("Prf_Title", "Profiles"), T("Prf_AskRemoveCorrection",
@@ -2044,8 +2044,8 @@ Prf_NewPrompt;Kaban.Machines.FA2010\Screens\ProfilesScreen.Details.cs;506;Messag
 Prf_NewTitle;Kaban.Machines.FA2010\Screens\ProfilesScreen.Details.cs;506;Message;string code = Ask.Text(FindForm(), T("Prf_NewTitle", "New profile"), string.Format(T("Prf_NewPrompt", "Code of the new profile (group {0} - it can be changed in Details):"), gro...
 Prf_NoCorrections;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;441;Menu;if (list.Count == 0) menu.Items.Add(new ToolStripMenuItem(T("Prf_NoCorrections", "No correction reaches this profile.")) { Enabled = false });
 Prf_NoGroups;Kaban.Machines.FA2010\Screens\ProfilesScreen.Details.cs;501;Message;Ask.Tell(FindForm(), T("Prf_Title", "Profiles"), T("Prf_NoGroups", "The library has no group to put a profile in. Add a vendor, a series, a variant and a group first (the librar...
-Prf_NoLibrary;Kaban.Machines.FA2010\Screens\JobsScreen.cs;259;Status;else if (!_libraryOk) Status(T("Prf_NoLibrary", "The profile library could not be opened:") + " " + _libraryWhy, true);
-Prf_NoLibrary;Kaban.Machines.FA2010\Screens\JobsScreen.cs;366;Text;if (!_libraryOk) text += "  " + T("Prf_NoLibrary", "The profile library could not be opened:") + " " + _libraryWhy;
+Prf_NoLibrary;Kaban.Machines.FA2010\Screens\JobsScreen.cs;261;Status;else if (!_libraryOk) Status(T("Prf_NoLibrary", "The profile library could not be opened:") + " " + _libraryWhy, true);
+Prf_NoLibrary;Kaban.Machines.FA2010\Screens\JobsScreen.cs;368;Text;if (!_libraryOk) text += "  " + T("Prf_NoLibrary", "The profile library could not be opened:") + " " + _libraryWhy;
 Prf_NoLibrary;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;206;Status;if (!_libraryOk) { Status(T("Prf_NoLibrary", "The profile library could not be opened:") + " " + _libraryWhy, true); return; }
 Prf_NoLibrary;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;963;Status;if (_libraryTried) Status(T("Prf_NoLibrary", "The profile library could not be opened:") + " " + _libraryWhy, true);
 Prf_NoMoreAcc;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;496;Menu;if (list.Count == 0) menu.Items.Add(new ToolStripMenuItem(T("Prf_NoMoreAcc", "Every accessory of the library is on the group already.")) { Enabled = false });
@@ -2208,7 +2208,7 @@ Prf_TipUseBorder;Kaban.Machines.FA2010\Screens\ProfilesScreen.Drawing.cs;114;Tex
 Prf_TipWholeAccessory;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;131;Tooltip;Kaban.UI.Controls.UiStyle.SetTip(_tips, _chkWholeAccessory, T("Prf_TipWholeAccessory", "The whole accessory moves (a hinge's slot and its holes together), not just this operatio...
 Prf_TipZoomIn;Kaban.Machines.FA2010\Screens\ProfilesScreen.Drawing.cs;71;Text;add(Tool("\uD83D\uDD0D", T("Prf_TipZoomIn", "Zoom in (the wheel zooms too)"), (s, e) => _viewer.ZoomIn()));
 Prf_TipZoomOut;Kaban.Machines.FA2010\Screens\ProfilesScreen.Drawing.cs;72;Text;add(Tool("\uD83D\uDD0E", T("Prf_TipZoomOut", "Zoom out"), (s, e) => _viewer.ZoomOut()));
-Prf_Title;Kaban.Machines.FA2010\Screens\JobsScreen.cs;247;Message;_libraryOk = Library.IsReady || Library.Open(() => Ask.YesNo(FindForm(), T("Prf_Title", "Profiles"),
+Prf_Title;Kaban.Machines.FA2010\Screens\JobsScreen.cs;249;Message;_libraryOk = Library.IsReady || Library.Open(() => Ask.YesNo(FindForm(), T("Prf_Title", "Profiles"),
 Prf_Title;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;369;Message;if (p.Status == "PROPOSED" && !Ask.YesNo(FindForm(), T("Prf_Title", "Profiles"),
 Prf_Title;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;463;Message;if (!Ask.YesNo(FindForm(), T("Prf_Title", "Profiles"), T("Prf_AskRemoveCorrection",
 Prf_Title;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;548;Message;Ask.Tell(FindForm(), T("Prf_Title", "Profiles"), string.Format(T("Prf_AccViaGroupRemove",
