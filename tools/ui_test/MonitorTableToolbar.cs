@@ -49,7 +49,7 @@ class MTT {
     static List<object> Blocks(object sheet) { return ((IList)Get(sheet, "Blocks")).Cast<object>().ToList(); }
     /// <summary>The tables' tab's items as shown: a table's caption, "# text" for a comment line.</summary>
     static string Shown(object sheet) {
-        return string.Join(" / ", Blocks(sheet).Select(b => (bool)Get(b, "IsComment") ? "# " + ((Label)Get(b, "Caption")).Text : ((Label)Get(b, "Caption")).Text));
+        return string.Join(" / ", Blocks(sheet).Select(b => (bool)Get(b, "IsComment") ? "# " + (string)Get(b, "Title") : (string)Get(b, "Title")));
     }
     static void Pump() { for (int i = 0; i < 5; i++) { Application.DoEvents(); System.Threading.Thread.Sleep(10); } }
 

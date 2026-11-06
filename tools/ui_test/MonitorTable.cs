@@ -50,7 +50,7 @@ class MT {
     }
     static List<object> Blocks(object sheet) { return ((IList)Get(sheet, "Blocks")).Cast<object>().ToList(); }
     static DataGridView GridOf(object block) { return (DataGridView)Get(block, "Grid"); }
-    static string Caption(object block) { return ((Label)Get(block, "Caption")).Text; }
+    static string Caption(object block) { return (string)Get(block, "Title"); }   // (its caption without the fold mark)
     static Button Btn(object block, string n) { return (Button)Get(block, n); }
     static List<string> Headers(DataGridView g) { return g.Columns.Cast<DataGridViewColumn>().Select(c => c.HeaderText.Replace("\n", " | ")).ToList(); }
     static string Cell(DataGridView g, int r, int c) { return Convert.ToString(g.Rows[r].Cells[c].Value); }
@@ -100,7 +100,7 @@ class MT {
         var list = (DataGridView)Get(sh, "Grid");
 
         Console.WriteLine("--- a label of the list shown as a table ---");
-        var steps = Row("R25700", "CuttingStep", 30, "CuttingSteps");
+        var steps = Row("R25700", "CuttingStep", 30, "Cutting Steps");
         var single = Row("M5", "Bit", 1, "Lamp");
         Rows(sh).Insert(Rows(sh).Count - 1, single);
         Rows(sh).Insert(Rows(sh).Count - 1, steps);
@@ -154,7 +154,7 @@ class MT {
               ((Control)Get(b0, "Panel")).Height + " / " + host.Height + " - " + g.DisplayedRowCount(false) + " lines; row " + g.RowTemplate.Height + "/" + g.Rows[0].Height +
               " head " + g.ColumnHeadersHeight + " cap " + cap.Height + " bar " + ((Control)Get(b0, "Bar")).Height + " grid " + g.Height + " " + g.Bounds);
         Check("  its caption the label's description, the view buttons under it, the table under them",
-              Caption(b0) == "CuttingSteps" && ((Label)Get(b0, "Caption")).Bottom <= Btn(b0, "ShowHmi").Parent.Top && Btn(b0, "ShowHmi").Parent.Bottom <= g.Top &&
+              Caption(b0) == "Cutting Steps" && ((Label)Get(b0, "Caption")).Bottom <= Btn(b0, "ShowHmi").Parent.Top && Btn(b0, "ShowHmi").Parent.Bottom <= g.Top &&
               Btn(b0, "ShowHmi").Text == "Value (HMI)" && Btn(b0, "ShowPlc").Text == "Value (PLC)", Caption(b0));
         var heads = Headers(g);
         Check("the columns: #, then each member - its name over its data type", string.Join(", ", heads) ==
@@ -181,8 +181,8 @@ class MT {
         Check("  its RightClamp (R25725.1) set, the word's other bit kept", v == 3, v.ToString());
 
         Console.WriteLine("--- labels of the same length joined to a table ---");
-        var job1 = Row("D5000", "Double Word [Signed]", 30, "Operation1");
-        var job2 = Row("D6000", "Double Word [Signed]", 30, "Operation2");
+        var job1 = Row("D5000", "Double Word [Signed]", 30, "Operation 1");
+        var job2 = Row("D6000", "Double Word [Signed]", 30, "Operation 2");
         var shortOne = Row("D7000", "Word [Signed]", 20, "Short");
         foreach (var r in new[] { job1, job2, shortOne }) Rows(sh).Insert(Rows(sh).Count - 1, r);
         Call(form, "Render", mon, sh);
@@ -193,16 +193,16 @@ class MT {
         var menu = (ContextMenuStrip)Call(form, "TableAddMenu", mon, sh, job1);
         var texts = menu.Items.Cast<ToolStripItem>().Select(i => i.Text).ToList();
         Check("Add an array...: the labels of 30 elements in this tab's list (not Short's 20), a new one",
-              texts[0] == "Labels of 30 elements:" && texts.Any(t => t.StartsWith("Operation2") && t.Contains("this tab's list")) && !texts.Any(t => t.StartsWith("Short")) &&
+              texts[0] == "Labels of 30 elements:" && texts.Any(t => t.StartsWith("Operation 2") && t.Contains("this tab's list")) && !texts.Any(t => t.StartsWith("Short")) &&
               texts.Last() == "New array of 30...", string.Join(" | ", texts));
-        menu.Items.Cast<ToolStripItem>().First(i => i.Text.StartsWith("Operation2")).PerformClick();
+        menu.Items.Cast<ToolStripItem>().First(i => i.Text.StartsWith("Operation 2")).PerformClick();
         Call(form, "RefreshValues"); Application.DoEvents();
         blocks = Blocks(sh);
         b1 = blocks[1];
         var g1 = GridOf(b1);
-        Check("Operation2 moved from the list into Operation1's table: its column at the end, the same index together",
-              !Rows(sh).Contains(job2) && (bool)Get(job2, "Joined") && Caption(b1) == "Operation1  +  Operation2" &&
-              string.Join(", ", Headers(g1)) == "#, Operation1 | (Double Word [Signed]), Operation2 | (Double Word [Signed])" && Cell(g1, 3, 1) == "1004" && Cell(g1, 3, 2) == "400",
+        Check("Operation 2 moved from the list into Operation 1's table: its column at the end, the same index together",
+              !Rows(sh).Contains(job2) && (bool)Get(job2, "Joined") && Caption(b1) == "Operation 1  +  Operation 2" &&
+              string.Join(", ", Headers(g1)) == "#, Operation 1 | (Double Word [Signed]), Operation 2 | (Double Word [Signed])" && Cell(g1, 3, 1) == "1004" && Cell(g1, 3, 2) == "400",
               Caption(b1) + " / " + string.Join(", ", Headers(g1)));
         Call(form, "JoinTable", mon, sh, job1, shortOne);
         Check("  a label of another length: kept in the list, not in the table", Rows(sh).Contains(shortOne) && !(bool)Get(shortOne, "Joined"));
@@ -213,7 +213,7 @@ class MT {
         Btn(blocks[1], "Up").PerformClick();
         Call(form, "RefreshValues"); Application.DoEvents();
         blocks = Blocks(sh);
-        Check("Up: Operation1's table first, its joined label with it", Caption(blocks[0]) == "Operation1  +  Operation2" && Caption(blocks[1]) == "CuttingSteps" &&
+        Check("Up: Operation 1's table first, its joined label with it", Caption(blocks[0]) == "Operation 1  +  Operation 2" && Caption(blocks[1]) == "Cutting Steps" &&
               ((Control)Get(blocks[0], "Panel")).Top < ((Control)Get(blocks[1], "Panel")).Top,
               string.Join(" / ", blocks.Select(Caption)));
 
@@ -222,11 +222,11 @@ class MT {
         Application.DoEvents();
         blocks = Blocks(sh);
         // (checked before the simulator's own devices are appended to the list by a refresh)
-        Check("Operation1 taken off its table: at the list's end; Operation2 leads the table now", Rows(sh).Contains(job1) && Caption(blocks[0]) == "Operation2" &&
+        Check("Operation 1 taken off its table: at the list's end; Operation 2 leads the table now", Rows(sh).Contains(job1) && Caption(blocks[0]) == "Operation 2" &&
               !(bool)Get(job2, "Joined") && LastItem(sh) == job1, string.Join(" / ", blocks.Select(Caption)));
         Btn(blocks[1], "ToList").PerformClick();
         Application.DoEvents();
-        Check("List view: CuttingSteps at the end of the list again - the list's tab shown, where it went",
+        Check("List view: Cutting Steps at the end of the list again - the list's tab shown, where it went",
               Rows(sh).Contains(steps) && !TableRaw(sh, steps) && Blocks(sh).Count == 1 && LastItem(sh) == steps && views.SelectedTab == views.TabPages[0],
               Blocks(sh).Count.ToString());
         Call(form, "Undo"); Application.DoEvents();

@@ -118,6 +118,14 @@ namespace Kaban.UI.Forms
             public bool TableRaw;
             /// <summary>Read as a table's ("view=table"): only while a list is read.</summary>
             public bool ViewTable;
+            /// <summary>
+            /// FOLDED (7 November: "add '&gt;' arrow to each table label left end to extend them to show/hide when required ... the comment lines
+            /// to have this function on both list view and table view pages"): a comment line - the rows (the tables) under it, until the next
+            /// comment line, hidden; a table - its caption alone. Kept with the list ("fold=1").
+            /// </summary>
+            public bool Folded;
+            /// <summary>Hidden by a folded comment line above it (worked out as the list is drawn).</summary>
+            public bool FoldedAway;
 
             /// <summary>A structure's member: its member's; an element: its array's; else its own.</summary>
             public double EffectiveDivisor
@@ -1596,6 +1604,7 @@ namespace Kaban.UI.Forms
                 var r = sh.Rows[e.RowIndex];
                 if (e.X > FoldMarkRight(r)) return;
                 if (r.IsGroup) ToggleArray(mon, sh, r);
+                else if (r.IsComment) ToggleComment(mon, sh, r);
             };
             // Tab leaves the table for the next control: stepping cell by cell
             // through a table that selects whole rows shows nothing moving.
@@ -1672,8 +1681,9 @@ namespace Kaban.UI.Forms
                 else if (col == "Divisor" || col == "Decimals") { if (!CanScale(row)) { e.Cancel = true; return; } }
                 else if ((row.IsElement && col != "Value") || (row.IsGroup && col == "Value") || col == "Format" || col == "Changed") { e.Cancel = true; return; }
                 // The label without the fold mark and the count shown around it.
-                // (the label as it is kept - the cell shows it in words)
+                // (the label as it is kept - the cell shows it in words; a comment line its text without the fold mark)
                 if (row.IsDevice && col == "Label") grid.Rows[e.RowIndex].Cells["Label"].Value = row.EffectiveLabel;
+                if (row.IsComment && col == "Label") grid.Rows[e.RowIndex].Cells["Label"].Value = row.Comment;
                 sh.Editing = true;
                 // A value goes to the PLC and is not undone; a name or an address is.
                 if (col != "Value" && col != "Calculated" && !row.IsMember) Remember(T("Undo_Edit", "edit a row"), mon);
@@ -1713,7 +1723,7 @@ namespace Kaban.UI.Forms
             if (rowIndex < 0 || rowIndex >= sh.Rows.Count) return;
             var row = sh.Rows[rowIndex];
             if (row.IsBlank) { AddRows(atEnd: true, comment: false); return; }
-            if (column == "Label" && row.IsGroup && sh.Grid.PointToClient(Cursor.Position).X -
+            if (column == "Label" && (row.IsGroup || row.IsComment) && sh.Grid.PointToClient(Cursor.Position).X -
                 sh.Grid.GetCellDisplayRectangle(sh.Grid.Columns["Label"].Index, rowIndex, false).X <= FoldMarkRight(row)) return;   // the fold mark
             if (row.IsComment || (column == "Value" && row.IsDevice && !row.IsGroup) || (column == "Calculated" && row.IsDevice && !row.IsGroup) ||
                 ((column == "Divisor" || column == "Decimals") && CanScale(row)))
@@ -1972,6 +1982,21 @@ namespace Kaban.UI.Forms
         {
             rows = rows.ToList();
             if (rows.Any()) ShowListView(sh);                  // rows asked for (Find, a paste, an added one): the list in sight
+            // A row asked for under a folded comment line: the comment line unfolds.
+            foreach (var i in rows)
+                if (i >= 0 && i < sh.Rows.Count && sh.Rows[i].FoldedAway)
+                {
+                    for (int k = i - 1; k >= 0; k--)
+                        if (sh.Rows[k].IsComment) { sh.Rows[k].Folded = false; break; }
+                    bool away = false;
+                    for (int k = 0; k < sh.Rows.Count && k < sh.Grid.Rows.Count; k++)
+                    {
+                        var r = sh.Rows[k];
+                        if (r.IsComment) { away = r.Folded; continue; }
+                        r.FoldedAway = away && !r.IsBlank;
+                        if (!r.FoldedAway && IsShown(r) && !sh.Grid.Rows[k].Visible) sh.Grid.Rows[k].Visible = true;
+                    }
+                }
             // An element asked for (Find, a paste) in a folded array: the array unfolds.
             foreach (var i in rows)
                 if (i >= 0 && i < sh.Rows.Count && sh.Rows[i].IsElement && !IsShown(sh.Rows[i]))
@@ -1979,7 +2004,7 @@ namespace Kaban.UI.Forms
                     // every row it is under (an array, an element of structures) unfolds
                     for (var head = sh.Rows[i].Head; head != null; head = head.Head) head.Expanded = true;
                     for (int k = 0; k < sh.Rows.Count && k < sh.Grid.Rows.Count; k++)
-                        if (IsShown(sh.Rows[k]) && !sh.Grid.Rows[k].Visible) sh.Grid.Rows[k].Visible = true;
+                        if (IsShown(sh.Rows[k]) && !sh.Rows[k].FoldedAway && !sh.Grid.Rows[k].Visible) sh.Grid.Rows[k].Visible = true;
                 }
             sh.Grid.ClearSelection();
             int first = -1;
@@ -3471,6 +3496,15 @@ namespace Kaban.UI.Forms
             }
         }
 
+        /// <summary>A comment line folded or unfolded: the rows under it, until the next comment line - kept with the list.</summary>
+        private void ToggleComment(MonitorTab mon, Sheet sh, WatchRow comment)
+        {
+            if (comment == null || !comment.IsComment) return;
+            comment.Folded = !comment.Folded;
+            SaveWatchList(mon);
+            Render(mon, sh);
+        }
+
         /// <summary>An array folded or unfolded - kept with the list.</summary>
         private void ToggleArray(MonitorTab mon, Sheet sh, WatchRow head)
         {
@@ -3777,13 +3811,21 @@ namespace Kaban.UI.Forms
                 try { grid.CurrentCell = null; } catch { }
             }
 
+            // the rows under a folded comment line (until the next one) - the empty last line stays
+            bool away = false;
+            foreach (var r in sh.Rows)
+            {
+                if (r.IsComment) { away = r.Folded; r.FoldedAway = false; continue; }
+                r.FoldedAway = away && !r.IsBlank;
+            }
+
             for (int i = 0; i < sh.Rows.Count; i++)
             {
                 var model = sh.Rows[i];
                 var row = grid.Rows[i];
 
-                // An element shows while its array is unfolded.
-                bool visible = IsShown(model);
+                // An element shows while its array is unfolded; a row while the comment line above it is.
+                bool visible = IsShown(model) && !model.FoldedAway;
                 if (row.Visible != visible)
                 {
                     try { row.Visible = visible; }
@@ -3793,8 +3835,9 @@ namespace Kaban.UI.Forms
 
                 if (model.IsComment)
                 {
-                    // A heading: its text across the label cell, the row tinted.
-                    Set(row.Cells["Label"], model.Comment);
+                    // A heading: its fold mark and text across the label cell, the row tinted.
+                    if (!(sh.Editing && grid.CurrentCell != null && grid.CurrentCell.RowIndex == i))
+                        Set(row.Cells["Label"], (model.Folded ? "\u25B8 " : "\u25BE ") + model.Comment);
                     Set(row.Cells["DataType"], ""); Set(row.Cells["Format"], ""); Set(row.Cells["Address"], ""); Set(row.Cells["Value"], "");
                     Set(row.Cells["Calculated"], ""); Set(row.Cells["Divisor"], ""); Set(row.Cells["Decimals"], "");
                     Set(row.Cells["Changed"], ""); Tip(row.Cells["Changed"], "");
@@ -4287,12 +4330,12 @@ namespace Kaban.UI.Forms
                 foreach (var r in Items(sh.Tables).Where(r => r.IsDevice || r.IsComment))
                 {
                     // a comment line between the tables (24 October): its text, "view=table"
-                    if (r.IsComment) { lines.Add(Csv(r.Comment) + ";;;;view=table"); continue; }
+                    if (r.IsComment) { lines.Add(Csv(r.Comment) + ";;;;view=table" + (r.Folded ? "|fold=1" : "")); continue; }
                     string ex = Extras(r);
                     lines.Add(string.Join(";", Csv(r.LabelOverride), Csv(r.DataTypeOverride), Csv(r.Address), "", (ex.Length > 0 ? ex + "|" : "") + "view=table"));
                 }
                 foreach (var r in sh.Rows.Where(r => !r.IsBlank && !r.IsElement))
-                    lines.Add(r.IsComment ? Csv(r.Comment) + ";;;"
+                    lines.Add(r.IsComment ? Csv(r.Comment) + ";;;" + (r.Folded ? ";fold=1" : "")
                                           : string.Join(";", Csv(r.LabelOverride), Csv(r.DataTypeOverride), Csv(r.Address), "", Extras(r)).TrimEnd(';'));
             }
             foreach (var a in mon.Hidden.OrderBy(a => a, StringComparer.OrdinalIgnoreCase)) lines.Add(HiddenPrefix + a);
@@ -4337,7 +4380,8 @@ namespace Kaban.UI.Forms
                 {
                     if (f[0].Trim().Length == 0) continue;
                     var note = new WatchRow { Station = mon.Station, Comment = f[0].Trim() };
-                    if (f.Length > 4 && f[4].Split('|').Any(x => x.Trim() == "view=table")) current.Tables.Rows.Add(note);
+                    if (f.Length > 4) ReadExtras(note, f[4]);
+                    if (note.ViewTable) { note.ViewTable = false; current.Tables.Rows.Add(note); }
                     else current.Rows.Add(note);
                     continue;
                 }
@@ -4366,6 +4410,7 @@ namespace Kaban.UI.Forms
             if (r.Decimals != 0) parts.Add("dec=" + r.Decimals.ToString(CultureInfo.InvariantCulture));
             if (r.Joined) parts.Add("join=1");
             if (r.TableRaw) parts.Add("vals=plc");
+            if (r.Folded) parts.Add("fold=1");
             return string.Join("|", parts);
         }
 
@@ -4392,6 +4437,7 @@ namespace Kaban.UI.Forms
                     case "view": r.ViewTable = v == "table"; break;
                     case "join": r.Joined = v == "1"; break;
                     case "vals": r.TableRaw = v == "plc"; break;
+                    case "fold": r.Folded = v == "1"; break;
                 }
             }
         }

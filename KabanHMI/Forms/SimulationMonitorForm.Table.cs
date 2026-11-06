@@ -58,6 +58,8 @@ namespace Kaban.UI.Forms
             public string Key = "";
             /// <summary>A comment line between the tables (24 October): its caption only.</summary>
             public bool IsComment;
+            /// <summary>Its caption's text without the fold mark.</summary>
+            public string Title = "";
             /// <summary>The texts of the cells in sight when last drawn (a refresh that changes none draws nothing).</summary>
             public string Drawn;
         }
@@ -685,33 +687,95 @@ namespace Kaban.UI.Forms
         {
             var host = sh.TablesHost;
             if (host == null || sh.Blocks.Count == 0) return;
-            const int gap = 6;
-            var heights = sh.Blocks.Select(b => BlockHeight(b, 10)).ToList();
-            int room = host.Height - 2;
-            int extra = room - heights.Sum() - gap * heights.Count;
-            for (int i = 0; i < sh.Blocks.Count && extra > 0; i++)
+            // 7 November: "a little space in between each table ... (and just before the comment lines to make it feel like a capture
+            // for the labels after them)"; a folded comment line hides the tables under it, a folded table is its caption alone
+            int gap = UiScale.Px(14), gapComment = UiScale.Px(26);
+            int n = sh.Blocks.Count;
+            var shown = new bool[n];
+            bool away = false;
+            for (int i = 0; i < n; i++)
             {
+                var b = sh.Blocks[i];
+                if (b.IsComment) { shown[i] = true; away = b.Head.Folded; }
+                else shown[i] = !away;
+            }
+            var heights = new int[n];
+            var gaps = new int[n];
+            bool first = true;
+            for (int i = 0; i < n; i++)
+            {
+                if (!shown[i]) continue;
+                heights[i] = BlockHeight(sh.Blocks[i], 10);
+                gaps[i] = first ? 0 : sh.Blocks[i].IsComment ? gapComment : gap;
+                first = false;
+            }
+            int room = host.Height - 2;
+            int extra = room - heights.Sum() - gaps.Sum();
+            for (int i = 0; i < n && extra > 0; i++)
+            {
+                if (!shown[i]) continue;
                 int add = Math.Min(extra, BlockHeight(sh.Blocks[i], sh.Blocks[i].Count) - heights[i]);
                 if (add > 0) { heights[i] += add; extra -= add; }
             }
-            int total = heights.Sum() + gap * heights.Count;
+            int total = heights.Sum() + gaps.Sum();
             // as wide as the room, the scroll bar's taken when they are taller than it (no sideways scroll of the tables)
             int w = Math.Max(200, host.Width - (total > host.Height ? SystemInformation.VerticalScrollBarWidth : 0) - 2);
             int y = 0;
-            for (int i = 0; i < sh.Blocks.Count; i++)
+            for (int i = 0; i < n; i++)
             {
-                sh.Blocks[i].Panel.SetBounds(0, y + host.AutoScrollPosition.Y, w, heights[i]);
-                y += heights[i] + gap;
+                var b = sh.Blocks[i];
+                if (b.Panel.Visible != shown[i]) b.Panel.Visible = shown[i];
+                if (!shown[i]) continue;
+                y += gaps[i];
+                // the caption as tall as its font needs - set here, whatever scaling did to it
+                int ch = CaptionHeight(b);
+                if (b.Caption.Height != ch) b.Caption.Height = ch;
+                if (!b.IsComment)
+                {
+                    bool open = !b.Head.Folded;
+                    if (b.Bar.Visible != open) b.Bar.Visible = open;
+                    if (b.Grid.Visible != open) b.Grid.Visible = open;
+                }
+                b.Panel.SetBounds(0, y + host.AutoScrollPosition.Y, w, heights[i]);
+                y += heights[i];
             }
         }
 
-        /// <summary>A table's height showing up to <paramref name="lines"/> of its lines (its caption and buttons over them).</summary>
+        /// <summary>A caption's height: its font's line and its padding.</summary>
+        private static int CaptionHeight(TableBlock b)
+        {
+            return TextRenderer.MeasureText("Xg", b.Caption.Font).Height + (b.IsComment ? 12 : 10);
+        }
+
+        /// <summary>A table's height showing up to <paramref name="lines"/> of its lines (its caption and buttons over them) - a folded one its caption.</summary>
         private static int BlockHeight(TableBlock b, int lines)
         {
-            if (b.IsComment) return b.Caption.Height;
+            if (b.IsComment || b.Head.Folded) return CaptionHeight(b);
             int rows = Math.Max(1, Math.Min(lines, b.Count));
             int grid = b.Grid.ColumnHeadersHeight + rows * b.Grid.RowTemplate.Height + 4 + SystemInformation.HorizontalScrollBarHeight;
-            return b.Caption.Height + b.Bar.Height + grid;
+            return CaptionHeight(b) + b.Bar.Height + grid;
+        }
+
+        /// <summary>The fold mark before a caption: open, or folded.</summary>
+        private static string FoldMark(bool folded) { return folded ? "\u25B8  " : "\u25BE  "; }
+
+        /// <summary>A table (its caption alone) or a comment line (the tables under it) folded or unfolded - kept with the list.</summary>
+        internal void ToggleTableFold(MonitorTab mon, Sheet sh, TableBlock b)
+        {
+            b.Head.Folded = !b.Head.Folded;
+            b.Caption.Text = FoldMark(b.Head.Folded) + b.Title;
+            SaveWatchList(mon);
+            LayoutTables(sh);
+        }
+
+        /// <summary>A click on a caption's fold mark (its left end) folds or unfolds it.</summary>
+        private void FoldOnMark(MonitorTab mon, Sheet sh, TableBlock b)
+        {
+            b.Caption.MouseClick += (s, e) =>
+            {
+                if (e.Button == MouseButtons.Left && e.X <= b.Caption.Padding.Left + TextRenderer.MeasureText(FoldMark(true), b.Caption.Font).Width + 2)
+                    ToggleTableFold(mon, sh, b);
+            };
         }
 
         /// <summary>One table: its label as the caption, the view buttons under it, the table under them.</summary>
@@ -723,14 +787,16 @@ namespace Kaban.UI.Forms
             b.Panel = new Panel { BackColor = Color.White, Name = "table" + index };
 
             var captionFont = UiStyle.FontVariant(UiStyle.Body, FontStyle.Bold);
+            b.Title = string.Join("  +  ", group.Select(NameOf));
             b.Caption = new Label
             {
-                // as tall as its font needs (a fixed 26 cut a larger screen scale's caption)
+                // as tall as its font needs (a fixed 26 cut a larger screen scale's caption); its fold mark at the left end
                 Dock = DockStyle.Top, AutoEllipsis = true, Padding = new Padding(6, 6, 6, 2),
                 Height = TextRenderer.MeasureText("Xg", captionFont).Height + 10,
                 Font = captionFont, ForeColor = Color.FromArgb(35, 40, 48), Name = "tableCaption",
-                Text = string.Join("  +  ", group.Select(NameOf))
+                Text = FoldMark(group[0].Folded) + b.Title, UseMnemonic = false
             };
+            FoldOnMark(mon, sh, b);
             UiStyle.SetTip(_tips, b.Caption, string.Join("\r\n", group.Select(r => (r.EffectiveLabel.Length > 0 ? r.EffectiveLabel : r.Address) + "   " + r.Address + "   " +
                                                                                    r.EffectiveDataType + " [" + r.EffectiveCount + "]")));
 
@@ -806,13 +872,16 @@ namespace Kaban.UI.Forms
             b.Sources.Add(comment);
             b.Panel = new Panel { BackColor = Color.White, Name = "tableComment" };
             var font = UiStyle.FontVariant(UiStyle.Body, FontStyle.Bold | FontStyle.Italic);
+            b.Title = comment.Comment;
+            // a caption over the tables after it - one line, its fold mark at the left end (7 November: the big box was not needed)
             b.Caption = new Label
             {
-                Dock = DockStyle.Fill, AutoEllipsis = true, Padding = new Padding(8, 4, 6, 4), Font = font, Name = "tableCommentText",
-                ForeColor = Color.FromArgb(60, 66, 76), BackColor = Color.FromArgb(246, 247, 249), TextAlign = ContentAlignment.MiddleLeft,
-                Height = TextRenderer.MeasureText("Xg", font).Height + 14, Text = comment.Comment, UseMnemonic = false
+                Dock = DockStyle.Top, AutoEllipsis = true, Padding = new Padding(6, 2, 6, 2), Font = font, Name = "tableCommentText",
+                ForeColor = Color.FromArgb(60, 80, 110), BackColor = Color.FromArgb(242, 245, 249), TextAlign = ContentAlignment.MiddleLeft,
+                Height = TextRenderer.MeasureText("Xg", font).Height + 12, Text = FoldMark(comment.Folded) + comment.Comment, UseMnemonic = false
             };
             b.Panel.Controls.Add(b.Caption);
+            FoldOnMark(mon, sh, b);
             b.Caption.MouseDown += (s, e) => SelectTable(sh, comment);
             b.Caption.DoubleClick += (s, e) => EditTableComment(mon, sh, comment);
             var menu = NewMenu();
