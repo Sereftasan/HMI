@@ -115,6 +115,18 @@ class MC {
         int iAuto = rows.FindIndex(r => (string)Get(r, "Address") == "D300");
         string tip = grid.Rows[iAuto].Cells["Condition"].ToolTipText;
         Check("  the tooltip: the name, what it asks, what is read", tip.Contains("Auto Mode") && tip.Contains("D300 \u2264 3") && tip.Contains("5"), tip);
+        // 6 November: "We should add another column as well to show what the condition is"
+        Func<string, string> asks = addr => {
+            int i = rows.FindIndex(r => (string)Get(r, "Address") == addr && ((string)Get(r, "ConditionKey")).Length > 0);
+            return Convert.ToString(grid.Rows[i].Cells["Rule"].Value);
+        };
+        Check("a Met when column beside it: what each condition asks", grid.Columns["Rule"].Visible && grid.Columns["Rule"].HeaderText == "Met when" &&
+              grid.Columns["Rule"].DisplayIndex == grid.Columns["Condition"].DisplayIndex - 1,
+              grid.Columns["Rule"].Visible + " " + grid.Columns["Rule"].HeaderText + " " + grid.Columns["Rule"].DisplayIndex + "/" + grid.Columns["Condition"].DisplayIndex);
+        Check("  a bit's in ON / OFF (M100 OFF, X50 ON), a word's compared (D300 \u2264 3, D200 (32-bit) > 0)",
+              asks("M100") == "M100 OFF" && asks("X50") == "X50 ON" && asks("D300") == "D300 \u2264 3" && asks("D200") == "D200 (32-bit) > 0",
+              asks("M100") + " | " + asks("X50") + " | " + asks("D300") + " | " + asks("D200"));
+        Check("  the heading's row: empty", Convert.ToString(grid.Rows[0].Cells["Rule"].Value) == "");
         sim.Write("D300", 2);
         Call(form, "RefreshValues"); Pump(50);
         Check("D300 set to 2: met", state("D300") == "\u2714 met", state("D300"));
@@ -126,6 +138,9 @@ class MC {
         Call(form, "SortSheet", mon, sh, "Condition");
         var sorted = ((IList)Get(sh, "Rows")).Cast<object>().Where(r => ((string)Get(r, "ConditionKey")).Length > 0).Select(r => (string)Get(r, "Address")).ToList();
         Check("sorted on Condition: met first", sorted.Take(3).All(a => a != "X50") && sorted.Last() == "X50", string.Join(",", sorted));
+        Call(form, "SortSheet", mon, sh, "Rule");
+        sorted = ((IList)Get(sh, "Rows")).Cast<object>().Where(r => ((string)Get(r, "ConditionKey")).Length > 0).Select(r => (string)Get(r, "Address")).ToList();
+        Check("  on Met when: by what they ask", sorted.SequenceEqual(new[] { "D200", "D300", "M100", "X50" }), string.Join(",", sorted));
 
         var lines = ((IEnumerable<string>)Call(MonType, "Serialize", mon)).ToList();
         Check("kept with the list (cond=)", lines.Any(l => l.Contains("cond=S:AutoMode")), string.Join(" / ", lines.Where(l => l.Contains("D300"))));
@@ -147,14 +162,16 @@ class MC {
         Application.DoEvents();
         var plain = Get(mon2, "Current");
         Call(form2, "RefreshValues"); Pump(50);
-        Check("a tab without conditions: no Condition column", (string)Get(plain, "Name") == "Plain" && !((DataGridView)Get(plain, "Grid")).Columns["Condition"].Visible,
+        Check("a tab without conditions: no Condition column, no Met when", (string)Get(plain, "Name") == "Plain" && !((DataGridView)Get(plain, "Grid")).Columns["Condition"].Visible &&
+              !((DataGridView)Get(plain, "Grid")).Columns["Rule"].Visible,
               (string)Get(plain, "Name"));
 
         MachineConditionMap.Clear();
         Call(form2, "RefreshValues"); Pump(50);
         ((TabControl)Get(mon2, "SheetTabs")).SelectedIndex = 0; Application.DoEvents();
         Call(form2, "RefreshValues"); Pump(50);
-        Check("a condition no machine registers any more: '?'", Convert.ToString(grid2.Rows[k].Cells["Condition"].Value) == "?");
+        Check("a condition no machine registers any more: '?' (what it asks too)", Convert.ToString(grid2.Rows[k].Cells["Condition"].Value) == "?" &&
+              Convert.ToString(grid2.Rows[k].Cells["Rule"].Value) == "?");
         form2.Close();
 
         Console.WriteLine(fail == 0 ? "\nMONITOR CONDITIONS ALL PASS" : "\nMONITOR CONDITIONS " + fail + " FAILED");

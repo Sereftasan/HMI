@@ -126,6 +126,7 @@ Msg_ConnRestart;Changes take effect the next time the HMI starts. Use PLC Diagno
 Msg_ConnSaved;Station connections saved.;İstasyon bağlantıları kaydedildi.;Подключения станций сохранены.;Stationsverbindungen gespeichert.;Connessioni stazione salvate.;Conexiones de estación guardadas.
 Msg_ConnSaveFailed;Could not write the settings file. See the audit log.;Ayar dosyası yazılamadı. Denetim kaydına bakın.;Не удалось записать файл настроек. См. журнал аудита.;Einstellungsdatei konnte nicht geschrieben werden. Siehe Audit-Log.;Impossibile scrivere il file impostazioni. Vedere il registro.;No se pudo escribir el archivo. Consulte el registro.
 Msg_NoControllers;No machine module has declared a PLC station.;Hiçbir makine modülü PLC istasyonu tanımlamadı.;Ни один модуль машины не объявил станцию ПЛК.;Kein Maschinenmodul hat eine SPS-Station deklariert.;Nessun modulo macchina ha dichiarato una stazione PLC.;Ningún módulo de máquina declaró una estación PLC.
+Tip_MonConditionRule;What the machine condition asks of its device;Makine koşulunun cihazından istediği;;;;
 Tip_MonFromSent;The label list's structured labels (the profile's parameters, the job list, the milling and cutting steps - FA2010_DeviceList's Profiles & Operations) and every PC_ label, under their headings, in the tab "HMI -> PLC" (made, or filled again). Back them up with the tab's backup and write them back from it to test a function.;Etiket listesinin yapılı etiketleri (profilin parametreleri, iş listesi, freze ve kesim adımları - FA2010_DeviceList'in Profiles & Operations sayfası) ve her PC_ etiketi, başlıklarıyla, "HMI -> PLC" sekmesinde (yapılır ya da yeniden doldurulur). Sekmenin yedeğiyle yedekleyin, bir işlevi denemek için yedekten geri yazın.;;;;
 Tip_SaveConnections;Save these connections;Bu bağlantıları kaydet;Сохранить эти подключения;Diese Verbindungen speichern;Salva queste connessioni;Guardar estas conexiones
 Tip_ReloadConnections;Discard changes and re-read the saved file;Değişiklikleri iptal et ve kayıtlı dosyayı yeniden oku;Отменить изменения и перечитать файл;Änderungen verwerfen und Datei neu lesen;Annulla le modifiche e rileggi il file;Descartar cambios y releer el archivo
@@ -2249,3 +2250,5 @@ Prf_MachineNone;The machine's structured data types (StructuredTypes.csv) have n
 Prf_MachineNotNumber;{0}: "{1}" is not a number.;{0}: "{1}" bir sayı değil.;;;;
 Prf_MachineUnset;not set (0);ayarlanmadı (0);;;;
 Prf_TabMachine;Machine settings;Makine ayarları;;;;
+Val_Off;OFF;KAPALI;;;;
+Val_On;ON;AÇIK;;;;

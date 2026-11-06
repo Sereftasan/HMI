@@ -89,7 +89,7 @@ class MCol {
         Check("a right-click on a heading: the columns' menu (not the rows')", chooser != null && grid.Columns.Cast<DataGridViewColumn>().All(c => c.HeaderCell.ContextMenuStrip == chooser.Menu));
         var items = chooser.MenuItems();
         var names = items.OfType<ToolStripMenuItem>().Where(i => i.CheckOnClick).Select(i => i.Text).ToList();
-        Check("  every column to tick, in the order shown", names.Count == 10 && names[0] == "Label" && names.Contains("Value (HMI)") && names.Contains("Value (PLC)") && names.Contains("Decimal Places") && names.Contains("Modified") && names.Contains("Display Format"), string.Join(",", names));
+        Check("  every column to tick, in the order shown (Met when before Condition)", names.Count == 11 && names[0] == "Label" && names.IndexOf("Met when") == names.IndexOf("Condition") - 1 && names.Contains("Value (HMI)") && names.Contains("Value (PLC)") && names.Contains("Decimal Places") && names.Contains("Modified") && names.Contains("Display Format"), string.Join(",", names));
         Check("  then Column widths..., Fit the widths to the contents, Save as the default, Default column settings",
               ItemFor(chooser, "widths") != null && ItemFor(chooser, "fit") != null && ItemFor(chooser, "savedefault") != null &&
               ItemFor(chooser, "savedefault").Text == "Save as the default" && ItemFor(chooser, "default").Text == "Default column settings" &&

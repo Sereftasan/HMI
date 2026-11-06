@@ -1378,7 +1378,10 @@ namespace Kaban.UI.Forms
             // WHEN IT LAST CHANGED, AND WHO CHANGED IT: the HMI (a write of that very
             // value just before) or the PLC program. See DeviceHistory.
             grid.Columns.Add(new DataGridViewTextBoxColumn { Name = "Changed", HeaderText = T("Col_LastChange", "Modified"), ReadOnly = true });
-            // A MACHINE CONDITION's row: met or not, now (shown on a tab that has one).
+            // A MACHINE CONDITION's row: what it asks (6 November: "another column as well to show what the condition is") and
+            // whether it is met now (both shown on a tab that has one).
+            grid.Columns.Add(new DataGridViewTextBoxColumn { Name = "Rule", HeaderText = T("Cond_Asks", "Met when"), ReadOnly = true, Visible = false,
+                                                             ToolTipText = T("Tip_MonConditionRule", "What the machine condition asks of its device") });
             grid.Columns.Add(new DataGridViewTextBoxColumn { Name = "Condition", HeaderText = T("Col_Condition", "Condition"), ReadOnly = true, Visible = false });
             grid.ShowCellToolTips = true;
 
@@ -2273,8 +2276,8 @@ namespace Kaban.UI.Forms
         // COLUMNS: widths, order, sorting
         // ==================================================================
 
-        private static readonly string[] ColumnNames = { "Label", "DataType", "Format", "Address", "Value", "Calculated", "Divisor", "Decimals", "Changed", "Condition" };
-        private static readonly int[] DefaultWidths = { 280, 170, 110, 90, 180, 150, 80, 115, 150, 130 };
+        private static readonly string[] ColumnNames = { "Label", "DataType", "Format", "Address", "Value", "Calculated", "Divisor", "Decimals", "Changed", "Rule", "Condition" };
+        private static readonly int[] DefaultWidths = { 280, 170, 110, 90, 180, 150, 80, 115, 150, 150, 130 };
         private static Dictionary<string, int> _colWidth, _colOrder;
         /// <summary>The columns the user took off (right-click on a heading); the Condition column shows only on a tab with conditions anyway.</summary>
         private static HashSet<string> _colHidden;
@@ -2374,7 +2377,7 @@ namespace Kaban.UI.Forms
                 foreach (var n in ColumnNames)
                 {
                     var c = grid.Columns[n];
-                    if (n == "Condition") { if (_colHidden.Contains(n) && c.Visible) c.Visible = false; }
+                    if (n == "Condition" || n == "Rule") { if (_colHidden.Contains(n) && c.Visible) c.Visible = false; }
                     else if (c.Visible == _colHidden.Contains(n)) c.Visible = !_colHidden.Contains(n);
                 }
             }
@@ -2400,7 +2403,7 @@ namespace Kaban.UI.Forms
                 _applyingLayout = true;
                 try
                 {
-                    if (c.Name == "Condition") c.Visible = show && sh.Rows.Any(r => r.ConditionKey.Length > 0);
+                    if (c.Name == "Condition" || c.Name == "Rule") c.Visible = show && sh.Rows.Any(r => r.ConditionKey.Length > 0);
                     else c.Visible = show;
                 }
                 finally { _applyingLayout = false; }
@@ -2531,6 +2534,14 @@ namespace Kaban.UI.Forms
                 {
                     if (CanScale(a) != CanScale(b)) return CanScale(a) ? -1 : 1;
                     int c = column == "Divisor" ? a.EffectiveDivisor.CompareTo(b.EffectiveDivisor) : a.EffectiveDecimals.CompareTo(b.EffectiveDecimals);
+                    return c != 0 ? c : CompareAddress(a.Address, b.Address);
+                }
+                case "Rule":
+                {
+                    // the conditions by what they ask, then the rows that are none
+                    string ra = ConditionRuleText(a), rb = ConditionRuleText(b);
+                    if ((ra.Length == 0) != (rb.Length == 0)) return ra.Length == 0 ? 1 : -1;
+                    int c = string.Compare(ra, rb, StringComparison.CurrentCultureIgnoreCase);
                     return c != 0 ? c : CompareAddress(a.Address, b.Address);
                 }
                 case "Condition":
@@ -3651,6 +3662,7 @@ namespace Kaban.UI.Forms
                     Set(row.Cells["Calculated"], ""); Set(row.Cells["Divisor"], ""); Set(row.Cells["Decimals"], "");
                     Set(row.Cells["Changed"], ""); Tip(row.Cells["Changed"], "");
                     Set(row.Cells["Condition"], ""); Tip(row.Cells["Condition"], "");
+                    Set(row.Cells["Rule"], "");
                     Style(row, ColCommentBack, ColCommentText, UiStyle.FontVariant(UiStyle.Body, FontStyle.Bold | FontStyle.Italic));
                     continue;
                 }
@@ -3663,6 +3675,7 @@ namespace Kaban.UI.Forms
                     Set(row.Cells["Calculated"], ""); Set(row.Cells["Divisor"], ""); Set(row.Cells["Decimals"], "");
                     Set(row.Cells["Changed"], ""); Tip(row.Cells["Changed"], "");
                     Set(row.Cells["Condition"], ""); Tip(row.Cells["Condition"], "");
+                    Set(row.Cells["Rule"], "");
                     continue;
                 }
 
@@ -3710,12 +3723,16 @@ namespace Kaban.UI.Forms
 
                 RenderLastChange(mon, model, row.Cells["Changed"]);
                 RenderCondition(mon, model, row.Cells["Condition"]);
+                Set(row.Cells["Rule"], ConditionRuleText(model));
             }
 
-            // The Condition column is there on a tab that has a machine condition.
+            // The Condition and Met when columns are there on a tab that has a machine condition.
             bool conditions = sh.Rows.Any(r => !string.IsNullOrEmpty(r.ConditionKey));
-            conditions &= !IsColumnHidden("Condition");
-            if (grid.Columns["Condition"].Visible != conditions) grid.Columns["Condition"].Visible = conditions;
+            foreach (var n in new[] { "Condition", "Rule" })
+            {
+                bool show = conditions && !IsColumnHidden(n);
+                if (grid.Columns[n].Visible != show) grid.Columns[n].Visible = show;
+            }
 
             // the labels shown as tables, above the list
             if (mon.Form != null) mon.Form.RenderTables(mon, sh);
@@ -3760,6 +3777,28 @@ namespace Kaban.UI.Forms
             if (entry == null) return null;
             double value;
             return MachineConditionMap.Evaluate(entry.Rule, a => { int v; return mon.Values.TryGetValue(a, out v) ? v : (int?)null; }, out value);
+        }
+
+        /// <summary>
+        /// What a condition row's condition asks, in the Met when column: "M100 ON", "L33 OFF" for a bit (ON / OFF as the value
+        /// column shows it), "D200 &gt; 0", "D300 = 1", "D500 (32-bit) \u2265 1500" for a word; "" for a row that is no condition, "?" for one
+        /// the machines do not register.
+        /// </summary>
+        internal static string ConditionRuleText(WatchRow model)
+        {
+            if (model == null || string.IsNullOrEmpty(model.ConditionKey)) return "";
+            var entry = MachineConditionMap.Find(model.ConditionKey);
+            if (entry == null || entry.Rule == null) return "?";
+            var rule = entry.Rule;
+            string address = (rule.Address ?? "").Trim().ToUpperInvariant();
+            bool bit = DeviceCollector.IsBitDevice(address);
+            if (bit && (rule.RequiredValue == 0 || rule.RequiredValue == 1) &&
+                (rule.Operator == Kaban.Core.Enums.ComparisonOperator.Equal || rule.Operator == Kaban.Core.Enums.ComparisonOperator.NotEqual))
+            {
+                bool on = (rule.RequiredValue == 1) == (rule.Operator == Kaban.Core.Enums.ComparisonOperator.Equal);
+                return address + " " + (on ? T("Val_On", "ON") : T("Val_Off", "OFF"));
+            }
+            return MachineConditionMap.RuleText(rule);
         }
 
         /// <summary>"\u2714 met" / "\u2716 not met" - the tooltip says what the condition asks and what is read.</summary>
