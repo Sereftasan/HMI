@@ -11,6 +11,9 @@ Claude reads this file at the start of every batch, does the items, and moves ea
   - eedcb04 - LogRecordHMI: the HMI turns the trigger off once the record is in the database (ResetTrigger, the default) - the PLC waits for it.
   - cd80243 - PLC Monitor: "what the HMI writes to the PLC" - the tab HMI -> PLC with the profile's parameters (R25600 ... with R25615), the job
     list, the milling and cutting steps and every PC_ device of FA2010_DeviceList; back them up and write them back with the tab's backup.
+  - 29153d6 - Accessory groups attached to profile groups: every accessory of the group, one added later too, on every profile of the group.
+  - 80baf27 - Profiles page, Machine settings: the profile parameters (R25600 ..., R25615 too) per profile, from the group's template profile.
+- To do next: the job list (from the old program, JobSample.kbn) with "Send to the machine".
 - 5 November, evening late (the answers: devices set by you, 6 and 20 from the device list; one copy of the HMI; the profiles next):
   - 1092b49 - One copy of the HMI at a time: a second start brings the running one to the front, says why and ends; a restart waits for the old one.
   - 8775b82 - FA2010, a new machine: records 6 and 20 taken as L1006 / L1020 come on; the measured width / height D481 / D482 for 20 and 22.

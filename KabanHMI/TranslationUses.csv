@@ -256,7 +256,7 @@ Btn_Restart;KabanHMI\Forms\MainForm.cs;1305;Menu;var restart = new ToolStripMenu
 Btn_Restart;KabanHMI\Forms\MainForm.cs;1369;Text;LanguageManager.GetString("Btn_Restart", "Restart the program"),
 Btn_Restart;KabanHMI\Forms\MainForm.cs;1408;Text;LanguageManager.GetString("Btn_Restart", "Restart the program"),
 Btn_SafetyBypass;Kaban.Machines.FA2010\Screens\Shared\AxisJogBar.Designer.cs;583;Text;this.BtnSafetyBypass.TranslationKey = "Btn_SafetyBypass";
-Btn_Save;KabanHMI\Profiles\LibraryEditorForm.cs;487;Text;var save = UiStyle.TextButton(T("Btn_Save", "Save"), 110);
+Btn_Save;KabanHMI\Profiles\LibraryEditorForm.cs;495;Text;var save = UiStyle.TextButton(T("Btn_Save", "Save"), 110);
 Btn_Start;Kaban.Machines.H500\Screens\H500Screen.cs;64;Text;ButtonATextKey = "Btn_Start",
 Btn_Start;Kaban.Machines.H800\Screens\H800Screen.cs;64;Text;ButtonATextKey = "Btn_Start",
 Btn_Structures;KabanHMI\Forms\PlcRowEditorForm.cs;183;Text;_structures.Text = LanguageManager.GetString("Btn_Structures", "Structures...");
@@ -517,7 +517,7 @@ Dsh_AllTypes;KabanHMI\Dashboard\DashboardScreen.cs;362;Text;_typePick.AllText = 
 Dsh_AutoHistory;KabanHMI\Dashboard\DashboardScreen.cs;244;Text;_side.Controls.Add(SideCaption("Dsh_AutoHistory", "Auto-Report History"));
 Dsh_Browse;KabanHMI\Dashboard\DashboardSettingsPage.cs;82;Tooltip;var browseDb = UiStyle.ToolButton("\U0001F4C2", T("Dsh_Browse", "Browse..."), _tips, (s, e) => BrowseDb());
 Dsh_Browse;KabanHMI\Dashboard\DashboardSettingsPage.cs;137;Tooltip;var browseDir = UiStyle.ToolButton("\U0001F4C2", T("Dsh_Browse", "Browse..."), _tips, (s, e) => BrowseFolder());
-Dsh_Browse;KabanHMI\Profiles\LibraryEditorForm.cs;479;Tooltip;var browse = UiStyle.ToolButton("\uD83D\uDCC2", T("Dsh_Browse", "Browse..."), UiStyle.Tips());
+Dsh_Browse;KabanHMI\Profiles\LibraryEditorForm.cs;487;Tooltip;var browse = UiStyle.ToolButton("\uD83D\uDCC2", T("Dsh_Browse", "Browse..."), UiStyle.Tips());
 Dsh_Cutting;KabanHMI\Dashboard\DashboardScreen.Sections.cs;58;Text;{ "cutting_details", new[] { "Dsh_Cutting", "Cutting Details" } },
 Dsh_DatabaseError;KabanHMI\Dashboard\DashboardScreen.cs;771;Text;message = T("Dsh_DatabaseError", "The database could not be read:") + " " + r.Error.Message;
 Dsh_DatabaseError;KabanHMI\Dashboard\MachineLogFeed.cs;136;Text;problem = LanguageManager.GetString("Dsh_DatabaseError", "The database could not be read:") + " " + ex.Message;
@@ -873,51 +873,52 @@ Lbl_TrnPending;KabanHMI\Settings\TranslationsControl.cs;501;Text;if (_pending.Co
 Lbl_TrnProjectNewer;KabanHMI\Settings\TranslationsControl.Import.cs;396;Text;if (!i.Tick) i.Note = T("Lbl_TrnProjectNewer", "not entered on this panel - the project's may be newer");
 Lbl_TrnUndoTexts;KabanHMI\Settings\TranslationsControl.Undo.cs;93;Text;return s.What + " (" + string.Format(T("Lbl_TrnUndoTexts", "{0} text(s)"), s.Cells.Count) + ")";
 Lbl_Username;KabanHMI\Forms\LoginForm.cs;56;Text;LanguageManager.GetString("Lbl_Username", "Username"), 20, 20, 100);
-LCol_Accessory;KabanHMI\Profiles\LibraryEditorForm.cs;536;Text;foreach (var c in new[] { T("LCol_Profile", "Profile"), T("LCol_Group", "Group"), T("LCol_Accessory", "Accessory"), "#", T("LCol_Macro", "Macro"), T("LCol_Status", "Status"), T(...
-LCol_AccType;KabanHMI\Profiles\LibraryEditorForm.cs;203;Text;.Choice("accessory_type", T("LCol_AccType", "Accessory type"), AccessoryTypes, 140, true, "OTHER")
-LCol_Active;KabanHMI\Profiles\LibraryEditorForm.cs;220;Text;.Bool("is_active", T("LCol_Active", "In use"), 60).Text("note", T("LCol_Note", "Note"), 200);
-LCol_Active;KabanHMI\Profiles\LibraryEditorForm.cs;320;Text;.Bool("is_active", T("LCol_Active", "In use"), 60));
-LCol_Angle;KabanHMI\Profiles\LibraryEditorForm.cs;228;Text;.Real("angle_deg", T("LCol_Angle", "Angle (\u00B0)"), 80, true, 0.0).Bool("is_enabled", T("LCol_Enabled", "Enabled"), 70)
-LCol_BasedOn;KabanHMI\Profiles\LibraryEditorForm.cs;319;Text;.Lookup("base_accessory_id", T("LCol_BasedOn", "Based on"), "SELECT id, code FROM accessory ORDER BY code", 130)
+LCol_Accessory;KabanHMI\Profiles\LibraryEditorForm.cs;544;Text;foreach (var c in new[] { T("LCol_Profile", "Profile"), T("LCol_Group", "Group"), T("LCol_Accessory", "Accessory"), "#", T("LCol_Macro", "Macro"), T("LCol_Status", "Status"), T(...
+LCol_AccGroup;KabanHMI\Profiles\LibraryEditorForm.cs;198;Text;.Lookup("accessory_group_id", T("LCol_AccGroup", "Accessory group"), "SELECT id, name FROM accessory_group ORDER BY name", 200, true)
+LCol_AccType;KabanHMI\Profiles\LibraryEditorForm.cs;211;Text;.Choice("accessory_type", T("LCol_AccType", "Accessory type"), AccessoryTypes, 140, true, "OTHER")
+LCol_Active;KabanHMI\Profiles\LibraryEditorForm.cs;228;Text;.Bool("is_active", T("LCol_Active", "In use"), 60).Text("note", T("LCol_Note", "Note"), 200);
+LCol_Active;KabanHMI\Profiles\LibraryEditorForm.cs;328;Text;.Bool("is_active", T("LCol_Active", "In use"), 60));
+LCol_Angle;KabanHMI\Profiles\LibraryEditorForm.cs;236;Text;.Real("angle_deg", T("LCol_Angle", "Angle (\u00B0)"), 80, true, 0.0).Bool("is_enabled", T("LCol_Enabled", "Enabled"), 70)
+LCol_BasedOn;KabanHMI\Profiles\LibraryEditorForm.cs;327;Text;.Lookup("base_accessory_id", T("LCol_BasedOn", "Based on"), "SELECT id, code FROM accessory ORDER BY code", 130)
 LCol_Code;KabanHMI\Profiles\LibraryEditorForm.cs;163;Text;.Text("code", T("LCol_Code", "Code"), 110, true).Text("name", T("LCol_Name", "Name"), 240, true)));
 LCol_Code;KabanHMI\Profiles\LibraryEditorForm.cs;166;Text;.Text("code", T("LCol_Code", "Code"), 100, true).Text("name", T("LCol_Name", "Name"), 180, true)
 LCol_Code;KabanHMI\Profiles\LibraryEditorForm.cs;171;Text;.Text("code", T("LCol_Code", "Code"), 100, true).Text("name", T("LCol_Name", "Name"), 200, true)));
 LCol_Code;KabanHMI\Profiles\LibraryEditorForm.cs;182;Text;.Text("code", T("LCol_Code", "Code"), 200, true).Text("name", T("LCol_Name", "Name"), 240, true).Text("note", T("LCol_Note", "Note"), 300)));
 LCol_Code;KabanHMI\Profiles\LibraryEditorForm.cs;184;Text;.Text("code", T("LCol_Code", "Code"), 180, true).Text("name", T("LCol_Name", "Name"), 220, true).Text("note", T("LCol_Note", "Note"), 300)));
-LCol_Code;KabanHMI\Profiles\LibraryEditorForm.cs;193;Text;.Text("code", T("LCol_Code", "Code"), 110, true).Text("name", T("LCol_Name", "Name"), 240, true)));
-LCol_Code;KabanHMI\Profiles\LibraryEditorForm.cs;196;Text;.Text("code", T("LCol_Code", "Code"), 100, true).Text("name", T("LCol_Name", "Name"), 200, true)
-LCol_Code;KabanHMI\Profiles\LibraryEditorForm.cs;243;Text;.Text("code", T("LCol_Code", "Code"), 160, true).Choice("material", T("LCol_Material", "Material"), new[] { "PVC", "ALU", "STEEL", "COMPOSITE" }, 100, true, "PVC")
-LCol_Code;KabanHMI\Profiles\LibraryEditorForm.cs;318;Text;.Text("code", T("LCol_Code", "Code"), 140, true).Text("description", T("LCol_Description", "Description"), 260)
-LCol_Code;KabanHMI\Profiles\LibraryEditorForm.cs;365;Text;.Text("code", T("LCol_Code", "Code"), 140, true)
-LCol_Confidence;KabanHMI\Profiles\LibraryEditorForm.cs;524;Text;foreach (var c in new[] { T("LCol_Profile", "Profile"), T("LCol_Group", "Group"), T("LCol_Reference", "Reference"), "Y", "Z", T("LCol_Source", "Found by"), T("LCol_Confidence", ...
-LCol_Confidence;KabanHMI\Profiles\LibraryEditorForm.cs;536;Text;foreach (var c in new[] { T("LCol_Profile", "Profile"), T("LCol_Group", "Group"), T("LCol_Accessory", "Accessory"), "#", T("LCol_Macro", "Macro"), T("LCol_Status", "Status"), T(...
+LCol_Code;KabanHMI\Profiles\LibraryEditorForm.cs;201;Text;.Text("code", T("LCol_Code", "Code"), 110, true).Text("name", T("LCol_Name", "Name"), 240, true)));
+LCol_Code;KabanHMI\Profiles\LibraryEditorForm.cs;204;Text;.Text("code", T("LCol_Code", "Code"), 100, true).Text("name", T("LCol_Name", "Name"), 200, true)
+LCol_Code;KabanHMI\Profiles\LibraryEditorForm.cs;251;Text;.Text("code", T("LCol_Code", "Code"), 160, true).Choice("material", T("LCol_Material", "Material"), new[] { "PVC", "ALU", "STEEL", "COMPOSITE" }, 100, true, "PVC")
+LCol_Code;KabanHMI\Profiles\LibraryEditorForm.cs;326;Text;.Text("code", T("LCol_Code", "Code"), 140, true).Text("description", T("LCol_Description", "Description"), 260)
+LCol_Code;KabanHMI\Profiles\LibraryEditorForm.cs;373;Text;.Text("code", T("LCol_Code", "Code"), 140, true)
+LCol_Confidence;KabanHMI\Profiles\LibraryEditorForm.cs;532;Text;foreach (var c in new[] { T("LCol_Profile", "Profile"), T("LCol_Group", "Group"), T("LCol_Reference", "Reference"), "Y", "Z", T("LCol_Source", "Found by"), T("LCol_Confidence", ...
+LCol_Confidence;KabanHMI\Profiles\LibraryEditorForm.cs;544;Text;foreach (var c in new[] { T("LCol_Profile", "Profile"), T("LCol_Group", "Group"), T("LCol_Accessory", "Accessory"), "#", T("LCol_Macro", "Macro"), T("LCol_Status", "Status"), T(...
 LCol_DefHeight;KabanHMI\Profiles\LibraryEditorForm.cs;178;Text;.Real("default_width_mm", T("LCol_DefWidth", "Width (mm)"), 90).Real("default_height_mm", T("LCol_DefHeight", "Height (mm)"), 90)
 LCol_DefWidth;KabanHMI\Profiles\LibraryEditorForm.cs;178;Text;.Real("default_width_mm", T("LCol_DefWidth", "Width (mm)"), 90).Real("default_height_mm", T("LCol_DefHeight", "Height (mm)"), 90)
-LCol_Depth;KabanHMI\Profiles\LibraryEditorForm.cs;329;Text;.Choice("depth_mode", T("LCol_Depth", "Depth"), DepthModes, 160, true, 0L)
-LCol_Description;KabanHMI\Profiles\LibraryEditorForm.cs;318;Text;.Text("code", T("LCol_Code", "Code"), 140, true).Text("description", T("LCol_Description", "Description"), 260)
-LCol_Deviation;KabanHMI\Profiles\LibraryEditorForm.cs;536;Text;foreach (var c in new[] { T("LCol_Profile", "Profile"), T("LCol_Group", "Group"), T("LCol_Accessory", "Accessory"), "#", T("LCol_Macro", "Macro"), T("LCol_Status", "Status"), T(...
-LCol_Diameter;KabanHMI\Profiles\LibraryEditorForm.cs;218;Text;.Real("diameter_mm", T("LCol_Diameter", "Diameter (mm)"), 100).Real("usable_length_mm", T("LCol_UsableLength", "Usable length (mm)"), 120)
-LCol_Enabled;KabanHMI\Profiles\LibraryEditorForm.cs;228;Text;.Real("angle_deg", T("LCol_Angle", "Angle (\u00B0)"), 80, true, 0.0).Bool("is_enabled", T("LCol_Enabled", "Enabled"), 70)
-LCol_Entry;KabanHMI\Profiles\LibraryEditorForm.cs;238;Text;.Real("entry_speed", T("LCol_Entry", "Entry (mm/min)"), 100, true).Real("feed_speed", T("LCol_Feed", "Feed (mm/min)"), 100, true)
-LCol_Face;KabanHMI\Profiles\LibraryEditorForm.cs;227;Text;ed.Int("unit_no", T("LCol_Unit", "Unit"), 60, true, 1L).Choice("entry_side", T("LCol_Face", "Face"), Sides, 170, true, "TOP")
-LCol_Face;KabanHMI\Profiles\LibraryEditorForm.cs;327;Text;.Choice("entry_side", T("LCol_Face", "Face"), Sides, 140, true, "TOP")
-LCol_Feed;KabanHMI\Profiles\LibraryEditorForm.cs;238;Text;.Real("entry_speed", T("LCol_Entry", "Entry (mm/min)"), 100, true).Real("feed_speed", T("LCol_Feed", "Feed (mm/min)"), 100, true)
-LCol_Flutes;KabanHMI\Profiles\LibraryEditorForm.cs;219;Text;.Real("max_rpm", T("LCol_MaxRpm", "Max rpm"), 80).Int("flute_count", T("LCol_Flutes", "Flutes"), 60)
-LCol_Group;KabanHMI\Profiles\LibraryEditorForm.cs;316;Text;.Lookup("group_id", T("LCol_Group", "Group"), "SELECT id, name FROM accessory_group ORDER BY name", 150, true)
-LCol_Group;KabanHMI\Profiles\LibraryEditorForm.cs;524;Text;foreach (var c in new[] { T("LCol_Profile", "Profile"), T("LCol_Group", "Group"), T("LCol_Reference", "Reference"), "Y", "Z", T("LCol_Source", "Found by"), T("LCol_Confidence", ...
-LCol_Group;KabanHMI\Profiles\LibraryEditorForm.cs;536;Text;foreach (var c in new[] { T("LCol_Profile", "Profile"), T("LCol_Group", "Group"), T("LCol_Accessory", "Accessory"), "#", T("LCol_Macro", "Macro"), T("LCol_Status", "Status"), T(...
-LCol_HwSeries;KabanHMI\Profiles\LibraryEditorForm.cs;317;Text;.Lookup("series_id", T("LCol_HwSeries", "Hardware series"), "SELECT s.id, v.name || ' ' || s.name FROM accessory_series s JOIN accessory_vendor v ON v.id = s.vendor_id ORDER BY ...
+LCol_Depth;KabanHMI\Profiles\LibraryEditorForm.cs;337;Text;.Choice("depth_mode", T("LCol_Depth", "Depth"), DepthModes, 160, true, 0L)
+LCol_Description;KabanHMI\Profiles\LibraryEditorForm.cs;326;Text;.Text("code", T("LCol_Code", "Code"), 140, true).Text("description", T("LCol_Description", "Description"), 260)
+LCol_Deviation;KabanHMI\Profiles\LibraryEditorForm.cs;544;Text;foreach (var c in new[] { T("LCol_Profile", "Profile"), T("LCol_Group", "Group"), T("LCol_Accessory", "Accessory"), "#", T("LCol_Macro", "Macro"), T("LCol_Status", "Status"), T(...
+LCol_Diameter;KabanHMI\Profiles\LibraryEditorForm.cs;226;Text;.Real("diameter_mm", T("LCol_Diameter", "Diameter (mm)"), 100).Real("usable_length_mm", T("LCol_UsableLength", "Usable length (mm)"), 120)
+LCol_Enabled;KabanHMI\Profiles\LibraryEditorForm.cs;236;Text;.Real("angle_deg", T("LCol_Angle", "Angle (\u00B0)"), 80, true, 0.0).Bool("is_enabled", T("LCol_Enabled", "Enabled"), 70)
+LCol_Entry;KabanHMI\Profiles\LibraryEditorForm.cs;246;Text;.Real("entry_speed", T("LCol_Entry", "Entry (mm/min)"), 100, true).Real("feed_speed", T("LCol_Feed", "Feed (mm/min)"), 100, true)
+LCol_Face;KabanHMI\Profiles\LibraryEditorForm.cs;235;Text;ed.Int("unit_no", T("LCol_Unit", "Unit"), 60, true, 1L).Choice("entry_side", T("LCol_Face", "Face"), Sides, 170, true, "TOP")
+LCol_Face;KabanHMI\Profiles\LibraryEditorForm.cs;335;Text;.Choice("entry_side", T("LCol_Face", "Face"), Sides, 140, true, "TOP")
+LCol_Feed;KabanHMI\Profiles\LibraryEditorForm.cs;246;Text;.Real("entry_speed", T("LCol_Entry", "Entry (mm/min)"), 100, true).Real("feed_speed", T("LCol_Feed", "Feed (mm/min)"), 100, true)
+LCol_Flutes;KabanHMI\Profiles\LibraryEditorForm.cs;227;Text;.Real("max_rpm", T("LCol_MaxRpm", "Max rpm"), 80).Int("flute_count", T("LCol_Flutes", "Flutes"), 60)
+LCol_Group;KabanHMI\Profiles\LibraryEditorForm.cs;324;Text;.Lookup("group_id", T("LCol_Group", "Group"), "SELECT id, name FROM accessory_group ORDER BY name", 150, true)
+LCol_Group;KabanHMI\Profiles\LibraryEditorForm.cs;532;Text;foreach (var c in new[] { T("LCol_Profile", "Profile"), T("LCol_Group", "Group"), T("LCol_Reference", "Reference"), "Y", "Z", T("LCol_Source", "Found by"), T("LCol_Confidence", ...
+LCol_Group;KabanHMI\Profiles\LibraryEditorForm.cs;544;Text;foreach (var c in new[] { T("LCol_Profile", "Profile"), T("LCol_Group", "Group"), T("LCol_Accessory", "Accessory"), "#", T("LCol_Macro", "Macro"), T("LCol_Status", "Status"), T(...
+LCol_HwSeries;KabanHMI\Profiles\LibraryEditorForm.cs;325;Text;.Lookup("series_id", T("LCol_HwSeries", "Hardware series"), "SELECT s.id, v.name || ' ' || s.name FROM accessory_series s JOIN accessory_vendor v ON v.id = s.vendor_id ORDER BY ...
 LCol_Interface;KabanHMI\Profiles\LibraryEditorForm.cs;176;Text;.Lookup("hardware_interface_id", T("LCol_Interface", "Hardware interface"), "SELECT id, name FROM hardware_interface ORDER BY name", 170)
-LCol_Interface;KabanHMI\Profiles\LibraryEditorForm.cs;197;Text;.Lookup("hardware_interface_id", T("LCol_Interface", "Hardware interface"), "SELECT id, name FROM hardware_interface ORDER BY name", 170)));
-LCol_Layer;KabanHMI\Profiles\LibraryEditorForm.cs;249;Text;.Text("dxf_layer_name", T("LCol_Layer", "Layer"), 160, true)
-LCol_Macro;KabanHMI\Profiles\LibraryEditorForm.cs;326;Text;.Lookup("macro_id", T("LCol_Macro", "Macro"), "SELECT id, code FROM macro ORDER BY code", 130, true)
-LCol_Macro;KabanHMI\Profiles\LibraryEditorForm.cs;536;Text;foreach (var c in new[] { T("LCol_Profile", "Profile"), T("LCol_Group", "Group"), T("LCol_Accessory", "Accessory"), "#", T("LCol_Macro", "Macro"), T("LCol_Status", "Status"), T(...
+LCol_Interface;KabanHMI\Profiles\LibraryEditorForm.cs;205;Text;.Lookup("hardware_interface_id", T("LCol_Interface", "Hardware interface"), "SELECT id, name FROM hardware_interface ORDER BY name", 170)));
+LCol_Layer;KabanHMI\Profiles\LibraryEditorForm.cs;257;Text;.Text("dxf_layer_name", T("LCol_Layer", "Layer"), 160, true)
+LCol_Macro;KabanHMI\Profiles\LibraryEditorForm.cs;334;Text;.Lookup("macro_id", T("LCol_Macro", "Macro"), "SELECT id, code FROM macro ORDER BY code", 130, true)
+LCol_Macro;KabanHMI\Profiles\LibraryEditorForm.cs;544;Text;foreach (var c in new[] { T("LCol_Profile", "Profile"), T("LCol_Group", "Group"), T("LCol_Accessory", "Accessory"), "#", T("LCol_Macro", "Macro"), T("LCol_Status", "Status"), T(...
 LCol_Material;KabanHMI\Profiles\LibraryEditorForm.cs;167;Text;.Choice("material", T("LCol_Material", "Material"), Materials, 100, true, "PVC")
-LCol_Material;KabanHMI\Profiles\LibraryEditorForm.cs;243;Text;.Text("code", T("LCol_Code", "Code"), 160, true).Choice("material", T("LCol_Material", "Material"), new[] { "PVC", "ALU", "STEEL", "COMPOSITE" }, 100, true, "PVC")
-LCol_MaxRpm;KabanHMI\Profiles\LibraryEditorForm.cs;219;Text;.Real("max_rpm", T("LCol_MaxRpm", "Max rpm"), 80).Int("flute_count", T("LCol_Flutes", "Flutes"), 60)
-LCol_MillingClass;KabanHMI\Profiles\LibraryEditorForm.cs;236;Text;ed.Lookup("milling_class_id", T("LCol_MillingClass", "Material class"), "SELECT id, name FROM milling_class ORDER BY name", 170, true)
-LCol_MillingClass;KabanHMI\Profiles\LibraryEditorForm.cs;250;Text;.Lookup("milling_class_id", T("LCol_MillingClass", "Material class"), "SELECT id, name FROM milling_class ORDER BY name", 180, true)));
-LCol_Mirror;KabanHMI\Profiles\LibraryEditorForm.cs;336;Text;.Real("rotation_deg", T("LCol_Rotation", "Turn (\u00B0)"), 70, true, 0.0).Bool("mirror", T("LCol_Mirror", "Mirror"), 60, false);
+LCol_Material;KabanHMI\Profiles\LibraryEditorForm.cs;251;Text;.Text("code", T("LCol_Code", "Code"), 160, true).Choice("material", T("LCol_Material", "Material"), new[] { "PVC", "ALU", "STEEL", "COMPOSITE" }, 100, true, "PVC")
+LCol_MaxRpm;KabanHMI\Profiles\LibraryEditorForm.cs;227;Text;.Real("max_rpm", T("LCol_MaxRpm", "Max rpm"), 80).Int("flute_count", T("LCol_Flutes", "Flutes"), 60)
+LCol_MillingClass;KabanHMI\Profiles\LibraryEditorForm.cs;244;Text;ed.Lookup("milling_class_id", T("LCol_MillingClass", "Material class"), "SELECT id, name FROM milling_class ORDER BY name", 170, true)
+LCol_MillingClass;KabanHMI\Profiles\LibraryEditorForm.cs;258;Text;.Lookup("milling_class_id", T("LCol_MillingClass", "Material class"), "SELECT id, name FROM milling_class ORDER BY name", 180, true)));
+LCol_Mirror;KabanHMI\Profiles\LibraryEditorForm.cs;344;Text;.Real("rotation_deg", T("LCol_Rotation", "Turn (\u00B0)"), 70, true, 0.0).Bool("mirror", T("LCol_Mirror", "Mirror"), 60, false);
 LCol_Name;KabanHMI\Profiles\LibraryEditorForm.cs;163;Text;.Text("code", T("LCol_Code", "Code"), 110, true).Text("name", T("LCol_Name", "Name"), 240, true)));
 LCol_Name;KabanHMI\Profiles\LibraryEditorForm.cs;166;Text;.Text("code", T("LCol_Code", "Code"), 100, true).Text("name", T("LCol_Name", "Name"), 180, true)
 LCol_Name;KabanHMI\Profiles\LibraryEditorForm.cs;171;Text;.Text("code", T("LCol_Code", "Code"), 100, true).Text("name", T("LCol_Name", "Name"), 200, true)));
@@ -925,132 +926,136 @@ LCol_Name;KabanHMI\Profiles\LibraryEditorForm.cs;174;Text;.Text("name", T("LCol_
 LCol_Name;KabanHMI\Profiles\LibraryEditorForm.cs;182;Text;.Text("code", T("LCol_Code", "Code"), 200, true).Text("name", T("LCol_Name", "Name"), 240, true).Text("note", T("LCol_Note", "Note"), 300)));
 LCol_Name;KabanHMI\Profiles\LibraryEditorForm.cs;184;Text;.Text("code", T("LCol_Code", "Code"), 180, true).Text("name", T("LCol_Name", "Name"), 220, true).Text("note", T("LCol_Note", "Note"), 300)));
 LCol_Name;KabanHMI\Profiles\LibraryEditorForm.cs;191;Text;.Text("name", T("LCol_Name", "Name"), 220, true).Choice("accessory_type", T("LCol_Type", "Type"), AccessoryTypes, 160, true, "OTHER")));
-LCol_Name;KabanHMI\Profiles\LibraryEditorForm.cs;193;Text;.Text("code", T("LCol_Code", "Code"), 110, true).Text("name", T("LCol_Name", "Name"), 240, true)));
-LCol_Name;KabanHMI\Profiles\LibraryEditorForm.cs;196;Text;.Text("code", T("LCol_Code", "Code"), 100, true).Text("name", T("LCol_Name", "Name"), 200, true)
-LCol_Name;KabanHMI\Profiles\LibraryEditorForm.cs;244;Text;.Text("name", T("LCol_Name", "Name"), 200, true).Text("note", T("LCol_Note", "Note"), 220)));
-LCol_Name;KabanHMI\Profiles\LibraryEditorForm.cs;367;Text;.Text("name", T("LCol_Name", "Name"), 170).Text("params_json", T("LCol_Params", "Shape"), 260, true)
+LCol_Name;KabanHMI\Profiles\LibraryEditorForm.cs;201;Text;.Text("code", T("LCol_Code", "Code"), 110, true).Text("name", T("LCol_Name", "Name"), 240, true)));
+LCol_Name;KabanHMI\Profiles\LibraryEditorForm.cs;204;Text;.Text("code", T("LCol_Code", "Code"), 100, true).Text("name", T("LCol_Name", "Name"), 200, true)
+LCol_Name;KabanHMI\Profiles\LibraryEditorForm.cs;252;Text;.Text("name", T("LCol_Name", "Name"), 200, true).Text("note", T("LCol_Note", "Note"), 220)));
+LCol_Name;KabanHMI\Profiles\LibraryEditorForm.cs;375;Text;.Text("name", T("LCol_Name", "Name"), 170).Text("params_json", T("LCol_Params", "Shape"), 260, true)
 LCol_Note;KabanHMI\Profiles\LibraryEditorForm.cs;182;Text;.Text("code", T("LCol_Code", "Code"), 200, true).Text("name", T("LCol_Name", "Name"), 240, true).Text("note", T("LCol_Note", "Note"), 300)));
 LCol_Note;KabanHMI\Profiles\LibraryEditorForm.cs;184;Text;.Text("code", T("LCol_Code", "Code"), 180, true).Text("name", T("LCol_Name", "Name"), 220, true).Text("note", T("LCol_Note", "Note"), 300)));
-LCol_Note;KabanHMI\Profiles\LibraryEditorForm.cs;207;Text;.Text("note", T("LCol_Note", "Note"), 200)));
-LCol_Note;KabanHMI\Profiles\LibraryEditorForm.cs;220;Text;.Bool("is_active", T("LCol_Active", "In use"), 60).Text("note", T("LCol_Note", "Note"), 200);
-LCol_Note;KabanHMI\Profiles\LibraryEditorForm.cs;229;Text;.Text("note", T("LCol_Note", "Note"), 260);
-LCol_Note;KabanHMI\Profiles\LibraryEditorForm.cs;244;Text;.Text("name", T("LCol_Name", "Name"), 200, true).Text("note", T("LCol_Note", "Note"), 220)));
-LCol_Note;KabanHMI\Profiles\LibraryEditorForm.cs;368;Text;.Bool("through_profile", T("LCol_Through", "Through"), 70, false).Text("note", T("LCol_Note", "Note"), 180));
-LCol_OffsetY;KabanHMI\Profiles\LibraryEditorForm.cs;205;Text;.Real("offset_y_mm", T("LCol_OffsetY", "Offset Y"), 80, true, 0.0).Real("offset_z_mm", T("LCol_OffsetZ", "Offset Z"), 80, true, 0.0)
-LCol_OffsetY;KabanHMI\Profiles\LibraryEditorForm.cs;332;Text;.Real("offset_y_mm", T("LCol_OffsetY", "Offset Y"), 70, true, 0.0).Real("offset_z_mm", T("LCol_OffsetZ", "Offset Z"), 70, true, 0.0)
-LCol_OffsetZ;KabanHMI\Profiles\LibraryEditorForm.cs;205;Text;.Real("offset_y_mm", T("LCol_OffsetY", "Offset Y"), 80, true, 0.0).Real("offset_z_mm", T("LCol_OffsetZ", "Offset Z"), 80, true, 0.0)
-LCol_OffsetZ;KabanHMI\Profiles\LibraryEditorForm.cs;332;Text;.Real("offset_y_mm", T("LCol_OffsetY", "Offset Y"), 70, true, 0.0).Real("offset_z_mm", T("LCol_OffsetZ", "Offset Z"), 70, true, 0.0)
-LCol_Params;KabanHMI\Profiles\LibraryEditorForm.cs;367;Text;.Text("name", T("LCol_Name", "Name"), 170).Text("params_json", T("LCol_Params", "Shape"), 260, true)
-LCol_Plunge;KabanHMI\Profiles\LibraryEditorForm.cs;239;Text;.Real("spindle_rpm", T("LCol_Rpm", "Spindle rpm"), 90).Real("plunge_rate", T("LCol_Plunge", "Drill plunge"), 90)
-LCol_Position;KabanHMI\Profiles\LibraryEditorForm.cs;215;Text;ed.Int("unit_no", T("LCol_Unit", "Unit"), 60, true, 1L).Text("position", T("LCol_Position", "Place"), 90, true)
-LCol_PositionMode;KabanHMI\Profiles\LibraryEditorForm.cs;330;Text;.Lookup("position_mode", T("LCol_PositionMode", "Measured"), "SELECT code, code FROM position_mode ORDER BY code", 140, true)
-LCol_Profile;KabanHMI\Profiles\LibraryEditorForm.cs;524;Text;foreach (var c in new[] { T("LCol_Profile", "Profile"), T("LCol_Group", "Group"), T("LCol_Reference", "Reference"), "Y", "Z", T("LCol_Source", "Found by"), T("LCol_Confidence", ...
-LCol_Profile;KabanHMI\Profiles\LibraryEditorForm.cs;536;Text;foreach (var c in new[] { T("LCol_Profile", "Profile"), T("LCol_Group", "Group"), T("LCol_Accessory", "Accessory"), "#", T("LCol_Macro", "Macro"), T("LCol_Status", "Status"), T(...
-LCol_ProfileType;KabanHMI\Profiles\LibraryEditorForm.cs;202;Text;.Choice("profile_type", T("LCol_ProfileType", "Profile type"), ProfileTypes, 120, true, "FRAME")
-LCol_Ratio;KabanHMI\Profiles\LibraryEditorForm.cs;333;Text;.Real("ratio", T("LCol_Ratio", "Ratio"), 60)
-LCol_Reference;KabanHMI\Profiles\LibraryEditorForm.cs;204;Text;.Lookup("reference_code", T("LCol_Reference", "Reference"), "SELECT code, name FROM reference_type ORDER BY name", 150, true)
-LCol_Reference;KabanHMI\Profiles\LibraryEditorForm.cs;331;Text;.Lookup("reference_code", T("LCol_Reference", "Reference"), "SELECT code, name FROM reference_type ORDER BY name", 140)
-LCol_Reference;KabanHMI\Profiles\LibraryEditorForm.cs;524;Text;foreach (var c in new[] { T("LCol_Profile", "Profile"), T("LCol_Group", "Group"), T("LCol_Reference", "Reference"), "Y", "Z", T("LCol_Source", "Found by"), T("LCol_Confidence", ...
+LCol_Note;KabanHMI\Profiles\LibraryEditorForm.cs;215;Text;.Text("note", T("LCol_Note", "Note"), 200)));
+LCol_Note;KabanHMI\Profiles\LibraryEditorForm.cs;228;Text;.Bool("is_active", T("LCol_Active", "In use"), 60).Text("note", T("LCol_Note", "Note"), 200);
+LCol_Note;KabanHMI\Profiles\LibraryEditorForm.cs;237;Text;.Text("note", T("LCol_Note", "Note"), 260);
+LCol_Note;KabanHMI\Profiles\LibraryEditorForm.cs;252;Text;.Text("name", T("LCol_Name", "Name"), 200, true).Text("note", T("LCol_Note", "Note"), 220)));
+LCol_Note;KabanHMI\Profiles\LibraryEditorForm.cs;376;Text;.Bool("through_profile", T("LCol_Through", "Through"), 70, false).Text("note", T("LCol_Note", "Note"), 180));
+LCol_OffsetY;KabanHMI\Profiles\LibraryEditorForm.cs;213;Text;.Real("offset_y_mm", T("LCol_OffsetY", "Offset Y"), 80, true, 0.0).Real("offset_z_mm", T("LCol_OffsetZ", "Offset Z"), 80, true, 0.0)
+LCol_OffsetY;KabanHMI\Profiles\LibraryEditorForm.cs;340;Text;.Real("offset_y_mm", T("LCol_OffsetY", "Offset Y"), 70, true, 0.0).Real("offset_z_mm", T("LCol_OffsetZ", "Offset Z"), 70, true, 0.0)
+LCol_OffsetZ;KabanHMI\Profiles\LibraryEditorForm.cs;213;Text;.Real("offset_y_mm", T("LCol_OffsetY", "Offset Y"), 80, true, 0.0).Real("offset_z_mm", T("LCol_OffsetZ", "Offset Z"), 80, true, 0.0)
+LCol_OffsetZ;KabanHMI\Profiles\LibraryEditorForm.cs;340;Text;.Real("offset_y_mm", T("LCol_OffsetY", "Offset Y"), 70, true, 0.0).Real("offset_z_mm", T("LCol_OffsetZ", "Offset Z"), 70, true, 0.0)
+LCol_On;KabanHMI\Profiles\LibraryEditorForm.cs;199;Text;.Bool("is_enabled", T("LCol_On", "On"), 60, true)));
+LCol_Params;KabanHMI\Profiles\LibraryEditorForm.cs;375;Text;.Text("name", T("LCol_Name", "Name"), 170).Text("params_json", T("LCol_Params", "Shape"), 260, true)
+LCol_Plunge;KabanHMI\Profiles\LibraryEditorForm.cs;247;Text;.Real("spindle_rpm", T("LCol_Rpm", "Spindle rpm"), 90).Real("plunge_rate", T("LCol_Plunge", "Drill plunge"), 90)
+LCol_Position;KabanHMI\Profiles\LibraryEditorForm.cs;223;Text;ed.Int("unit_no", T("LCol_Unit", "Unit"), 60, true, 1L).Text("position", T("LCol_Position", "Place"), 90, true)
+LCol_PositionMode;KabanHMI\Profiles\LibraryEditorForm.cs;338;Text;.Lookup("position_mode", T("LCol_PositionMode", "Measured"), "SELECT code, code FROM position_mode ORDER BY code", 140, true)
+LCol_Profile;KabanHMI\Profiles\LibraryEditorForm.cs;532;Text;foreach (var c in new[] { T("LCol_Profile", "Profile"), T("LCol_Group", "Group"), T("LCol_Reference", "Reference"), "Y", "Z", T("LCol_Source", "Found by"), T("LCol_Confidence", ...
+LCol_Profile;KabanHMI\Profiles\LibraryEditorForm.cs;544;Text;foreach (var c in new[] { T("LCol_Profile", "Profile"), T("LCol_Group", "Group"), T("LCol_Accessory", "Accessory"), "#", T("LCol_Macro", "Macro"), T("LCol_Status", "Status"), T(...
+LCol_ProfileGroup;KabanHMI\Profiles\LibraryEditorForm.cs;197;Text;.Lookup("profile_group_id", T("LCol_ProfileGroup", "Profile group"), "SELECT id, name FROM profile_group ORDER BY name", 200, true)
+LCol_ProfileType;KabanHMI\Profiles\LibraryEditorForm.cs;210;Text;.Choice("profile_type", T("LCol_ProfileType", "Profile type"), ProfileTypes, 120, true, "FRAME")
+LCol_Ratio;KabanHMI\Profiles\LibraryEditorForm.cs;341;Text;.Real("ratio", T("LCol_Ratio", "Ratio"), 60)
+LCol_Reference;KabanHMI\Profiles\LibraryEditorForm.cs;212;Text;.Lookup("reference_code", T("LCol_Reference", "Reference"), "SELECT code, name FROM reference_type ORDER BY name", 150, true)
+LCol_Reference;KabanHMI\Profiles\LibraryEditorForm.cs;339;Text;.Lookup("reference_code", T("LCol_Reference", "Reference"), "SELECT code, name FROM reference_type ORDER BY name", 140)
+LCol_Reference;KabanHMI\Profiles\LibraryEditorForm.cs;532;Text;foreach (var c in new[] { T("LCol_Profile", "Profile"), T("LCol_Group", "Group"), T("LCol_Reference", "Reference"), "Y", "Z", T("LCol_Source", "Found by"), T("LCol_Confidence", ...
 LCol_RefProfile;KabanHMI\Profiles\LibraryEditorForm.cs;179;Text;.Lookup("reference_profile_id", T("LCol_RefProfile", "Reference profile"), "SELECT id, code FROM profile ORDER BY code", 140)
-LCol_Rotation;KabanHMI\Profiles\LibraryEditorForm.cs;336;Text;.Real("rotation_deg", T("LCol_Rotation", "Turn (\u00B0)"), 70, true, 0.0).Bool("mirror", T("LCol_Mirror", "Mirror"), 60, false);
-LCol_Rpm;KabanHMI\Profiles\LibraryEditorForm.cs;239;Text;.Real("spindle_rpm", T("LCol_Rpm", "Spindle rpm"), 90).Real("plunge_rate", T("LCol_Plunge", "Drill plunge"), 90)
+LCol_Rotation;KabanHMI\Profiles\LibraryEditorForm.cs;344;Text;.Real("rotation_deg", T("LCol_Rotation", "Turn (\u00B0)"), 70, true, 0.0).Bool("mirror", T("LCol_Mirror", "Mirror"), 60, false);
+LCol_Rpm;KabanHMI\Profiles\LibraryEditorForm.cs;247;Text;.Real("spindle_rpm", T("LCol_Rpm", "Spindle rpm"), 90).Real("plunge_rate", T("LCol_Plunge", "Drill plunge"), 90)
 LCol_Series;KabanHMI\Profiles\LibraryEditorForm.cs;170;Text;.Lookup("series_id", T("LCol_Series", "Series"), SeriesText, 220, true)
-LCol_Series;KabanHMI\Profiles\LibraryEditorForm.cs;248;Text;.Lookup("profile_series_id", T("LCol_Series", "Series"), SeriesText, 220, true)
-LCol_Source;KabanHMI\Profiles\LibraryEditorForm.cs;524;Text;foreach (var c in new[] { T("LCol_Profile", "Profile"), T("LCol_Group", "Group"), T("LCol_Reference", "Reference"), "Y", "Z", T("LCol_Source", "Found by"), T("LCol_Confidence", ...
-LCol_Status;KabanHMI\Profiles\LibraryEditorForm.cs;536;Text;foreach (var c in new[] { T("LCol_Profile", "Profile"), T("LCol_Group", "Group"), T("LCol_Accessory", "Accessory"), "#", T("LCol_Macro", "Macro"), T("LCol_Status", "Status"), T(...
+LCol_Series;KabanHMI\Profiles\LibraryEditorForm.cs;256;Text;.Lookup("profile_series_id", T("LCol_Series", "Series"), SeriesText, 220, true)
+LCol_Source;KabanHMI\Profiles\LibraryEditorForm.cs;532;Text;foreach (var c in new[] { T("LCol_Profile", "Profile"), T("LCol_Group", "Group"), T("LCol_Reference", "Reference"), "Y", "Z", T("LCol_Source", "Found by"), T("LCol_Confidence", ...
+LCol_Status;KabanHMI\Profiles\LibraryEditorForm.cs;544;Text;foreach (var c in new[] { T("LCol_Profile", "Profile"), T("LCol_Group", "Group"), T("LCol_Accessory", "Accessory"), "#", T("LCol_Macro", "Macro"), T("LCol_Status", "Status"), T(...
 LCol_SystemDepth;KabanHMI\Profiles\LibraryEditorForm.cs;168;Text;.Real("system_depth_mm", T("LCol_SystemDepth", "System depth (mm)"), 120)));
-LCol_ThinFactor;KabanHMI\Profiles\LibraryEditorForm.cs;240;Text;.Real("thin_wall_factor", T("LCol_ThinFactor", "Thin wall x"), 80, true, 1.0).Real("thin_wall_mm", T("LCol_ThinMm", "Thin below (mm)"), 100, true, 1.5);
-LCol_ThinMm;KabanHMI\Profiles\LibraryEditorForm.cs;240;Text;.Real("thin_wall_factor", T("LCol_ThinFactor", "Thin wall x"), 80, true, 1.0).Real("thin_wall_mm", T("LCol_ThinMm", "Thin below (mm)"), 100, true, 1.5);
-LCol_Through;KabanHMI\Profiles\LibraryEditorForm.cs;368;Text;.Bool("through_profile", T("LCol_Through", "Through"), 70, false).Text("note", T("LCol_Note", "Note"), 180));
-LCol_ToolCode;KabanHMI\Profiles\LibraryEditorForm.cs;216;Text;.Text("tool_code", T("LCol_ToolCode", "Tool"), 110, true)
-LCol_ToolType;KabanHMI\Profiles\LibraryEditorForm.cs;217;Text;.Choice("tool_type", T("LCol_ToolType", "Kind"), new[] { "END_MILL|" + T("Lib_EndMill", "end mill"), "DRILL|" + T("Lib_Drill", "drill") }, 100, true, "END_MILL")
-LCol_ToolType;KabanHMI\Profiles\LibraryEditorForm.cs;237;Text;.Choice("tool_type", T("LCol_ToolType", "Kind"), new[] { "END_MILL|" + T("Lib_EndMill", "end mill"), "DRILL|" + T("Lib_Drill", "drill") }, 100, true, "END_MILL")
+LCol_ThinFactor;KabanHMI\Profiles\LibraryEditorForm.cs;248;Text;.Real("thin_wall_factor", T("LCol_ThinFactor", "Thin wall x"), 80, true, 1.0).Real("thin_wall_mm", T("LCol_ThinMm", "Thin below (mm)"), 100, true, 1.5);
+LCol_ThinMm;KabanHMI\Profiles\LibraryEditorForm.cs;248;Text;.Real("thin_wall_factor", T("LCol_ThinFactor", "Thin wall x"), 80, true, 1.0).Real("thin_wall_mm", T("LCol_ThinMm", "Thin below (mm)"), 100, true, 1.5);
+LCol_Through;KabanHMI\Profiles\LibraryEditorForm.cs;376;Text;.Bool("through_profile", T("LCol_Through", "Through"), 70, false).Text("note", T("LCol_Note", "Note"), 180));
+LCol_ToolCode;KabanHMI\Profiles\LibraryEditorForm.cs;224;Text;.Text("tool_code", T("LCol_ToolCode", "Tool"), 110, true)
+LCol_ToolType;KabanHMI\Profiles\LibraryEditorForm.cs;225;Text;.Choice("tool_type", T("LCol_ToolType", "Kind"), new[] { "END_MILL|" + T("Lib_EndMill", "end mill"), "DRILL|" + T("Lib_Drill", "drill") }, 100, true, "END_MILL")
+LCol_ToolType;KabanHMI\Profiles\LibraryEditorForm.cs;245;Text;.Choice("tool_type", T("LCol_ToolType", "Kind"), new[] { "END_MILL|" + T("Lib_EndMill", "end mill"), "DRILL|" + T("Lib_Drill", "drill") }, 100, true, "END_MILL")
 LCol_Type;KabanHMI\Profiles\LibraryEditorForm.cs;175;Text;.Choice("profile_type", T("LCol_Type", "Type"), ProfileTypes, 120, true, "FRAME")
 LCol_Type;KabanHMI\Profiles\LibraryEditorForm.cs;191;Text;.Text("name", T("LCol_Name", "Name"), 220, true).Choice("accessory_type", T("LCol_Type", "Type"), AccessoryTypes, 160, true, "OTHER")));
-LCol_Type;KabanHMI\Profiles\LibraryEditorForm.cs;366;Text;.Lookup("macro_type", T("LCol_Type", "Type"), "SELECT code, name FROM macro_type ORDER BY name", 120, true)
-LCol_Unit;KabanHMI\Profiles\LibraryEditorForm.cs;215;Text;ed.Int("unit_no", T("LCol_Unit", "Unit"), 60, true, 1L).Text("position", T("LCol_Position", "Place"), 90, true)
-LCol_Unit;KabanHMI\Profiles\LibraryEditorForm.cs;227;Text;ed.Int("unit_no", T("LCol_Unit", "Unit"), 60, true, 1L).Choice("entry_side", T("LCol_Face", "Face"), Sides, 170, true, "TOP")
-LCol_Updated;KabanHMI\Profiles\LibraryEditorForm.cs;536;Text;foreach (var c in new[] { T("LCol_Profile", "Profile"), T("LCol_Group", "Group"), T("LCol_Accessory", "Accessory"), "#", T("LCol_Macro", "Macro"), T("LCol_Status", "Status"), T(...
-LCol_UsableLength;KabanHMI\Profiles\LibraryEditorForm.cs;218;Text;.Real("diameter_mm", T("LCol_Diameter", "Diameter (mm)"), 100).Real("usable_length_mm", T("LCol_UsableLength", "Usable length (mm)"), 120)
+LCol_Type;KabanHMI\Profiles\LibraryEditorForm.cs;374;Text;.Lookup("macro_type", T("LCol_Type", "Type"), "SELECT code, name FROM macro_type ORDER BY name", 120, true)
+LCol_Unit;KabanHMI\Profiles\LibraryEditorForm.cs;223;Text;ed.Int("unit_no", T("LCol_Unit", "Unit"), 60, true, 1L).Text("position", T("LCol_Position", "Place"), 90, true)
+LCol_Unit;KabanHMI\Profiles\LibraryEditorForm.cs;235;Text;ed.Int("unit_no", T("LCol_Unit", "Unit"), 60, true, 1L).Choice("entry_side", T("LCol_Face", "Face"), Sides, 170, true, "TOP")
+LCol_Updated;KabanHMI\Profiles\LibraryEditorForm.cs;544;Text;foreach (var c in new[] { T("LCol_Profile", "Profile"), T("LCol_Group", "Group"), T("LCol_Accessory", "Accessory"), "#", T("LCol_Macro", "Macro"), T("LCol_Status", "Status"), T(...
+LCol_UsableLength;KabanHMI\Profiles\LibraryEditorForm.cs;226;Text;.Real("diameter_mm", T("LCol_Diameter", "Diameter (mm)"), 100).Real("usable_length_mm", T("LCol_UsableLength", "Usable length (mm)"), 120)
 LCol_Variant;KabanHMI\Profiles\LibraryEditorForm.cs;173;Text;.Lookup("variant_id", T("LCol_Variant", "Series / variant"), VariantText, 260, true)
 LCol_Vendor;KabanHMI\Profiles\LibraryEditorForm.cs;165;Text;.Lookup("vendor_id", T("LCol_Vendor", "Vendor"), "SELECT id, name FROM profile_vendor ORDER BY name", 170, true)
-LCol_Vendor;KabanHMI\Profiles\LibraryEditorForm.cs;195;Text;.Lookup("vendor_id", T("LCol_Vendor", "Vendor"), "SELECT id, name FROM accessory_vendor ORDER BY name", 170, true)
-LCol_XBase;KabanHMI\Profiles\LibraryEditorForm.cs;335;Text;.Real("x_base_mm", T("LCol_XBase", "X (mm)"), 70, false, 0.0).Real("x_pitch_mm", T("LCol_XPitch", "Pitch (mm)"), 80).Int("x_count", T("LCol_XCount", "Count"), 60)
-LCol_XCount;KabanHMI\Profiles\LibraryEditorForm.cs;335;Text;.Real("x_base_mm", T("LCol_XBase", "X (mm)"), 70, false, 0.0).Real("x_pitch_mm", T("LCol_XPitch", "Pitch (mm)"), 80).Int("x_count", T("LCol_XCount", "Count"), 60)
-LCol_XPitch;KabanHMI\Profiles\LibraryEditorForm.cs;335;Text;.Real("x_base_mm", T("LCol_XBase", "X (mm)"), 70, false, 0.0).Real("x_pitch_mm", T("LCol_XPitch", "Pitch (mm)"), 80).Int("x_count", T("LCol_XCount", "Count"), 60)
-LCol_XStrategy;KabanHMI\Profiles\LibraryEditorForm.cs;206;Text;.Choice("x_strategy", T("LCol_XStrategy", "Along the bar"), XStrategies, 130, true, "SINGLE")
-LCol_XStrategy;KabanHMI\Profiles\LibraryEditorForm.cs;334;Text;.Choice("x_strategy", T("LCol_XStrategy", "Along the bar"), XStrategies, 130, true, "SINGLE")
+LCol_Vendor;KabanHMI\Profiles\LibraryEditorForm.cs;203;Text;.Lookup("vendor_id", T("LCol_Vendor", "Vendor"), "SELECT id, name FROM accessory_vendor ORDER BY name", 170, true)
+LCol_XBase;KabanHMI\Profiles\LibraryEditorForm.cs;343;Text;.Real("x_base_mm", T("LCol_XBase", "X (mm)"), 70, false, 0.0).Real("x_pitch_mm", T("LCol_XPitch", "Pitch (mm)"), 80).Int("x_count", T("LCol_XCount", "Count"), 60)
+LCol_XCount;KabanHMI\Profiles\LibraryEditorForm.cs;343;Text;.Real("x_base_mm", T("LCol_XBase", "X (mm)"), 70, false, 0.0).Real("x_pitch_mm", T("LCol_XPitch", "Pitch (mm)"), 80).Int("x_count", T("LCol_XCount", "Count"), 60)
+LCol_XPitch;KabanHMI\Profiles\LibraryEditorForm.cs;343;Text;.Real("x_base_mm", T("LCol_XBase", "X (mm)"), 70, false, 0.0).Real("x_pitch_mm", T("LCol_XPitch", "Pitch (mm)"), 80).Int("x_count", T("LCol_XCount", "Count"), 60)
+LCol_XStrategy;KabanHMI\Profiles\LibraryEditorForm.cs;214;Text;.Choice("x_strategy", T("LCol_XStrategy", "Along the bar"), XStrategies, 130, true, "SINGLE")
+LCol_XStrategy;KabanHMI\Profiles\LibraryEditorForm.cs;342;Text;.Choice("x_strategy", T("LCol_XStrategy", "Along the bar"), XStrategies, 130, true, "SINGLE")
 Lib_Accessories;KabanHMI\Profiles\LibraryEditorForm.cs;186;Text;var acc = Heading("h_accessories", T("Lib_Accessories", "Accessories"));
 Lib_AccessoriesOps;KabanHMI\Profiles\LibraryEditorForm.cs;187;Text;Section(acc, "accessories", T("Lib_AccessoriesOps", "Accessories and operations"),
+Lib_AccGroupLinks;KabanHMI\Profiles\LibraryEditorForm.cs;194;Text;Section(acc, "acc_group_links", T("Lib_AccGroupLinks", "Accessory groups of the profile groups"),
 Lib_AccGroups;KabanHMI\Profiles\LibraryEditorForm.cs;190;Text;Section(acc, "acc_groups", T("Lib_AccGroups", "Accessory groups"), T("Lib_HintAccGroups", "Hinge, handle, drainage ..."), () => Table("accessory_group", "name", ed => ed
-Lib_AccSeries;KabanHMI\Profiles\LibraryEditorForm.cs;194;Text;Section(acc, "acc_series", T("Lib_AccSeries", "Hardware series"), T("Lib_HintAccSeries", "A hardware vendor's range, and the interface it fits."), () => Table("accessory_series"...
-Lib_AccVendors;KabanHMI\Profiles\LibraryEditorForm.cs;192;Text;Section(acc, "acc_vendors", T("Lib_AccVendors", "Hardware vendors"), T("Lib_HintAccVendors", "Who makes the hardware."), () => Table("accessory_vendor", "name", ed => ed
-Lib_ApplyShape;KabanHMI\Profiles\LibraryEditorForm.cs;377;Text;var apply = UiStyle.TextButton(T("Lib_ApplyShape", "Use these"), 120);
-Lib_Classes;KabanHMI\Profiles\LibraryEditorForm.cs;242;Text;Section(mach, "classes", T("Lib_Classes", "Material classes"), T("Lib_HintClasses", "PVC outer wall, PVC chamber, steel reinforcement ... - what a wall is made of, for its feeds...
+Lib_AccSeries;KabanHMI\Profiles\LibraryEditorForm.cs;202;Text;Section(acc, "acc_series", T("Lib_AccSeries", "Hardware series"), T("Lib_HintAccSeries", "A hardware vendor's range, and the interface it fits."), () => Table("accessory_series"...
+Lib_AccVendors;KabanHMI\Profiles\LibraryEditorForm.cs;200;Text;Section(acc, "acc_vendors", T("Lib_AccVendors", "Hardware vendors"), T("Lib_HintAccVendors", "Who makes the hardware."), () => Table("accessory_vendor", "name", ed => ed
+Lib_ApplyShape;KabanHMI\Profiles\LibraryEditorForm.cs;385;Text;var apply = UiStyle.TextButton(T("Lib_ApplyShape", "Use these"), 120);
+Lib_Classes;KabanHMI\Profiles\LibraryEditorForm.cs;250;Text;Section(mach, "classes", T("Lib_Classes", "Material classes"), T("Lib_HintClasses", "PVC outer wall, PVC chamber, steel reinforcement ... - what a wall is made of, for its feeds...
 Lib_DepthMacro;KabanHMI\Profiles\LibraryEditorForm.cs;154;Text;return new[] { "0|" + T("Lib_DepthMacro", "the macro's depth"), "1|" + T("Lib_DepthWall", "through the first wall"),
 Lib_DepthWall;KabanHMI\Profiles\LibraryEditorForm.cs;154;Text;return new[] { "0|" + T("Lib_DepthMacro", "the macro's depth"), "1|" + T("Lib_DepthWall", "through the first wall"),
 Lib_DepthWhole;KabanHMI\Profiles\LibraryEditorForm.cs;155;Text;"2|" + T("Lib_DepthWhole", "through the whole profile") };
-Lib_Drill;KabanHMI\Profiles\LibraryEditorForm.cs;217;Text;.Choice("tool_type", T("LCol_ToolType", "Kind"), new[] { "END_MILL|" + T("Lib_EndMill", "end mill"), "DRILL|" + T("Lib_Drill", "drill") }, 100, true, "END_MILL")
-Lib_Drill;KabanHMI\Profiles\LibraryEditorForm.cs;237;Text;.Choice("tool_type", T("LCol_ToolType", "Kind"), new[] { "END_MILL|" + T("Lib_EndMill", "end mill"), "DRILL|" + T("Lib_Drill", "drill") }, 100, true, "END_MILL")
-Lib_EndMill;KabanHMI\Profiles\LibraryEditorForm.cs;217;Text;.Choice("tool_type", T("LCol_ToolType", "Kind"), new[] { "END_MILL|" + T("Lib_EndMill", "end mill"), "DRILL|" + T("Lib_Drill", "drill") }, 100, true, "END_MILL")
-Lib_EndMill;KabanHMI\Profiles\LibraryEditorForm.cs;237;Text;.Choice("tool_type", T("LCol_ToolType", "Kind"), new[] { "END_MILL|" + T("Lib_EndMill", "end mill"), "DRILL|" + T("Lib_Drill", "drill") }, 100, true, "END_MILL")
-Lib_Faces;KabanHMI\Profiles\LibraryEditorForm.cs;222;Text;Section(mach, "faces", T("Lib_Faces", "Machine faces"),
+Lib_Drill;KabanHMI\Profiles\LibraryEditorForm.cs;225;Text;.Choice("tool_type", T("LCol_ToolType", "Kind"), new[] { "END_MILL|" + T("Lib_EndMill", "end mill"), "DRILL|" + T("Lib_Drill", "drill") }, 100, true, "END_MILL")
+Lib_Drill;KabanHMI\Profiles\LibraryEditorForm.cs;245;Text;.Choice("tool_type", T("LCol_ToolType", "Kind"), new[] { "END_MILL|" + T("Lib_EndMill", "end mill"), "DRILL|" + T("Lib_Drill", "drill") }, 100, true, "END_MILL")
+Lib_EndMill;KabanHMI\Profiles\LibraryEditorForm.cs;225;Text;.Choice("tool_type", T("LCol_ToolType", "Kind"), new[] { "END_MILL|" + T("Lib_EndMill", "end mill"), "DRILL|" + T("Lib_Drill", "drill") }, 100, true, "END_MILL")
+Lib_EndMill;KabanHMI\Profiles\LibraryEditorForm.cs;245;Text;.Choice("tool_type", T("LCol_ToolType", "Kind"), new[] { "END_MILL|" + T("Lib_EndMill", "end mill"), "DRILL|" + T("Lib_Drill", "drill") }, 100, true, "END_MILL")
+Lib_Faces;KabanHMI\Profiles\LibraryEditorForm.cs;230;Text;Section(mach, "faces", T("Lib_Faces", "Machine faces"),
 Lib_Families;KabanHMI\Profiles\LibraryEditorForm.cs;181;Text;Section(prof, "families", T("Lib_Families", "Machining families"), T("Lib_HintFamilies", "How profiles are machined, across vendors and groups."), () => Table("machining_family"...
-Lib_Feeds;KabanHMI\Profiles\LibraryEditorForm.cs;231;Text;Section(mach, "feeds", T("Lib_Feeds", "Feeds"),
+Lib_Feeds;KabanHMI\Profiles\LibraryEditorForm.cs;239;Text;Section(mach, "feeds", T("Lib_Feeds", "Feeds"),
 Lib_Groups;KabanHMI\Profiles\LibraryEditorForm.cs;172;Text;Section(prof, "groups", T("Lib_Groups", "Groups"), T("Lib_HintGroups", "What a profile IS (frame, sash, door leaf): accessories are given to a group, and every profile of it tak...
 Lib_HintAccessories;KabanHMI\Profiles\LibraryEditorForm.cs;188;Text;T("Lib_HintAccessories", "An accessory is one or more operations: a macro, the reference point it is measured from, the offset, the face it is cut from and where along the bar."),
+Lib_HintAccGroupLinks;KabanHMI\Profiles\LibraryEditorForm.cs;195;Text;T("Lib_HintAccGroupLinks", "An accessory group attached to a profile group: every accessory of it - those added to it later too - goes on every profile of the profile group."),
 Lib_HintAccGroups;KabanHMI\Profiles\LibraryEditorForm.cs;190;Text;Section(acc, "acc_groups", T("Lib_AccGroups", "Accessory groups"), T("Lib_HintAccGroups", "Hinge, handle, drainage ..."), () => Table("accessory_group", "name", ed => ed
-Lib_HintAccSeries;KabanHMI\Profiles\LibraryEditorForm.cs;194;Text;Section(acc, "acc_series", T("Lib_AccSeries", "Hardware series"), T("Lib_HintAccSeries", "A hardware vendor's range, and the interface it fits."), () => Table("accessory_series"...
-Lib_HintAccVendors;KabanHMI\Profiles\LibraryEditorForm.cs;192;Text;Section(acc, "acc_vendors", T("Lib_AccVendors", "Hardware vendors"), T("Lib_HintAccVendors", "Who makes the hardware."), () => Table("accessory_vendor", "name", ed => ed
-Lib_HintClasses;KabanHMI\Profiles\LibraryEditorForm.cs;242;Text;Section(mach, "classes", T("Lib_Classes", "Material classes"), T("Lib_HintClasses", "PVC outer wall, PVC chamber, steel reinforcement ... - what a wall is made of, for its feeds...
-Lib_HintFaces;KabanHMI\Profiles\LibraryEditorForm.cs;223;Text;T("Lib_HintFaces", "Which unit, at which angle, machines which face of the profile. Check these on the machine before the first program runs."),
+Lib_HintAccSeries;KabanHMI\Profiles\LibraryEditorForm.cs;202;Text;Section(acc, "acc_series", T("Lib_AccSeries", "Hardware series"), T("Lib_HintAccSeries", "A hardware vendor's range, and the interface it fits."), () => Table("accessory_series"...
+Lib_HintAccVendors;KabanHMI\Profiles\LibraryEditorForm.cs;200;Text;Section(acc, "acc_vendors", T("Lib_AccVendors", "Hardware vendors"), T("Lib_HintAccVendors", "Who makes the hardware."), () => Table("accessory_vendor", "name", ed => ed
+Lib_HintClasses;KabanHMI\Profiles\LibraryEditorForm.cs;250;Text;Section(mach, "classes", T("Lib_Classes", "Material classes"), T("Lib_HintClasses", "PVC outer wall, PVC chamber, steel reinforcement ... - what a wall is made of, for its feeds...
+Lib_HintFaces;KabanHMI\Profiles\LibraryEditorForm.cs;231;Text;T("Lib_HintFaces", "Which unit, at which angle, machines which face of the profile. Check these on the machine before the first program runs."),
 Lib_HintFamilies;KabanHMI\Profiles\LibraryEditorForm.cs;181;Text;Section(prof, "families", T("Lib_Families", "Machining families"), T("Lib_HintFamilies", "How profiles are machined, across vendors and groups."), () => Table("machining_family"...
-Lib_HintFeeds;KabanHMI\Profiles\LibraryEditorForm.cs;232;Text;T("Lib_HintFeeds", "Per material class and tool kind: the entry speed through a wall, the cutting feed, and how much slower a thin wall is entered."),
+Lib_HintFeeds;KabanHMI\Profiles\LibraryEditorForm.cs;240;Text;T("Lib_HintFeeds", "Per material class and tool kind: the entry speed through a wall, the cutting feed, and how much slower a thin wall is entered."),
 Lib_HintGroups;KabanHMI\Profiles\LibraryEditorForm.cs;172;Text;Section(prof, "groups", T("Lib_Groups", "Groups"), T("Lib_HintGroups", "What a profile IS (frame, sash, door leaf): accessories are given to a group, and every profile of it tak...
 Lib_HintInterfaces;KabanHMI\Profiles\LibraryEditorForm.cs;183;Text;Section(prof, "interfaces", T("Lib_Interfaces", "Hardware interfaces"), T("Lib_HintInterfaces", "The groove a profile offers the hardware (Euro groove 16, 13 ...)."), () => Tabl...
-Lib_HintLayers;KabanHMI\Profiles\LibraryEditorForm.cs;246;Text;T("Lib_HintLayers", "A DXF layer that is not the series' ordinary wall (a steel reinforcement drawn on layer STEEL): its material class. Other walls are the outer wall (the firs...
-Lib_HintMacros;KabanHMI\Profiles\LibraryEditorForm.cs;199;Text;T("Lib_HintMacros", "The SHAPE of a cut (a 5 x 30 slot, 6 deep) - no tool, no feed: the machine chooses its own tool and feeds from its tools and the profile's walls."),
-Lib_HintReview;KabanHMI\Profiles\LibraryEditorForm.cs;255;Text;T("Lib_HintReview", "Reference points and placements nobody has confirmed, the least trusted first. Double-click one to open its profile."),
+Lib_HintLayers;KabanHMI\Profiles\LibraryEditorForm.cs;254;Text;T("Lib_HintLayers", "A DXF layer that is not the series' ordinary wall (a steel reinforcement drawn on layer STEEL): its material class. Other walls are the outer wall (the firs...
+Lib_HintMacros;KabanHMI\Profiles\LibraryEditorForm.cs;207;Text;T("Lib_HintMacros", "The SHAPE of a cut (a 5 x 30 slot, 6 deep) - no tool, no feed: the machine chooses its own tool and feeds from its tools and the profile's walls."),
+Lib_HintReview;KabanHMI\Profiles\LibraryEditorForm.cs;263;Text;T("Lib_HintReview", "Reference points and placements nobody has confirmed, the least trusted first. Double-click one to open its profile."),
 Lib_HintSeries;KabanHMI\Profiles\LibraryEditorForm.cs;164;Text;Section(prof, "series", T("Lib_Series", "Series"), T("Lib_HintSeries", "A vendor's system (Elegant, TecnoCorr2): its material decides the feeds."), () => Table("profile_series",...
-Lib_HintSettings;KabanHMI\Profiles\LibraryEditorForm.cs;251;Text;Section(mach, "settings", T("Lib_Settings", "Program settings"), T("Lib_HintSettings", "How the side machining program moves: safe height, the feed through air, peck depth, and ...
-Lib_HintTools;KabanHMI\Profiles\LibraryEditorForm.cs;211;Text;T("Lib_HintTools", "The tools mounted on the milling units, with their measured size: the program chooses among these. A tool with no diameter is never chosen."),
-Lib_HintTypeDefaults;KabanHMI\Profiles\LibraryEditorForm.cs;201;Text;Section(acc, "defaults", T("Lib_TypeDefaults", "Type defaults"), T("Lib_HintTypeDefaults", "Where an accessory type goes on a profile type when nothing more is known."), () => T...
+Lib_HintSettings;KabanHMI\Profiles\LibraryEditorForm.cs;259;Text;Section(mach, "settings", T("Lib_Settings", "Program settings"), T("Lib_HintSettings", "How the side machining program moves: safe height, the feed through air, peck depth, and ...
+Lib_HintTools;KabanHMI\Profiles\LibraryEditorForm.cs;219;Text;T("Lib_HintTools", "The tools mounted on the milling units, with their measured size: the program chooses among these. A tool with no diameter is never chosen."),
+Lib_HintTypeDefaults;KabanHMI\Profiles\LibraryEditorForm.cs;209;Text;Section(acc, "defaults", T("Lib_TypeDefaults", "Type defaults"), T("Lib_HintTypeDefaults", "Where an accessory type goes on a profile type when nothing more is known."), () => T...
 Lib_HintVariants;KabanHMI\Profiles\LibraryEditorForm.cs;169;Text;Section(prof, "variants", T("Lib_Variants", "Variants"), T("Lib_HintVariants", "A series' variants (standard, hidden vent). A series without any has one, 'Standard'."), () => Ta...
 Lib_HintVendors;KabanHMI\Profiles\LibraryEditorForm.cs;162;Text;Section(prof, "vendors", T("Lib_Vendors", "Vendors"), T("Lib_HintVendors", "Who makes the profiles."), () => Table("profile_vendor", "name", ed => ed
 Lib_Interfaces;KabanHMI\Profiles\LibraryEditorForm.cs;183;Text;Section(prof, "interfaces", T("Lib_Interfaces", "Hardware interfaces"), T("Lib_HintInterfaces", "The groove a profile offers the hardware (Euro groove 16, 13 ...)."), () => Tabl...
-Lib_Layers;KabanHMI\Profiles\LibraryEditorForm.cs;245;Text;Section(mach, "layers", T("Lib_Layers", "Drawing layers"),
-Lib_Machine;KabanHMI\Profiles\LibraryEditorForm.cs;209;Text;var mach = Heading("h_machine", T("Lib_Machine", "This machine"));
-Lib_Macros;KabanHMI\Profiles\LibraryEditorForm.cs;198;Text;Section(acc, "macros", T("Lib_Macros", "Macros"),
-Lib_Operations;KabanHMI\Profiles\LibraryEditorForm.cs;352;Text;var lbl = new Label { Dock = DockStyle.Top, Height = 24, Font = UiStyle.FontVariant(UiStyle.Small, FontStyle.Bold), Text = T("Lib_Operations", "Operations of the selected access...
-Lib_PlacementsToCheck;KabanHMI\Profiles\LibraryEditorForm.cs;561;Text;var l2 = new Label { Dock = DockStyle.Top, Height = 24, Font = UiStyle.FontVariant(UiStyle.Small, FontStyle.Bold), TextAlign = ContentAlignment.BottomLeft, Text = T("Lib_Placeme...
+Lib_Layers;KabanHMI\Profiles\LibraryEditorForm.cs;253;Text;Section(mach, "layers", T("Lib_Layers", "Drawing layers"),
+Lib_Machine;KabanHMI\Profiles\LibraryEditorForm.cs;217;Text;var mach = Heading("h_machine", T("Lib_Machine", "This machine"));
+Lib_Macros;KabanHMI\Profiles\LibraryEditorForm.cs;206;Text;Section(acc, "macros", T("Lib_Macros", "Macros"),
+Lib_Operations;KabanHMI\Profiles\LibraryEditorForm.cs;360;Text;var lbl = new Label { Dock = DockStyle.Top, Height = 24, Font = UiStyle.FontVariant(UiStyle.Small, FontStyle.Bold), Text = T("Lib_Operations", "Operations of the selected access...
+Lib_PlacementsToCheck;KabanHMI\Profiles\LibraryEditorForm.cs;569;Text;var l2 = new Label { Dock = DockStyle.Top, Height = 24, Font = UiStyle.FontVariant(UiStyle.Small, FontStyle.Bold), TextAlign = ContentAlignment.BottomLeft, Text = T("Lib_Placeme...
 Lib_Profiles;KabanHMI\Profiles\LibraryEditorForm.cs;161;Text;var prof = Heading("h_profiles", T("Lib_Profiles", "Profiles"));
 Lib_ReadOnly;KabanHMI\Profiles\LibraryEditorForm.cs;90;Text;Text = T("Lib_ReadOnly", "Read only: changing the library needs the Maintenance level.")
-Lib_RefsToCheck;KabanHMI\Profiles\LibraryEditorForm.cs;560;Text;var l1 = new Label { Dock = DockStyle.Top, Height = 24, Font = UiStyle.FontVariant(UiStyle.Small, FontStyle.Bold), TextAlign = ContentAlignment.BottomLeft, Text = T("Lib_RefsToC...
-Lib_Review;KabanHMI\Profiles\LibraryEditorForm.cs;254;Text;Section(rev, "review", T("Lib_Review", "Not confirmed yet"),
-Lib_ReviewHead;KabanHMI\Profiles\LibraryEditorForm.cs;253;Text;var rev = Heading("h_review", T("Lib_ReviewHead", "Review"));
-Lib_SaveOps;KabanHMI\Profiles\LibraryEditorForm.cs;345;Message;if (Ask.YesNo(this, Text, T("Lib_SaveOps", "Save the changed operations first?"))) ops.Save(out err);
+Lib_RefsToCheck;KabanHMI\Profiles\LibraryEditorForm.cs;568;Text;var l1 = new Label { Dock = DockStyle.Top, Height = 24, Font = UiStyle.FontVariant(UiStyle.Small, FontStyle.Bold), TextAlign = ContentAlignment.BottomLeft, Text = T("Lib_RefsToC...
+Lib_Review;KabanHMI\Profiles\LibraryEditorForm.cs;262;Text;Section(rev, "review", T("Lib_Review", "Not confirmed yet"),
+Lib_ReviewHead;KabanHMI\Profiles\LibraryEditorForm.cs;261;Text;var rev = Heading("h_review", T("Lib_ReviewHead", "Review"));
+Lib_SaveOps;KabanHMI\Profiles\LibraryEditorForm.cs;353;Message;if (Ask.YesNo(this, Text, T("Lib_SaveOps", "Save the changed operations first?"))) ops.Save(out err);
 Lib_Series;KabanHMI\Profiles\LibraryEditorForm.cs;164;Text;Section(prof, "series", T("Lib_Series", "Series"), T("Lib_HintSeries", "A vendor's system (Elegant, TecnoCorr2): its material decides the feeds."), () => Table("profile_series",...
-Lib_Settings;KabanHMI\Profiles\LibraryEditorForm.cs;251;Text;Section(mach, "settings", T("Lib_Settings", "Program settings"), T("Lib_HintSettings", "How the side machining program moves: safe height, the feed through air, peck depth, and ...
-Lib_Shape;KabanHMI\Profiles\LibraryEditorForm.cs;392;Text;panel.Controls.Add(new Label { Text = T("Lib_Shape", "Shape of") + " " + Convert.ToString(row.Cells["code"].Value), AutoSize = true, Font = UiStyle.FontVariant(UiStyle.Body, Fon...
-Lib_SideBottom;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;237;Text;case "BOTTOM": return T("Lib_SideBottom", "bottom (up)");
+Lib_Settings;KabanHMI\Profiles\LibraryEditorForm.cs;259;Text;Section(mach, "settings", T("Lib_Settings", "Program settings"), T("Lib_HintSettings", "How the side machining program moves: safe height, the feed through air, peck depth, and ...
+Lib_Shape;KabanHMI\Profiles\LibraryEditorForm.cs;400;Text;panel.Controls.Add(new Label { Text = T("Lib_Shape", "Shape of") + " " + Convert.ToString(row.Cells["code"].Value), AutoSize = true, Font = UiStyle.FontVariant(UiStyle.Body, Fon...
+Lib_SideBottom;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;239;Text;case "BOTTOM": return T("Lib_SideBottom", "bottom (up)");
 Lib_SideBottom;KabanHMI\Profiles\LibraryEditorForm.cs;145;Text;return new[] { "TOP|" + T("Lib_SideTop", "top (down)"), "BOTTOM|" + T("Lib_SideBottom", "bottom (up)"),
-Lib_SideInside;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;239;Text;case "INSIDE": return T("Lib_SideInside", "inside face (out)");
+Lib_SideInside;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;241;Text;case "INSIDE": return T("Lib_SideInside", "inside face (out)");
 Lib_SideInside;KabanHMI\Profiles\LibraryEditorForm.cs;146;Text;"OUTSIDE|" + T("Lib_SideOutside", "outside face (in)"), "INSIDE|" + T("Lib_SideInside", "inside face (out)") };
-Lib_SideOutside;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;238;Text;case "OUTSIDE": return T("Lib_SideOutside", "outside face (in)");
+Lib_SideOutside;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;240;Text;case "OUTSIDE": return T("Lib_SideOutside", "outside face (in)");
 Lib_SideOutside;KabanHMI\Profiles\LibraryEditorForm.cs;146;Text;"OUTSIDE|" + T("Lib_SideOutside", "outside face (in)"), "INSIDE|" + T("Lib_SideInside", "inside face (out)") };
-Lib_SideTop;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;240;Text;default: return T("Lib_SideTop", "top (down)");
+Lib_SideTop;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;242;Text;default: return T("Lib_SideTop", "top (down)");
 Lib_SideTop;KabanHMI\Profiles\LibraryEditorForm.cs;145;Text;return new[] { "TOP|" + T("Lib_SideTop", "top (down)"), "BOTTOM|" + T("Lib_SideBottom", "bottom (up)"),
-Lib_SrcGeometry;KabanHMI\Profiles\LibraryEditorForm.cs;579;Text;case "DXF_GEOMETRY": return T("Lib_SrcGeometry", "the outline");
-Lib_SrcLayer;KabanHMI\Profiles\LibraryEditorForm.cs;577;Text;case "DXF_LAYER": return T("Lib_SrcLayer", "a layer of the drawing");
-Lib_SrcManual;KabanHMI\Profiles\LibraryEditorForm.cs;581;Text;case "MANUAL": return T("Lib_SrcManual", "set by hand");
-Lib_SrcMarker;KabanHMI\Profiles\LibraryEditorForm.cs;578;Text;case "DXF_MARKER": return T("Lib_SrcMarker", "a text on the drawing");
-Lib_SrcSimilar;KabanHMI\Profiles\LibraryEditorForm.cs;580;Text;case "AI_PROPOSED": return T("Lib_SrcSimilar", "like a similar profile");
-Lib_TipEntrySide;KabanHMI\Profiles\LibraryEditorForm.cs;328;Text;.Tip(T("Lib_TipEntrySide", "The face the tool comes in by. The operation's point is where it meets the profile."))
+Lib_SrcGeometry;KabanHMI\Profiles\LibraryEditorForm.cs;587;Text;case "DXF_GEOMETRY": return T("Lib_SrcGeometry", "the outline");
+Lib_SrcLayer;KabanHMI\Profiles\LibraryEditorForm.cs;585;Text;case "DXF_LAYER": return T("Lib_SrcLayer", "a layer of the drawing");
+Lib_SrcManual;KabanHMI\Profiles\LibraryEditorForm.cs;589;Text;case "MANUAL": return T("Lib_SrcManual", "set by hand");
+Lib_SrcMarker;KabanHMI\Profiles\LibraryEditorForm.cs;586;Text;case "DXF_MARKER": return T("Lib_SrcMarker", "a text on the drawing");
+Lib_SrcSimilar;KabanHMI\Profiles\LibraryEditorForm.cs;588;Text;case "AI_PROPOSED": return T("Lib_SrcSimilar", "like a similar profile");
+Lib_TipEntrySide;KabanHMI\Profiles\LibraryEditorForm.cs;336;Text;.Tip(T("Lib_TipEntrySide", "The face the tool comes in by. The operation's point is where it meets the profile."))
 Lib_TipInterface;KabanHMI\Profiles\LibraryEditorForm.cs;177;Text;.Tip(T("Lib_TipInterface", "The groove the hardware fits. Accessories of the same interface are offered first."))
 Lib_TipRefProfile;KabanHMI\Profiles\LibraryEditorForm.cs;180;Text;.Tip(T("Lib_TipRefProfile", "The measured, confirmed member: a new profile of the group takes its reference points as proposals."))));
 Lib_Title;KabanHMI\Profiles\LibraryEditorForm.cs;51;Text;Text = T("Lib_Title", "Profile library");
-Lib_Tools;KabanHMI\Profiles\LibraryEditorForm.cs;210;Text;Section(mach, "tools", T("Lib_Tools", "Machine tools"),
-Lib_TypeDefaults;KabanHMI\Profiles\LibraryEditorForm.cs;201;Text;Section(acc, "defaults", T("Lib_TypeDefaults", "Type defaults"), T("Lib_HintTypeDefaults", "Where an accessory type goes on a profile type when nothing more is known."), () => T...
+Lib_Tools;KabanHMI\Profiles\LibraryEditorForm.cs;218;Text;Section(mach, "tools", T("Lib_Tools", "Machine tools"),
+Lib_TypeDefaults;KabanHMI\Profiles\LibraryEditorForm.cs;209;Text;Section(acc, "defaults", T("Lib_TypeDefaults", "Type defaults"), T("Lib_HintTypeDefaults", "Where an accessory type goes on a profile type when nothing more is known."), () => T...
 Lib_Unsaved;KabanHMI\Profiles\LibraryEditorForm.cs;102;Message;var answer = MessageBox.Show(this, T("Lib_Unsaved", "Some tables have changes that are not saved. Save them now?"),
 Lib_Variants;KabanHMI\Profiles\LibraryEditorForm.cs;169;Text;Section(prof, "variants", T("Lib_Variants", "Variants"), T("Lib_HintVariants", "A series' variants (standard, hidden vent). A series without any has one, 'Standard'."), () => Ta...
 Lib_Vendors;KabanHMI\Profiles\LibraryEditorForm.cs;162;Text;Section(prof, "vendors", T("Lib_Vendors", "Vendors"), T("Lib_HintVendors", "Who makes the profiles."), () => Table("profile_vendor", "name", ed => ed
@@ -1801,13 +1806,13 @@ Other;Kaban.Machines.H800\H800Module.cs;109;Text;new Kaban.UI.Settings.SimplePag
 Other;Kaban.Machines.MD3020\MD3020Module.cs;104;Text;new Kaban.UI.Settings.SimplePage("Tab_MD3020_ManualOther", "Other",
 Other;KabanHMI\Dashboard\StopReasons.cs;53;Text;new Reason { Number = 9, Category = Unplanned, Key = "Stp_Other", Text = "Other" },
 Other;KabanHMI\Settings\LogViewerControl.cs;389;Text;default: return LanguageManager.GetString("Log_KindOther", "Other");
-Par_Angle;KabanHMI\Profiles\LibraryEditorForm.cs;440;Text;case "angle_deg": return T("Par_Angle", "Angle");
-Par_Corner;KabanHMI\Profiles\LibraryEditorForm.cs;441;Text;case "corner_r_mm": return T("Par_Corner", "Corner radius");
-Par_Depth;KabanHMI\Profiles\LibraryEditorForm.cs;437;Text;case "depth_mm": return T("Par_Depth", "Depth");
-Par_Diameter;KabanHMI\Profiles\LibraryEditorForm.cs;436;Text;case "diameter_mm": return T("Par_Diameter", "Diameter");
-Par_Length;KabanHMI\Profiles\LibraryEditorForm.cs;438;Text;case "length_mm": return T("Par_Length", "Length (along the bar)");
-Par_Path;KabanHMI\Profiles\LibraryEditorForm.cs;442;Text;case "path": return T("Par_Path", "Path (LINE, CONTOUR)");
-Par_Width;KabanHMI\Profiles\LibraryEditorForm.cs;439;Text;case "width_mm": return T("Par_Width", "Width");
+Par_Angle;KabanHMI\Profiles\LibraryEditorForm.cs;448;Text;case "angle_deg": return T("Par_Angle", "Angle");
+Par_Corner;KabanHMI\Profiles\LibraryEditorForm.cs;449;Text;case "corner_r_mm": return T("Par_Corner", "Corner radius");
+Par_Depth;KabanHMI\Profiles\LibraryEditorForm.cs;445;Text;case "depth_mm": return T("Par_Depth", "Depth");
+Par_Diameter;KabanHMI\Profiles\LibraryEditorForm.cs;444;Text;case "diameter_mm": return T("Par_Diameter", "Diameter");
+Par_Length;KabanHMI\Profiles\LibraryEditorForm.cs;446;Text;case "length_mm": return T("Par_Length", "Length (along the bar)");
+Par_Path;KabanHMI\Profiles\LibraryEditorForm.cs;450;Text;case "path": return T("Par_Path", "Path (LINE, CONTOUR)");
+Par_Width;KabanHMI\Profiles\LibraryEditorForm.cs;447;Text;case "width_mm": return T("Par_Width", "Width");
 Plg_AreaNote;KabanHMI\Dashboard\DashboardSettingsPage.cs;101;Text;Add(NewNote(string.Format(T("Plg_AreaNote", "Its PLC log area: {0} (set in the machine's program)."), MachineLogger.Area(_machine))));
 Plg_Error;KabanHMI\Dashboard\MachineLogger.cs;244;Text;Say(T("Plg_Error", "Could not take the records:") + " " + ex.Message);
 Plg_Km;KabanHMI\Dashboard\MachineLogSettings.cs;79;Text;T("Plg_Km", "A record's Process ID: its Profile Code and Profile Data from KMSystem (PostgreSQL)") + "\n" +
@@ -1842,25 +1847,31 @@ Pop_Retry;KabanHMI\Forms\PlcPopupForm.cs;98;Text;case "retry": return T("Pop_Ret
 Pop_SignIn;KabanHMI\Forms\PlcPopupForm.cs;162;Text;_note.Text = T("Pop_SignIn", "Sign in to answer the machine.");
 Pop_Unknown;KabanHMI\Helpers\PlcPopupHost.cs;86;Text;{ "EN", string.Format(LanguageManager.GetString("Pop_Unknown", "The PLC shows message {0}, which this HMI does not know yet (not in the machine's Popups.json)."), number) }
 Pop_Yes;KabanHMI\Forms\PlcPopupForm.cs;94;Text;case "yes": return T("Pop_Yes", "Yes");
-Prf_AccAdded;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;506;Status;Status(string.Format(T("Prf_AccAdded", "{0} is on every profile of the group {1}: its placements are worked out - check and confirm them."), code, _current.Group));
+Prf_AccAdded;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;525;Status;Status(string.Format(T("Prf_AccAdded", "{0} is on every profile of the group {1}: its placements are worked out - check and confirm them."), code, _current.Group));
 Prf_AccCode;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;58;Heading;_accGrid.Columns.Add(new DataGridViewTextBoxColumn { Name = "code", HeaderText = T("Prf_AccCode", "Accessory"), Width = 130, ReadOnly = true });
 Prf_AccDesc;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;59;Heading;_accGrid.Columns.Add(new DataGridViewTextBoxColumn { Name = "desc", HeaderText = T("Prf_AccDesc", "Description"), Width = 220, ReadOnly = true });
-Prf_AccFits;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;485;Text;menu.Items.Add(UiStyle.MenuHeader(string.Format(T("Prf_AccFits", "Fit the group's hardware interface ({0})"), _current.Interface)));
-Prf_AccLibrary;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;495;Menu;menu.Items.Add(new ToolStripMenuItem(T("Prf_AccLibrary", "New accessory... (library)"), null, (s, e) => OpenLibraryEditor("accessories")));
+Prf_AccFits;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;504;Text;menu.Items.Add(UiStyle.MenuHeader(string.Format(T("Prf_AccFits", "Fit the group's hardware interface ({0})"), _current.Interface)));
+Prf_AccGroupOff;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;537;Status;: T("Prf_AccGroupOff", "The accessory group {0} is off the group {1} (an accessory given to it one by one stays)."), name, _current.Group));
+Prf_AccGroupOn;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;536;Status;? T("Prf_AccGroupOn", "Every accessory of {0} - and every one added to it later - is on every profile of the group {1}: their placements are worked out - check and confirm them.")
+Prf_AccGroupsHead;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;482;Text;menu.Items.Add(UiStyle.MenuHeader(string.Format(T("Prf_AccGroupsHead", "Accessory groups on the group {0} (every accessory of them, now and later)"), _current.Group)));
+Prf_AccLibrary;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;514;Menu;menu.Items.Add(new ToolStripMenuItem(T("Prf_AccLibrary", "New accessory... (library)"), null, (s, e) => OpenLibraryEditor("accessories")));
 Prf_AccOn;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;56;Heading;_accGrid.Columns.Add(new DataGridViewCheckBoxColumn { Name = "on", HeaderText = T("Prf_AccOn", "On"), Width = 40, ToolTipText = T("Prf_TipAccOn", "Off: the group keeps the acces...
+Prf_AccOneByOne;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;493;Text;menu.Items.Add(UiStyle.MenuHeader(T("Prf_AccOneByOne", "One accessory")));
 Prf_AccOps;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;60;Heading;_accGrid.Columns.Add(new DataGridViewTextBoxColumn { Name = "ops", HeaderText = T("Prf_AccOps", "Operations"), Width = 80, ReadOnly = true });
 Prf_AccType;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;57;Heading;_accGrid.Columns.Add(new DataGridViewTextBoxColumn { Name = "type", HeaderText = T("Prf_AccType", "Type"), Width = 120, ReadOnly = true });
+Prf_AccViaGroup;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;197;Text;Library.Text(r, "description") + (string.IsNullOrEmpty(via) ? "" : "   (" + string.Format(T("Prf_AccViaGroup", "with the accessory group {0}"), via) + ")"),
+Prf_AccViaGroupRemove;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;548;Message;Ask.Tell(FindForm(), T("Prf_Title", "Profiles"), string.Format(T("Prf_AccViaGroupRemove",
 Prf_AllFiles;Kaban.Machines.FA2010\Screens\ProfilesScreen.Details.cs;443;Text;using (var dlg = new OpenFileDialog { Filter = T("Prf_DxfFilter", "DXF drawings") + " (*.dxf)|*.dxf|" + T("Prf_AllFiles", "All files") + " (*.*)|*.*" })
 Prf_AllFiles;Kaban.Machines.FA2010\Screens\ProfilesScreen.Program.cs;197;Text;using (var dlg = new SaveFileDialog { Filter = T("Prf_NcFilter", "CNC programs") + " (*.nc)|*.nc|" + T("Prf_AllFiles", "All files") + " (*.*)|*.*", FileName = name })
 Prf_AskActivate;Kaban.Machines.FA2010\Screens\ProfilesScreen.Details.cs;551;Message;if (!Ask.YesNo(FindForm(), T("Prf_Title", "Profiles"), string.Format(T("Prf_AskActivate", "Take {0} back into use?"), _current.Code))) return;
-Prf_AskConfirmProposed;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;368;Message;string.Format(T("Prf_AskConfirmProposed", "{0} is measured from a reference point nobody has confirmed. Confirm this position anyway (checked on a trial piece)?"), p.Accessory +...
+Prf_AskConfirmProposed;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;370;Message;string.Format(T("Prf_AskConfirmProposed", "{0} is measured from a reference point nobody has confirmed. Confirm this position anyway (checked on a trial piece)?"), p.Accessory +...
 Prf_AskDeactivate;Kaban.Machines.FA2010\Screens\ProfilesScreen.Details.cs;556;Message;if (!Ask.YesNo(FindForm(), T("Prf_Title", "Profiles"), string.Format(T("Prf_AskDeactivate",
-Prf_AskExamples;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;189;Message;T("Prf_AskExamples", "The profile library is new. Load the example catalogue?\r\n\r\n" +
-Prf_AskRemoveAcc;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;514;Message;if (!Ask.YesNo(FindForm(), T("Prf_Title", "Profiles"), string.Format(T("Prf_AskRemoveAcc",
-Prf_AskRemoveCorrection;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;461;Message;if (!Ask.YesNo(FindForm(), T("Prf_Title", "Profiles"), T("Prf_AskRemoveCorrection",
+Prf_AskExamples;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;190;Message;T("Prf_AskExamples", "The profile library is new. Load the example catalogue?\r\n\r\n" +
+Prf_AskRemoveAcc;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;552;Message;if (!Ask.YesNo(FindForm(), T("Prf_Title", "Profiles"), string.Format(T("Prf_AskRemoveAcc",
+Prf_AskRemoveCorrection;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;463;Message;if (!Ask.YesNo(FindForm(), T("Prf_Title", "Profiles"), T("Prf_AskRemoveCorrection",
 Prf_AskRemoveRefs;Kaban.Machines.FA2010\Screens\ProfilesScreen.Details.cs;738;Message;if (!Ask.YesNo(FindForm(), T("Prf_Title", "Profiles"), string.Format(T("Prf_AskRemoveRefs", "Remove {0} of {1}?"), string.Join(", ", own.Select(RefName)), _current.Code))) return;
 Prf_AskRevertDrawing;Kaban.Machines.FA2010\Screens\ProfilesScreen.Drawing.cs;182;Message;if (!Kaban.UI.Profiles.Ask.YesNo(FindForm(), T("Prf_PaneDrawing", "Drawing"), T("Prf_AskRevertDrawing", "Discard the drawing's edits and show the file again?"))) return;
-Prf_AskSave;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;1052;Message;if (Ask.YesNo(FindForm(), T("Prf_Title", "Profiles"), string.Format(T("Prf_AskSave", "Save the changes to {0}?"), _current.Code)))
+Prf_AskSave;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;1053;Message;if (Ask.YesNo(FindForm(), T("Prf_Title", "Profiles"), string.Format(T("Prf_AskSave", "Save the changes to {0}?"), _current.Code)))
 Prf_BarLength;Kaban.Machines.FA2010\Screens\ProfilesScreen.Program.cs;77;Text;addS(field(T("Prf_BarLength", "Bar (mm) :"), _numBar, 150));
 Prf_BasedOn;Kaban.Machines.FA2010\Screens\ProfilesScreen.Details.cs;105;Text;_cmbBase = (ComboBox)line(T("Prf_BasedOn", "Based on :"), new ComboBox { DropDownStyle = ComboBoxStyle.DropDownList, Font = UiStyle.Small }, null);
 Prf_BorderFixed;Kaban.Machines.FA2010\Screens\ProfilesScreen.Drawing.cs;196;Status;Status(n + " " + T("Prf_BorderFixed", "element(s) fixed as the border route - program rebuilt."));
@@ -1869,31 +1880,31 @@ Prf_Code;Kaban.Machines.FA2010\Screens\ProfilesScreen.Details.cs;103;Text;_txtCo
 Prf_CodeTaken;Kaban.Machines.FA2010\Screens\ProfilesScreen.Details.cs;418;Status;? string.Format(T("Prf_CodeTaken", "The group already has a profile {0}."), p.Code) : ex.Message, true);
 Prf_CodeTaken;Kaban.Machines.FA2010\Screens\ProfilesScreen.Details.cs;520;Status;? string.Format(T("Prf_CodeTaken", "The group already has a profile {0}."), code.Trim()) : ex.Message, true);
 Prf_CodeTaken;Kaban.Machines.FA2010\Screens\ProfilesScreen.Details.cs;542;Status;? string.Format(T("Prf_CodeTaken", "The group already has a profile {0}."), code.Trim()) : ex.Message, true);
-Prf_ColCode;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;527;Text;case "code": return T("Prf_ColCode", "Code");
-Prf_ColDescription;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;528;Text;case "description": return T("Prf_ColDescription", "Description");
-Prf_ColDrawing;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;538;Text;case "drawing": return T("Prf_ColDrawing", "Drawing");
-Prf_ColFamily;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;535;Text;case "family": return T("Prf_ColFamily", "Machining family");
-Prf_ColGroup;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;532;Text;case "group": return T("Prf_ColGroup", "Group");
-Prf_ColHeight;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;537;Text;case "height": return T("Prf_ColHeight", "Height (mm)");
-Prf_ColMaterial;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;534;Text;case "material": return T("Prf_ColMaterial", "Material");
-Prf_ColPlacements;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;540;Text;case "placements": return T("Prf_ColPlacements", "Confirmed");
-Prf_ColRefs;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;539;Text;case "refs": return T("Prf_ColRefs", "Reference points");
-Prf_ColSeries;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;530;Text;case "series": return T("Prf_ColSeries", "Series");
-Prf_ColState;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;541;Text;case "state": return T("Prf_ColState", "State");
-Prf_ColType;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;533;Text;case "type": return T("Prf_ColType", "Type");
-Prf_ColVariant;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;531;Text;case "variant": return T("Prf_ColVariant", "Variant");
-Prf_ColVendor;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;529;Text;case "vendor": return T("Prf_ColVendor", "Vendor");
-Prf_ColWidth;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;536;Text;case "width": return T("Prf_ColWidth", "Width (mm)");
+Prf_ColCode;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;528;Text;case "code": return T("Prf_ColCode", "Code");
+Prf_ColDescription;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;529;Text;case "description": return T("Prf_ColDescription", "Description");
+Prf_ColDrawing;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;539;Text;case "drawing": return T("Prf_ColDrawing", "Drawing");
+Prf_ColFamily;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;536;Text;case "family": return T("Prf_ColFamily", "Machining family");
+Prf_ColGroup;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;533;Text;case "group": return T("Prf_ColGroup", "Group");
+Prf_ColHeight;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;538;Text;case "height": return T("Prf_ColHeight", "Height (mm)");
+Prf_ColMaterial;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;535;Text;case "material": return T("Prf_ColMaterial", "Material");
+Prf_ColPlacements;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;541;Text;case "placements": return T("Prf_ColPlacements", "Confirmed");
+Prf_ColRefs;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;540;Text;case "refs": return T("Prf_ColRefs", "Reference points");
+Prf_ColSeries;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;531;Text;case "series": return T("Prf_ColSeries", "Series");
+Prf_ColState;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;542;Text;case "state": return T("Prf_ColState", "State");
+Prf_ColType;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;534;Text;case "type": return T("Prf_ColType", "Type");
+Prf_ColVariant;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;532;Text;case "variant": return T("Prf_ColVariant", "Variant");
+Prf_ColVendor;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;530;Text;case "vendor": return T("Prf_ColVendor", "Vendor");
+Prf_ColWidth;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;537;Text;case "width": return T("Prf_ColWidth", "Width (mm)");
 Prf_CopyDone;Kaban.Machines.FA2010\Screens\ProfilesScreen.Details.cs;537;Status;Status(string.Format(T("Prf_CopyDone", "{0} is based on {1}: its reference points are {1}'s until it sets its own."), code.Trim(), from));
 Prf_CopyPrompt;Kaban.Machines.FA2010\Screens\ProfilesScreen.Details.cs;528;Message;string.Format(T("Prf_CopyPrompt", "Code of the new profile, based on {0}:"), _current.Code), _current.Code + "-2");
 Prf_CopyTitle;Kaban.Machines.FA2010\Screens\ProfilesScreen.Details.cs;527;Message;string code = Ask.Text(FindForm(), T("Prf_CopyTitle", "New profile based on another"),
-Prf_CorrAll;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;445;Text;(Library.Text(r, "accessory").Length > 0 ? Library.Text(r, "accessory") : T("Prf_CorrAll", "every accessory")) +
-Prf_Correction;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;316;Text;(Math.Abs(p.CorrY) > 1e-9 || Math.Abs(p.CorrZ) > 1e-9 ? "  " + T("Prf_Correction", "+ correction") + " " + Signed(p.CorrY) + " / " + Signed(p.CorrZ) : "") +
-Prf_CorrGroup;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;444;Text;string text = (scope == "SERIES" ? T("Prf_CorrSeries", "series") : scope == "GROUP" ? T("Prf_CorrGroup", "group") : T("Prf_CorrProfile", "profile")) + ":  " +
-Prf_CorrProfile;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;444;Text;string text = (scope == "SERIES" ? T("Prf_CorrSeries", "series") : scope == "GROUP" ? T("Prf_CorrGroup", "group") : T("Prf_CorrProfile", "profile")) + ":  " +
-Prf_CorrRemove;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;451;Menu;var remove = new ToolStripMenuItem(T("Prf_CorrRemove", "Take this correction away"), null, (s, e) => RemoveCorrection(id)) { Enabled = CanEdit };
-Prf_CorrRemoved;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;467;Status;Status(T("Prf_CorrRemoved", "Correction taken away."));
-Prf_CorrSeries;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;444;Text;string text = (scope == "SERIES" ? T("Prf_CorrSeries", "series") : scope == "GROUP" ? T("Prf_CorrGroup", "group") : T("Prf_CorrProfile", "profile")) + ":  " +
+Prf_CorrAll;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;447;Text;(Library.Text(r, "accessory").Length > 0 ? Library.Text(r, "accessory") : T("Prf_CorrAll", "every accessory")) +
+Prf_Correction;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;318;Text;(Math.Abs(p.CorrY) > 1e-9 || Math.Abs(p.CorrZ) > 1e-9 ? "  " + T("Prf_Correction", "+ correction") + " " + Signed(p.CorrY) + " / " + Signed(p.CorrZ) : "") +
+Prf_CorrGroup;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;446;Text;string text = (scope == "SERIES" ? T("Prf_CorrSeries", "series") : scope == "GROUP" ? T("Prf_CorrGroup", "group") : T("Prf_CorrProfile", "profile")) + ":  " +
+Prf_CorrProfile;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;446;Text;string text = (scope == "SERIES" ? T("Prf_CorrSeries", "series") : scope == "GROUP" ? T("Prf_CorrGroup", "group") : T("Prf_CorrProfile", "profile")) + ":  " +
+Prf_CorrRemove;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;453;Menu;var remove = new ToolStripMenuItem(T("Prf_CorrRemove", "Take this correction away"), null, (s, e) => RemoveCorrection(id)) { Enabled = CanEdit };
+Prf_CorrRemoved;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;469;Status;Status(T("Prf_CorrRemoved", "Correction taken away."));
+Prf_CorrSeries;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;446;Text;string text = (scope == "SERIES" ? T("Prf_CorrSeries", "series") : scope == "GROUP" ? T("Prf_CorrGroup", "group") : T("Prf_CorrProfile", "profile")) + ":  " +
 Prf_CutAgain;Kaban.Machines.FA2010\Screens\ProfilesScreen.Drawing.cs;122;Status;add(Tool("\u2714", T("Prf_TipInclude", "End milling: cut the selected elements again"), (s, e) => { Status(_viewer.SetSelectedIncluded(true) + " " + T("Prf_CutAgain", "element(s...
 Prf_CutDepth;Kaban.Machines.FA2010\Screens\ProfilesScreen.Drawing.cs;225;Text;var nDepth = num(T("Prf_CutDepth", "Cut depth (mm) :"), (decimal)(current.Depth ?? (double)_numCutDepth.Value), 0);
 Prf_CutDepthEnd;Kaban.Machines.FA2010\Screens\ProfilesScreen.Drawing.cs;226;Text;var nDepthEnd = num(T("Prf_CutDepthEnd", "Depth at the end (mm) :"), (decimal)(current.DepthEnd ?? current.Depth ?? (double)_numCutDepth.Value), 0);
@@ -1903,16 +1914,16 @@ Prf_CutSettings;Kaban.Machines.FA2010\Screens\ProfilesScreen.Drawing.cs;211;Text
 Prf_CutSkip;Kaban.Machines.FA2010\Screens\ProfilesScreen.Drawing.cs;229;Text;var chkSkip = new CheckBox { Text = T("Prf_CutSkip", "Do not cut this element"), Left = 200, Top = y, Width = 200, Checked = !current.Included };
 Prf_CutStart;Kaban.Machines.FA2010\Screens\ProfilesScreen.Drawing.cs;227;Text;var nStart = num(T("Prf_CutStart", "Start offset (mm) :"), (decimal)current.StartOffset, -500);
 Prf_Description;Kaban.Machines.FA2010\Screens\ProfilesScreen.Details.cs;104;Text;_txtDescription = (TextBox)line(T("Prf_Description", "Description :"), new TextBox { Font = UiStyle.Small }, null);
-Prf_DrawMissing;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;982;Text;: hasFile ? Path.GetFileName(p.DxfPath) : T("Prf_DrawMissing", "file missing");
-Prf_DrawNone;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;981;Text;string drawing = string.IsNullOrWhiteSpace(p.DxfPath) ? T("Prf_DrawNone", "none")
-Prf_DxfFailed;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;1078;Status;catch (Exception ex) { Status(T("Prf_DxfFailed", "The drawing could not be read:") + " " + ex.Message, true); }
+Prf_DrawMissing;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;983;Text;: hasFile ? Path.GetFileName(p.DxfPath) : T("Prf_DrawMissing", "file missing");
+Prf_DrawNone;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;982;Text;string drawing = string.IsNullOrWhiteSpace(p.DxfPath) ? T("Prf_DrawNone", "none")
+Prf_DxfFailed;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;1079;Status;catch (Exception ex) { Status(T("Prf_DxfFailed", "The drawing could not be read:") + " " + ex.Message, true); }
 Prf_DxfFailed;Kaban.Machines.FA2010\Screens\ProfilesScreen.Details.cs;377;Status;catch (Exception ex) { _section = null; Status(T("Prf_DxfFailed", "The drawing could not be read:") + " " + ex.Message, true); }
 Prf_DxfFile;Kaban.Machines.FA2010\Screens\ProfilesScreen.Details.cs;119;Text;_txtDxf = (TextBox)line(T("Prf_DxfFile", "File :"), new TextBox { Font = UiStyle.Small }, _btnBrowse);
 Prf_DxfFilter;Kaban.Machines.FA2010\Screens\ProfilesScreen.Details.cs;443;Text;using (var dlg = new OpenFileDialog { Filter = T("Prf_DxfFilter", "DXF drawings") + " (*.dxf)|*.dxf|" + T("Prf_AllFiles", "All files") + " (*.*)|*.*" })
 Prf_ElementsDeleted;Kaban.Machines.FA2010\Screens\ProfilesScreen.Drawing.cs;175;Status;Status(n > 0 ? n + " " + T("Prf_ElementsDeleted", "element(s) deleted.") : T("Prf_SelectFirst", "Select elements first (click, or drag a region)."));
 Prf_ElementsSelected;Kaban.Machines.FA2010\Screens\ProfilesScreen.Drawing.cs;115;Status;add(Tool("\u26D3", T("Prf_TipConnected", "Select the whole CONNECTED run from what is selected"), (s, e) => Status(_viewer.SelectConnected() + " " + T("Prf_ElementsSelected", "e...
 Prf_ElementsSelected;Kaban.Machines.FA2010\Screens\ProfilesScreen.Drawing.cs;119;Status;Status(n > 0 ? n + " " + T("Prf_ElementsSelected", "element(s) selected.") : T("Prf_SelectTwo", "Select exactly two elements first."));
-Prf_Empty;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;1003;Status;Status(T("Prf_Empty", "The library has no profiles yet: add a series and a group in the library (\uD83D\uDCDA), then a profile (\u2795)."));
+Prf_Empty;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;1004;Status;Status(T("Prf_Empty", "The library has no profiles yet: add a series and a group in the library (\uD83D\uDCDA), then a profile (\u2795)."));
 Prf_EndMade;Kaban.Machines.FA2010\Screens\ProfilesScreen.Program.cs;247;Status;Status(string.Format(T("Prf_EndMade", "End milling program: tool radius {0:F2} mm, cut depth {1:F2} mm, {2} arcs, {3} moves - \uD83D\uDCBE keeps it with the profile."),
 Prf_EndSaved;Kaban.Machines.FA2010\Screens\ProfilesScreen.Program.cs;258;Status;Status(string.Format(T("Prf_EndSaved", "The end milling program is kept with {0}."), _current.Code));
 Prf_Family;Kaban.Machines.FA2010\Screens\ProfilesScreen.Details.cs;107;Text;_cmbFamily = (ComboBox)line(T("Prf_Family", "Machining family :"), new ComboBox { DropDownStyle = ComboBoxStyle.DropDownList, Font = UiStyle.Small }, null);
@@ -1921,9 +1932,9 @@ Prf_FoundKept;Kaban.Machines.FA2010\Screens\ProfilesScreen.Details.cs;701;Text;(
 Prf_FoundMoved;Kaban.Machines.FA2010\Screens\ProfilesScreen.Details.cs;703;Text;if (moved.Count > 0) text += " " + T("Prf_FoundMoved", "The drawing puts these elsewhere:") + " " + string.Join(", ", moved) + ".";
 Prf_FoundProposed;Kaban.Machines.FA2010\Screens\ProfilesScreen.Details.cs;700;Text;(proposed > 0 ? string.Format(T("Prf_FoundProposed", ", {0} of them proposed from a similar profile"), proposed) : "") +
 Prf_FoundRefs;Kaban.Machines.FA2010\Screens\ProfilesScreen.Details.cs;699;Text;string text = string.Format(T("Prf_FoundRefs", "{0} reference point(s) found on the drawing"), set) +
-Prf_FromFixed;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;312;Text;string from = p.PositionMode == "FIXED" ? T("Prf_FromFixed", "a fixed position")
-Prf_Group;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;562;Text;_btnGroup = UiStyle.TextButton(T("Prf_Group", "Group") + " \u25BE", 110);
-Prf_Group;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;687;Text;_btnGroup.Text = T("Prf_Group", "Group") + (_groupCols.Count == 0 ? "" : " (" + _groupCols.Count + ")") + " \u25BE";
+Prf_FromFixed;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;314;Text;string from = p.PositionMode == "FIXED" ? T("Prf_FromFixed", "a fixed position")
+Prf_Group;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;563;Text;_btnGroup = UiStyle.TextButton(T("Prf_Group", "Group") + " \u25BE", 110);
+Prf_Group;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;688;Text;_btnGroup.Text = T("Prf_Group", "Group") + (_groupCols.Count == 0 ? "" : " (" + _groupCols.Count + ")") + " \u25BE";
 Prf_GroupAccessories;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;192;Text;_lblGroupAcc.Text = string.Format(T("Prf_GroupAccessories", "of the group {0}"), _current.Group);
 Prf_GroupCue;Kaban.Machines.FA2010\Screens\ProfilesScreen.Details.cs;305;Text;_lblWidthCue.Text = w.HasValue ? T("Prf_GroupCue", "group:") + " " + Mm(w.Value) : "";
 Prf_GroupCue;Kaban.Machines.FA2010\Screens\ProfilesScreen.Details.cs;306;Text;_lblHeightCue.Text = h.HasValue ? T("Prf_GroupCue", "group:") + " " + Mm(h.Value) : "";
@@ -1931,30 +1942,35 @@ Prf_GroupLbl;Kaban.Machines.FA2010\Screens\ProfilesScreen.Details.cs;101;Text;li
 Prf_HeadDrawing;Kaban.Machines.FA2010\Screens\ProfilesScreen.Details.cs;116;Text;heading(T("Prf_HeadDrawing", "The drawing (DXF)"));
 Prf_HeadIdentity;Kaban.Machines.FA2010\Screens\ProfilesScreen.Details.cs;92;Text;heading(T("Prf_HeadIdentity", "What the profile is"));
 Prf_Height;Kaban.Machines.FA2010\Screens\ProfilesScreen.Details.cs;111;Text;_txtHeight = (TextBox)line(T("Prf_Height", "Height (mm) :"), new TextBox { Font = UiStyle.Small, TextAlign = HorizontalAlignment.Right }, _lblHeightCue);
-Prf_HistoryTitle;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;413;Text;Text = T("Prf_HistoryTitle", "History") + " - " + p.Accessory + " #" + p.Seq + " - " + (_current != null ? _current.Code : ""),
-Prf_HNow;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;424;Text;g.Rows.Add(T("Prf_HNow", "now"), p.ConfirmedBy, LibraryEditorForm.StatusText(p.Status), Mm(p.Y), Mm(p.Z), "");
-Prf_HStatus;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;420;Text;foreach (var c in new[] { T("Prf_HWhen", "When"), T("Prf_HWho", "Who"), T("Prf_HStatus", "Status before"), "Y", "Z", T("Prf_HWhy", "Why") })
-Prf_HWhen;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;420;Text;foreach (var c in new[] { T("Prf_HWhen", "When"), T("Prf_HWho", "Who"), T("Prf_HStatus", "Status before"), "Y", "Z", T("Prf_HWhy", "Why") })
-Prf_HWho;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;420;Text;foreach (var c in new[] { T("Prf_HWhen", "When"), T("Prf_HWho", "Who"), T("Prf_HStatus", "Status before"), "Y", "Z", T("Prf_HWhy", "Why") })
-Prf_HWhy;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;420;Text;foreach (var c in new[] { T("Prf_HWhen", "When"), T("Prf_HWho", "Who"), T("Prf_HStatus", "Status before"), "Y", "Z", T("Prf_HWhy", "Why") })
+Prf_HistoryTitle;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;415;Text;Text = T("Prf_HistoryTitle", "History") + " - " + p.Accessory + " #" + p.Seq + " - " + (_current != null ? _current.Code : ""),
+Prf_HNow;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;426;Text;g.Rows.Add(T("Prf_HNow", "now"), p.ConfirmedBy, LibraryEditorForm.StatusText(p.Status), Mm(p.Y), Mm(p.Z), "");
+Prf_HStatus;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;422;Text;foreach (var c in new[] { T("Prf_HWhen", "When"), T("Prf_HWho", "Who"), T("Prf_HStatus", "Status before"), "Y", "Z", T("Prf_HWhy", "Why") })
+Prf_HWhen;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;422;Text;foreach (var c in new[] { T("Prf_HWhen", "When"), T("Prf_HWho", "Who"), T("Prf_HStatus", "Status before"), "Y", "Z", T("Prf_HWhy", "Why") })
+Prf_HWho;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;422;Text;foreach (var c in new[] { T("Prf_HWhen", "When"), T("Prf_HWho", "Who"), T("Prf_HStatus", "Status before"), "Y", "Z", T("Prf_HWhy", "Why") })
+Prf_HWhy;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;422;Text;foreach (var c in new[] { T("Prf_HWhen", "When"), T("Prf_HWho", "Who"), T("Prf_HStatus", "Status before"), "Y", "Z", T("Prf_HWhy", "Why") })
 Prf_Ignored;Kaban.Machines.FA2010\Screens\ProfilesScreen.Details.cs;126;Text;_txtIgnored = (TextBox)line(T("Prf_Ignored", "Not the profile :"), new TextBox { Font = UiStyle.Small }, _btnLayers);
 Prf_KeepFor;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;128;Text;keep.Controls.Add(new Label { Text = T("Prf_KeepFor", "Keep the move for"), AutoSize = true, Font = UiStyle.Small, Margin = new Padding(3, 8, 3, 3) });
 Prf_LayerAuto;Kaban.Machines.FA2010\Screens\ProfilesScreen.Details.cs;477;Text;list.Items.Add(kv.Key + "   (" + kv.Value + (auto ? ", " + T("Prf_LayerAuto", "left out anyway") : "") + ")", current.Contains(kv.Key));
 Prf_LayersTitle;Kaban.Machines.FA2010\Screens\ProfilesScreen.Details.cs;468;Text;Text = T("Prf_LayersTitle", "Layers that are not the profile"), Width = 380, Height = 420, FormBorderStyle = FormBorderStyle.SizableToolWindow,
 Prf_Layout;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;130;Text;layoutBar.Controls.Add(new Label { Text = T("Prf_Layout", "Layout :"), AutoSize = true, Left = 8, Top = 11, Font = UiStyle.Small });
-Prf_LayoutApplied;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;422;Status;Status(string.Format(T("Prf_LayoutApplied", "Arrangement '{0}' applied."), name));
-Prf_LayoutDelete;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;407;Message;if (!Ask.YesNo(FindForm(), T("Prf_Title", "Profiles"), string.Format(T("Prf_LayoutDelete", "Delete arrangement '{0}'?"), name))) return;
-Prf_LayoutName;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;394;Message;string name = Ask.Text(FindForm(), T("Prf_LayoutSaveTitle", "Save arrangement"), T("Prf_LayoutName", "Name of the arrangement:"));
-Prf_LayoutSaved;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;400;Status;Status(string.Format(T("Prf_LayoutSaved", "Arrangement '{0}' saved."), name));
-Prf_LayoutSaveTitle;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;394;Message;string name = Ask.Text(FindForm(), T("Prf_LayoutSaveTitle", "Save arrangement"), T("Prf_LayoutName", "Name of the arrangement:"));
-Prf_LayoutUpdated;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;389;Status;Status(string.Format(T("Prf_LayoutUpdated", "Arrangement '{0}' updated."), name));
+Prf_LayoutApplied;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;423;Status;Status(string.Format(T("Prf_LayoutApplied", "Arrangement '{0}' applied."), name));
+Prf_LayoutDelete;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;408;Message;if (!Ask.YesNo(FindForm(), T("Prf_Title", "Profiles"), string.Format(T("Prf_LayoutDelete", "Delete arrangement '{0}'?"), name))) return;
+Prf_LayoutName;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;395;Message;string name = Ask.Text(FindForm(), T("Prf_LayoutSaveTitle", "Save arrangement"), T("Prf_LayoutName", "Name of the arrangement:"));
+Prf_LayoutSaved;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;401;Status;Status(string.Format(T("Prf_LayoutSaved", "Arrangement '{0}' saved."), name));
+Prf_LayoutSaveTitle;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;395;Message;string name = Ask.Text(FindForm(), T("Prf_LayoutSaveTitle", "Save arrangement"), T("Prf_LayoutName", "Name of the arrangement:"));
+Prf_LayoutUpdated;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;390;Status;Status(string.Format(T("Prf_LayoutUpdated", "Arrangement '{0}' updated."), name));
+Prf_MachineFrom;Kaban.Machines.FA2010\Screens\ProfilesScreen.Machine.cs;109;Text;_machineFrom[kv.Key].Text = v == null ? T("Prf_MachineUnset", "not set (0)") : v.Own ? "" : string.Format(T("Prf_MachineFrom", "from {0}"), v.From);
+Prf_MachineHead;Kaban.Machines.FA2010\Screens\ProfilesScreen.Machine.cs;56;Text;_machineHead.Text = string.Format(T("Prf_MachineHead",
+Prf_MachineNone;Kaban.Machines.FA2010\Screens\ProfilesScreen.Machine.cs;53;Text;_machineHead.Text = T("Prf_MachineNone", "The machine's structured data types (StructuredTypes.csv) have no \"Profile Parameters\".");
+Prf_MachineNotNumber;Kaban.Machines.FA2010\Screens\ProfilesScreen.Machine.cs;121;Status;Status(string.Format(T("Prf_MachineNotNumber", "{0}: \"{1}\" is not a number."), code, tb.Text));
+Prf_MachineUnset;Kaban.Machines.FA2010\Screens\ProfilesScreen.Machine.cs;109;Text;_machineFrom[kv.Key].Text = v == null ? T("Prf_MachineUnset", "not set (0)") : v.Own ? "" : string.Format(T("Prf_MachineFrom", "from {0}"), v.From);
 Prf_Measured;Kaban.Machines.FA2010\Screens\ProfilesScreen.Drawing.cs;136;Status;_viewer.MeasureTaken += (s, d) => Status(string.Format(T("Prf_Measured", "Measured distance: {0:F2} mm"), d));
 Prf_Mirrored;Kaban.Machines.FA2010\Screens\ProfilesScreen.Details.cs;123;Text;_chkMirror = (CheckBox)line(T("Prf_Mirrored", "Mirrored :"), new CheckBox { Font = UiStyle.Small, Text = T("Prf_MirrorText", "left and right swapped") }, null);
 Prf_MirrorText;Kaban.Machines.FA2010\Screens\ProfilesScreen.Details.cs;123;Text;_chkMirror = (CheckBox)line(T("Prf_Mirrored", "Mirrored :"), new CheckBox { Font = UiStyle.Small, Text = T("Prf_MirrorText", "left and right swapped") }, null);
-Prf_Move;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;320;Text;_lblMove.Text = moved ? T("Prf_Move", "move") + " " + Signed(_pendingDy) + " / " + Signed(_pendingDz) : "";
-Prf_Moved;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;352;Text;string text = string.Format(T("Prf_Moved", "{0} moved {1} / {2} mm ({3}). Confirm it again once it is right."),
-Prf_MovePrompt;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;346;Message;string.Format(T("Prf_MovePrompt", "Why is {0} moved {1} / {2} mm? (what the trial piece showed)"), p.Accessory + " #" + p.Seq, Signed(_pendingDy), Signed(_pendingDz)));
-Prf_MoveTitle;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;345;Message;reason = Ask.Text(FindForm(), T("Prf_MoveTitle", "Keep the move"),
+Prf_Move;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;322;Text;_lblMove.Text = moved ? T("Prf_Move", "move") + " " + Signed(_pendingDy) + " / " + Signed(_pendingDz) : "";
+Prf_Moved;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;354;Text;string text = string.Format(T("Prf_Moved", "{0} moved {1} / {2} mm ({3}). Confirm it again once it is right."),
+Prf_MovePrompt;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;348;Message;string.Format(T("Prf_MovePrompt", "Why is {0} moved {1} / {2} mm? (what the trial piece showed)"), p.Accessory + " #" + p.Seq, Signed(_pendingDy), Signed(_pendingDz)));
+Prf_MoveTitle;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;347;Message;reason = Ask.Text(FindForm(), T("Prf_MoveTitle", "Keep the move"),
 Prf_NcFilter;Kaban.Machines.FA2010\Screens\ProfilesScreen.Program.cs;197;Text;using (var dlg = new SaveFileDialog { Filter = T("Prf_NcFilter", "CNC programs") + " (*.nc)|*.nc|" + T("Prf_AllFiles", "All files") + " (*.*)|*.*", FileName = name })
 Prf_NeedCode;Kaban.Machines.FA2010\Screens\ProfilesScreen.Details.cs;407;Status;if (p.Code.Length == 0) { Status(T("Prf_NeedCode", "The profile needs a code."), true); return false; }
 Prf_NeedDrawing;Kaban.Machines.FA2010\Screens\ProfilesScreen.Program.cs;230;Status;if (_viewer.Document == null || _viewer.Document.Polylines.Count == 0) { Status(T("Prf_NeedDrawing", "The profile has no drawing."), true); return; }
@@ -1962,39 +1978,39 @@ Prf_NeedGroup;Kaban.Machines.FA2010\Screens\ProfilesScreen.Details.cs;408;Status
 Prf_NewAdded;Kaban.Machines.FA2010\Screens\ProfilesScreen.Details.cs;515;Status;Status(T("Prf_NewAdded", "New profile added: choose its drawing and save."));
 Prf_NewPrompt;Kaban.Machines.FA2010\Screens\ProfilesScreen.Details.cs;506;Message;string code = Ask.Text(FindForm(), T("Prf_NewTitle", "New profile"), string.Format(T("Prf_NewPrompt", "Code of the new profile (group {0} - it can be changed in Details):"), gro...
 Prf_NewTitle;Kaban.Machines.FA2010\Screens\ProfilesScreen.Details.cs;506;Message;string code = Ask.Text(FindForm(), T("Prf_NewTitle", "New profile"), string.Format(T("Prf_NewPrompt", "Code of the new profile (group {0} - it can be changed in Details):"), gro...
-Prf_NoCorrections;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;439;Menu;if (list.Count == 0) menu.Items.Add(new ToolStripMenuItem(T("Prf_NoCorrections", "No correction reaches this profile.")) { Enabled = false });
+Prf_NoCorrections;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;441;Menu;if (list.Count == 0) menu.Items.Add(new ToolStripMenuItem(T("Prf_NoCorrections", "No correction reaches this profile.")) { Enabled = false });
 Prf_NoGroups;Kaban.Machines.FA2010\Screens\ProfilesScreen.Details.cs;501;Message;Ask.Tell(FindForm(), T("Prf_Title", "Profiles"), T("Prf_NoGroups", "The library has no group to put a profile in. Add a vendor, a series, a variant and a group first (the librar...
-Prf_NoLibrary;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;205;Status;if (!_libraryOk) { Status(T("Prf_NoLibrary", "The profile library could not be opened:") + " " + _libraryWhy, true); return; }
-Prf_NoLibrary;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;962;Status;if (_libraryTried) Status(T("Prf_NoLibrary", "The profile library could not be opened:") + " " + _libraryWhy, true);
-Prf_NoMoreAcc;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;477;Menu;if (list.Count == 0) menu.Items.Add(new ToolStripMenuItem(T("Prf_NoMoreAcc", "Every accessory of the library is on the group already.")) { Enabled = false });
+Prf_NoLibrary;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;206;Status;if (!_libraryOk) { Status(T("Prf_NoLibrary", "The profile library could not be opened:") + " " + _libraryWhy, true); return; }
+Prf_NoLibrary;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;963;Status;if (_libraryTried) Status(T("Prf_NoLibrary", "The profile library could not be opened:") + " " + _libraryWhy, true);
+Prf_NoMoreAcc;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;496;Menu;if (list.Count == 0) menu.Items.Add(new ToolStripMenuItem(T("Prf_NoMoreAcc", "Every accessory of the library is on the group already.")) { Enabled = false });
 Prf_None;Kaban.Machines.FA2010\Screens\ProfilesScreen.Details.cs;232;Text;_cmbBase.Items.Add(new Choice { Id = 0, Text = T("Prf_None", "(none)") });
 Prf_None;Kaban.Machines.FA2010\Screens\ProfilesScreen.Details.cs;235;Text;_cmbFamily.Items.Add(new Choice { Id = 0, Text = T("Prf_None", "(none)") });
 Prf_NoOps;Kaban.Machines.FA2010\Screens\ProfilesScreen.Program.cs;146;Text;Note(open == 0 ? T("Prf_NoOps", "No accessory operations on this profile.")
 Prf_NoOriginal;Kaban.Machines.FA2010\Screens\ProfilesScreen.Drawing.cs;181;Status;if (_section == null) { Status(T("Prf_NoOriginal", "No drawing to go back to."), true); return; }
-Prf_NoPlacements;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;307;Text;? T("Prf_NoPlacements", "No placements: give the group an accessory (\u2795), and set the reference points it is measured from.")
+Prf_NoPlacements;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;309;Text;? T("Prf_NoPlacements", "No placements: give the group an accessory (\u2795), and set the reference points it is measured from.")
 Prf_NotCut;Kaban.Machines.FA2010\Screens\ProfilesScreen.Drawing.cs;121;Status;add(Tool("\u26D4", T("Prf_TipExclude", "End milling: do NOT cut the selected elements"), (s, e) => { Status(_viewer.SetSelectedIncluded(false) + " " + T("Prf_NotCut", "element(s...
 Prf_Note;Kaban.Machines.FA2010\Screens\ProfilesScreen.Details.cs;114;Text;_txtNote = (TextBox)line(T("Prf_Note", "Note :"), new TextBox { Font = UiStyle.Small }, null);
 Prf_NothingToSave;Kaban.Machines.FA2010\Screens\ProfilesScreen.Program.cs;194;Status;if (_current == null || string.IsNullOrWhiteSpace(text)) { Status(T("Prf_NothingToSave", "Make the program first (\u2699)."), true); return; }
 Prf_NothingToSave;Kaban.Machines.FA2010\Screens\ProfilesScreen.Program.cs;254;Status;if (string.IsNullOrWhiteSpace(_txtEndMill.Text)) { Status(T("Prf_NothingToSave", "Make the program first (\u2699)."), true); return; }
-Prf_Offset;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;315;Text;"  " + T("Prf_Offset", "+ offset") + " " + Signed(p.OffsetY) + " / " + Signed(p.OffsetZ) +
+Prf_Offset;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;317;Text;"  " + T("Prf_Offset", "+ offset") + " " + Signed(p.OffsetY) + " / " + Signed(p.OffsetZ) +
 Prf_OpsState;Kaban.Machines.FA2010\Screens\ProfilesScreen.Program.cs;147;Text;: string.Format(T("Prf_OpsState", "{0} of {1} operation(s) confirmed. \u2699 makes the program ({2})."), confirmed, open,
 Prf_PaneAccessories;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;156;Text;AddPane("accessories", T("Prf_PaneAccessories", "Accessories")).Controls.Add(root);
 Prf_PaneDetails;Kaban.Machines.FA2010\Screens\ProfilesScreen.Details.cs;193;Text;AddPane("details", T("Prf_PaneDetails", "Details")).Controls.Add(_detailTabs);
 Prf_PaneDrawing;Kaban.Machines.FA2010\Screens\ProfilesScreen.Drawing.cs;151;Text;AddPane("drawing", T("Prf_PaneDrawing", "Drawing")).Controls.Add(drawPane);
 Prf_PaneDrawing;Kaban.Machines.FA2010\Screens\ProfilesScreen.Drawing.cs;182;Message;if (!Kaban.UI.Profiles.Ask.YesNo(FindForm(), T("Prf_PaneDrawing", "Drawing"), T("Prf_AskRevertDrawing", "Discard the drawing's edits and show the file again?"))) return;
-Prf_PaneProfiles;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;667;Text;AddPane("table", T("Prf_PaneProfiles", "Profiles")).Controls.Add(left);
+Prf_PaneProfiles;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;668;Text;AddPane("table", T("Prf_PaneProfiles", "Profiles")).Controls.Add(left);
 Prf_PanePrograms;Kaban.Machines.FA2010\Screens\ProfilesScreen.Program.cs;119;Text;AddPane("program", T("Prf_PanePrograms", "Programs")).Controls.Add(_progTabs);
 Prf_PickCancelled;Kaban.Machines.FA2010\Screens\ProfilesScreen.Drawing.cs;146;Status;Status(T("Prf_PickCancelled", "Picking cancelled."));
 Prf_PickNow;Kaban.Machines.FA2010\Screens\ProfilesScreen.Details.cs;783;Status;Status(string.Format(T("Prf_PickNow", "Click {0} on the drawing (Esc: cancel)."), RefName(_pickCode)));
 Prf_PickSelect;Kaban.Machines.FA2010\Screens\ProfilesScreen.Details.cs;779;Status;{ Status(T("Prf_PickSelect", "Select ONE point in the table first."), true); return; }
 Prf_PlAccessory;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;81;Text;new[] { "acc", T("Prf_PlAccessory", "Accessory"), "120" }, new[] { "seq", "#", "34" }, new[] { "shape", T("Prf_PlShape", "Cut"), "150" },
 Prf_PlAlong;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;83;Text;new[] { "corr", T("Prf_PlCorrection", "Correction"), "90" }, new[] { "x", T("Prf_PlAlong", "Along the bar"), "170" },
-Prf_PlConfirmed;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;372;Text;AfterDecision(p.Id, string.Format(T("Prf_PlConfirmed", "{0} confirmed: it goes into the production program."), p.Accessory + " #" + p.Seq));
+Prf_PlConfirmed;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;374;Text;AfterDecision(p.Id, string.Format(T("Prf_PlConfirmed", "{0} confirmed: it goes into the production program."), p.Accessory + " #" + p.Seq));
 Prf_PlCorrection;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;83;Text;new[] { "corr", T("Prf_PlCorrection", "Correction"), "90" }, new[] { "x", T("Prf_PlAlong", "Along the bar"), "170" },
 Prf_PlDepth;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;84;Text;new[] { "depth", T("Prf_PlDepth", "Depth and walls"), "240" }, new[] { "status", T("Prf_PlStatus", "Status"), "130" }
 Prf_PlFace;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;82;Text;new[] { "face", T("Prf_PlFace", "Face"), "110" }, new[] { "y", "Y (mm)", "64" }, new[] { "z", "Z (mm)", "64" },
-Prf_PlRejected;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;385;Text;AfterDecision(p.Id, string.Format(T("Prf_PlRejected", "{0} is not machined on this profile."), p.Accessory + " #" + p.Seq));
-Prf_PlReopened;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;395;Text;AfterDecision(p.Id, string.Format(T("Prf_PlReopened", "{0} is open again: tune it and confirm it."), p.Accessory + " #" + p.Seq));
+Prf_PlRejected;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;387;Text;AfterDecision(p.Id, string.Format(T("Prf_PlRejected", "{0} is not machined on this profile."), p.Accessory + " #" + p.Seq));
+Prf_PlReopened;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;397;Text;AfterDecision(p.Id, string.Format(T("Prf_PlReopened", "{0} is open again: tune it and confirm it."), p.Accessory + " #" + p.Seq));
 Prf_PlShape;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;81;Text;new[] { "acc", T("Prf_PlAccessory", "Accessory"), "120" }, new[] { "seq", "#", "34" }, new[] { "shape", T("Prf_PlShape", "Cut"), "150" },
 Prf_PlStatus;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;84;Text;new[] { "depth", T("Prf_PlDepth", "Depth and walls"), "240" }, new[] { "status", T("Prf_PlStatus", "Status"), "130" }
 Prf_Preview;Kaban.Machines.FA2010\Screens\ProfilesScreen.Details.cs;380;Status;if (_section != null) Status(T("Prf_Preview", "Shown as it will be saved - press \uD83D\uDCBE to keep it. Reference points found before are not moved by this: find them again af...
@@ -2002,7 +2018,7 @@ Prf_ProductionWord;Kaban.Machines.FA2010\Screens\ProfilesScreen.Program.cs;148;T
 Prf_ProgramLine;Kaban.Machines.FA2010\Screens\ProfilesScreen.Program.cs;293;Status;Status(T("Prf_ProgramLine", "Program line") + " " + (line + 1) + ": " + all[line]);
 Prf_ProgramMade;Kaban.Machines.FA2010\Screens\ProfilesScreen.Program.cs;184;Text;Note(string.Format(T("Prf_ProgramMade", "{0} operation(s), {1} cut(s) on a {2} mm bar{3}."), _sideResult.Operations, _sideResult.Cuts,
 Prf_ProgramSaved;Kaban.Machines.FA2010\Screens\ProfilesScreen.Program.cs;205;Status;Status(string.Format(T("Prf_ProgramSaved", "Saved as {0}."), dlg.FileName));
-Prf_ReadFailed;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;1007;Status;Status(T("Prf_ReadFailed", "The library could not be read:") + " " + ex.Message, true);
+Prf_ReadFailed;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;1008;Status;Status(T("Prf_ReadFailed", "The library could not be read:") + " " + ex.Message, true);
 Prf_RefConfirmed;Kaban.Machines.FA2010\Screens\ProfilesScreen.Details.cs;182;Heading;_refGrid.Columns.Add(new DataGridViewTextBoxColumn { Name = "confirmed", HeaderText = T("Prf_RefConfirmed", "Confirmed"), Width = 150, ReadOnly = true });
 Prf_RefHint;Kaban.Machines.FA2010\Screens\ProfilesScreen.Details.cs;656;Text;if (codes.Count != 1) { _refHow.Text = _current != null ? T("Prf_RefHint", "Select a point to see how it was found. Double-click Y or Z to type it.") : ""; return; }
 Prf_RefNotSet;Kaban.Machines.FA2010\Screens\ProfilesScreen.Details.cs;627;Text;r != null ? SourceText(r) : T("Prf_RefNotSet", "not set"),
@@ -2015,20 +2031,20 @@ Prf_RefSource;Kaban.Machines.FA2010\Screens\ProfilesScreen.Details.cs;180;Headin
 Prf_RefSure;Kaban.Machines.FA2010\Screens\ProfilesScreen.Details.cs;181;Heading;_refGrid.Columns.Add(new DataGridViewTextBoxColumn { Name = "sure", HeaderText = T("Prf_RefSure", "Sure"), Width = 55, ReadOnly = true });
 Prf_RefToCheck;Kaban.Machines.FA2010\Screens\ProfilesScreen.Details.cs;629;Text;r == null ? "" : r.Confirmed ? r.ConfirmedBy + "  " + ShortTime(r.ConfirmedAt) : r.Inherited ? "" : T("Prf_RefToCheck", "to check"));
 Prf_RefUnconfirmed;Kaban.Machines.FA2010\Screens\ProfilesScreen.Details.cs;661;Text;: (how != null && !r.Inherited ? how : SourceText(r)) + (r.Confirmed ? "" : r.Inherited ? "" : "  -  " + T("Prf_RefUnconfirmed", "not confirmed: placements measured from it stay...
-Prf_RejectPrompt;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;381;Message;reason = Ask.Text(FindForm(), T("Prf_RejectTitle", "Not on this profile"), string.Format(T("Prf_RejectPrompt", "Why is {0} not on {1}?"), p.Accessory + " #" + p.Seq, _current.Co...
-Prf_RejectTitle;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;381;Message;reason = Ask.Text(FindForm(), T("Prf_RejectTitle", "Not on this profile"), string.Format(T("Prf_RejectPrompt", "Why is {0} not on {1}?"), p.Accessory + " #" + p.Seq, _current.Co...
+Prf_RejectPrompt;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;383;Message;reason = Ask.Text(FindForm(), T("Prf_RejectTitle", "Not on this profile"), string.Format(T("Prf_RejectPrompt", "Why is {0} not on {1}?"), p.Accessory + " #" + p.Seq, _current.Co...
+Prf_RejectTitle;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;383;Message;reason = Ask.Text(FindForm(), T("Prf_RejectTitle", "Not on this profile"), string.Format(T("Prf_RejectPrompt", "Why is {0} not on {1}?"), p.Accessory + " #" + p.Seq, _current.Co...
 Prf_Reverted;Kaban.Machines.FA2010\Screens\ProfilesScreen.Drawing.cs;184;Message;Status(T("Prf_Reverted", "The drawing is as the file again."));
 Prf_Saved;Kaban.Machines.FA2010\Screens\ProfilesScreen.Details.cs;437;Status;if (!drawingChanged) Status(string.Format(T("Prf_Saved", "{0} saved."), p.Code));
-Prf_ScopeGroup;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;219;Text;_cmbScope.Items.Add(new Choice { Id = 1, Text = string.Format(T("Prf_ScopeGroup", "every profile of the group {0}"), _current.Group) });
-Prf_ScopeProfile;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;218;Text;_cmbScope.Items.Add(new Choice { Id = 0, Text = string.Format(T("Prf_ScopeProfile", "this profile ({0})"), _current.Code) });
-Prf_ScopeSeries;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;220;Text;_cmbScope.Items.Add(new Choice { Id = 2, Text = string.Format(T("Prf_ScopeSeries", "every profile of the series {0}"), _current.Series) });
+Prf_ScopeGroup;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;221;Text;_cmbScope.Items.Add(new Choice { Id = 1, Text = string.Format(T("Prf_ScopeGroup", "every profile of the group {0}"), _current.Group) });
+Prf_ScopeProfile;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;220;Text;_cmbScope.Items.Add(new Choice { Id = 0, Text = string.Format(T("Prf_ScopeProfile", "this profile ({0})"), _current.Code) });
+Prf_ScopeSeries;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;222;Text;_cmbScope.Items.Add(new Choice { Id = 2, Text = string.Format(T("Prf_ScopeSeries", "every profile of the series {0}"), _current.Series) });
 Prf_SelectBorder;Kaban.Machines.FA2010\Screens\ProfilesScreen.Drawing.cs;198;Status;else Status(T("Prf_SelectBorder", "Select the elements that form the border first (click, or drag a box)."), true);
 Prf_SelectElements;Kaban.Machines.FA2010\Screens\ProfilesScreen.Drawing.cs;206;Status;if (doc == null || _viewer.SelectionCount == 0) { Status(T("Prf_SelectElements", "Select the element(s) first."), true); return; }
 Prf_SelectFirst;Kaban.Machines.FA2010\Screens\ProfilesScreen.Drawing.cs;175;Status;Status(n > 0 ? n + " " + T("Prf_ElementsDeleted", "element(s) deleted.") : T("Prf_SelectFirst", "Select elements first (click, or drag a region)."));
-Prf_SelectPlacement;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;308;Text;: T("Prf_SelectPlacement", "Select a placement to see it on the drawing, move it, confirm it.");
+Prf_SelectPlacement;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;310;Text;: T("Prf_SelectPlacement", "Select a placement to see it on the drawing, move it, confirm it.");
 Prf_SelectTwo;Kaban.Machines.FA2010\Screens\ProfilesScreen.Drawing.cs;119;Status;Status(n > 0 ? n + " " + T("Prf_ElementsSelected", "element(s) selected.") : T("Prf_SelectTwo", "Select exactly two elements first."));
 Prf_Series;Kaban.Machines.FA2010\Screens\ProfilesScreen.Details.cs;96;Text;line(T("Prf_Series", "Series :"), _cmbVariant, libSeries);
-Prf_ShowFilters;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;645;Menu;var fi = new ToolStripMenuItem(T("Prf_ShowFilters", "Show filters")) { Checked = _filtersVisible, CheckOnClick = true };
+Prf_ShowFilters;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;646;Menu;var fi = new ToolStripMenuItem(T("Prf_ShowFilters", "Show filters")) { Checked = _filtersVisible, CheckOnClick = true };
 Prf_SideOk;Kaban.Machines.FA2010\Screens\ProfilesScreen.Program.cs;187;Status;Status(_sideResult.Ok ? T("Prf_SideOk", "Side machining program made.") : T("Prf_SideProblems", "The program is made without the operations listed under it - see why."), !_sideR...
 Prf_SideProblems;Kaban.Machines.FA2010\Screens\ProfilesScreen.Program.cs;187;Status;Status(_sideResult.Ok ? T("Prf_SideOk", "Side machining program made.") : T("Prf_SideProblems", "The program is made without the operations listed under it - see why."), !_sideR...
 Prf_SizeAgrees;Kaban.Machines.FA2010\Screens\ProfilesScreen.Details.cs;347;Text;_lblSize.Text = "\u2714 " + drawn + ", " + T("Prf_SizeAgrees", "as the profile.");
@@ -2039,33 +2055,34 @@ Prf_SizeNoFile;Kaban.Machines.FA2010\Screens\ProfilesScreen.Details.cs;330;Text;
 Prf_SizeNoFile;Kaban.Machines.FA2010\Screens\ProfilesScreen.Details.cs;461;Status;if (file == null) { Status(T("Prf_SizeNoFile", "The drawing's file is not found."), true); return; }
 Prf_SizeSideways;Kaban.Machines.FA2010\Screens\ProfilesScreen.Details.cs;352;Text;_lblSize.Text = drawn + string.Format(T("Prf_SizeSideways", ", the profile {0} x {1}: it lies on its side. Turn it 90\u00B0 (outside face on the left, bed below)."), Mm(pw), Mm(...
 Prf_SrcInherited;Kaban.Machines.FA2010\Screens\ProfilesScreen.Details.cs;612;Text;if (r.Inherited) return string.Format(T("Prf_SrcInherited", "from {0}"), r.InheritedFrom);
-Prf_StConfirm;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;938;Text;case "confirm": return T("Prf_StConfirm", "to confirm");
-Prf_StInactive;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;934;Text;case "inactive": return T("Prf_StInactive", "out of use");
-Prf_StNoAccessory;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;936;Text;case "noaccessory": return T("Prf_StNoAccessory", "no accessories");
-Prf_StNoDrawing;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;935;Text;case "nodrawing": return T("Prf_StNoDrawing", "no drawing");
-Prf_StReady;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;937;Text;case "ready": return T("Prf_StReady", "ready");
-Prf_StRefs;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;939;Text;case "refs": return T("Prf_StRefs", "reference points to check");
-Prf_Summary;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;1099;Text;string.Format(T("Prf_Summary", "{0} reference point(s), {1} of {2} placement(s) confirmed"), _references.Count, conf, open) + ".";
+Prf_StConfirm;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;939;Text;case "confirm": return T("Prf_StConfirm", "to confirm");
+Prf_StInactive;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;935;Text;case "inactive": return T("Prf_StInactive", "out of use");
+Prf_StNoAccessory;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;937;Text;case "noaccessory": return T("Prf_StNoAccessory", "no accessories");
+Prf_StNoDrawing;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;936;Text;case "nodrawing": return T("Prf_StNoDrawing", "no drawing");
+Prf_StReady;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;938;Text;case "ready": return T("Prf_StReady", "ready");
+Prf_StRefs;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;940;Text;case "refs": return T("Prf_StRefs", "reference points to check");
+Prf_Summary;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;1101;Text;string.Format(T("Prf_Summary", "{0} reference point(s), {1} of {2} placement(s) confirmed"), _references.Count, conf, open) + ".";
 Prf_TabEndMill;Kaban.Machines.FA2010\Screens\ProfilesScreen.Program.cs;46;Text;var endTab = new TabPage(T("Prf_TabEndMill", "End milling")) { BackColor = Color.White };
-Prf_TableReset;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;896;Status;Status(T("Prf_TableReset", "Table view reset."));
+Prf_TableReset;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;897;Status;Status(T("Prf_TableReset", "Table view reset."));
+Prf_TabMachine;Kaban.Machines.FA2010\Screens\ProfilesScreen.Machine.cs;43;Text;_machineTab = new TabPage(T("Prf_TabMachine", "Machine settings")) { BackColor = Color.White };
 Prf_TabProfile;Kaban.Machines.FA2010\Screens\ProfilesScreen.Details.cs;51;Text;var profileTab = new TabPage(T("Prf_TabProfile", "Profile")) { BackColor = Color.White };
 Prf_TabRefs;Kaban.Machines.FA2010\Screens\ProfilesScreen.Details.cs;52;Text;var refsTab = new TabPage(T("Prf_TabRefs", "Reference points")) { BackColor = Color.White };
 Prf_TabSide;Kaban.Machines.FA2010\Screens\ProfilesScreen.Program.cs;45;Text;var sideTab = new TabPage(T("Prf_TabSide", "Accessories")) { BackColor = Color.White };
 Prf_TipAccOn;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;56;Heading;_accGrid.Columns.Add(new DataGridViewCheckBoxColumn { Name = "on", HeaderText = T("Prf_AccOn", "On"), Width = 40, ToolTipText = T("Prf_TipAccOn", "Off: the group keeps the acces...
-Prf_TipAdd;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;557;Text;tools.Controls.Add(EditTool("\u2795", T("Prf_TipAdd", "A new profile, in the group of the one selected"), (s, e) => AddProfile()));
+Prf_TipAdd;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;558;Text;tools.Controls.Add(EditTool("\u2795", T("Prf_TipAdd", "A new profile, in the group of the one selected"), (s, e) => AddProfile()));
 Prf_TipAddAcc;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;46;Text;_btnAddAcc = EditTool("\u2795", T("Prf_TipAddAcc", "Give an accessory to the profile's GROUP (every profile of the group takes it) - those that fit its hardware interface come f...
 Prf_TipAddLine;Kaban.Machines.FA2010\Screens\ProfilesScreen.Drawing.cs;93;Text;var btnLine = Tool("\u2215", T("Prf_TipAddLine", "End milling: add a line - two clicks, each snapping to the nearest element end"), null);
-Prf_TipAuto;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;259;Text;case "AUTO": return T("Prf_TipAuto", "Worked out from confirmed reference points: fine for a trial piece, not for production until it is confirmed.");
+Prf_TipAuto;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;261;Text;case "AUTO": return T("Prf_TipAuto", "Worked out from confirmed reference points: fine for a trial piece, not for production until it is confirmed.");
 Prf_TipBar;Kaban.Machines.FA2010\Screens\ProfilesScreen.Program.cs;75;Tooltip;Kaban.UI.Controls.UiStyle.SetTip(_tips, _numBar, T("Prf_TipBar", "The bar's length: where the operations land along it (from the start, the end, centred, spread)"));
 Prf_TipBasedOn;Kaban.Machines.FA2010\Screens\ProfilesScreen.Details.cs;106;Tooltip;Kaban.UI.Controls.UiStyle.SetTip(_tips, _cmbBase, T("Prf_TipBasedOn", "Another profile this one is a variant of: every reference point this profile does not set itself is that o...
 Prf_TipBetween;Kaban.Machines.FA2010\Screens\ProfilesScreen.Drawing.cs;116;Status;add(Tool("\u2194", T("Prf_TipBetween", "Select everything BETWEEN the two selected elements"), (s, e) =>
 Prf_TipBrowse;Kaban.Machines.FA2010\Screens\ProfilesScreen.Details.cs;117;Text;_btnBrowse = small("\u2026", T("Prf_TipBrowse", "Choose the profile's DXF file"));
 Prf_TipCancelMove;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;133;Tooltip;_btnCancelMove = UiStyle.ToolButton("\u21A9", T("Prf_TipCancelMove", "Forget the move"), _tips, (s, e) => { _pendingDy = _pendingDz = 0; UpdateTune(); _viewer.Invalidate(); });
-Prf_TipConfirmed;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;261;Text;case "CONFIRMED": case "OVERRIDDEN": return string.Format(T("Prf_TipConfirmed", "Confirmed by {0} at {1}."), p.ConfirmedBy, ShortTime(p.ConfirmedAt));
+Prf_TipConfirmed;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;263;Text;case "CONFIRMED": case "OVERRIDDEN": return string.Format(T("Prf_TipConfirmed", "Confirmed by {0} at {1}."), p.ConfirmedBy, ShortTime(p.ConfirmedAt));
 Prf_TipConfirmPl;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;138;Text;_btnConfirmPl = EditTool("\u2714", T("Prf_TipConfirmPl", "Confirm: the position is right (checked on the drawing or a trial cut) - it goes into the production program"), (s, e) ...
 Prf_TipConfirmRefs;Kaban.Machines.FA2010\Screens\ProfilesScreen.Details.cs;168;Text;_btnConfirmRefs = EditTool("\u2714", T("Prf_TipConfirmRefs", "Confirm the selected points: checked against the drawing (select several with Ctrl)"), (s, e) => ConfirmReferences(...
 Prf_TipConnected;Kaban.Machines.FA2010\Screens\ProfilesScreen.Drawing.cs;115;Status;add(Tool("\u26D3", T("Prf_TipConnected", "Select the whole CONNECTED run from what is selected"), (s, e) => Status(_viewer.SelectConnected() + " " + T("Prf_ElementsSelected", "e...
-Prf_TipCopy;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;558;Text;tools.Controls.Add(EditTool("\uD83D\uDCD1", T("Prf_TipCopy", "A new profile BASED ON the selected one: it takes its group, sizes, drawing settings and reference points, and only...
+Prf_TipCopy;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;559;Text;tools.Controls.Add(EditTool("\uD83D\uDCD1", T("Prf_TipCopy", "A new profile BASED ON the selected one: it takes its group, sizes, drawing settings and reference points, and only...
 Prf_TipCopyProgram;Kaban.Machines.FA2010\Screens\ProfilesScreen.Program.cs;84;Tooltip;addS(UiStyle.ToolButton("\uD83D\uDCCB", T("Prf_TipCopyProgram", "Copy the program"), _tips, (s, e) => CopyText(_txtSide.Text)));
 Prf_TipCopyProgram;Kaban.Machines.FA2010\Screens\ProfilesScreen.Program.cs;109;Tooltip;addE(UiStyle.ToolButton("\uD83D\uDCCB", T("Prf_TipCopyProgram", "Copy the program"), _tips, (s, e) => CopyText(_txtEndMill.Text)));
 Prf_TipCorrections;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;142;Tooltip;_btnCorrections = UiStyle.ToolButton("\uD83E\uDDEE", T("Prf_TipCorrections", "The corrections that reach this profile (its own, its group's, its series'), and taking one away"),...
@@ -2080,7 +2097,7 @@ Prf_TipGenerateEnd;Kaban.Machines.FA2010\Screens\ProfilesScreen.Program.cs;105;T
 Prf_TipGenerateSide;Kaban.Machines.FA2010\Screens\ProfilesScreen.Program.cs;82;Tooltip;addS(UiStyle.ToolButton("\u2699", T("Prf_TipGenerateSide", "Make the program"), _tips, (s, e) => GenerateSide()));
 Prf_TipHistoryPl;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;141;Tooltip;_btnHistoryPl = UiStyle.ToolButton("\uD83D\uDD58", T("Prf_TipHistoryPl", "The placement's history: every position it had, who changed it and why"), _tips, (s, e) => ShowHistory());
 Prf_TipIgnored;Kaban.Machines.FA2010\Screens\ProfilesScreen.Details.cs;127;Tooltip;Kaban.UI.Controls.UiStyle.SetTip(_tips, _txtIgnored, T("Prf_TipIgnored", "Layers of the drawing that are not the profile (dimensions, a gasket drawn beside it), comma separated:...
-Prf_TipInactive;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;582;Tooltip;_btnInactive = UiStyle.ToolButton("\uD83D\uDC41", T("Prf_TipInactive", "Show the profiles taken out of use as well"), _tips, (s, e) =>
+Prf_TipInactive;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;583;Tooltip;_btnInactive = UiStyle.ToolButton("\uD83D\uDC41", T("Prf_TipInactive", "Show the profiles taken out of use as well"), _tips, (s, e) =>
 Prf_TipInclude;Kaban.Machines.FA2010\Screens\ProfilesScreen.Drawing.cs;122;Status;add(Tool("\u2714", T("Prf_TipInclude", "End milling: cut the selected elements again"), (s, e) => { Status(_viewer.SetSelectedIncluded(true) + " " + T("Prf_CutAgain", "element(s...
 Prf_TipLayers;Kaban.Machines.FA2010\Screens\ProfilesScreen.Details.cs;124;Text;_btnLayers = small("\u2026", T("Prf_TipLayers", "Choose from the drawing's layers"));
 Prf_TipLayoutDelete;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;138;Tooltip;place(UiStyle.ToolButton("\uD83D\uDDD1", T("Prf_TipLayoutDelete", "Delete the selected saved arrangement"), _tips, (s, e) => DeleteLayout()));
@@ -2095,15 +2112,15 @@ Prf_TipMirror;Kaban.Machines.FA2010\Screens\ProfilesScreen.Drawing.cs;68;Text;ad
 Prf_TipNudgeY;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;116;Tooltip;Kaban.UI.Controls.UiStyle.SetTip(_tips, b, a == "Y" ? T("Prf_TipNudgeY", "Move across the profile (+: towards the inside face)") : T("Prf_TipNudgeZ", "Move up or down (+: up, aw...
 Prf_TipNudgeZ;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;116;Tooltip;Kaban.UI.Controls.UiStyle.SetTip(_tips, b, a == "Y" ? T("Prf_TipNudgeY", "Move across the profile (+: towards the inside face)") : T("Prf_TipNudgeZ", "Move up or down (+: up, aw...
 Prf_TipPickRef;Kaban.Machines.FA2010\Screens\ProfilesScreen.Details.cs;169;Text;_btnPickRef = EditTool("\uD83C\uDFAF", T("Prf_TipPickRef", "Set the selected point by clicking it on the drawing (it snaps to the nearest end of a line)"), (s, e) => StartPick());
-Prf_TipProposed;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;260;Text;case "PROPOSED": return T("Prf_TipProposed", "Worked out from a reference point nobody has confirmed (found on the drawing or taken from a similar profile).");
+Prf_TipProposed;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;262;Text;case "PROPOSED": return T("Prf_TipProposed", "Worked out from a reference point nobody has confirmed (found on the drawing or taken from a similar profile).");
 Prf_TipRedo;Kaban.Machines.FA2010\Screens\ProfilesScreen.Drawing.cs;103;Text;_btnRedo = Tool("\u21B7", T("Prf_TipRedo", "Redo (Ctrl+Y)"), (s, e) => { _viewer.Redo(); UpdateEditButtons(); });
-Prf_TipRejected;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;262;Text;case "REJECTED": return string.Format(T("Prf_TipRejected", "Not on this profile ({0}, {1})."), p.ConfirmedBy, ShortTime(p.ConfirmedAt));
+Prf_TipRejected;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;264;Text;case "REJECTED": return string.Format(T("Prf_TipRejected", "Not on this profile ({0}, {1})."), p.ConfirmedBy, ShortTime(p.ConfirmedAt));
 Prf_TipRejectPl;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;139;Text;_btnRejectPl = EditTool("\u2716", T("Prf_TipRejectPl", "Not on this profile: never machined on it (the reason is kept)"), (s, e) => RejectPlacement(null));
-Prf_TipRemove;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;559;Text;tools.Controls.Add(EditTool("\uD83D\uDDD1", T("Prf_TipRemove", "Take the selected profile out of use (it stays in the library, with its history)"), (s, e) => DeactivateProfile()));
+Prf_TipRemove;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;560;Text;tools.Controls.Add(EditTool("\uD83D\uDDD1", T("Prf_TipRemove", "Take the selected profile out of use (it stays in the library, with its history)"), (s, e) => DeactivateProfile()));
 Prf_TipRemoveAcc;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;48;Text;_btnRemoveAcc = EditTool("\uD83D\uDDD1", T("Prf_TipRemoveAcc", "Take the selected accessory off the group (its placements go, a confirmed one keeps its history)"), (s, e) => Rem...
 Prf_TipRemoveRef;Kaban.Machines.FA2010\Screens\ProfilesScreen.Details.cs;170;Text;_btnRemoveRef = EditTool("\uD83D\uDDD1", T("Prf_TipRemoveRef", "Remove the selected points of this profile (an inherited one comes back)"), (s, e) => RemoveReferences(SelectedRe...
 Prf_TipReopenPl;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;140;Text;_btnReopenPl = EditTool("\u21BA", T("Prf_TipReopenPl", "Reopen: back to worked out, to be tuned and confirmed again"), (s, e) => ReopenPlacement());
-Prf_TipResetView;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;581;Tooltip;tools.Controls.Add(UiStyle.ToolButton("\u21BA", T("Prf_TipResetView", "Reset grouping, sorting and filters"), _tips, (s, e) => ResetView()));
+Prf_TipResetView;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;582;Tooltip;tools.Controls.Add(UiStyle.ToolButton("\u21BA", T("Prf_TipResetView", "Reset grouping, sorting and filters"), _tips, (s, e) => ResetView()));
 Prf_TipRevert;Kaban.Machines.FA2010\Screens\ProfilesScreen.Details.cs;140;Tooltip;_btnRevertDetails = UiStyle.ToolButton("\u21BA", T("Prf_TipRevert", "Throw the changes away"), _tips, (s, e) => { _detailsDirty = false; LoadProfile(_current != null ? _current....
 Prf_TipRevertDrawing;Kaban.Machines.FA2010\Screens\ProfilesScreen.Drawing.cs;125;Status;add(Tool("\u21BA", T("Prf_TipRevertDrawing", "Throw the drawing's edits away (the file is never changed)"), (s, e) => RevertDrawing()));
 Prf_TipRoute;Kaban.Machines.FA2010\Screens\ProfilesScreen.Drawing.cs;85;Text;var btnRoute = Tool("\u27B0", T("Prf_TipRoute", "End milling: show the border route (red)"), null);
@@ -2125,17 +2142,18 @@ Prf_TipUseBorder;Kaban.Machines.FA2010\Screens\ProfilesScreen.Drawing.cs;114;Tex
 Prf_TipWholeAccessory;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;131;Tooltip;Kaban.UI.Controls.UiStyle.SetTip(_tips, _chkWholeAccessory, T("Prf_TipWholeAccessory", "The whole accessory moves (a hinge's slot and its holes together), not just this operatio...
 Prf_TipZoomIn;Kaban.Machines.FA2010\Screens\ProfilesScreen.Drawing.cs;71;Text;add(Tool("\uD83D\uDD0D", T("Prf_TipZoomIn", "Zoom in (the wheel zooms too)"), (s, e) => _viewer.ZoomIn()));
 Prf_TipZoomOut;Kaban.Machines.FA2010\Screens\ProfilesScreen.Drawing.cs;72;Text;add(Tool("\uD83D\uDD0E", T("Prf_TipZoomOut", "Zoom out"), (s, e) => _viewer.ZoomOut()));
-Prf_Title;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;367;Message;if (p.Status == "PROPOSED" && !Ask.YesNo(FindForm(), T("Prf_Title", "Profiles"),
-Prf_Title;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;461;Message;if (!Ask.YesNo(FindForm(), T("Prf_Title", "Profiles"), T("Prf_AskRemoveCorrection",
-Prf_Title;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;514;Message;if (!Ask.YesNo(FindForm(), T("Prf_Title", "Profiles"), string.Format(T("Prf_AskRemoveAcc",
-Prf_Title;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;188;Message;_libraryOk = Library.Open(() => Ask.YesNo(FindForm(), T("Prf_Title", "Profiles"),
-Prf_Title;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;407;Message;if (!Ask.YesNo(FindForm(), T("Prf_Title", "Profiles"), string.Format(T("Prf_LayoutDelete", "Delete arrangement '{0}'?"), name))) return;
-Prf_Title;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;1052;Message;if (Ask.YesNo(FindForm(), T("Prf_Title", "Profiles"), string.Format(T("Prf_AskSave", "Save the changes to {0}?"), _current.Code)))
+Prf_Title;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;369;Message;if (p.Status == "PROPOSED" && !Ask.YesNo(FindForm(), T("Prf_Title", "Profiles"),
+Prf_Title;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;463;Message;if (!Ask.YesNo(FindForm(), T("Prf_Title", "Profiles"), T("Prf_AskRemoveCorrection",
+Prf_Title;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;548;Message;Ask.Tell(FindForm(), T("Prf_Title", "Profiles"), string.Format(T("Prf_AccViaGroupRemove",
+Prf_Title;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;552;Message;if (!Ask.YesNo(FindForm(), T("Prf_Title", "Profiles"), string.Format(T("Prf_AskRemoveAcc",
+Prf_Title;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;189;Message;_libraryOk = Library.Open(() => Ask.YesNo(FindForm(), T("Prf_Title", "Profiles"),
+Prf_Title;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;408;Message;if (!Ask.YesNo(FindForm(), T("Prf_Title", "Profiles"), string.Format(T("Prf_LayoutDelete", "Delete arrangement '{0}'?"), name))) return;
+Prf_Title;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;1053;Message;if (Ask.YesNo(FindForm(), T("Prf_Title", "Profiles"), string.Format(T("Prf_AskSave", "Save the changes to {0}?"), _current.Code)))
 Prf_Title;Kaban.Machines.FA2010\Screens\ProfilesScreen.Details.cs;501;Message;Ask.Tell(FindForm(), T("Prf_Title", "Profiles"), T("Prf_NoGroups", "The library has no group to put a profile in. Add a vendor, a series, a variant and a group first (the librar...
 Prf_Title;Kaban.Machines.FA2010\Screens\ProfilesScreen.Details.cs;551;Message;if (!Ask.YesNo(FindForm(), T("Prf_Title", "Profiles"), string.Format(T("Prf_AskActivate", "Take {0} back into use?"), _current.Code))) return;
 Prf_Title;Kaban.Machines.FA2010\Screens\ProfilesScreen.Details.cs;556;Message;if (!Ask.YesNo(FindForm(), T("Prf_Title", "Profiles"), string.Format(T("Prf_AskDeactivate",
 Prf_Title;Kaban.Machines.FA2010\Screens\ProfilesScreen.Details.cs;738;Message;if (!Ask.YesNo(FindForm(), T("Prf_Title", "Profiles"), string.Format(T("Prf_AskRemoveRefs", "Remove {0} of {1}?"), string.Join(", ", own.Select(RefName)), _current.Code))) return;
-Prf_ToCheck;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;989;Text;drawing, nRefs == 0 ? "" : nRefs + (openRefs > 0 ? " (" + openRefs + " " + T("Prf_ToCheck", "to check") + ")" : ""),
+Prf_ToCheck;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;990;Text;drawing, nRefs == 0 ? "" : nRefs + (openRefs > 0 ? " (" + openRefs + " " + T("Prf_ToCheck", "to check") + ")" : ""),
 Prf_ToolRadius;Kaban.Machines.FA2010\Screens\ProfilesScreen.Program.cs;101;Text;addE(field(T("Prf_ToolRadius", "Tool radius (mm) :"), _numToolRadius, 170));
 Prf_Trial;Kaban.Machines.FA2010\Screens\ProfilesScreen.Program.cs;78;Text;_chkTrial = new CheckBox { Text = T("Prf_Trial", "trial"), AutoSize = false, Width = 70, Height = 24, Font = UiStyle.Small };
 Prf_TrialWord;Kaban.Machines.FA2010\Screens\ProfilesScreen.Program.cs;148;Text;_chkTrial.Checked ? T("Prf_TrialWord", "trial: every one not rejected") : T("Prf_ProductionWord", "production: the confirmed ones")));
@@ -2148,7 +2166,7 @@ Prf_Turned;Kaban.Machines.FA2010\Screens\ProfilesScreen.Details.cs;120;Text;_cmb
 Prf_TurnIt;Kaban.Machines.FA2010\Screens\ProfilesScreen.Details.cs;354;Text;SizeFix(T("Prf_TurnIt", "Turn it"), () => { _cmbTurn.SelectedIndex = (_cmbTurn.SelectedIndex + 1) % 4; });
 Prf_UseSize;Kaban.Machines.FA2010\Screens\ProfilesScreen.Details.cs;343;Text;SizeFix(T("Prf_UseSize", "Use its size"), () => { _txtWidth.Text = Mm(sw); _txtHeight.Text = Mm(sh); });
 Prf_UseSize;Kaban.Machines.FA2010\Screens\ProfilesScreen.Details.cs;360;Text;SizeFix(T("Prf_UseSize", "Use its size"), () => { _txtWidth.Text = Mm(sw); _txtHeight.Text = Mm(sh); });
-Prf_ViewReset;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;905;Status;Status(T("Prf_ViewReset", "Grouping, sorting and filters cleared."));
+Prf_ViewReset;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;906;Status;Status(T("Prf_ViewReset", "Grouping, sorting and filters cleared."));
 Prf_WholeAccessory;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;130;Text;_chkWholeAccessory = new CheckBox { Text = T("Prf_WholeAccessory", "all its operations"), AutoSize = true, Font = UiStyle.Small, Margin = new Padding(6, 6, 3, 3) };
 Prf_Width;Kaban.Machines.FA2010\Screens\ProfilesScreen.Details.cs;109;Text;_txtWidth = (TextBox)line(T("Prf_Width", "Width (mm) :"), new TextBox { Font = UiStyle.Small, TextAlign = HorizontalAlignment.Right }, _lblWidthCue);
 PV_AiAs;KabanHMI\Settings\PreferencePreview.cs;178;Text;return T("PV_AiAs", "How 'Create AI prompt' and 'Ask <AI>' put the prompt on the clipboard: as a file - pasted into the chat (Ctrl+V) it is attached, however long - or as its te...
@@ -2303,9 +2321,9 @@ Reference;KabanHMI\Dashboard\StateMap.cs;240;Text;int refCol = Array.FindIndex(h
 Reference;KabanHMI\Design\PropertyOrder.cs;39;Text;"Reference", "Measuring tolerance", "Minimum limit", "Unclamping interval", "Value", "Settings",
 Reference;KabanHMI\Design\PropertyOrder.cs;186;Text;C("Reference", "ReferenceAddress"),
 Reference;KabanHMI\Forms\PlcPopupForm.cs;419;Text;AddRow(new Label { Text = "", AutoSize = true }, Head(head.Length > 0 ? head[0] : T("Pop_Reference", "Reference")),
-Reference;KabanHMI\Profiles\LibraryEditorForm.cs;204;Text;.Lookup("reference_code", T("LCol_Reference", "Reference"), "SELECT code, name FROM reference_type ORDER BY name", 150, true)
-Reference;KabanHMI\Profiles\LibraryEditorForm.cs;331;Text;.Lookup("reference_code", T("LCol_Reference", "Reference"), "SELECT code, name FROM reference_type ORDER BY name", 140)
-Reference;KabanHMI\Profiles\LibraryEditorForm.cs;524;Text;foreach (var c in new[] { T("LCol_Profile", "Profile"), T("LCol_Group", "Group"), T("LCol_Reference", "Reference"), "Y", "Z", T("LCol_Source", "Found by"), T("LCol_Confidence", ...
+Reference;KabanHMI\Profiles\LibraryEditorForm.cs;212;Text;.Lookup("reference_code", T("LCol_Reference", "Reference"), "SELECT code, name FROM reference_type ORDER BY name", 150, true)
+Reference;KabanHMI\Profiles\LibraryEditorForm.cs;339;Text;.Lookup("reference_code", T("LCol_Reference", "Reference"), "SELECT code, name FROM reference_type ORDER BY name", 140)
+Reference;KabanHMI\Profiles\LibraryEditorForm.cs;532;Text;foreach (var c in new[] { T("LCol_Profile", "Profile"), T("LCol_Group", "Group"), T("LCol_Reference", "Reference"), "Y", "Z", T("LCol_Source", "Found by"), T("LCol_Confidence", ...
 Robot;Kaban.Machines.FA2010\FA2010Module.cs;196;Text;new Screens.GeneratedPage("Tab_ManualRobot", "Robot", SecurityLevel.Operator, () => new Screens.Manual.ManualRobot()),
 Robot;Kaban.Machines.FA2010\FA2010Module.cs;217;Text;new Screens.GeneratedPage("Tab_ParamRobot", "Robot", SecurityLevel.Maintenance, () => new Screens.Parameters.ParamRobot()),
 Robot;Kaban.Machines.H800\Screens\ManualDischarge.Designer.cs;54;Text;this.uRobot.TitleTextKey = "Robot";
@@ -2318,15 +2336,15 @@ Set_AlarmGenDelay;KabanHMI\Settings\AlarmSettingsControl.cs;115;Text;Text = Lang
 Set_AlarmGenHint;KabanHMI\Settings\AlarmSettingsControl.cs;128;Text;Text = LanguageManager.GetString("Set_AlarmGenHint", "A cylinder alarm's own delay: the Cylinder delay column (blank = this one).")
 Set_AlarmGenOn;KabanHMI\Settings\AlarmSettingsControl.cs;96;Text;Text = LanguageManager.GetString("Set_AlarmGenOn", "The HMI raises the cylinder alarms itself")
 Set_Alarms;KabanHMI\Settings\AlarmSettingsControl.cs;569;Text;public string TitleKey { get { return "Set_Alarms"; } }
-Set_Approach;KabanHMI\Profiles\LibraryEditorForm.cs;463;Text;T("Set_SafeZ", "Safe height above the face (mm)"), T("Set_Approach", "Feed through air inside the profile (mm/min)"),
-Set_Breakthrough;KabanHMI\Profiles\LibraryEditorForm.cs;464;Text;T("Set_Peck", "Most a tool goes down in one pass (mm)"), T("Set_Breakthrough", "Past the wall when cutting through (mm)"),
-Set_Folder;KabanHMI\Profiles\LibraryEditorForm.cs;465;Text;T("Set_Incremental", "Incremental moves (G91)"), T("Set_Folder", "Folder for program files")
+Set_Approach;KabanHMI\Profiles\LibraryEditorForm.cs;471;Text;T("Set_SafeZ", "Safe height above the face (mm)"), T("Set_Approach", "Feed through air inside the profile (mm/min)"),
+Set_Breakthrough;KabanHMI\Profiles\LibraryEditorForm.cs;472;Text;T("Set_Peck", "Most a tool goes down in one pass (mm)"), T("Set_Breakthrough", "Past the wall when cutting through (mm)"),
+Set_Folder;KabanHMI\Profiles\LibraryEditorForm.cs;473;Text;T("Set_Incremental", "Incremental moves (G91)"), T("Set_Folder", "Folder for program files")
 Set_Import;KabanHMI\Settings\PlaceholderPages.cs;41;Text;public string TitleKey => "Set_Import";
-Set_Incremental;KabanHMI\Profiles\LibraryEditorForm.cs;465;Text;T("Set_Incremental", "Incremental moves (G91)"), T("Set_Folder", "Folder for program files")
+Set_Incremental;KabanHMI\Profiles\LibraryEditorForm.cs;473;Text;T("Set_Incremental", "Incremental moves (G91)"), T("Set_Folder", "Folder for program files")
 Set_Logs;KabanHMI\Settings\LogSettingsControl.cs;242;Text;LanguageManager.GetString("Set_Logs", "Log Settings"),
 Set_Logs;KabanHMI\Settings\PlaceholderPages.cs;49;Text;public string TitleKey => "Set_Logs";
-Set_Peck;KabanHMI\Profiles\LibraryEditorForm.cs;464;Text;T("Set_Peck", "Most a tool goes down in one pass (mm)"), T("Set_Breakthrough", "Past the wall when cutting through (mm)"),
-Set_SafeZ;KabanHMI\Profiles\LibraryEditorForm.cs;463;Text;T("Set_SafeZ", "Safe height above the face (mm)"), T("Set_Approach", "Feed through air inside the profile (mm/min)"),
+Set_Peck;KabanHMI\Profiles\LibraryEditorForm.cs;472;Text;T("Set_Peck", "Most a tool goes down in one pass (mm)"), T("Set_Breakthrough", "Past the wall when cutting through (mm)"),
+Set_SafeZ;KabanHMI\Profiles\LibraryEditorForm.cs;471;Text;T("Set_SafeZ", "Safe height above the face (mm)"), T("Set_Approach", "Feed through air inside the profile (mm/min)"),
 Set_StationConn;KabanHMI\Forms\MainForm.cs;2108;Text;LanguageManager.GetString("Set_StationConn", "PLC Connection"), LinkIcon(22)) { Name = "connSettings" };
 Set_StationConn;KabanHMI\Forms\MainForm.cs;2130;Text;var settings = FindSettingsWith(kv.Value, "Set_StationConn");
 Set_StationConn;KabanHMI\Forms\MainForm.cs;2133;Text;AsOneStep(() => { LoadScreen(screen); settings.ActivateByKey("Set_StationConn"); });
@@ -2337,11 +2355,11 @@ Side_OpenHere;KabanHMI\Forms\MainForm.SideCopies.cs;149;Text;menu.Items.Add(UiSt
 Side_OpenHere;KabanHMI\Forms\MainForm.SideCopies.cs;168;Text;menu.Items.Add(UiStyle.MenuHeader(LanguageManager.GetString("Side_OpenHere", "Open in the side panel")));
 Side_OpenHere;KabanHMI\Forms\MainForm.SidePanel.cs;270;Text;AccessibleName = LanguageManager.GetString("Side_OpenHere", "Open in the side panel")
 Side_Remove;KabanHMI\Forms\MainForm.SideCopies.cs;221;Menu;var item = new ToolStripMenuItem(LanguageManager.GetString("Side_Remove", "Take it off the side bar")) { Name = "sideRemove" };
-St_Auto;KabanHMI\Profiles\LibraryEditorForm.cs;591;Text;case "AUTO": return T("St_Auto", "worked out");
-St_Confirmed;KabanHMI\Profiles\LibraryEditorForm.cs;593;Text;case "CONFIRMED": return T("St_Confirmed", "confirmed");
-St_Overridden;KabanHMI\Profiles\LibraryEditorForm.cs;594;Text;case "OVERRIDDEN": return T("St_Overridden", "confirmed (set by hand)");
-St_Proposed;KabanHMI\Profiles\LibraryEditorForm.cs;592;Text;case "PROPOSED": return T("St_Proposed", "proposed");
-St_Rejected;KabanHMI\Profiles\LibraryEditorForm.cs;595;Text;case "REJECTED": return T("St_Rejected", "not on this profile");
+St_Auto;KabanHMI\Profiles\LibraryEditorForm.cs;599;Text;case "AUTO": return T("St_Auto", "worked out");
+St_Confirmed;KabanHMI\Profiles\LibraryEditorForm.cs;601;Text;case "CONFIRMED": return T("St_Confirmed", "confirmed");
+St_Overridden;KabanHMI\Profiles\LibraryEditorForm.cs;602;Text;case "OVERRIDDEN": return T("St_Overridden", "confirmed (set by hand)");
+St_Proposed;KabanHMI\Profiles\LibraryEditorForm.cs;600;Text;case "PROPOSED": return T("St_Proposed", "proposed");
+St_Rejected;KabanHMI\Profiles\LibraryEditorForm.cs;603;Text;case "REJECTED": return T("St_Rejected", "not on this profile");
 Sta_Connected;KabanHMI\Settings\PlcConnectionDiagnostics.cs;101;Text;if (r.Live) r.State = "● " + LanguageManager.GetString("Sta_Connected", "Connected");
 Sta_Failed;Kaban.Core\Helpers\ConnectionMonitor.cs;346;Text;var text = LanguageManager.GetString("Sta_Failed", "Connection failed");
 Sta_Failed;KabanHMI\Forms\MainForm.cs;2082;Text;? LanguageManager.GetString("Sta_Failed", "Connection failed") + suffix
@@ -2460,8 +2478,8 @@ Tbl_ConfirmDelete;KabanHMI\Profiles\TableEditor.cs;409;Message;string.Format(T("
 Tbl_Delete;KabanHMI\Profiles\TableEditor.cs;78;Tooltip;_del = UiStyle.ToolButton("\uD83D\uDDD1", T("Tbl_Delete", "Remove the selected rows (saved with the rest)"), _tips, (s, e) => DeleteRows());
 Tbl_InUse;KabanHMI\Profiles\TableEditor.cs;464;Text;error = ex.Message.Contains("FOREIGN KEY") ? T("Tbl_InUse", "Not saved: a row is still used elsewhere (or refers to a row that does not exist).") : ex.Message;
 Tbl_NotNumber;Kaban.Machines.FA2010\Screens\ProfilesScreen.Details.cs;410;Status;if (tb.Text.Trim().Length > 0 && !ParseMm(tb.Text).HasValue) { Status("\"" + tb.Text + "\" " + T("Tbl_NotNumber", "is not a number"), true); return false; }
-Tbl_NotNumber;KabanHMI\Profiles\LibraryEditorForm.cs;419;Message;else if (kv.Key != "path") { Ask.Tell(this, Text, ParamCaption(kv.Key) + ": \"" + t + "\" " + T("Tbl_NotNumber", "is not a number")); return; }
-Tbl_NotNumber;KabanHMI\Profiles\LibraryEditorForm.cs;498;Text;{ status.Text = "\"" + v + "\" " + T("Tbl_NotNumber", "is not a number"); status.ForeColor = Color.FromArgb(170, 30, 30); return; }
+Tbl_NotNumber;KabanHMI\Profiles\LibraryEditorForm.cs;427;Message;else if (kv.Key != "path") { Ask.Tell(this, Text, ParamCaption(kv.Key) + ": \"" + t + "\" " + T("Tbl_NotNumber", "is not a number")); return; }
+Tbl_NotNumber;KabanHMI\Profiles\LibraryEditorForm.cs;506;Text;{ status.Text = "\"" + v + "\" " + T("Tbl_NotNumber", "is not a number"); status.ForeColor = Color.FromArgb(170, 30, 30); return; }
 Tbl_NotNumber;KabanHMI\Profiles\TableEditor.cs;349;Text;if (!double.TryParse(s, NumberStyles.Float, CultureInfo.InvariantCulture, out d)) throw new FormatException(c.Caption + ": \"" + s + "\" " + T("Tbl_NotNumber", "is not a number"));
 Tbl_NotWhole;KabanHMI\Profiles\TableEditor.cs;357;Text;if (!long.TryParse(s, NumberStyles.Integer, CultureInfo.InvariantCulture, out l)) throw new FormatException(c.Caption + ": \"" + s + "\" " + T("Tbl_NotWhole", "is not a whole nu...
 Tbl_Reload;KabanHMI\Profiles\TableEditor.cs;80;Tooltip;_reload = UiStyle.ToolButton("\u21BA", T("Tbl_Reload", "Throw the changes away and read the table again"), _tips, (s, e) => Reload());
@@ -2470,7 +2488,7 @@ Tbl_Required;KabanHMI\Profiles\TableEditor.cs;425;Text;throw new FormatException
 Tbl_Row;KabanHMI\Profiles\TableEditor.cs;425;Text;throw new FormatException(c.Caption + ": " + T("Tbl_Required", "needs a value") + " (" + T("Tbl_Row", "row") + " " + (gr.Index + 1) + ")");
 Tbl_Rows;KabanHMI\Profiles\TableEditor.cs;314;Status;_status.Text = rows.Count + " " + T("Tbl_Rows", "rows");
 Tbl_Save;KabanHMI\Profiles\TableEditor.cs;79;Tooltip;_save = UiStyle.ToolButton("\uD83D\uDCBE", T("Tbl_Save", "Save the changes"), _tips, (s, e) => { string err; Save(out err); });
-Tbl_Saved;KabanHMI\Profiles\LibraryEditorForm.cs;503;Text;status.Text = T("Tbl_Saved", "Saved.");
+Tbl_Saved;KabanHMI\Profiles\LibraryEditorForm.cs;511;Text;status.Text = T("Tbl_Saved", "Saved.");
 Tbl_Saved;KabanHMI\Profiles\TableEditor.cs;457;Status;_status.Text = T("Tbl_Saved", "Saved.");
 Tbl_Unsaved;KabanHMI\Profiles\TableEditor.cs;153;Status;_status.Text = T("Tbl_Unsaved", "changed - not saved yet");
 Tch_NotNow;KabanHMI\Helpers\TouchInput.Gestures.cs;266;Tooltip;return !string.IsNullOrWhiteSpace(item.ToolTipText) ? item.ToolTipText : LanguageManager.GetString("Tch_NotNow", "Not available now.");
