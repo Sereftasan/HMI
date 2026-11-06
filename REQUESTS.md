@@ -18,7 +18,12 @@ Claude reads this file at the start of every batch, does the items, and moves ea
     button is the card box (🗃) on the monitor's toolbar, not +.
   - 14fcaf7 - Profiles page, Machine settings as one table: this profile's value and the group's beside it, the edited ones bold blue;
     a new profile takes the group's values.
-- To do next: the job list (from the old program, JobSample.kbn) with "Send to the machine".
+- 6 November, evening (the job list from the old program, a sample job of our library, 999999 after the whole bar):
+  - 2dbadfe - docs/fa2010/JobSample_Library.kbn: a job file of the library's own profiles and accessories (tools/make_job_sample.py).
+  - 1a1af8e - The job file (.kbn) read as the old program read it, and every cut and accessory of a bar where it put them.
+  - 8505792 - FA2010, the Jobs page: a job file's bars, the job list each sends (ID / position / code, 999999 last) and why one cannot go;
+    "Send to the machine" writes the profile's parameters, the milling operations' and the job list. The milling steps (G-code
+    the PLC asks for with L101 / L103) not yet.
 - 5 November, evening late (the answers: devices set by you, 6 and 20 from the device list; one copy of the HMI; the profiles next):
   - 1092b49 - One copy of the HMI at a time: a second start brings the running one to the front, says why and ends; a restart waits for the old one.
   - 8775b82 - FA2010, a new machine: records 6 and 20 taken as L1006 / L1020 come on; the measured width / height D481 / D482 for 20 and 22.
