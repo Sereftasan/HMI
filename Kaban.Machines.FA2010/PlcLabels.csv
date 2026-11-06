@@ -76,16 +76,17 @@ PC_KesimSolOnYukselik_KalibrasyonPoz;Word [Signed];D110
 PC_CikisTasimaOnYukselik_KalibrasyonPoz;Word [Signed];D111
 PC_KesimSolOnYukselik_HedefPoz;Word [Signed];D112
 PC_CikisTasimaOnYukselik_HedefPoz;Word [Signed];D113
+# 6 November: the old program wrote these with the job (x10000 - 0.0001 mm): the bar's length, its first and last right cut + 1 mm
+PC_ProfilBar_IlkKesimSonu_Poz;Double Word [Signed];D95
+PC_ProfilBar_SonKesim_Poz;Double Word [Signed];D97
+PC_BeslenenBarBoyu;Double Word [Signed];D106
 #heading;What the PLC gives back to the HMI
 PC_Pop_Up_Ekran;Word [Signed];D71
 PC_Pop_Up_Secilen_Buton;Word [Signed];D72
 PC_Okunan_Profil_Genisligi;Word [Signed];D481
 PC_Okunan_Profil_Yuksekligi;Word [Signed];D482
 PC_Olculen_Profil_Boyu;Double Word [Signed];D89
-PC_ProfilBar_IlkKesimSonu_Poz;Double Word [Signed];D95
 PC_ProgramVersiyonu;Word [Signed];D36
-PC_ProfilBar_SonKesim_Poz;Double Word [Signed];D97
 PC_CalismaSuresi_Bar;Double Word [Signed];D91
 PC_EnerjideKalmaSuresi_Sayac;Double Word [Signed];D93
 PC_CalismaSuresi_Toplam;Double Word [Signed];D104
-PC_BeslenenBarBoyu;Double Word [Signed];D106

@@ -18,6 +18,9 @@ namespace Kaban.Machines.FA2010.Jobs
     ///   PC_IsListesi_Pozisyon      D6000    the steps' positions x100, then 999999 - the end of the bar
     ///   PC_IsListesi_IslemKodu     D7000    the steps' codes: a cut 1000 + 10 x angle (2800 - 10 x angle at a right end), a milling
     ///                                       operation its number 1 - 100
+    ///   PC_BeslenenBarBoyu         D106     the bar's length                    } x10000 (0.0001 mm), as the old program -
+    ///   PC_ProfilBar_IlkKesimSonu_Poz D95   the first right cut's position + 1 mm }  the user (6 November): "You need to write, yes"
+    ///   PC_ProfilBar_SonKesim_Poz  D97      the last right cut's position + 1 mm  }
     ///
     /// The job list is written whole (500 steps): what a longer bar before left behind is cleared. The milling steps themselves (the
     /// G-code the PLC asks for with L101 / L103, R0 / R12800) are not sent yet.
@@ -25,7 +28,10 @@ namespace Kaban.Machines.FA2010.Jobs
     internal static class JobSender
     {
         internal const string ProfileLabel = "PC_ProfilParametreleri", MillingLabel = "PC_FrezeIslemParametreleri",
-                              IdsLabel = "PC_IsListesi_IslemID", PositionsLabel = "PC_IsListesi_Pozisyon", CodesLabel = "PC_IsListesi_IslemKodu";
+                              IdsLabel = "PC_IsListesi_IslemID", PositionsLabel = "PC_IsListesi_Pozisyon", CodesLabel = "PC_IsListesi_IslemKodu",
+                              BarLengthLabel = "PC_BeslenenBarBoyu", FirstCutLabel = "PC_ProfilBar_IlkKesimSonu_Poz", LastCutLabel = "PC_ProfilBar_SonKesim_Poz";
+        /// <summary>D95 / D97 / D106 count 0.0001 mm (the old program's (mm x 100) x 100); D95 / D97 1 mm more than the cut.</summary>
+        internal const int TenThousandths = 10000;
         internal const string ProfileType = "Profile Parameters", MillingType = "Milling Parameters";
         internal const int ListSteps = 500;
         private static readonly CultureInfo CI = CultureInfo.InvariantCulture;
@@ -130,6 +136,9 @@ namespace Kaban.Machines.FA2010.Jobs
                         Words = Encode(mt, m => MillingValue(op, m), problems)
                     });
             }
+            var length = new short[2];
+            Split((int)(plan.Bar.Length * TenThousandths), length, 0);
+            list.Add(new Block { Address = AddressOf(station, BarLengthLabel, "D106"), What = "the bar's length", Words = length });
             var ids = new short[ListSteps * 2];
             var pos = new short[ListSteps * 2];
             var codes = new short[ListSteps * 2];
@@ -145,6 +154,17 @@ namespace Kaban.Machines.FA2010.Jobs
             list.Add(new Block { Address = AddressOf(station, IdsLabel, "D5000"), What = "the steps' IDs", Words = ids });
             list.Add(new Block { Address = AddressOf(station, PositionsLabel, "D6000"), What = "the steps' positions (999999 after the last)", Words = pos });
             list.Add(new Block { Address = AddressOf(station, CodesLabel, "D7000"), What = "the steps' codes", Words = codes });
+            // the first and the last right cut (the old program's WriteBarFirstAndLastItem_CuttingPosition): their position + 1 mm
+            var rights = plan.Layout != null ? plan.Layout.Ordered.Where(x => x.Kind == Kaban.Profiles.Jobs.StepKind.RightCut).ToList() : null;
+            if (rights != null && rights.Count > 0)
+            {
+                var first = new short[2];
+                var last = new short[2];
+                Split((int)(rights[0].Position * TenThousandths + TenThousandths), first, 0);
+                Split((int)(rights[rights.Count - 1].Position * TenThousandths + TenThousandths), last, 0);
+                list.Add(new Block { Address = AddressOf(station, FirstCutLabel, "D95"), What = "the first right cut's position", Words = first });
+                list.Add(new Block { Address = AddressOf(station, LastCutLabel, "D97"), What = "the last right cut's position", Words = last });
+            }
             return list;
         }
 

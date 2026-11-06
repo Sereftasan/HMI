@@ -74,9 +74,10 @@ class FS {
         Check("Profile Parameters: 50 devices (R25600 ... R25649), the 11 mode bits in its first word",
               profile.Size == 50 && profile.Members.Count(m => m.IsBit && m.Offset == 0) == 11 &&
               profile.Members.Any(m => m.Name == "Cut Speed 10" && m.Offset == 49));
-        Check("  the conveyor's speed (%) not scaled, the dimensions / 100",
+        Check("  the conveyor's speed (%) not scaled, the dimensions / 100 - the profile recognition and the cut's full width / 10 (as the old program writes them)",
               !profile.Members.First(m => m.Name == "Conveyor Speed").IsScaled &&
-              profile.Members.First(m => m.Name == "Profile Recognition Width").Divisor == 100);
+              profile.Members.First(m => m.Name == "Robot Hold Y Position").Divisor == 100 &&
+              new[] { "Profile Recognition Width", "Profile Recognition Height", "Cut Full Width" }.All(n => profile.Members.First(m => m.Name == n).Divisor == 10));
         var cutPar = types.First(t => t.Name == "Special Cut Parameters");
         Check("Special Cut Parameters: 5 devices, its angle xxx.x (/ 10, 1 decimal)",
               cutPar.Size == 5 && cutPar.Members[0].Name == "Cut Angle" && cutPar.Members[0].Divisor == 10 && cutPar.Members[0].Decimals == 1);

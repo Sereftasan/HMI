@@ -26,14 +26,14 @@ Exit Front Vertical Active;Bit;0;8;Çıkış Ön Dikey Aktif
 High Pressure Cancel;Bit;0;9;Yüksek Basınç İptal
 Mullion Notched Profile;Bit;0;10;Ortakayıt Kertmeli Profil
 Conveyor Speed;Word [Signed];1;;Konveyör Hızı - xxx %
-Profile Recognition Width;Word [Signed];2;;Profil Tanıma Genişlik - xxx.xx mm;100;2
-Profile Recognition Height;Word [Signed];3;;Profil Tanıma Yükseklik - xxx.xx mm;100;2
+Profile Recognition Width;Word [Signed];2;;Profil Tanıma Genişlik - xxx.x mm (the old program writes it x10; the device list says xxx.xx);10;1
+Profile Recognition Height;Word [Signed];3;;Profil Tanıma Yükseklik - xxx.x mm (the old program writes it x10; the device list says xxx.xx);10;1
 Robot Hold Y Position;Word [Signed];4;;Robot Tutma Y Poz - xxx.xx mm;100;2
 Robot Hold Z Position;Word [Signed];5;;Robot Tutma Z Poz - xxx.xx mm;100;2
 Robot Length Measuring Y Position;Word [Signed];6;;Robot Boy Ölçme Y Poz - xxx.xx mm;100;2
 Robot Length Measuring Z Position;Word [Signed];7;;Robot Boy Ölçme Z Poz - xxx.xx mm;100;2
 V Cut Y Position;Word [Signed];8;;V Kesim Y Poz - xxx.xx mm;100;2
-Cut Full Width;Word [Signed];9;;Kesim Tam Genişlik - xxx.xx mm;100;2
+Cut Full Width;Word [Signed];9;;Kesim Tam Genişlik - xxx.x mm (the old program writes it x10; the device list says xxx.xx);10;1
 Ear Allowance / Mould Difference;Word [Signed];10;;Kulak Payı / Kalıp Farkı - xxx.xx mm;100;2
 Front Vertical Stop Position;Word [Signed];11;;Ön Dikey Dayama Poz - xxx.xx mm;100;2
 Rear Vertical Stop Position;Word [Signed];12;;Arka Dikey Dayama Poz - xxx.xx mm;100;2

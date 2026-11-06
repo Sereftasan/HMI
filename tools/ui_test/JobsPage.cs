@@ -162,6 +162,12 @@ class JP {
               w[0] == (int)Get(op1, "ToolNo") && w[0] >= 1 && w[0] <= 4 && w[1] == (short)Math.Round(((Kaban.Profiles.Machining.Face)Get(op1, "Face")).Angle * 100) &&
               w[3] == (short)Math.Round((double)Get(op1, "Y") * 100) && w[4] == (short)Math.Round((double)Get(op1, "Z") * 100) && w[5] == (short)Math.Round((double)Get(op1, "Speed")),
               string.Join(",", w.Take(10)));
+        var rights = steps.Cast<object>().Where(x => (int)Get(x, "Code") == 2350).Select(x => (double)Get(x, "Position")).ToList();
+        sim.TryReadBlock("D106", 2, out w);
+        Check("  D106: the bar's length x10000 (as the old program)", Dw(w, 0) == 65000000, Dw(w, 0).ToString());
+        sim.TryReadBlock("D95", 4, out w);
+        Check("  D95 / D97: the first and the last right cut x10000 + 1 mm", Dw(w, 0) == (int)(rights[0] * 10000 + 10000) && Dw(w, 2) == (int)(rights.Last() * 10000 + 10000),
+              Dw(w, 0) + " " + Dw(w, 2));
         Check("  the bar's state: sent", Convert.ToString(grid.Rows[0].Cells["state"].Value).Contains("sent"));
         var log = string.Join("\n", Directory.GetFiles(AuditLogger.LogDirectory).Select(File.ReadAllText));
         Check("  the audit log has it", log.Contains("[JOB] Jobs: bar 1 of JobSample_Library (ML8-F-4501) sent"), log.Length > 300 ? log.Substring(log.Length - 300) : log);
