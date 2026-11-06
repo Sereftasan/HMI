@@ -122,9 +122,63 @@ namespace Kaban.UI.Forms
             /// <summary>A structure's member: its member's; an element: its array's; else its own.</summary>
             public double EffectiveDivisor
             {
-                get { var d = Member != null ? Member.Divisor : Head != null ? Head.EffectiveDivisor : Divisor; return d != 0 ? d : 1; }
+                get
+                {
+                    if (Member == null && Head == null && Divisor == 1 && Decimals == 0)
+                    {
+                        // none set on the row: the label list's (7 November: "work job positions should have their divisor and decimal quantity")
+                        var e = ListEntry;
+                        if (e != null && e.Divisor > 0) return e.Divisor;
+                    }
+                    var d = Member != null ? Member.Divisor : Head != null ? Head.EffectiveDivisor : Divisor; return d != 0 ? d : 1;
+                }
             }
-            public int EffectiveDecimals { get { return Member != null ? Member.Decimals : Head != null ? Head.EffectiveDecimals : Decimals; } }
+            public int EffectiveDecimals
+            {
+                get
+                {
+                    if (Member == null && Head == null && Divisor == 1 && Decimals == 0)
+                    {
+                        var e = ListEntry;
+                        if (e != null && e.Divisor > 0) return e.Decimals;
+                    }
+                    return Member != null ? Member.Decimals : Head != null ? Head.EffectiveDecimals : Decimals;
+                }
+            }
+
+            /// <summary>The label list's line of this device: its own label's (at its address), else the one at its address.</summary>
+            public PlcLabelTable.Entry ListEntry
+            {
+                get
+                {
+                    if (string.IsNullOrWhiteSpace(Address)) return null;
+                    if (!string.IsNullOrWhiteSpace(LabelOverride))
+                    {
+                        var own = PlcLabelTable.ByLabel(Station, LabelOverride);
+                        if (own != null && string.Equals(own.Address, Address, StringComparison.OrdinalIgnoreCase)) return own;
+                    }
+                    return PlcLabelTable.ByAddress(Station, Address);
+                }
+            }
+
+            /// <summary>
+            /// The label as the monitor shows it (7 November: "The label names should be shown as the natural words rather than a PC language
+            /// labels"): "PC_IsListesi_Pozisyon" as "PC Is Listesi Pozisyon"; an element's with its index, a member its own name. The label
+            /// itself (EffectiveLabel) is what is typed and kept.
+            /// </summary>
+            public string ShownLabel
+            {
+                get
+                {
+                    if (Member != null) return Member.Name;
+                    if (Head != null)
+                    {
+                        var h = Head.ShownLabel;
+                        return (h.Length > 0 ? h : Head.Address) + "[" + ElementIndex + "]";
+                    }
+                    return Words(EffectiveLabel);
+                }
+            }
             /// <summary>A divisor or decimal places set for it.</summary>
             public bool IsScaled { get { return EffectiveDivisor != 1 || EffectiveDecimals != 0; } }
 
@@ -244,6 +298,31 @@ namespace Kaban.UI.Forms
                                       ConditionKey = Head == null ? ConditionKey : "",
                                       Divisor = EffectiveDivisor, Decimals = EffectiveDecimals };
             }
+        }
+
+        /// <summary>
+        /// A label in words: its underscores spaces, a word starting at each capital after a small letter and at a number after a letter
+        /// ("PC_IsListesi_Pozisyon" "PC Is Listesi Pozisyon", "Freze_Unite1_G_Code_No" "Freze Unite 1 G Code No"). Words stay as they are.
+        /// </summary>
+        internal static string Words(string label)
+        {
+            if (string.IsNullOrEmpty(label) || label.IndexOf(' ') >= 0 && label.IndexOf('_') < 0) return label ?? "";
+            var sb = new StringBuilder(label.Length + 8);
+            for (int i = 0; i < label.Length; i++)
+            {
+                char c = label[i];
+                if (c == '_') { if (sb.Length > 0 && sb[sb.Length - 1] != ' ') sb.Append(' '); continue; }
+                if (i > 0 && sb.Length > 0 && sb[sb.Length - 1] != ' ')
+                {
+                    char p = label[i - 1];
+                    bool word = (char.IsUpper(c) && char.IsLower(p)) || (char.IsDigit(c) && char.IsLetter(p)) ||
+                                // the last capital of a run of them starts the next word: "PCKesim" "PC Kesim"
+                                (char.IsUpper(c) && char.IsUpper(p) && i + 1 < label.Length && char.IsLower(label[i + 1]));
+                    if (word) sb.Append(' ');
+                }
+                sb.Append(c);
+            }
+            return sb.ToString().Trim();
         }
 
         /// <summary>One of the engineer's tabs under a controller.</summary>
@@ -1027,6 +1106,7 @@ namespace Kaban.UI.Forms
                 try { FillSentTab(mon, false); } catch (Exception ex) { AuditLogger.Log("monitor: the tab HMI -> PLC not made - " + ex.Message); }
                 mon.Made.Add("sent");
                 mon.Made.Add("sent-tables");
+                mon.Made.Add("sent-v3");
                 SaveWatchList(mon);
             }
             // a tab made before its arrays were tables (6 November): put right once - still there, never made again
@@ -1036,6 +1116,13 @@ namespace Kaban.UI.Forms
                 if (mon.Sheets.Any(x => string.Equals(x.Name, sentName, StringComparison.OrdinalIgnoreCase)))
                     try { FillSentTab(mon, false); } catch (Exception ex) { AuditLogger.Log("monitor: the tab HMI -> PLC not put right - " + ex.Message); }
                 mon.Made.Add("sent-tables");
+                SaveWatchList(mon);
+            }
+            // the machine's options and conditions off it, its tables without heading lines (7 November) - once
+            if (mon.Made.Contains("sent") && !mon.Made.Contains("sent-v3"))
+            {
+                try { PutRightSentTab(mon); } catch (Exception ex) { AuditLogger.Log("monitor: the tab HMI -> PLC not put right - " + ex.Message); }
+                mon.Made.Add("sent-v3");
                 SaveWatchList(mon);
             }
 
@@ -1585,7 +1672,8 @@ namespace Kaban.UI.Forms
                 else if (col == "Divisor" || col == "Decimals") { if (!CanScale(row)) { e.Cancel = true; return; } }
                 else if ((row.IsElement && col != "Value") || (row.IsGroup && col == "Value") || col == "Format" || col == "Changed") { e.Cancel = true; return; }
                 // The label without the fold mark and the count shown around it.
-                if (row.IsGroup && col == "Label") grid.Rows[e.RowIndex].Cells["Label"].Value = row.EffectiveLabel;
+                // (the label as it is kept - the cell shows it in words)
+                if (row.IsDevice && col == "Label") grid.Rows[e.RowIndex].Cells["Label"].Value = row.EffectiveLabel;
                 sh.Editing = true;
                 // A value goes to the PLC and is not undone; a name or an address is.
                 if (col != "Value" && col != "Calculated" && !row.IsMember) Remember(T("Undo_Edit", "edit a row"), mon);
@@ -2974,9 +3062,62 @@ namespace Kaban.UI.Forms
         /// <summary>The label list's labels of what the HMI writes to the PLC: under a "#heading;" line, or named PC_.</summary>
         internal static List<PlcLabelTable.Entry> SentEntries(int station)
         {
+            // 7 November: "The machine condition labels should not be added to the HMI write labels either since they are not HMI writes at
+            // all" - the list's "#conditions;" group (the machine's options) and every device a machine condition reads stay out
+            var conditions = MachineConditionAddresses(station);
             return PlcLabelTable.EntriesFor(station)
-                .Where(e => !string.IsNullOrWhiteSpace(e.Address) && (e.Heading.Length > 0 || e.Label.StartsWith("PC_", StringComparison.OrdinalIgnoreCase)))
+                .Where(e => !string.IsNullOrWhiteSpace(e.Address) && !e.NotSent && !conditions.Contains(e.Address.Trim()) &&
+                            (e.Heading.Length > 0 || e.Label.StartsWith("PC_", StringComparison.OrdinalIgnoreCase)))
                 .ToList();
+        }
+
+        /// <summary>The devices the station's machine conditions read.</summary>
+        internal static HashSet<string> MachineConditionAddresses(int station)
+        {
+            return new HashSet<string>(MachineConditionMap.All().Where(c => c.Rule != null && AlarmManager.StationOf(c.Rule) == station && !string.IsNullOrWhiteSpace(c.Rule.Address))
+                                                         .Select(c => c.Rule.Address.Trim().ToUpperInvariant()), StringComparer.OrdinalIgnoreCase);
+        }
+
+        /// <summary>
+        /// The tab HMI -> PLC made before (7 November): the machine's options and conditions taken off its list (and a heading left with
+        /// nothing under it), the headings off its tables - once.
+        /// </summary>
+        private void PutRightSentTab(MonitorTab mon)
+        {
+            string name = T("Tab_MonSent", "HMI -> PLC");
+            var sh = mon.Sheets.FirstOrDefault(x => string.Equals(x.Name, name, StringComparison.OrdinalIgnoreCase));
+            if (sh == null) return;
+            var sent = SentEntries(mon.Station);
+            var all = PlcLabelTable.EntriesFor(mon.Station).Where(e => !string.IsNullOrWhiteSpace(e.Address)).ToList();
+            var conditions = MachineConditionAddresses(mon.Station);
+            var headings = new HashSet<string>(all.Where(e => e.Heading.Length > 0).Select(e => e.Heading), StringComparer.Ordinal);
+            headings.Add("The machine's options the HMI writes (L)");     // its old heading
+            int removed = 0;
+            foreach (var r in sh.Rows.Where(r => r.IsDevice && !r.IsElement).ToList())
+            {
+                var e = all.FirstOrDefault(x => string.Equals(x.Address, r.Address, StringComparison.OrdinalIgnoreCase) &&
+                                                (r.LabelOverride.Length == 0 || string.Equals(r.LabelOverride, x.Label, StringComparison.Ordinal)));
+                if (e == null || sent.Contains(e) || !(e.NotSent || conditions.Contains(e.Address))) continue;
+                sh.Rows.Remove(r);
+                removed++;
+            }
+            // a heading of the list's with nothing under it any more
+            for (int i = sh.Rows.Count - 1; i >= 0; i--)
+            {
+                if (!sh.Rows[i].IsComment || !headings.Contains(sh.Rows[i].Comment)) continue;
+                int k = i + 1;
+                while (k < sh.Rows.Count && (sh.Rows[k].IsBlank || sh.Rows[k].IsElement)) k++;
+                if (k >= sh.Rows.Count || sh.Rows[k].IsComment) sh.Rows.RemoveAt(i);
+            }
+            // the tables' heading lines (7 November: "The comment line is not needed")
+            var items = TableItems(sh);
+            int before = items.Count;
+            items.RemoveAll(i => i[0].IsComment && headings.Contains(i[0].Comment));
+            if (items.Count != before) SetTableItems(sh, items);
+            EnsureBlankRow(sh);
+            if (removed > 0 || items.Count != before)
+                AuditLogger.Log(string.Format(CultureInfo.InvariantCulture, "monitor: the tab HMI -> PLC put right - {0} machine option / condition row(s) and {1} table heading(s) taken off",
+                                              removed, before - items.Count));
         }
 
         /// <summary>The tab of what the HMI writes to the PLC: made (or found) and filled from the label list, under its headings.</summary>
@@ -3072,12 +3213,8 @@ namespace Kaban.UI.Forms
                     added++;
                 }
                 if (made.Count == 0) continue;
-                if (!items.Any(i => i[0].IsComment && i[0].Comment == g.Key))
-                    items.Add(new List<WatchRow> { new WatchRow { Station = mon.Station, Comment = g.Key } });
-                // after its group's heading (and the tables already there under it)
-                int at = items.FindIndex(i => i[0].IsComment && i[0].Comment == g.Key) + 1;
-                while (at < items.Count && !items[at][0].IsComment) at++;
-                items.InsertRange(at, made);
+                // (7 November: "The comment line is not needed" - the tables named by their labels, no heading line above them)
+                items.AddRange(made);
             }
             if (items.Count != tablesBefore) SetTableItems(sh, items);
             EnsureBlankRow(sh);
@@ -3681,7 +3818,7 @@ namespace Kaban.UI.Forms
 
                 // An address the label list does not know reads NULL, which is itself
                 // useful: a screen is bound to something outside that list.
-                string label = model.EffectiveLabel;
+                string label = model.ShownLabel;
                 if (label.Length == 0) label = "NULL";
                 // AN ARRAY: the fold mark and its count; its elements indented under it.
                 // A STRUCTURE the same: the fold mark, its type's name; its members indented under it.
@@ -3692,7 +3829,8 @@ namespace Kaban.UI.Forms
                 // each line of their sub properties - 'Tool No' is enough") - the whole name in its tooltip
                 else if (model.IsMember) label = indent + model.Member.Name;
                 else if (model.IsElement) label = indent + label;
-                if (model.IsMember) Tip(row.Cells["Label"], model.EffectiveLabel);
+                // the label as the PLC's list has it, when it is shown in words (a member: its whole name)
+                Tip(row.Cells["Label"], model.IsMember || (model.EffectiveLabel.Length > 0 && model.EffectiveLabel != model.ShownLabel) ? model.EffectiveLabel : "");
                 if (!(sh.Editing && grid.CurrentCell != null && grid.CurrentCell.RowIndex == i)) Set(row.Cells["Label"], label);
                 var wantLabelColour = model.IsUnknownToLabelTable ? ColLabelUnknown : ColLabelKnown;
                 if (row.Cells["Label"].Style.ForeColor != wantLabelColour) row.Cells["Label"].Style.ForeColor = wantLabelColour;

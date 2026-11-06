@@ -133,7 +133,7 @@ namespace Kaban.UI.Forms
             for (int i = 0; i < group.Count; i++)
             {
                 var a = group[i];
-                string label = a.EffectiveLabel.Length > 0 ? a.EffectiveLabel : a.Address;
+                string label = NameOf(a);
                 string type = StructuredTypes.BaseName(a.EffectiveDataType);
                 var st = StructuredTypes.Find(type, a.Station);
                 if (st != null)
@@ -169,7 +169,7 @@ namespace Kaban.UI.Forms
         }
 
         /// <summary>A label's name for a caption or a menu (its address without one).</summary>
-        private static string NameOf(WatchRow r) { return r.EffectiveLabel.Length > 0 ? r.EffectiveLabel : r.Address; }
+        private static string NameOf(WatchRow r) { return r.EffectiveLabel.Length > 0 ? r.ShownLabel : r.Address; }
 
         // ---- moving labels between the list and the tables -------------------------------
 
@@ -731,7 +731,8 @@ namespace Kaban.UI.Forms
                 Font = captionFont, ForeColor = Color.FromArgb(35, 40, 48), Name = "tableCaption",
                 Text = string.Join("  +  ", group.Select(NameOf))
             };
-            UiStyle.SetTip(_tips, b.Caption, string.Join("\r\n", group.Select(r => NameOf(r) + "   " + r.Address + "   " + r.EffectiveDataType + " [" + r.EffectiveCount + "]")));
+            UiStyle.SetTip(_tips, b.Caption, string.Join("\r\n", group.Select(r => (r.EffectiveLabel.Length > 0 ? r.EffectiveLabel : r.Address) + "   " + r.Address + "   " +
+                                                                                   r.EffectiveDataType + " [" + r.EffectiveCount + "]")));
 
             var bar = new FlowLayoutPanel { Dock = DockStyle.Top, Height = 36, Padding = new Padding(6, 4, 6, 2), WrapContents = false, BackColor = Color.White, Name = "tableBar" };
             b.Bar = bar;

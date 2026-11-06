@@ -34,6 +34,14 @@ namespace Kaban.Core.Helpers
             /// <summary>The "#heading;" line above it in the list ("" when none).</summary>
             public string Heading = "";
             public string Address = "";
+            /// <summary>
+            /// Under a "#conditions;" line (7 November): the machine's options and conditions the PLC Monitor collects as machine
+            /// conditions - not what the HMI sends (its tab HMI -> PLC leaves them out).
+            /// </summary>
+            public bool NotSent;
+            /// <summary>The value shown divided by this, with Decimals places (the optional 4th and 5th fields: "...;D6000;100;2"); 0 none.</summary>
+            public double Divisor;
+            public int Decimals;
 
             public bool IsBit
             {
@@ -133,11 +141,14 @@ namespace Kaban.Core.Helpers
             try
             {
                 string heading = "";
+                bool notSent = false;
                 foreach (var raw in File.ReadAllLines(path))
                 {
                     var line = raw.Trim();
                     // "#heading;text": the labels after it are under that heading (the PLC Monitor's tab of what the HMI sends)
-                    if (line.StartsWith("#heading;", StringComparison.OrdinalIgnoreCase)) { heading = line.Substring(9).Trim(); continue; }
+                    if (line.StartsWith("#heading;", StringComparison.OrdinalIgnoreCase)) { heading = line.Substring(9).Trim(); notSent = false; continue; }
+                    // "#conditions;text": the same, for the machine's options and conditions - not sent by the HMI
+                    if (line.StartsWith("#conditions;", StringComparison.OrdinalIgnoreCase)) { heading = line.Substring(12).Trim(); notSent = true; continue; }
                     if (line.Length == 0 || line.StartsWith("#")) continue;
 
                     // tolerate ; or TAB - the list is pasted out of GX Works and Excel
@@ -150,8 +161,16 @@ namespace Kaban.Core.Helpers
                         Label = f[0].Trim(),
                         DataType = f[1].Trim(),
                         Address = f[2].Trim().ToUpperInvariant(),
-                        Heading = heading
+                        Heading = heading,
+                        NotSent = notSent
                     };
+                    // the optional divisor and decimal places: how the PLC Monitor shows the value (xxx.xx mm: 100 and 2)
+                    double div;
+                    int dec;
+                    if (f.Length > 3 && double.TryParse(f[3].Trim().Replace(',', '.'), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out div) && div > 0)
+                        e.Divisor = div;
+                    if (f.Length > 4 && int.TryParse(f[4].Trim(), System.Globalization.NumberStyles.Integer, System.Globalization.CultureInfo.InvariantCulture, out dec) && dec >= 0 && dec <= 9)
+                        e.Decimals = dec;
                     // A row with no address is a placeholder in the engineer's list
                     // (a device not assigned yet) - keep it visible but unusable.
                     _entries.Add(e);

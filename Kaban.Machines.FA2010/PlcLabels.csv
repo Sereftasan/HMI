@@ -2,6 +2,7 @@
 # Physical X/Y devices have ALREADY been translated to the internal
 # relay the PLC copies them into, so every address here is one the
 # HMI can bind to directly.
+# Label;DataType;Address - and, when the PLC Monitor shows the value scaled, ;Divisor;Decimal places ("xxx.xx mm": 100;2)
 Label;DataType;Address
 MAN_GirisRobotuX_Ileri;Bit;M604
 MAN_GirisRobotuX_Geri;Bit;M605
@@ -20,7 +21,7 @@ PC_ProfilGenisligi;Word [Signed];D8
 #heading;The job and the profile the HMI sends (Profiles & Operations)
 PC_ProfilParametreleri;Profile Parameters;R25600
 PC_IsListesi_IslemID;Double Word [Signed](0..499);D5000
-PC_IsListesi_Pozisyon;Double Word [Signed](0..499);D6000
+PC_IsListesi_Pozisyon;Double Word [Signed](0..499);D6000;100;2
 PC_IsListesi_IslemKodu;Double Word [Signed](0..499);D7000
 PC_FrezeIslemParametreleri;Milling Parameters(0..99);R26000
 PC_KesimIslemParametreleri;Special Cut Parameters(0..9);R25650
@@ -33,7 +34,7 @@ PC_OrtakayitKertmeAdimlari;Mullion Notching Step(0..29);R25700
 
 # 6 November - the rest of the PC's devices in FA2010_DeviceList.xls (ManualMovement, 'Diğer Alanlar'); the PLC Monitor's
 # collect menu puts every PC_ label in a tab of its own ("HMI -> PLC"), under these headings
-#heading;The machine's options the HMI writes (L)
+#conditions;The machine's options (machine conditions - not the HMI's writes)
 PC_Freze_KaldirmaRulolu;Bit;L14
 PC_Cikis_KaldirmaRulolu;Bit;L15
 PC_Robot_LineerEnkoderAktif;Bit;L16
@@ -77,9 +78,9 @@ PC_CikisTasimaOnYukselik_KalibrasyonPoz;Word [Signed];D111
 PC_KesimSolOnYukselik_HedefPoz;Word [Signed];D112
 PC_CikisTasimaOnYukselik_HedefPoz;Word [Signed];D113
 # 6 November: the old program wrote these with the job (x10000 - 0.0001 mm): the bar's length, its first and last right cut + 1 mm
-PC_ProfilBar_IlkKesimSonu_Poz;Double Word [Signed];D95
-PC_ProfilBar_SonKesim_Poz;Double Word [Signed];D97
-PC_BeslenenBarBoyu;Double Word [Signed];D106
+PC_ProfilBar_IlkKesimSonu_Poz;Double Word [Signed];D95;10000;2
+PC_ProfilBar_SonKesim_Poz;Double Word [Signed];D97;10000;2
+PC_BeslenenBarBoyu;Double Word [Signed];D106;10000;2
 #heading;What the PLC gives back to the HMI
 PC_Pop_Up_Ekran;Word [Signed];D71
 PC_Pop_Up_Secilen_Buton;Word [Signed];D72
