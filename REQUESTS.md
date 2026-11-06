@@ -11,6 +11,9 @@ Claude reads this file at the start of every batch, does the items, and moves ea
     500 lines, the milling parameters 100, the milling and cutting steps their first lines; a member shows its own name (Tool No).
     A table is read in blocks (one call each); a tab made before is put right once.
   - b5621c5 - PLC Monitor, Machine conditions: a Met when column before Condition (M100 OFF, D300 <= 3 ...).
+  - 8e78b61 - FA2010, the special cuts (<>) and the V cuts: the job file's SpecialCut / VCut lines, a recipe each joint (or two merged),
+    codes 1001 - 1010 and 3000 in the job list, the parameters at R25650, the saw's request L105 + D65 -> R25700 and L106. The recipes:
+    the Jobs page's "Special cut recipes..." (or the old program's tables imported as CSV); docs/fa2010/JobSample_SpecialCuts.kbn.
 - 6 November (the answers: the job list from the old program, R25615, attach accessory groups to profile groups; the labels of what the HMI writes):
   - af23ca3 - Never two copies, a restart's included: the old process waited for and ended if it lingers; a closed window's process ends in 5 s.
   - eedcb04 - LogRecordHMI: the HMI turns the trigger off once the record is in the database (ResetTrigger, the default) - the PLC waits for it.
