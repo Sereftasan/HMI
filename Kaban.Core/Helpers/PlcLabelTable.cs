@@ -31,6 +31,8 @@ namespace Kaban.Core.Helpers
         {
             public string Label = "";
             public string DataType = "Bit";
+            /// <summary>The "#heading;" line above it in the list ("" when none).</summary>
+            public string Heading = "";
             public string Address = "";
 
             public bool IsBit
@@ -130,9 +132,12 @@ namespace Kaban.Core.Helpers
 
             try
             {
+                string heading = "";
                 foreach (var raw in File.ReadAllLines(path))
                 {
                     var line = raw.Trim();
+                    // "#heading;text": the labels after it are under that heading (the PLC Monitor's tab of what the HMI sends)
+                    if (line.StartsWith("#heading;", StringComparison.OrdinalIgnoreCase)) { heading = line.Substring(9).Trim(); continue; }
                     if (line.Length == 0 || line.StartsWith("#")) continue;
 
                     // tolerate ; or TAB - the list is pasted out of GX Works and Excel
@@ -144,7 +149,8 @@ namespace Kaban.Core.Helpers
                     {
                         Label = f[0].Trim(),
                         DataType = f[1].Trim(),
-                        Address = f[2].Trim().ToUpperInvariant()
+                        Address = f[2].Trim().ToUpperInvariant(),
+                        Heading = heading
                     };
                     // A row with no address is a placeholder in the engineer's list
                     // (a device not assigned yet) - keep it visible but unusable.

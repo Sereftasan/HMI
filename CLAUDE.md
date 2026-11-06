@@ -58,6 +58,10 @@
   line under each (UiStyle.RowRule, lighter than a table's GridRule) - every row 450 wide (the user's choice; a frame 474,
   its rows 12 in) - a switch: CheckBoxHMI SwitchRow; a value: NumericInputHMI.RowWidth (its caption is the row, words at the
   left, the field 8 px in from the right end). The Axis and Encoders tables: the same light line between their rows (UiStyle.RulesBetweenRows).
+- FA2010's PlcLabels.csv is kept by hand since 22 October (tools\build_plc_labels.py would lose its tail): the structured labels of
+  FA2010_DeviceList's Profiles & Operations (StructuredTypes.csv: Profile Parameters R25600 with R25615 Profile Correction Position, the job
+  list D5000 / D6000 / D7000, milling parameters and steps, special cuts, mullion notching) and every PC_ device of its ManualMovement sheet,
+  under "#heading;" lines - the PLC Monitor's collect menu "what the HMI writes to the PLC" puts them in the tab "HMI -> PLC" (6 November).
 - The program's lines naming each translation key (HMI Settings > Translation, "Where is it used?" on a panel without
   the source): `tools\translation_uses.py` -> `KabanHMI\TranslationUses.csv`, made again in every batch.
 - The keys the code uses with an English text of its own and the translation files lack (23 October: tooltips shown in

@@ -17,6 +17,7 @@ Enkoder_RobotPozisyon;Double Word [Signed];D22
 PC_ProfilGenisligi;Word [Signed];D8
 # The Profiles & Operations sheet's tables (FA2010_DeviceList.xls): their structured data types are in StructuredTypes.csv;
 # the job list's columns are simple arrays (its 16-bit operation codes are every 2 devices: a Double Word each, the code in its low word)
+#heading;The job and the profile the HMI sends (Profiles & Operations)
 PC_ProfilParametreleri;Profile Parameters;R25600
 PC_IsListesi_IslemID;Double Word [Signed](0..499);D5000
 PC_IsListesi_Pozisyon;Double Word [Signed](0..499);D6000
@@ -29,3 +30,62 @@ PC_Unite2_FrezeAdimlari;Milling Steps(0..399);R12800
 PC_Unite2_FrezeAdimYedek;Milling Steps(0..399);R19200
 PC_KesimAdimlari;Special Cut Steps(0..29);R25700
 PC_OrtakayitKertmeAdimlari;Mullion Notching Step(0..29);R25700
+
+# 6 November - the rest of the PC's devices in FA2010_DeviceList.xls (ManualMovement, 'Diğer Alanlar'); the PLC Monitor's
+# collect menu puts every PC_ label in a tab of its own ("HMI -> PLC"), under these headings
+#heading;The machine's options the HMI writes (L)
+PC_Freze_KaldirmaRulolu;Bit;L14
+PC_Cikis_KaldirmaRulolu;Bit;L15
+PC_Robot_LineerEnkoderAktif;Bit;L16
+PC_SolProfilTanima_Aktif;Bit;L17
+PC_GirisKonv_RulolarHareketli;Bit;L18
+PC_SolProfilTanima_Var;Bit;L19
+PC_FR2_Ustten_Isleme;Bit;L20
+PC_FrezeYaklasmaHizlandirma;Bit;L21
+PC_CikisKonveyoruUcuKapali;Bit;L22
+PC_DemoModu;Bit;L23
+PC_FireBarkod_Bas;Bit;L24
+PC_TersMakine;Bit;L25
+PC_FireKesimModu;Bit;L26
+PC_PnomitikKalipli;Bit;L27
+PC_KesimSagUstSikmaUzun;Bit;L28
+PC_Profil_Ittirme_KucukBuyukAyri;Bit;L29
+PC_UstSikma_AcKapa;Bit;L30
+PC_Gripper_0_90_Acili;Bit;L31
+PC_CarprazRulolu;Bit;L32
+PC_Kesim_Sol_On_Enkodersiz;Bit;L33
+PC_Kesim_Sag_On_Dikey_Enkodersiz;Bit;L34
+#heading;The job's other devices the HMI writes
+PC_Freze_Unite1_G_Code_Gonder;Bit;L101
+PC_Freze_Unite1_G_Code_Gonderildi;Bit;L102
+PC_Freze_Unite2_G_Code_Gonder;Bit;L103
+PC_Freze_Unite2_G_Code_Gonderildi;Bit;L104
+PC_Kesim_Recete_Gonder;Bit;L105
+PC_Kesim_Recete_Gonderildi;Bit;L106
+PC_Calisma_Hiz_Yuzdesi;Word [Signed];D408
+PC_Manuel_Hiz_Yuzdesi;Word [Signed];D409
+PC_Kesim_Barkod_Id;Double Word [Signed];D386
+PC_BarkodFireBoyu;Double Word [Signed];D388
+PC_Tanimlanan_Profil_Yuksekligi;Word [Signed];D9
+PC_Freze_Unite1_G_Code_No;Word [Signed];D60
+PC_Freze_Unite2_G_Code_No;Word [Signed];D61
+PC_Kesim_Recete_No;Word [Signed];D65
+PC_KesimSolOn_YukselikPoz;Word [Signed];D108
+PC_CikisTasimaOn_YukselikPoz;Word [Signed];D109
+PC_KesimSolOnYukselik_KalibrasyonPoz;Word [Signed];D110
+PC_CikisTasimaOnYukselik_KalibrasyonPoz;Word [Signed];D111
+PC_KesimSolOnYukselik_HedefPoz;Word [Signed];D112
+PC_CikisTasimaOnYukselik_HedefPoz;Word [Signed];D113
+#heading;What the PLC gives back to the HMI
+PC_Pop_Up_Ekran;Word [Signed];D71
+PC_Pop_Up_Secilen_Buton;Word [Signed];D72
+PC_Okunan_Profil_Genisligi;Word [Signed];D481
+PC_Okunan_Profil_Yuksekligi;Word [Signed];D482
+PC_Olculen_Profil_Boyu;Double Word [Signed];D89
+PC_ProfilBar_IlkKesimSonu_Poz;Double Word [Signed];D95
+PC_ProgramVersiyonu;Word [Signed];D36
+PC_ProfilBar_SonKesim_Poz;Double Word [Signed];D97
+PC_CalismaSuresi_Bar;Double Word [Signed];D91
+PC_EnerjideKalmaSuresi_Sayac;Double Word [Signed];D93
+PC_CalismaSuresi_Toplam;Double Word [Signed];D104
+PC_BeslenenBarBoyu;Double Word [Signed];D106

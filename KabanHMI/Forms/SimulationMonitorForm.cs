@@ -721,6 +721,14 @@ namespace Kaban.UI.Forms
                 "It names the devices on the monitor and adds devices the pages do not show.");
             m.ShowItemToolTips = true;
             m.Items.Add(labels);
+            // 6 November: "create label structure for the profile parameter and a label on the PLC monitor page so I can monitor what HMI
+            // writes to the PLC as the profile data ... for all the devices the HMI writes to the PLC"
+            var sent = Item(T("Mnu_MonFromSent", "what the HMI writes to the PLC (the job, the profile, the PC_ labels) - a tab of its own"), (s, e) => CollectSent());
+            sent.ToolTipText = T("Tip_MonFromSent",
+                "The label list's structured labels (the profile's parameters, the job list, the milling and cutting steps - FA2010_DeviceList's " +
+                "Profiles & Operations) and every PC_ label, under their headings, in the tab \"HMI -> PLC\" (made, or filled again). Back them up with " +
+                "the tab's backup and write them back from it to test a function.");
+            m.Items.Add(sent);
             var conditions = Item(T("Mnu_MonFromConditions", "the machine condition labels - into this tab"), (s, e) => CollectConditions());
             conditions.ToolTipText = T("Tip_MonFromConditions",
                 "The conditions the machines register (manual mode, robot at safe position ...): each one's device, and whether it is met now.");
@@ -2743,10 +2751,13 @@ namespace Kaban.UI.Forms
 
         private void Report(int added, int offered)
         {
-            MessageBox.Show(DialogOwner,
-                string.Format(T("Msg_ImportDone", "Added {0} device(s). {1} were already listed."), added, offered - added),
-                Text, MessageBoxButtons.OK, MessageBoxIcon.Information);
+            string text = string.Format(T("Msg_ImportDone", "Added {0} device(s). {1} were already listed."), added, offered - added);
+            if (ReportHook != null) { ReportHook(text); return; }
+            MessageBox.Show(DialogOwner, text, Text, MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
+
+        /// <summary>Tests: what a collection added, instead of the message box.</summary>
+        internal static Action<string> ReportHook;
 
         // ---- ALL UNDER THE NEXT CONTROL / PAGE (23 October) --------------------------------------------------
         //
@@ -2927,6 +2938,46 @@ namespace Kaban.UI.Forms
             SaveWatchList(mon);
             Render(mon, sh);
             Report(added, devices.Count);
+        }
+
+        /// <summary>The tab of what the HMI writes to the PLC: made (or found) and filled from the label list, under its headings.</summary>
+        internal void CollectSent()
+        {
+            var mon = CurrentMonitor;
+            if (mon == null) return;
+            var entries = PlcLabelTable.EntriesFor(mon.Station)
+                .Where(e => !string.IsNullOrWhiteSpace(e.Address) && (e.Heading.Length > 0 || e.Label.StartsWith("PC_", StringComparison.OrdinalIgnoreCase)))
+                .ToList();
+            if (entries.Count == 0)
+            {
+                MessageBox.Show(DialogOwner, T("Msg_MonSentNone", "The label list (PlcLabels.csv) of this controller names nothing the HMI writes (no PC_ label, no heading)."),
+                                Text, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+            Remember(T("Undo_Collect", "add the devices"), mon);
+            string name = T("Tab_MonSent", "HMI -> PLC");
+            var sh = mon.Sheets.FirstOrDefault(x => string.Equals(x.Name, name, StringComparison.OrdinalIgnoreCase)) ?? AddSheet(mon, name, mon.Sheets.Count);
+            mon.SheetTabs.SelectedTab = sh.Page;
+            int added = 0;
+            foreach (var g in entries.GroupBy(e => e.Heading.Length > 0 ? e.Heading : T("Hdr_MonSentOther", "The PC's other devices (PC_)"))
+                                     .OrderBy(g => g.First().Heading.Length == 0 ? 1 : 0))
+            {
+                var devices = g.Select(e => new DeviceCollector.Device { Station = mon.Station, Address = e.Address, DataType = e.DataType }).ToList();
+                // a structured label: the label's own type (its members shown under it); two labels on one address (R25700): each its own row
+                foreach (var d in devices.Where(d => sh.Rows.Any(r => r.IsDevice && string.Equals(r.Address, d.Address, StringComparison.OrdinalIgnoreCase))).ToList())
+                    devices.Remove(d);
+                bool headed = sh.Rows.Any(r => r.Comment == g.Key);
+                added += AddDevices(mon, sh, devices, headed ? null : g.Key);
+                foreach (var e in g)
+                {
+                    var row = sh.Rows.LastOrDefault(r => r.IsDevice && string.Equals(r.Address, e.Address, StringComparison.OrdinalIgnoreCase));
+                    if (row != null && row.LabelOverride != e.Label && sh.Rows.Count(r => r.IsDevice && string.Equals(r.Address, e.Address, StringComparison.OrdinalIgnoreCase)) == 1)
+                        ApplyNames(mon, row, e.Label, e.DataType);
+                }
+            }
+            SaveWatchList(mon);
+            Render(mon, sh);
+            Report(added, entries.Count);
         }
 
         /// <summary>
