@@ -70,6 +70,9 @@
   T D W O L R - the device list's "Kırlangıç Kesim" sheet) are the machine's settings in the library, edited on the Profiles page's
   Accessories pane, tab Special cuts (7 November: "just like the accessories"; entered, the old program's tables imported as CSV, or the device
   list's samples - Kaban.Machines.FA2010\SpecialCutSamples.csv, made by tools\special_cuts_from_devicelist.py).
+  The profile's mullion notching steps (7 November, per profile: the profile machine setting "Mullion Notching Steps", the profile
+  details' tab Mullion notching, its group's template's when it has none of its own) go with each bar into R25700 before its parameters
+  (21 steps of 10 words, x100, as the old program's WriteNotchInfo) - the same area the saw's special cut steps come into on L105.
 - FA2010's PlcLabels.csv is kept by hand since 22 October (tools\build_plc_labels.py would lose its tail): the structured labels of
   FA2010_DeviceList's Profiles & Operations (StructuredTypes.csv: Profile Parameters R25600 with R25615 Profile Correction Position, the job
   list D5000 / D6000 / D7000, milling parameters and steps, special cuts, mullion notching) and every PC_ device of its ManualMovement sheet,
@@ -149,6 +152,9 @@ analogue sensor SN115 (wire 705, U19 FX5-8AD channel 6, sheet 34.5). L35 makes t
 valve a 5/3 open centre (CylinderUnitHMI.OptionValveType / OptionValveConditions).
 - A machine condition judged off its page (a unit's help from the alarm list): MachineConditionMap.ReadAlways (read on
   every scan) and MetNow.
+- A machine condition of several devices (7 November): MachineConditionMap.AddDevice / AddMachineBitDevice after the condition is
+  registered (on its PLC) - met while every device's test is (ConditionRule.AnyDevice: one); the PLC Monitor shows a line for each
+  further device under the condition's (WatchRow.ConditionPart, "part=" in the list).
 - One copy of the HMI at a time (5 November, the user's choice): every machine's exe holds the mutex `Global\Kaban.HMI.OneCopy`
   (Helpers\SingleInstance, right after AppBootstrap.AwaitPreviousInstance in each Program.Main); a second start brings the running
   one to the front, says why and ends; a restart's new instance waits for it (the old one lets it go just before starting it).
