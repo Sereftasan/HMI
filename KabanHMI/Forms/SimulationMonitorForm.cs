@@ -93,6 +93,13 @@ namespace Kaban.UI.Forms
             /// whether the condition is met now.
             /// </summary>
             public string ConditionKey = "";
+            /// <summary>
+            /// A further device of its condition (7 November: "Each machine condition might have multiple device address so it should be
+            /// able to show all of their values somehow ... adding more line to show the following device value"): 1 its second device,
+            /// 2 its third ... - its row under the condition's, its value and its own test; 0 the condition's row (its first device, the
+            /// whole condition in the Condition column).
+            /// </summary>
+            public int ConditionPart;
 
             /// <summary>Decimal (""), Hexadecimal or Binary - how a whole number is shown and typed.</summary>
             public string DisplayFormat = "";
@@ -303,7 +310,7 @@ namespace Kaban.UI.Forms
                                       DataTypeOverride = DataTypeOverride, Comment = Comment,
                                       DisplayFormat = DisplayFormat, StringLength = StringLength,
                                       ArrayCount = Head == null ? ArrayCount : 1, Expanded = Expanded,
-                                      ConditionKey = Head == null ? ConditionKey : "",
+                                      ConditionKey = Head == null ? ConditionKey : "", ConditionPart = Head == null ? ConditionPart : 0,
                                       Divisor = EffectiveDivisor, Decimals = EffectiveDecimals };
             }
         }
@@ -3099,8 +3106,10 @@ namespace Kaban.UI.Forms
         /// <summary>The devices the station's machine conditions read.</summary>
         internal static HashSet<string> MachineConditionAddresses(int station)
         {
-            return new HashSet<string>(MachineConditionMap.All().Where(c => c.Rule != null && AlarmManager.StationOf(c.Rule) == station && !string.IsNullOrWhiteSpace(c.Rule.Address))
-                                                         .Select(c => c.Rule.Address.Trim().ToUpperInvariant()), StringComparer.OrdinalIgnoreCase);
+            return new HashSet<string>(MachineConditionMap.All().Where(c => c.Rule != null && AlarmManager.StationOf(c.Rule) == station)
+                                                         .SelectMany(c => c.Rule.Devices)      // a condition of several devices: all of them
+                                                         .Where(d => !string.IsNullOrWhiteSpace(d.Address))
+                                                         .Select(d => d.Address.Trim().ToUpperInvariant()), StringComparer.OrdinalIgnoreCase);
         }
 
         /// <summary>
@@ -3268,19 +3277,23 @@ namespace Kaban.UI.Forms
             }
             Remember(T("Undo_Collect", "add the devices"), mon);
             var sh = EnsureSheet(mon);
-            var have = new HashSet<string>(sh.Rows.Where(r => !string.IsNullOrEmpty(r.ConditionKey)).Select(r => r.ConditionKey), StringComparer.OrdinalIgnoreCase);
+            var have = new HashSet<string>(sh.Rows.Where(r => !string.IsNullOrEmpty(r.ConditionKey) && r.ConditionPart == 0).Select(r => r.ConditionKey), StringComparer.OrdinalIgnoreCase);
             var rows = new List<WatchRow>();
             foreach (var e in entries)
             {
                 if (!have.Add(e.Key)) continue;
-                string type = e.Rule.DataType == Kaban.Core.Enums.DataTypeEnum.Bin_32 ? DeviceCollector.DoubleWord
-                            : DeviceCollector.IsBitDevice(e.Rule.Address) ? DeviceCollector.Bit : DeviceCollector.Word;
                 rows.Add(new WatchRow
                 {
                     Station = mon.Station, Address = e.Rule.Address.Trim().ToUpperInvariant(),
-                    LabelOverride = e.Name, DataTypeOverride = type, ConditionKey = e.Key
+                    LabelOverride = e.Name, DataTypeOverride = ConditionDeviceType(e.Rule), ConditionKey = e.Key
                 });
                 mon.Hidden.Remove(e.Rule.Address);
+                // a condition of several devices: a line under it for each further one, its value and its own test
+                for (int p = 1; p <= e.Rule.Also.Count; p++)
+                {
+                    rows.Add(ConditionPartRow(mon.Station, e, p));
+                    mon.Hidden.Remove(e.Rule.Also[p - 1].Address ?? "");
+                }
             }
             if (rows.Count > 0)
             {
@@ -3292,6 +3305,77 @@ namespace Kaban.UI.Forms
                 Render(mon, sh);
             }
             Report(rows.Count(r => r.IsDevice), entries.Count);
+        }
+
+        /// <summary>The data type a condition's device is shown in: a 32-bit one's double word, a bit, else a word.</summary>
+        internal static string ConditionDeviceType(ConditionRule d)
+        {
+            return d.DataType == Kaban.Core.Enums.DataTypeEnum.Bin_32 ? DeviceCollector.DoubleWord
+                 : DeviceCollector.IsBitDevice(d.Address ?? "") ? DeviceCollector.Bit : DeviceCollector.Word;
+        }
+
+        /// <summary>The line of a condition's further device <paramref name="part"/> (1: its second): "↳ " and the device's label, else the condition's name and its number.</summary>
+        internal static WatchRow ConditionPartRow(int station, MachineConditionMap.Entry e, int part)
+        {
+            var d = e.Rule.Also[part - 1];
+            string address = (d.Address ?? "").Trim().ToUpperInvariant();
+            var label = PlcLabelTable.ByAddress(station, address);
+            string name = label != null && !string.IsNullOrWhiteSpace(label.Label) ? Words(label.Label)
+                        : e.Name + " (" + (part + 1).ToString(CultureInfo.InvariantCulture) + ")";
+            return new WatchRow
+            {
+                Station = station, Address = address, LabelOverride = "\u21B3 " + name, DataTypeOverride = ConditionDeviceType(d),
+                ConditionKey = e.Key, ConditionPart = part
+            };
+        }
+
+        /// <summary>
+        /// A list's condition rows and their further devices' lines (a list made before a condition had several devices, or since one was
+        /// added or taken off the machine): the missing lines put under the condition's row, those of a device it no longer has taken off.
+        /// The changes made.
+        /// </summary>
+        internal static int EnsureConditionParts(Sheet sh)
+        {
+            if (sh == null) return 0;
+            int changes = 0;
+            for (int i = 0; i < sh.Rows.Count; i++)
+            {
+                var r = sh.Rows[i];
+                if (string.IsNullOrEmpty(r.ConditionKey) || r.ConditionPart != 0 || r.Head != null) continue;
+                var e = MachineConditionMap.Find(r.ConditionKey);
+                if (e == null || e.Rule == null) continue;               // another machine's: its lines as they are
+                int n = e.Rule.Also.Count;
+                // a device it no longer has
+                for (int k = sh.Rows.Count - 1; k >= 0; k--)
+                {
+                    var x = sh.Rows[k];
+                    if (x.ConditionPart > n && string.Equals(x.ConditionKey, r.ConditionKey, StringComparison.OrdinalIgnoreCase))
+                    {
+                        sh.Rows.RemoveAt(k);
+                        if (k < i) i--;
+                        changes++;
+                    }
+                }
+                // the missing ones, after its lines there are
+                int at = i + 1;
+                while (at < sh.Rows.Count && sh.Rows[at].ConditionPart > 0 &&
+                       string.Equals(sh.Rows[at].ConditionKey, r.ConditionKey, StringComparison.OrdinalIgnoreCase)) at++;
+                for (int p = 1; p <= n; p++)
+                {
+                    if (sh.Rows.Any(x => x.ConditionPart == p && string.Equals(x.ConditionKey, r.ConditionKey, StringComparison.OrdinalIgnoreCase))) continue;
+                    sh.Rows.Insert(at++, ConditionPartRow(r.Station, e, p));
+                    changes++;
+                }
+            }
+            return changes;
+        }
+
+        /// <summary>The test a condition row stands for: a further device's own (ConditionPart), else the whole condition's.</summary>
+        internal static ConditionRule ConditionRuleOf(WatchRow model, MachineConditionMap.Entry entry)
+        {
+            if (entry == null || entry.Rule == null || model == null) return null;
+            if (model.ConditionPart <= 0) return entry.Rule;
+            return model.ConditionPart <= entry.Rule.Also.Count ? entry.Rule.Also[model.ConditionPart - 1] : null;
         }
 
         // ==================================================================
@@ -3955,9 +4039,11 @@ namespace Kaban.UI.Forms
         {
             if (model == null || string.IsNullOrEmpty(model.ConditionKey)) return null;
             var entry = MachineConditionMap.Find(model.ConditionKey);
-            if (entry == null) return null;
+            var rule = ConditionRuleOf(model, entry);
+            if (rule == null) return null;
             double value;
-            return MachineConditionMap.Evaluate(entry.Rule, a => { int v; return mon.Values.TryGetValue(a, out v) ? v : (int?)null; }, out value);
+            Func<string, int?> read = a => { int v; return mon.Values.TryGetValue(a, out v) ? v : (int?)null; };
+            return model.ConditionPart > 0 ? MachineConditionMap.EvaluateDevice(rule, read, out value) : MachineConditionMap.Evaluate(rule, read, out value);
         }
 
         /// <summary>
@@ -3969,8 +4055,16 @@ namespace Kaban.UI.Forms
         {
             if (model == null || string.IsNullOrEmpty(model.ConditionKey)) return "";
             var entry = MachineConditionMap.Find(model.ConditionKey);
-            if (entry == null || entry.Rule == null) return "?";
-            var rule = entry.Rule;
+            var rule = ConditionRuleOf(model, entry);
+            if (rule == null) return "?";
+            if (model.ConditionPart > 0 || rule.Also.Count == 0) return DeviceRuleText(rule);
+            // the condition's row of several devices: what each asks ("M22 OFF and M23 OFF")
+            return string.Join(rule.AnyDevice ? " " + T("Cond_Or", "or") + " " : " " + T("Cond_And", "and") + " ", rule.Devices.Select(DeviceRuleText));
+        }
+
+        /// <summary>One device's test: "M100 ON" for a bit, "D200 &gt; 0" for a word.</summary>
+        private static string DeviceRuleText(ConditionRule rule)
+        {
             string address = (rule.Address ?? "").Trim().ToUpperInvariant();
             bool bit = DeviceCollector.IsBitDevice(address);
             if (bit && (rule.RequiredValue == 0 || rule.RequiredValue == 1) &&
@@ -3979,7 +4073,7 @@ namespace Kaban.UI.Forms
                 bool on = (rule.RequiredValue == 1) == (rule.Operator == Kaban.Core.Enums.ComparisonOperator.Equal);
                 return address + " " + (on ? T("Val_On", "ON") : T("Val_Off", "OFF"));
             }
-            return MachineConditionMap.RuleText(rule);
+            return MachineConditionMap.DeviceText(rule);
         }
 
         /// <summary>"\u2714 met" / "\u2716 not met" - the tooltip says what the condition asks and what is read.</summary>
@@ -3994,14 +4088,45 @@ namespace Kaban.UI.Forms
                 if (cell.Style.ForeColor != ColLabelUnknown) cell.Style.ForeColor = ColLabelUnknown;
                 return;
             }
+            var rule = ConditionRuleOf(model, entry);
+            if (rule == null)
+            {
+                // a further device the condition no longer has
+                Set(cell, "?");
+                Tip(cell, T("Cond_NotRegistered", "This condition is not registered by the machines of this program."));
+                if (cell.Style.ForeColor != ColLabelUnknown) cell.Style.ForeColor = ColLabelUnknown;
+                return;
+            }
             double value;
-            var met = MachineConditionMap.Evaluate(entry.Rule, a => { int v; return mon.Values.TryGetValue(a, out v) ? v : (int?)null; }, out value);
+            Func<string, int?> read = a => { int v; return mon.Values.TryGetValue(a, out v) ? v : (int?)null; };
+            var met = model.ConditionPart > 0 ? MachineConditionMap.EvaluateDevice(rule, read, out value) : MachineConditionMap.Evaluate(rule, read, out value);
             string text = met == true ? "\u2714 " + T("Cond_Met", "met") : met == false ? "\u2716 " + T("Cond_NotMet", "not met") : "-";
             Set(cell, text);
             var colour = met == true ? ColConditionMet : met == false ? ColConditionNotMet : ColLabelUnknown;
             if (cell.Style.ForeColor != colour) cell.Style.ForeColor = colour;
-            Tip(cell, entry.Name + "\n" + T("Cond_Asks", "Met when") + ": " + MachineConditionMap.RuleText(entry.Rule) +
-                      (met.HasValue ? "\n" + T("Cond_Now", "Now") + ": " + value.ToString(CultureInfo.CurrentCulture) : ""));
+            string tip;
+            if (model.ConditionPart > 0)
+                tip = entry.Name + " - " + string.Format(T("Cond_DeviceOf", "its device {0} of {1}"), model.ConditionPart + 1, entry.Rule.Also.Count + 1) + "\n" +
+                      T("Cond_Asks", "Met when") + ": " + MachineConditionMap.DeviceText(rule) +
+                      (met.HasValue ? "\n" + T("Cond_Now", "Now") + ": " + value.ToString(CultureInfo.CurrentCulture) : "");
+            else if (rule.Also.Count > 0)
+            {
+                // every device: its test, met or not, what is read
+                var lines = new List<string> { entry.Name, rule.AnyDevice ? T("Cond_AnyDevice", "Met while one of its devices is:")
+                                                                         : T("Cond_AllDevices", "Met while all its devices are:") };
+                foreach (var d in rule.Devices)
+                {
+                    double v;
+                    var m = MachineConditionMap.EvaluateDevice(d, read, out v);
+                    lines.Add((m == true ? "\u2714 " : m == false ? "\u2716 " : "- ") + MachineConditionMap.DeviceText(d) +
+                              (m.HasValue ? "   (" + T("Cond_Now", "Now") + ": " + v.ToString(CultureInfo.CurrentCulture) + ")" : ""));
+                }
+                tip = string.Join("\n", lines);
+            }
+            else
+                tip = entry.Name + "\n" + T("Cond_Asks", "Met when") + ": " + MachineConditionMap.RuleText(rule) +
+                      (met.HasValue ? "\n" + T("Cond_Now", "Now") + ": " + value.ToString(CultureInfo.CurrentCulture) : "");
+            Tip(cell, tip);
         }
 
         private static readonly Color ColChangedByHmi = Color.FromArgb(20, 90, 190);
@@ -4406,6 +4531,7 @@ namespace Kaban.UI.Forms
             if (r.ArrayCount > 1) { parts.Add("n=" + r.ArrayCount.ToString(CultureInfo.InvariantCulture)); if (r.Expanded) parts.Add("open=1"); }
             if (r.StringLength != 16) parts.Add("len=" + r.StringLength.ToString(CultureInfo.InvariantCulture));
             if (!string.IsNullOrEmpty(r.ConditionKey)) parts.Add("cond=" + r.ConditionKey);
+            if (!string.IsNullOrEmpty(r.ConditionKey) && r.ConditionPart > 0) parts.Add("part=" + r.ConditionPart.ToString(CultureInfo.InvariantCulture));
             if (r.Divisor != 1 && r.Divisor != 0) parts.Add("div=" + r.Divisor.ToString("R", CultureInfo.InvariantCulture));
             if (r.Decimals != 0) parts.Add("dec=" + r.Decimals.ToString(CultureInfo.InvariantCulture));
             if (r.Joined) parts.Add("join=1");
@@ -4429,6 +4555,7 @@ namespace Kaban.UI.Forms
                     case "open": r.Expanded = v == "1"; break;
                     case "len": if (int.TryParse(v, NumberStyles.Integer, CultureInfo.InvariantCulture, out n)) r.StringLength = Math.Max(1, Math.Min(256, n)); break;
                     case "cond": r.ConditionKey = v; break;
+                    case "part": if (int.TryParse(v, NumberStyles.Integer, CultureInfo.InvariantCulture, out n)) r.ConditionPart = Math.Max(0, Math.Min(64, n)); break;
                     case "div":
                         double d;
                         if (double.TryParse(v, NumberStyles.Float, CultureInfo.InvariantCulture, out d) && d != 0 && !double.IsNaN(d) && !double.IsInfinity(d)) r.Divisor = d;
@@ -4496,6 +4623,8 @@ namespace Kaban.UI.Forms
                 {
                     Deserialize(mon, File.ReadAllLines(path));
                     mon.FileStamp = File.GetLastWriteTimeUtc(path);
+                    // the conditions' further devices' lines as the machine has them now
+                    foreach (var sh in mon.Sheets) EnsureConditionParts(sh);
                 }
             }
             catch (Exception ex) { AuditLogger.Log("could not read the monitor watch list: " + ex.Message); }

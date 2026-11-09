@@ -12,6 +12,26 @@ namespace Kaban.Core.Helpers
         public DataTypeEnum DataType { get; set; } = DataTypeEnum.Bin_16;
         public ComparisonOperator Operator { get; set; } = ComparisonOperator.Equal;
         public int RequiredValue { get; set; } = 1;
+
+        /// <summary>
+        /// A CONDITION OF SEVERAL DEVICES (7 November: "Each machine condition might have multiple device address so it should be able to
+        /// show all of their values"): the further devices it reads, each with its own test - on the condition's PLC (MachineConditionMap
+        /// .AddDevice). Met while every device's test is (AnyDevice: while one is).
+        /// </summary>
+        public List<ConditionRule> Also { get; } = new List<ConditionRule>();
+
+        /// <summary>Met while ANY of its devices' tests is (not all of them).</summary>
+        public bool AnyDevice { get; set; }
+
+        /// <summary>Its devices: this one, then the further ones.</summary>
+        public IEnumerable<ConditionRule> Devices
+        {
+            get
+            {
+                yield return this;
+                foreach (var d in Also) if (d != null) yield return d;
+            }
+        }
     }
 
     public class ConditionDefinition : ConditionRule
@@ -52,23 +72,58 @@ namespace Kaban.Core.Helpers
             };
         }
 
+        /// <summary>A further device a system condition reads (registered after the condition): <see cref="ConditionRule.Also"/>.</summary>
+        public static bool AddDevice(SystemCondition cond, string addr, DataTypeEnum type, ComparisonOperator op, int val)
+        {
+            ConditionRule rule;
+            if (!_map.TryGetValue(cond, out rule) || rule == null) return false;
+            rule.Also.Add(new ConditionRule { PlcNumber = rule.PlcNumber, Address = addr, DataType = type, Operator = op, RequiredValue = val });
+            return true;
+        }
+
+        /// <summary>A further device a machine's own condition reads (registered after the condition): <see cref="ConditionRule.Also"/>.</summary>
+        public static bool AddMachineBitDevice(long bit, string addr, DataTypeEnum type, ComparisonOperator op, int val)
+        {
+            ConditionDefinition def;
+            if (!_machineBits.TryGetValue(bit, out def) || def == null) return false;
+            def.Also.Add(new ConditionRule { PlcNumber = def.PlcNumber, Address = addr, DataType = type, Operator = op, RequiredValue = val });
+            return true;
+        }
+
+        /// <summary>One device's test on the values read (a 32-bit device reads the next one as its high word).</summary>
+        public static bool CheckDevice(ConditionRule device, Func<string, int> lookup)
+        {
+            if (device == null || string.IsNullOrWhiteSpace(device.Address)) return false;
+            int low = lookup(device.Address);
+            double currentVal = low;
+            if (device.DataType == DataTypeEnum.Bin_32)
+            {
+                int high = lookup(PlcAddressHelper.GetNextAddress(device.Address));
+                currentVal = PlcValueConverter.ConvertToDouble(low, high, device.DataType, DisplayFormatEnum.Signed_Decimal, 0);
+            }
+            return ComparisonHelper.Compare(currentVal, device.Operator, device.RequiredValue);
+        }
+
+        /// <summary>A rule's test on the values read: every device's (AnyDevice: one's).</summary>
+        public static bool Check(ConditionRule rule, Func<string, int> lookup)
+        {
+            if (rule == null) return false;
+            bool any = false;
+            foreach (var d in rule.Devices)
+            {
+                bool met = CheckDevice(d, lookup);
+                if (rule.AnyDevice) { if (met) return true; }
+                else if (!met) return false;
+                any = true;
+            }
+            return !rule.AnyDevice && any;
+        }
+
         // Inside MachineConditionMap.cs
         public static bool CheckMachineBit(long bitValue, Func<string, int> lookup)
         {
             if (!_machineBits.TryGetValue(bitValue, out var def)) return true;
-
-            int low = lookup(def.Address);
-            double currentVal = low;
-
-            // Handle 32-bit hardware tags
-            if (def.DataType == DataTypeEnum.Bin_32)
-            {
-                int high = lookup(PlcAddressHelper.GetNextAddress(def.Address));
-                currentVal = PlcValueConverter.ConvertToDouble(low, high, def.DataType, DisplayFormatEnum.Signed_Decimal, 0);
-            }
-
-            // Use the new public helper
-            return ComparisonHelper.Compare(currentVal, def.Operator, def.RequiredValue);
+            return Check(def, lookup);
         }
 
         public static string GetMachineBitName(long bitValue)
@@ -161,23 +216,53 @@ namespace Kaban.Core.Helpers
         /// </summary>
         public static bool? Evaluate(ConditionRule rule, Func<string, int?> lookup, out double value)
         {
-            value = 0;
-            if (rule == null || string.IsNullOrWhiteSpace(rule.Address) || lookup == null) return null;
-            int? low = lookup(rule.Address);
-            if (!low.HasValue) return null;
-            double current = low.Value;
-            if (rule.DataType == DataTypeEnum.Bin_32)
+            // its own device's value; every device's test (a condition of several - AnyDevice: one's)
+            bool? met = EvaluateDevice(rule, lookup, out value);
+            if (rule == null || rule.Also.Count == 0) return met;
+            bool unread = !met.HasValue, anyMet = met == true, anyNot = met == false;
+            foreach (var d in rule.Also)
             {
-                int? high = lookup(PlcAddressHelper.GetNextAddress(rule.Address));
-                if (!high.HasValue) return null;
-                current = PlcValueConverter.ConvertToDouble(low.Value, high.Value, rule.DataType, DisplayFormatEnum.Signed_Decimal, 0);
+                double v;
+                var m = EvaluateDevice(d, lookup, out v);
+                if (!m.HasValue) unread = true;
+                else if (m.Value) anyMet = true;
+                else anyNot = true;
             }
-            value = current;
-            return ComparisonHelper.Compare(current, rule.Operator, rule.RequiredValue);
+            // all: one not met decides; any: one met decides - else a device not read yet leaves it open
+            if (rule.AnyDevice) return anyMet ? true : unread ? (bool?)null : false;
+            return anyNot ? false : unread ? (bool?)null : true;
         }
 
-        /// <summary>"M100 = 0", "D200 (32-bit) > 0" - what a rule asks.</summary>
+        /// <summary>One device's test, from the values read (null: not read yet) - its further devices not asked.</summary>
+        public static bool? EvaluateDevice(ConditionRule device, Func<string, int?> lookup, out double value)
+        {
+            value = 0;
+            if (device == null || string.IsNullOrWhiteSpace(device.Address) || lookup == null) return null;
+            int? low = lookup(device.Address);
+            if (!low.HasValue) return null;
+            double current = low.Value;
+            if (device.DataType == DataTypeEnum.Bin_32)
+            {
+                int? high = lookup(PlcAddressHelper.GetNextAddress(device.Address));
+                if (!high.HasValue) return null;
+                current = PlcValueConverter.ConvertToDouble(low.Value, high.Value, device.DataType, DisplayFormatEnum.Signed_Decimal, 0);
+            }
+            value = current;
+            return ComparisonHelper.Compare(current, device.Operator, device.RequiredValue);
+        }
+
+        /// <summary>"M100 = 0", "D200 (32-bit) > 0" - what a rule asks; of several devices "M22 = 0 and M23 = 0" (AnyDevice: "or").</summary>
         public static string RuleText(ConditionRule rule)
+        {
+            if (rule == null) return "";
+            if (rule.Also.Count == 0) return DeviceText(rule);
+            var texts = new List<string>();
+            foreach (var d in rule.Devices) texts.Add(DeviceText(d));
+            return string.Join(rule.AnyDevice ? " or " : " and ", texts);
+        }
+
+        /// <summary>One device's test: "M100 = 0" (its further devices not said).</summary>
+        public static string DeviceText(ConditionRule rule)
         {
             if (rule == null) return "";
             string op;

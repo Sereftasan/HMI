@@ -931,11 +931,16 @@ Lbl_ColColumn;Column;Sütun;Столбец;Spalte;Colonna;Columna
 Lbl_ColWidth;Width (pixels);Genişlik (piksel);Ширина (пикс.);Breite (Pixel);Larghezza (pixel);Ancho (píxeles)
 Lbl_ColTable;The whole table;Tablonun tamamı;Вся таблица;Die ganze Tabelle;L'intera tabella;La tabla entera
 Tip_ColTable;Type the table's width: the columns shown share it as they share it now.;Tablonun genişliğini yazın: görünen sütunlar onu şimdiki oranlarında paylaşır.;Введите ширину таблицы: видимые столбцы разделят её в нынешних пропорциях.;Breite der Tabelle eingeben: die sichtbaren Spalten teilen sie im jetzigen Verhältnis.;Digita la larghezza della tabella: le colonne visibili se la dividono nelle proporzioni attuali.;Escriba el ancho de la tabla: las columnas visibles lo reparten en las proporciones actuales.
+Cond_AllDevices;Met while all its devices are:;Tüm cihazları sağlarken sağlanır:;;;;
+Cond_And;and;ve;;;;
+Cond_AnyDevice;Met while one of its devices is:;Cihazlarından biri sağlarken sağlanır:;;;;
+Cond_DeviceOf;its device {0} of {1};{1} cihazından {0}. cihazı;;;;
 Cond_Met;met;sağlanıyor;выполнено;erfüllt;soddisfatta;cumplida
 Cond_NotMet;not met;sağlanmıyor;не выполнено;nicht erfüllt;non soddisfatta;no cumplida
 Cond_NotRegistered;This condition is not registered by the machines of this program.;Bu koşul bu programın makineleri tarafından tanımlanmamış.;Это условие не зарегистрировано машинами этой программы.;Diese Bedingung ist von den Maschinen dieses Programms nicht registriert.;Questa condizione non è registrata dalle macchine di questo programma.;Esta condición no está registrada por las máquinas de este programa.
 Cond_Asks;Met when;Sağlanma şartı;Выполнено, когда;Erfüllt wenn;Soddisfatta quando;Cumplida cuando
 Cond_Now;Now;Şu an;Сейчас;Jetzt;Ora;Ahora
+Cond_Or;or;veya;;;;
 Mnu_MonFromConditions;the machine condition labels - into this tab;makine koşulu etiketleri - bu sekmeye;метки условий машины - на эту вкладку;die Bezeichnungen der Maschinenbedingungen - in diesen Reiter;le etichette delle condizioni macchina - in questa scheda;las etiquetas de condiciones de la máquina - en esta pestaña
 Tip_MonFromConditions;The conditions the machines register (manual mode, robot at safe position ...): each one's device, and whether it is met now.;Makinelerin tanımladığı koşullar (manuel mod, robot güvenli konumda ...): her birinin adresi ve şu an sağlanıp sağlanmadığı.;Условия, которые регистрируют машины (ручной режим, робот в безопасном положении ...): адрес каждого и выполнено ли оно сейчас.;Die Bedingungen, die die Maschinen registrieren (Handbetrieb, Roboter in sicherer Position ...): jeweils ihre Adresse und ob sie jetzt erfüllt ist.;Le condizioni registrate dalle macchine (modo manuale, robot in posizione sicura ...): l'indirizzo di ciascuna e se è soddisfatta ora.;Las condiciones que registran las máquinas (modo manual, robot en posición segura ...): la dirección de cada una y si se cumple ahora.
 Msg_MonConditionsNone;No machine condition is read from {0}.;{0} üzerinden okunan makine koşulu yok.;С {0} не читается ни одно условие машины.;Von {0} wird keine Maschinenbedingung gelesen.;Da {0} non viene letta nessuna condizione della macchina.;No se lee ninguna condición de la máquina desde {0}.

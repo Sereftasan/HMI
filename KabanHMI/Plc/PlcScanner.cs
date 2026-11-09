@@ -221,8 +221,13 @@ namespace Kaban.UI.Plc
                     if (rule != null && !string.IsNullOrEmpty(rule.Address))
                     {
                         int st = AlarmManager.StationOf(rule);
-                        AddTo(st, rule.Address);
-                        if (rule.DataType == DataTypeEnum.Bin_32) AddTo(st, PlcAddressHelper.GetNextAddress(rule.Address));
+                        // every device of it (a condition of several reads them all - on its PLC)
+                        foreach (var d in rule.Devices)
+                        {
+                            if (string.IsNullOrEmpty(d.Address)) continue;
+                            AddTo(st, d.Address);
+                            if (d.DataType == DataTypeEnum.Bin_32) AddTo(st, PlcAddressHelper.GetNextAddress(d.Address));
+                        }
                     }
                 }
 
@@ -232,11 +237,12 @@ namespace Kaban.UI.Plc
                     if ((val & bit.Key) != 0)
                     {
                         int st = AlarmManager.StationOf(bit.Value);
-                        AddTo(st, bit.Value.Address);
-                        // Automatically poll the next address if the hardware tag is 32-bit
-                        if (bit.Value.DataType == DataTypeEnum.Bin_32)
+                        foreach (var d in bit.Value.Devices)
                         {
-                            AddTo(st, PlcAddressHelper.GetNextAddress(bit.Value.Address));
+                            if (string.IsNullOrEmpty(d.Address)) continue;
+                            AddTo(st, d.Address);
+                            // Automatically poll the next address if the hardware tag is 32-bit
+                            if (d.DataType == DataTypeEnum.Bin_32) AddTo(st, PlcAddressHelper.GetNextAddress(d.Address));
                         }
                     }
                 }
@@ -566,26 +572,8 @@ namespace Kaban.UI.Plc
                     }
                     else if (rule != null && !string.IsNullOrEmpty(rule.Address))
                     {
-                        int low = lookup(rule.Address);
-                        int currentValue = low;
-
-                        if (rule.DataType == DataTypeEnum.Bin_32)
-                        {
-                            int high = lookup(PlcAddressHelper.GetNextAddress(rule.Address));
-                            currentValue = (int)PlcValueConverter.ConvertToDouble(low, high, rule.DataType, DisplayFormatEnum.Signed_Decimal, 0);
-                        }
-
-                        bool rulePassed = false;
-                        switch (rule.Operator)
-                        {
-                            case ComparisonOperator.Equal: rulePassed = (currentValue == rule.RequiredValue); break;
-                            case ComparisonOperator.NotEqual: rulePassed = (currentValue != rule.RequiredValue); break;
-                            case ComparisonOperator.Greater: rulePassed = (currentValue > rule.RequiredValue); break;
-                            case ComparisonOperator.GreaterOrEqual: rulePassed = (currentValue >= rule.RequiredValue); break;
-                            case ComparisonOperator.Less: rulePassed = (currentValue < rule.RequiredValue); break;
-                            case ComparisonOperator.LessOrEqual: rulePassed = (currentValue <= rule.RequiredValue); break;
-                        }
-                        result &= rulePassed;
+                        // every device's test (a condition of several devices - AnyDevice: one's)
+                        result &= MachineConditionMap.Check(rule, lookup);
                     }
                     else result = false;
                 }

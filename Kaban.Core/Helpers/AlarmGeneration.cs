@@ -531,7 +531,8 @@ namespace Kaban.Core.Helpers
                         if (!string.IsNullOrWhiteSpace(a)) yield return new KeyValuePair<int, string>(c.Station, a.Trim());
                 }
                 foreach (var rule in PositionRules(c))
-                    if (!string.IsNullOrWhiteSpace(rule.Address)) yield return new KeyValuePair<int, string>(c.Station, rule.Address.Trim());
+                    foreach (var d in rule.Devices)          // every device of a condition of several
+                        if (!string.IsNullOrWhiteSpace(d.Address)) yield return new KeyValuePair<int, string>(c.Station, d.Address.Trim());
             }
             foreach (var x in _axes)
             {
@@ -589,7 +590,8 @@ namespace Kaban.Core.Helpers
             add(x.SoftLower, true);
             add(x.UnitWord, false);
             foreach (var r in new[] { x.Running, x.ManualMode })
-                if (r != null && r.PlcNumber == x.Station) add(r.Address, r.DataType == DataTypeEnum.Bin_32);
+                if (r != null && r.PlcNumber == x.Station)
+                    foreach (var d in r.Devices) add(d.Address, d.DataType == DataTypeEnum.Bin_32);
             return list.Distinct(StringComparer.OrdinalIgnoreCase).ToList();
         }
 
