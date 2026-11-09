@@ -490,6 +490,13 @@ namespace Kaban.Machines.FA2010.Screens
                     // its steps, as the unit gets them when it asks (L101 / L103)
                     for (int k = 0; k < m.Steps.Count; k++) notes.Add("        " + (k + 1).ToString(CI) + ". " + m.Steps[k]);
                 }
+                // the profile's mullion notching steps (R25700, with the bar)
+                if (plan.Notch.Count > 0)
+                {
+                    notes.Add(string.Format(T("Job_NotchNote", "Mullion notching: {0} step(s) of the profile (X1 X2 Z1 Z2 Y1 Y2 Step Speed)"), plan.Notch.Count));
+                    for (int k = 0; k < plan.Notch.Count; k++)
+                        notes.Add("        " + (k + 1).ToString(CI) + ". " + string.Join("  ", plan.Notch[k].Select(x => x.ToString("0.##", CI))));
+                }
                 // the special cuts: their parameters (R25650 ...) and the steps the saw gets when it asks (L105)
                 foreach (var sp in plan.Special)
                 {
@@ -557,6 +564,8 @@ namespace Kaban.Machines.FA2010.Screens
                                             plan.Bar.Length.ToString("0.#", CI)) + "\r\n\r\n" +
                               string.Format(T("Job_AskWhat", "{0} step(s) (IDs {1} - {2}) into the job list, {3} milling operation(s), the profile's parameters."),
                                             plan.Steps.Count, plan.FirstNo, plan.LastNo, plan.Milling.Count);
+            if (plan.Notch.Count > 0)
+                question += "\r\n" + string.Format(T("Job_AskNotch", "{0} mullion notching step(s) of the profile (R25700)."), plan.Notch.Count);
             if (plan.Special.Count > 0)
                 question += "\r\n" + string.Format(T("Job_AskSpecial", "{0} special cut(s): their parameters - the saw gets their steps when it asks (L105)."), plan.Special.Count);
             if (trial) question += "\r\n\r\n" + T("Job_AskTrial", "TRIAL: milling positions nobody has confirmed - for a test piece only.");

@@ -182,6 +182,7 @@
     </Compile>
     <Compile Include="Screens\GeneratedPage.cs" />
     <Compile Include="Jobs\JobMilling.cs" />
+    <Compile Include="Jobs\MullionNotch.cs" />
     <Compile Include="Jobs\JobPlan.cs" />
     <Compile Include="Jobs\JobSender.cs" />
     <Compile Include="Screens\SpecialCutsEditor.cs">
@@ -206,6 +207,10 @@
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Screens\ProfilesScreen.Drawing.cs">
+      <DependentUpon>ProfilesScreen.cs</DependentUpon>
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Screens\ProfilesScreen.Notch.cs">
       <DependentUpon>ProfilesScreen.cs</DependentUpon>
       <SubType>UserControl</SubType>
     </Compile>

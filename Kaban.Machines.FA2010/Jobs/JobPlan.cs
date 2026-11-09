@@ -133,6 +133,8 @@ namespace Kaban.Machines.FA2010.Jobs
         public readonly List<MillingOp> Milling = new List<MillingOp>();
         /// <summary>Its special cuts, by number.</summary>
         public readonly List<SpecialCutPlan> Special = new List<SpecialCutPlan>();
+        /// <summary>The profile's mullion notching steps (R25700, before its parameters): X1 X2 Z1 Z2 Y1 Y2 Step Speed each (mm).</summary>
+        public List<double[]> Notch = new List<double[]>();
         /// <summary>The profile's parameters (R25600): member -> value as entered (mm).</summary>
         public Dictionary<string, string> ProfileValues = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         /// <summary>What keeps the bar from being sent.</summary>
@@ -225,6 +227,10 @@ namespace Kaban.Machines.FA2010.Jobs
             var machine = MachineOf(plan.Profile.Id);
             foreach (var kv in machine) plan.ProfileValues[kv.Key] = kv.Value.Value;
             if (machine.Count == 0) plan.Warnings.Add("the profile has no machine settings (its parameters go as 0)");
+            Library.MachineValue notch;
+            if (machine.TryGetValue(MullionNotch.Code, out notch) && notch != null) plan.Notch = MullionNotch.Parse(notch.Value);
+            if (plan.Notch.Count > MullionNotch.MaxSteps)
+                plan.Warnings.Add(string.Format("the profile has {0} mullion notching steps - the PLC takes the first {1}", plan.Notch.Count, MullionNotch.MaxSteps));
 
             if (!_settings.SawThickness.HasValue || _settings.SawThickness.Value <= 0)
                 plan.Problems.Add("the saw blade's thickness is not entered (the cutting settings above)");

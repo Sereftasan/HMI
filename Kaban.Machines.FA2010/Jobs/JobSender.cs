@@ -13,6 +13,8 @@ namespace Kaban.Machines.FA2010.Jobs
     /// "SEND TO THE MACHINE" (the old program's TransferProvider_FXCpu.Transfer): what one bar writes into the PLC, in the label list's
     /// devices (PlcLabels.csv - the PLC Monitor's tab HMI -> PLC shows each), the structures as StructuredTypes.csv lays them out:
     ///
+    ///   PC_OrtakayitKertmeAdimlari R25700   the profile's mullion notching steps, before its parameters - only a profile that has some
+    ///                                       (the old program's WriteNotchInfo: 21 steps of 10 words, the structure Mullion Notching Step)
     ///   PC_ProfilParametreleri     R25600   the profile's parameters (its machine settings in the library)
     ///   PC_FrezeIslemParametreleri R26000   each milling operation's parameters, R26000 + 10 x (code - 1)
     ///   PC_KesimIslemParametreleri R25650   each special cut's parameters, R25650 + 5 x (number - 1): its angle, the V saw's Y approach,
@@ -165,10 +167,41 @@ namespace Kaban.Machines.FA2010.Jobs
         /// <summary>A position into the PLC: x100, as the old program (Convert.ToInt32 of the mm x 100).</summary>
         internal static int Hundredths(double mm) { return Convert.ToInt32(mm * 100); }
 
+        /// <summary>
+        /// The profile's mullion notching steps as the PLC gets them in R25700: 21 steps of the structure Mullion Notching Step (10 words -
+        /// X1 X2 Z1 Z2 Y1 Y2 Step Speed x100, two spare), what is not a step 0 - the old program's 210 words.
+        /// </summary>
+        internal static short[] NotchWords(List<double[]> steps, int station, List<string> problems)
+        {
+            var t = StructuredTypes.Find(MullionNotch.Type, station);
+            if (t == null) { problems.Add("the machine's StructuredTypes.csv has no \"" + MullionNotch.Type + "\""); return new short[0]; }
+            int size = Math.Max(t.Size, t.MinimumSize);
+            var words = new short[MullionNotch.MaxSteps * size];
+            for (int i = 0; i < steps.Count && i < MullionNotch.MaxSteps; i++)
+            {
+                var step = steps[i];
+                var one = Encode(t, m =>
+                {
+                    int f = Array.FindIndex(MullionNotch.Fields, x => string.Equals(x, m.Name, StringComparison.OrdinalIgnoreCase));
+                    return f >= 0 && f < step.Length ? step[f].ToString("0.###", CultureInfo.InvariantCulture) : "";
+                }, problems);
+                Array.Copy(one, 0, words, i * size, Math.Min(one.Length, size));
+            }
+            return words;
+        }
+
         /// <summary>Everything the bar writes, in the order it is written; <paramref name="problems"/> gets what cannot be encoded.</summary>
         internal static List<Block> Blocks(BarPlan plan, int station, List<string> problems)
         {
             var list = new List<Block>();
+            // the profile's mullion notching steps go first (the old program: WriteNotchInfo before the profile's parameters)
+            if (plan.Notch.Count > 0)
+                list.Add(new Block
+                {
+                    Address = AddressOf(station, MullionNotch.Label, "R25700"),
+                    What = string.Format(CultureInfo.InvariantCulture, "the profile's mullion notching steps ({0})", Math.Min(plan.Notch.Count, MullionNotch.MaxSteps)),
+                    Words = NotchWords(plan.Notch, station, problems)
+                });
             var pt = StructuredTypes.Find(ProfileType, station);
             if (pt == null) problems.Add("the machine's StructuredTypes.csv has no \"" + ProfileType + "\"");
             else

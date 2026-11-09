@@ -150,6 +150,7 @@ namespace Kaban.Machines.FA2010.Screens
             BuildTable();
             BuildDetails();
             BuildMachineTab();
+            BuildNotchTab();
             BuildDrawing();
             BuildAccessories();
             BuildPrograms();
@@ -253,6 +254,7 @@ namespace Kaban.Machines.FA2010.Screens
             ApplyDetailsAccess(edit);
             ApplyAccessoriesAccess(edit);
             if (_specialCuts != null) _specialCuts.ApplyAccess(edit);
+            ApplyNotchAccess(edit);
         }
 
         // =====================================================================
@@ -1084,6 +1086,7 @@ namespace Kaban.Machines.FA2010.Screens
             }
             FillDetails();
             FillMachine();
+            FillNotch();
             ShowSpecialCutValues();
             FillReferences();
             ShowDrawing();

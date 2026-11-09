@@ -300,6 +300,7 @@ Prf_ColFamily;Machining family;İşleme ailesi;Семейство обработ
 Prf_ColGroup;Group;Grup;Группа;Gruppe;Gruppo;Grupo
 Prf_ColHeight;Height (mm);Yükseklik (mm);Высота (мм);Höhe (mm);Altezza (mm);Altura (mm)
 Prf_ColMaterial;Material;Malzeme;Материал;Material;Materiale;Material
+Prf_ColNo;No;No;;;;
 Prf_ColPlacements;Confirmed;Onaylı;Подтверждено;Bestätigt;Confermati;Confirmados
 Prf_ColRefs;Reference points;Referans noktaları;Опорные точки;Bezugspunkte;Punti di riferimento;Puntos de referencia
 Prf_ColSeries;Series;Seri;Серия;Serie;Serie;Serie
@@ -390,6 +391,20 @@ Prf_NoOps;No accessory operations on this profile.;Bu profilde aksesuar işlemi 
 Prf_NoOriginal;No drawing to go back to.;Dönülecek çizim yok.;Нет чертежа, к которому вернуться.;Keine Zeichnung zum Zurückkehren.;Nessun disegno a cui tornare.;No hay dibujo al que volver.
 Prf_NoPlacements;No placements: give the group an accessory (➕), and set the reference points it is measured from.;Yerleşim yok: gruba bir aksesuar verin (➕) ve ölçüldüğü referans noktalarını girin.;Размещений нет: назначьте группе фурнитуру (➕) и задайте опорные точки, от которых она измеряется.;Keine Platzierungen: der Gruppe einen Beschlag geben (➕) und die Bezugspunkte setzen, von denen er bemaßt wird.;Nessun posizionamento: assegnate un accessorio al gruppo (➕) e impostate i punti di riferimento da cui è misurato.;No hay colocaciones: asigne un accesorio al grupo (➕) y fije los puntos de referencia desde los que se mide.
 Prf_None;(none);(yok);(нет);(keine);(nessuno);(ninguno)
+Prf_NotchAdd;+ Step;+ Adım;;;;
+Prf_NotchDownTip;Move the step down;Adımı aşağı taşı;;;;
+Prf_NotchFromGroup;These are its group's steps ({0}) - a change makes them this profile's own.;Bunlar grubunun adımları ({0}) - bir değişiklik onları bu profilin kendi adımları yapar.;;;;
+Prf_NotchHead;Sent to the PLC with each bar of this profile, before its parameters ({0}, {1}): a step a line in mm, {2} steps at most. A change is kept at once.;Bu profilin her barıyla, parametrelerinden önce PLC'ye gönderilir ({0}, {1}): her satır bir adım, mm, en çok {2} adım. Bir değişiklik hemen saklanır.;;;;
+Prf_NotchNone;No mullion notching steps: nothing goes to R25700 with this profile's bars.;Ortakayıt kertme adımı yok: bu profilin barlarıyla R25700'e bir şey gitmez.;;;;
+Prf_NotchOwn;These steps are this profile's own.;Bu adımlar bu profilin kendi adımları.;;;;
+Prf_NotchOwnNone;This profile has no mullion notching steps of its own (its group's are not taken).;Bu profilin kendi ortakayıt kertme adımı yok (grubununkiler alınmaz).;;;;
+Prf_NotchRemove;− Step;− Adım;;;;
+Prf_NotchSpeed;Speed;Hız;;;;
+Prf_NotchStep;Step;Adım;;;;
+Prf_NotchTooBig;{0}: {1} does not fit the PLC's word (x100: -327.68 - 327.67).;{0}: {1} PLC'nin word'üne sığmaz (x100: -327.68 - 327.67).;;;;
+Prf_NotchUpTip;Move the step up;Adımı yukarı taşı;;;;
+Prf_NotchUseGroup;Use the group's steps;Grubun adımlarını kullan;;;;
+Prf_NotchUseGroupTip;Forget this profile's own steps - its group's template's are taken again;Bu profilin kendi adımlarını unut - grubunun şablon profilininkiler yeniden alınır;;;;
 Prf_NotCut;element(s) will not be cut.;eleman kesilmeyecek.;элемент(ов) не будет вырезано.;Element(e) werden nicht geschnitten.;elemento/i non verranno tagliati.;elemento(s) no se cortarán.
 Prf_Note;Note :;Not :;Примечание :;Notiz :;Nota :;Nota :
 Prf_NothingToSave;Make the program first (⚙).;Önce programı oluşturun (⚙).;Сначала создайте программу (⚙).;Zuerst das Programm erstellen (⚙).;Prima create il programma (⚙).;Primero cree el programa (⚙).
@@ -464,6 +479,7 @@ Prf_StRefs;reference points to check;kontrol edilecek referans noktaları;опо
 Prf_Summary;{0} reference point(s), {1} of {2} placement(s) confirmed;{0} referans noktası, {2} yerleşimden {1} tanesi onaylı;опорных точек: {0}, подтверждено размещений: {1} из {2};{0} Bezugspunkt(e), {1} von {2} Platzierung(en) bestätigt;{0} punti di riferimento, {1} di {2} posizionamenti confermati;{0} punto(s) de referencia, {1} de {2} colocación(es) confirmadas
 Prf_TabAccessories;Accessories;Aksesuarlar;;;;
 Prf_TabEndMill;End milling;Uç frezeleme;Торцевое фрезерование;Stirnfräsen;Fresatura di testa;Fresado de testa
+Prf_TabNotch;Mullion notching;Ortakayıt kertme;;;;
 Prf_TabProfile;Profile;Profil;Профиль;Profil;Profilo;Perfil
 Prf_TabRefs;Reference points;Referans noktaları;Опорные точки;Bezugspunkte;Punti di riferimento;Puntos de referencia
 Prf_TabSide;Accessories;Aksesuarlar;Фурнитура;Beschläge;Accessori;Accesorios
@@ -725,6 +741,7 @@ Alarm_FA2010.OKayitKertmeUnitesi_Asagi_Inemedi;OKayitKertmeUnitesi_Asagi_Inemedi
 Btn_SafetyBypass;Safety Bypass;Güvenlik Bypass;;;;
 Btn_CylinderFwBack;Automatic ON/OFF;Otomatik ON/OFF;;;;
 Job_Ask;Send bar {0} ({1}, {2} piece(s), {3} mm) to the machine?;{0}. bar ({1}, {2} parça, {3} mm) makineye gönderilsin mi?;;;;
+Job_AskNotch;{0} mullion notching step(s) of the profile (R25700).;Profilin {0} ortakayıt kertme adımı (R25700).;;;;
 Job_AskSpecial;{0} special cut(s): their parameters - the saw gets their steps when it asks (L105).;{0} özel kesim: parametreleri - adımlarını testere istediğinde alır (L105).;;;;
 Job_AskTrial;TRIAL: milling positions nobody has confirmed - for a test piece only.;DENEME: kimsenin onaylamadığı frezeleme konumları - yalnızca deneme parçası için.;;;;
 Job_AskWhat;{0} step(s) (IDs {1} - {2}) into the job list, {3} milling operation(s), the profile's parameters.;İş listesine {0} adım (ID {1} - {2}), {3} frezeleme işlemi, profilin parametreleri.;;;;
@@ -766,6 +783,7 @@ Job_LinesNotRead;{0} line(s) of the file not read (the notes below).;Dosyanın {
 Job_Longest;Longest piece mm;En uzun parça mm;;;;
 Job_NeedsTrial;{0} milling operation(s) of bar {1} are not confirmed on the profile {2}. Confirm them on the Profiles page - or, at the Maintenance level, tick Trial to send them for a test piece.;{1}. barın {0} frezeleme işlemi {2} profilinde onaylanmamış. Profiller sayfasında onaylayın - ya da Bakım seviyesinde, deneme parçası için göndermek üzere Deneme'yi işaretleyin.;;;;
 Job_NoLevel;Sending a job needs the Operator level.;İş göndermek için Operatör seviyesi gerekir.;;;;
+Job_NotchNote;Mullion notching: {0} step(s) of the profile (X1 X2 Z1 Z2 Y1 Y2 Step Speed);Ortakayıt kertme: profilin {0} adımı (X1 X2 Z1 Z2 Y1 Y2 Adım Hız);;;;
 Job_RcAdd;Recipe;Reçete;;;;
 Job_RcAngle;Starting angle °;Başlangıç açısı °;;;;
 Job_RcAskDelete;Delete recipe {0}?;{0} reçetesi silinsin mi?;;;;
