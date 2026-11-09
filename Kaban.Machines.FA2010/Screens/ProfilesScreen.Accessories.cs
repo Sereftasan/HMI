@@ -153,7 +153,8 @@ namespace Kaban.Machines.FA2010.Screens
             split.HandleCreated += (s, e) => { try { split.SplitterDistance = Math.Max(90, split.Height / 3); } catch { } };
             root.Controls.Add(split);
             root.Controls.Add(tune);
-            AddPane("accessories", T("Prf_PaneAccessories", "Accessories")).Controls.Add(root);
+            // the special cut recipes beside them (7 November: "just like the accessories")
+            AddPane("accessories", T("Prf_PaneAccessories", "Accessories")).Controls.Add(WithSpecialCuts(root));
         }
 
         private void ApplyAccessoriesAccess(bool edit)

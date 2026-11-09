@@ -1,0 +1,68 @@
+# The special cut recipes of FA2010_DeviceList_22.09.14_FX5.xls (sheet "Kırlangıç Kesim") - tools/special_cuts_from_devicelist.py.
+# Their left / right special cut codes, starting angle and saw dust width are not in the sheet: to be set on the Profiles page.
+# recipe;no;name;left code;right code;starting angle;exit robot holding;robot X offset;saw dust width;with L value;with R value
+# step;command;left clamp;right clamp;robot 1;robot 2;angle;V cut Y
+recipe;1;First End Arrow;0;0;0;50;-W/2-O;;0;0
+step;1;1;0;;;0;
+step;4;0;0;;;45;
+step;2;1;0;;;0;
+step;3;0;0;-W-2*O;;0;
+step;1;1;0;;;0;
+step;4;0;0;;;135;
+step;2;1;0;;;0;
+recipe;2;Back Open Y;0;0;0;W/2+2*O;0;;0;0
+step;1;1;1;;;0;
+step;4;0;0;;;90;
+step;2;1;1;;;0;
+step;3;0;0;150;-W/2-O+(0.707-0.5)*T;0;
+step;1;0;1;;;0;
+step;4;0;0;;;45;
+step;2;0;1;;;0;
+step;6;0;0;;;0;
+step;3;0;0;-150-W/2-O+(0.707-0.5)*T;;0;
+step;1;1;0;;;0;
+step;4;0;0;;;135;
+step;2;0;0;;;0;
+recipe;3;Front Open Y;0;0;0;0;-D;;0;0
+step;1;1;1;;;0;
+step;5;0;0;;;0;W/2-O
+step;2;1;1;;;0;
+step;3;0;0;-D;;0;
+step;1;1;1;;;0;
+step;4;0;0;;;90;
+step;2;1;1;;;0;
+step;6;0;0;;;0;
+recipe;4;Right Arrow Left 90;0;0;0;W/2+O;0;;0;0
+step;1;1;1;;;0;
+step;4;0;0;;;90;
+step;2;1;1;;;0;
+step;3;0;0;150;-W/2-O;0;
+step;1;0;1;;;0;
+step;4;0;0;;;45;
+step;2;0;1;;;0;
+step;3;0;0;;W+2*O;0;
+step;1;0;1;;;0;
+step;4;0;0;;;135;
+step;2;0;1;;;0;
+step;6;0;0;;;0;
+recipe;5;Right 90 Left Arrow;0;0;0;0;0;;0;0
+step;1;1;1;;;0;
+step;4;0;0;;;90;
+step;6;0;0;;;0;
+step;3;0;0;W/2+O;;0;
+step;1;1;0;;;0;
+step;4;0;0;;;45;
+step;2;1;0;;;0;
+step;3;0;0;-W-2*O;;0;
+step;1;1;0;;;0;
+step;4;0;0;;;135;
+step;2;1;0;;;0;
+recipe;6;Right Arrow Left Arrow;0;0;0;0;-W/2-O;;0;0
+step;1;1;1;;;0;
+step;4;0;0;;;45;
+step;2;1;1;;;0;
+step;3;0;0;-W-2*O;W+2*O;0;
+step;1;1;1;;;0;
+step;4;0;0;;;135;
+step;2;1;1;;;0;
+step;6;0;0;;W+2*O;0;

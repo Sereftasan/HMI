@@ -83,13 +83,23 @@ class JS {
         ((NumericUpDown)Get(page, "_numSaw")).Value = 4.2M;
         ((NumericUpDown)Get(page, "_numVSaws")).Value = 50M;
         Pump(50);
-        Check("the V saws' distance kept with the cutting settings", Library.Setting(inst, "job_v_saws_distance_mm", "") == "50", Library.Setting(inst, "job_v_saws_distance_mm", ""));
+        Check("the saw - V cut distance (D) kept with the cutting settings", Library.Setting(inst, "job_v_saws_distance_mm", "") == "50", Library.Setting(inst, "job_v_saws_distance_mm", ""));
 
-        // ---- the recipes' editor ----
-        var dlgType = asm.GetType("Kaban.Machines.FA2010.Screens.SpecialCutsDialog");
-        var d = (Form)Activator.CreateInstance(dlgType, BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public, null,
-                                               new object[] { new List<SpecialCutRecipe>(), true }, null);
-        d.Show();
+        // ---- the recipes' editor: on the Profiles page, a tab beside the accessories (7 November: "The special cut recipes should be
+        //      edited in the profiles page btw (just like the accessories ...)") ----
+        var dlgType = asm.GetType("Kaban.Machines.FA2010.Screens.SpecialCutsEditor");
+        var pform = new Form { ClientSize = new Size(1500, 900) };
+        var prof = new Kaban.Machines.FA2010.Screens.ProfilesScreen();
+        pform.Controls.Add(prof);
+        pform.Show();
+        Pump(200);
+        Call(prof, "EnsureLibrary");
+        Pump(100);
+        var d = (Control)Get(prof, "_specialCuts");
+        var accTabs = (TabControl)Get(prof, "_accTabs");
+        Check("the Profiles page's Accessories pane: a tab of the special cut recipes beside the accessories", d != null && accTabs.TabPages.Count == 2 &&
+              accTabs.TabPages[1].Controls.Contains(d), accTabs.TabPages.Count + " " + string.Join(", ", accTabs.TabPages.Cast<TabPage>().Select(t => t.Text)));
+        accTabs.SelectedIndex = 1;
         Pump(100);
         var rg = (DataGridView)Get(d, "_recipes");
         var sg = (DataGridView)Get(d, "_steps");
@@ -127,9 +137,30 @@ class JS {
         Check("the old program's recipes imported (asked before the one here is replaced)", (bool)Call(d, "ImportFrom", rc, dc) && said.Any(s => s.Contains("Replace")) &&
               ((List<SpecialCutRecipe>)Get(d, "Recipes")).Count == 2 && rg.Rows.Count == 2, string.Join(" / ", said));
         rec = (List<SpecialCutRecipe>)Get(d, "Recipes");
-        Call(settingsType, "SaveRecipes", inst, rec);
-        d.Close();
-        Check("  kept in the library (the machine's settings)", Library.Setting(inst, "job_special_cut_recipes", "").Contains("recipe;2;Son <> 5"));
+        Check("  not kept until saved", (bool)Get(d, "Dirty") && !Library.Setting(inst, "job_special_cut_recipes", "").Contains("Son"));
+        Check("  saved: kept in the library (the machine's settings)", (bool)Call(d, "Save") && !(bool)Get(d, "Dirty") &&
+              Library.Setting(inst, "job_special_cut_recipes", "").Contains("recipe;2;Son <> 5"));
+        // the values of the profile on display: its Cut Full Width W 70, the saw blade T 4.2, D 50
+        Call(prof, "SelectProfile", frame.Id);
+        Pump(100);
+        rg.CurrentCell = rg.Rows[0].Cells["name"];
+        Pump(50);
+        string preview = (string)Get(d, "PreviewText");
+        Check("  under the recipe: its values for the profile on display (W 70: holding W/2 = 35, X offset -T = -4.2)",
+              preview.Contains("ML8-F-4501") && preview.Contains("W 70") && preview.Contains("35") && preview.Contains("-4.2"), preview);
+        // the device list's samples ("Kırlangıç Kesim")
+        dlgType.GetField("SamplesPath", Any).SetValue(null, "/home/claude/work/Kaban.Machines.FA2010/SpecialCutSamples.csv");
+        said.Clear();
+        int added = (int)Call(d, "AddSamples");
+        rec = (List<SpecialCutRecipe>)Get(d, "Recipes");
+        Check("the device list's 6 sample recipes added after them (numbers 3 - 8), saying their codes are to be typed in",
+              added == 6 && rec.Count == 8 && rec[2].No == 3 && rec[2].Name == "First End Arrow" && rec[2].RobotXOffset == "-W/2-O" &&
+              rec.Any(r => r.Name == "Front Open Y" && r.Steps.Any(st => st.Command == 5 && st.VCutY == "W/2-O")) && said.Any(t => t.Contains("codes")),
+              added + ": " + string.Join(", ", rec.Select(r => r.No + " " + r.Name)));
+        Check("  their formulas can all be worked out", (bool)Call(d, "Check"));
+        Call(d, "Revert");
+        Check("  Undo the changes: back to the 2 kept", ((List<SpecialCutRecipe>)Get(d, "Recipes")).Count == 2);
+        pform.Close();
 
         // ---- a job of special ends and a V cut ----
         string job = Path.Combine(dir, "Special.kbn");

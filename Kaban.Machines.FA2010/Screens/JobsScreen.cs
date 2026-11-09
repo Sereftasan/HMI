@@ -42,7 +42,7 @@ namespace Kaban.Machines.FA2010.Screens
         private readonly ComboBox _cmbRecent = new ComboBox();
         private readonly NumericUpDown _numSaw = Num(0, 20), _numShare = Num(-50, 50), _numSquare = Num(0, 9999), _numLongest = Num(0, 99999), _numVSaws = Num(0, 999);
         private readonly CheckBox _chkTrial = new CheckBox();
-        private Button _btnSend, _btnOpen, _btnReload, _btnRecipes;
+        private Button _btnSend, _btnOpen, _btnReload;
         private readonly DataGridView _bars = new DataGridView(), _pieces = new DataGridView(), _steps = new DataGridView();
         private readonly TextBox _notes = new TextBox();
         private readonly Label _lblBar = new Label();
@@ -129,15 +129,8 @@ namespace Kaban.Machines.FA2010.Screens
             _numLongest.Increment = 100;
             _numSquare.DecimalPlaces = 0;
             _numSquare.Increment = 50;
-            setting("Job_VSaws", "V saws' distance mm", _numVSaws, "The distance between the V saws - the special cut recipes' D");
-            // the special cut recipes ("<>" cuts - the saw asks for their steps with L105, the code in D65)
-            _btnRecipes = UiStyle.TextButton("<> " + T("Job_Recipes", "Special cut recipes..."), 0, (s, e) => EditRecipes());
-            _btnRecipes.Font = UiStyle.Small;
-            _btnRecipes.Height = 26;
-            _btnRecipes.Width = TextRenderer.MeasureText(_btnRecipes.Text, _btnRecipes.Font).Width + 28;
-            _btnRecipes.Margin = new Padding(14, 0, 0, 0);
-            _tips.SetToolTip(_btnRecipes, T("Job_TipRecipes", "The recipes of the special cuts: how the saw, the robots and the clamps make a joint of special ends"));
-            cutting.Controls.Add(_btnRecipes);
+            // the device list's "Kırlangıç Kesim" sheet: D "Testere - V_Kesim merkez mesafesi" - the special cut recipes' D (the recipes: the Profiles page)
+            setting("Job_SawToVCut", "Saw - V cut distance mm", _numVSaws, "The distance between the saw and the V cut's centre - the special cut recipes' D (the recipes are on the Profiles page)");
 
             // ---- the bars | the bar's pieces, its job list and notes --------------------------------------------
             GridOf(_bars, new[] { "bar", "profile", "state", "pieces", "accessories", "length", "leftover", "name", "colour" },
@@ -314,21 +307,6 @@ namespace Kaban.Machines.FA2010.Screens
             _chkTrial.Enabled = CanSet;
             if (!CanSet) _chkTrial.Checked = false;
             UpdateSend();
-        }
-
-        /// <summary>The special cut recipes' editor (the Maintenance level changes them; the others see them).</summary>
-        internal void EditRecipes()
-        {
-            EnsureLibrary();
-            if (!_libraryOk) { Ask.Tell(FindForm(), T("Job_RecipesTitle", "Special cut recipes"), T("Prf_NoLibrary", "The profile library could not be opened:") + " " + _libraryWhy); return; }
-            using (var d = new SpecialCutsDialog(Settings.Recipes, CanSet))
-            {
-                if (d.ShowDialog(FindForm()) != DialogResult.OK || !CanSet) return;
-                JobSettings.SaveRecipes(_instance, d.Recipes);
-                AuditLogger.Log(string.Format(CI, "[JOB] the special cut recipes saved: {0} recipe(s) ({1})", d.Recipes.Count,
-                    string.Join(", ", d.Recipes.Select(r => r.No.ToString(CI)))));
-            }
-            Replan();
         }
 
         // =====================================================================
@@ -520,7 +498,7 @@ namespace Kaban.Machines.FA2010.Screens
                     for (int k = 0; k < sp.Steps.Count; k++)
                     {
                         var st = sp.Steps[k];
-                        notes.Add(string.Format(CI, "        {0}. {1}{2}", k + 1, SpecialCutsDialog.CommandName(st.Command),
+                        notes.Add(string.Format(CI, "        {0}. {1}{2}", k + 1, SpecialCutsEditor.CommandName(st.Command),
                             StepText(st)));
                     }
                 }

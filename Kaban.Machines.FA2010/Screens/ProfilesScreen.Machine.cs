@@ -164,6 +164,7 @@ namespace Kaban.Machines.FA2010.Screens
             Library.SetMachineSetting(_current.Id, _instance, code, Normal(value));
             AuditLogger.Log("profile library: " + _current.Code + " - machine setting " + code + " = " + Normal(value) + ".");
             if (IsHandleCreated) BeginInvoke((Action)FillMachine); else FillMachine();
+            ShowSpecialCutValues();
         }
     }
 }

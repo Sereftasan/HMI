@@ -67,7 +67,9 @@
   (D5000 / D6000 / D7000, 999999 last). Codes: a cut 1000 + 10 x angle (2800 - 10 x angle at a right end), a milling operation 1 - 100, a special
   cut 1000 + its number (1001 - 1010), a V cut 3000. On the PLC's request (JobMilling): L101 + D60 -> R0 / L102, L103 + D61 -> R12800 / L104
   (the milling steps), L105 + D65 -> R25700 / L106 (a special cut's steps). The special cut recipes (the old program's saw receipts, formulas of
-  T D W O L R) are the machine's settings in the library - the Jobs page's Special cut recipes... (entered, or its tables imported as CSV).
+  T D W O L R - the device list's "Kırlangıç Kesim" sheet) are the machine's settings in the library, edited on the Profiles page's
+  Accessories pane, tab Special cuts (7 November: "just like the accessories"; entered, the old program's tables imported as CSV, or the device
+  list's samples - Kaban.Machines.FA2010\SpecialCutSamples.csv, made by tools\special_cuts_from_devicelist.py).
 - FA2010's PlcLabels.csv is kept by hand since 22 October (tools\build_plc_labels.py would lose its tail): the structured labels of
   FA2010_DeviceList's Profiles & Operations (StructuredTypes.csv: Profile Parameters R25600 with R25615 Profile Correction Position, the job
   list D5000 / D6000 / D7000, milling parameters and steps, special cuts, mullion notching) and every PC_ device of its ManualMovement sheet,

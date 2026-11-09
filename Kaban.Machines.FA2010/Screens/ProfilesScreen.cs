@@ -252,6 +252,7 @@ namespace Kaban.Machines.FA2010.Screens
             foreach (var c in _editControls) c.Enabled = edit;
             ApplyDetailsAccess(edit);
             ApplyAccessoriesAccess(edit);
+            if (_specialCuts != null) _specialCuts.ApplyAccess(edit);
         }
 
         // =====================================================================
@@ -956,6 +957,7 @@ namespace Kaban.Machines.FA2010.Screens
         /// <summary>Reads every profile of the library into the table.</summary>
         private void LoadRows()
         {
+            LoadSpecialCuts();                              // the machine's recipes, with the library
             _table.Rows.Clear();
             if (!_libraryOk)
             {
@@ -1082,6 +1084,7 @@ namespace Kaban.Machines.FA2010.Screens
             }
             FillDetails();
             FillMachine();
+            ShowSpecialCutValues();
             FillReferences();
             ShowDrawing();
             FillAccessories();

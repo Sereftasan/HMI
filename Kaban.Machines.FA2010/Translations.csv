@@ -419,6 +419,7 @@ Prf_ProgramLine;Program line;Program satırı;Строка программы;Pr
 Prf_ProgramMade;{0} operation(s), {1} cut(s) on a {2} mm bar{3}.;{0} işlem, {2} mm profilde {1} kesim{3}.;Операций: {0}, резов: {1} на заготовке {2} мм{3}.;{0} Bearbeitung(en), {1} Schnitt(e) an einem Stab von {2} mm{3}.;{0} lavorazioni, {1} tagli su una barra di {2} mm{3}.;{0} operación(es), {1} corte(s) en una barra de {2} mm{3}.
 Prf_ProgramSaved;Saved as {0}.;{0} olarak kaydedildi.;Сохранено как {0}.;Gespeichert als {0}.;Salvato come {0}.;Guardado como {0}.
 Prf_ReadFailed;The library could not be read:;Kütüphane okunamadı:;Не удалось прочитать библиотеку:;Die Bibliothek konnte nicht gelesen werden:;Impossibile leggere la libreria:;No se pudo leer la biblioteca:
+Prf_RecipesSaved;{0} special cut recipe(s) saved.;{0} özel kesim reçetesi kaydedildi.;;;;
 Prf_RefConfirmed;Confirmed;Onaylayan;Подтверждено;Bestätigt;Confermato;Confirmado
 Prf_RefHint;Select a point to see how it was found. Double-click Y or Z to type it.;Nasıl bulunduğunu görmek için bir nokta seçin. Yazmak için Y veya Z'ye çift tıklayın.;Выберите точку, чтобы увидеть, как она найдена. Двойной щелчок по Y или Z - ввод значения.;Einen Punkt wählen, um zu sehen, wie er gefunden wurde. Doppelklick auf Y oder Z zum Eintippen.;Selezionate un punto per vedere come è stato trovato. Doppio clic su Y o Z per digitarlo.;Seleccione un punto para ver cómo se encontró. Doble clic en Y o Z para escribirlo.
 Prf_RefNotSet;not set;girilmedi;не задано;nicht gesetzt;non impostato;sin fijar
@@ -461,11 +462,13 @@ Prf_StNoDrawing;no drawing;çizim yok;нет чертежа;keine Zeichnung;ness
 Prf_StReady;ready;hazır;готово;bereit;pronto;listo
 Prf_StRefs;reference points to check;kontrol edilecek referans noktaları;опорные точки для проверки;Bezugspunkte zu prüfen;punti di riferimento da controllare;puntos de referencia por comprobar
 Prf_Summary;{0} reference point(s), {1} of {2} placement(s) confirmed;{0} referans noktası, {2} yerleşimden {1} tanesi onaylı;опорных точек: {0}, подтверждено размещений: {1} из {2};{0} Bezugspunkt(e), {1} von {2} Platzierung(en) bestätigt;{0} punti di riferimento, {1} di {2} posizionamenti confermati;{0} punto(s) de referencia, {1} de {2} colocación(es) confirmadas
+Prf_TabAccessories;Accessories;Aksesuarlar;;;;
 Prf_TabEndMill;End milling;Uç frezeleme;Торцевое фрезерование;Stirnfräsen;Fresatura di testa;Fresado de testa
 Prf_TabProfile;Profile;Profil;Профиль;Profil;Profilo;Perfil
 Prf_TabRefs;Reference points;Referans noktaları;Опорные точки;Bezugspunkte;Punti di riferimento;Puntos de referencia
 Prf_TabSide;Accessories;Aksesuarlar;Фурнитура;Beschläge;Accessori;Accesorios
 Prf_TableReset;Table view reset.;Tablo görünümü sıfırlandı.;Вид таблицы сброшен.;Tabellenansicht zurückgesetzt.;Vista della tabella ripristinata.;Vista de la tabla restablecida.
+Prf_TabSpecialCuts;Special cuts (<>);Özel kesimler (<>);;;;
 Prf_TipAccOn;Off: the group keeps the accessory but it is not machined;Kapalı: grup aksesuarı tutar ama işlenmez;Выкл.: группа сохраняет фурнитуру, но она не обрабатывается;Aus: die Gruppe behält den Beschlag, er wird aber nicht bearbeitet;Spento: il gruppo tiene l'accessorio ma non viene lavorato;Apagado: el grupo conserva el accesorio pero no se mecaniza
 Prf_TipAdd;A new profile, in the group of the one selected;Seçili profilin grubunda yeni bir profil;Новый профиль в группе выбранного;Ein neues Profil in der Gruppe des gewählten;Un nuovo profilo nel gruppo di quello selezionato;Un perfil nuevo en el grupo del seleccionado
 Prf_TipAddAcc;Give an accessory to the profile's GROUP (every profile of the group takes it) - those that fit its hardware interface come first;Profilin GRUBUNA bir aksesuar verin (grubun her profili alır) - aksesuar arayüzüne uyanlar önce gelir;Назначить фурнитуру ГРУППЕ профиля (её получит каждый профиль группы) - подходящие к интерфейсу идут первыми;Dem Profil-GRUPPE einen Beschlag geben (jedes Profil der Gruppe erhält ihn) - passende zur Schnittstelle zuerst;Assegnare un accessorio al GRUPPO del profilo (ogni profilo del gruppo lo riceve) - prima quelli adatti all'interfaccia;Asignar un accesorio al GRUPO del perfil (cada perfil del grupo lo recibe) - primero los que se ajustan a su interfaz
@@ -779,17 +782,26 @@ Job_RcLeft;Left code;Sol kod;;;;
 Job_RcName;Name;Ad;;;;
 Job_RcNew;New recipe;Yeni reçete;;;;
 Job_RcNo;No;No;;;;
+Job_RcNoProfile;Select a profile to see the recipe's values for it.;Reçetenin değerlerini görmek için bir profil seçin.;;;;
+Job_RcNoSamples;The samples' file (SpecialCutSamples.csv) is not beside the program.;Örnek dosyası (SpecialCutSamples.csv) programın yanında yok.;;;;
 Job_RcOffL;With L value;L değerli;;;;
 Job_RcOffR;With R value;R değerli;;;;
 Job_RcOffset;Robot X offset;Robot X ofseti;;;;
+Job_RcRevert;Undo the changes;Değişiklikleri geri al;;;;
 Job_RcRight;Right code;Sağ kod;;;;
+Job_RcSamples;Device list samples;Cihaz listesi örnekleri;;;;
+Job_RcSamplesAdded;{0} sample recipe(s) of the device list added. Their left and right codes, starting angle and saw dust width are not in the device list - type them in, then Save.;Cihaz listesinden {0} örnek reçete eklendi. Sol ve sağ kodları, başlangıç açısı ve talaş genişliği cihaz listesinde yok - bunları girin, sonra Kaydet.;;;;
+Job_RcSamplesThere;The device list's samples are here already.;Cihaz listesinin örnekleri zaten burada.;;;;
+Job_RcSave;Save;Kaydet;;;;
 Job_RcTooMany;{0}: {1} steps - the PLC takes {2};{0}: {1} adım - PLC {2} alır;;;;
 Job_RcTwice;recipe number {0} twice;{0} numaralı reçete iki kez;;;;
+Job_RcUnsaved;changed - not saved yet;değişti - henüz kaydedilmedi;;;;
+Job_RcValuesOf;For {0} (W {1}, T {2}, O {3}, D {4}; L = R = 0):;;;;
 Job_ReadFailed;The job file could not be read: {0};İş dosyası okunamadı: {0};;;;
-Job_Recipes;Special cut recipes...;Özel kesim reçeteleri...;;;;
-Job_RecipesHelp;A recipe makes the joint of a piece's right end (its right code) and the next piece's left end (its left code) - an ordinary end's code is its angle, 0 any: a recipe of one special end is merged with one of the other end when no recipe has both. Formulas: T the saw blade, D the V saws' distance, W the profile's Cut Full Width, O the vertical share, L and R the job file's left and right values.;Bir reçete, bir parçanın sağ ucu (sağ kodu) ile sonraki parçanın sol ucunun (sol kodu) birleşimini keser - sıradan bir ucun kodu açısıdır, 0 herhangi biri: hiçbir reçetede ikisi birden yoksa tek özel uçlu bir reçete diğer ucunkiyle birleştirilir. Formüller: T testere kalınlığı, D V testereleri arası mesafe, W profilin Kesim Tam Genişliği, O dikey pay, L ve R iş dosyasının sol ve sağ değerleri.;;;;
+Job_RecipesHelp2;A recipe makes the joint of a piece's right end (its right code) and the next piece's left end (its left code) - an ordinary end's code is its angle, 0 any: a recipe of one special end is merged with one of the other end when no recipe has both. Formulas: T the saw blade, D the saw - V cut distance, W the profile's Cut Full Width, O the cut length offset, L and R the job file's left and right values.;Bir reçete, bir parçanın sağ ucu (sağ kodu) ile sonraki parçanın sol ucunun (sol kodu) birleşimini keser - sıradan bir ucun kodu açısıdır, 0 herhangi biri: hiçbir reçetede ikisi birden yoksa tek özel uçlu bir reçete diğer ucunkiyle birleştirilir. Formüller: T testere kalınlığı, D testere - V kesim mesafesi, W profilin Kesim Tam Genişliği, O kesim boy ofseti, L ve R iş dosyasının sol ve sağ değerleri.;;;;
 Job_RecipesTitle;Special cut recipes;Özel kesim reçeteleri;;;;
 Job_Saw;Saw blade mm;Testere kalınlığı mm;;;;
+Job_SawToVCut;Saw - V cut distance mm;Testere - V kesim mesafesi mm;;;;
 Job_Send;Send to the machine;Makineye gönder;;;;
 Job_SendFailed;Bar {0} was not sent: {1};{0}. bar gönderilmedi: {1};;;;
 Job_Sent;Bar {0} sent to the machine: {1} step(s), {2} milling operation(s){3}.;{0}. bar makineye gönderildi: {1} adım, {2} frezeleme işlemi{3}.;;;;
@@ -814,13 +826,11 @@ Job_TipOpen;Open a job file (.kbn) - the window software's job list for the mach
 Job_TipRcOffL;The recipe for a left end that has a value (L not 0);Değeri olan bir sol uç için reçete (L 0 değil);;;;
 Job_TipRcOffR;The recipe for a right end that has a value (R not 0);Değeri olan bir sağ uç için reçete (R 0 değil);;;;
 Job_TipRecent;The jobs opened lately;Son açılan işler;;;;
-Job_TipRecipes;The recipes of the special cuts: how the saw, the robots and the clamps make a joint of special ends;Özel kesimlerin reçeteleri: testere, robotlar ve sıkmalar özel uçların birleşimini nasıl keser;;;;
 Job_TipReload;Read the job file and the profile library again;İş dosyasını ve profil kütüphanesini yeniden oku;;;;
 Job_TipSaw;The main saw blade's thickness: half of it, at the cut's angle, on each side of every cut;Ana testere bıçağının kalınlığı: yarısı, kesimin açısında, her kesimin iki yanında;;;;
+Job_TipSawToVCut;The distance between the saw and the V cut's centre - the special cut recipes' D (the recipes are on the Profiles page);Testere ile V kesim merkezi arasındaki mesafe - özel kesim reçetelerinin D'si (reçeteler Profiller sayfasında);;;;
 Job_TipSend;Write the selected bar into the PLC: the profile's parameters, its milling operations, the job list;Seçili barı PLC'ye yaz: profilin parametreleri, frezeleme işlemleri, iş listesi;;;;
 Job_TipShare;The saw's vertical share (the old program's): added at an angled cut over its tangent;Testerenin dikey payı (eski programdaki): açılı kesimde tanjantına bölünerek eklenir;;;;
 Job_TipSquare;A leftover this long or longer is squared (a 90 degree cut) when the last cut is not;Son kesim gönye değilse, bu boyda veya daha uzun bir artan 90 derece kesilir;;;;
 Job_TipTrial;Send milling positions nobody has confirmed on the Profiles page - for a test piece only (the Maintenance level);Profiller sayfasında kimsenin onaylamadığı frezeleme konumlarını gönder - yalnızca deneme parçası için (Bakım seviyesi);;;;
-Job_TipVSaws;The distance between the V saws - the special cut recipes' D;V testereleri arasındaki mesafe - özel kesim reçetelerinin D'si;;;;
 Job_Trial;Trial;Deneme;;;;
-Job_VSaws;V saws' distance mm;V testere mesafesi mm;;;;

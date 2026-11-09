@@ -184,8 +184,8 @@
     <Compile Include="Jobs\JobMilling.cs" />
     <Compile Include="Jobs\JobPlan.cs" />
     <Compile Include="Jobs\JobSender.cs" />
-    <Compile Include="Screens\SpecialCutsDialog.cs">
-      <SubType>Form</SubType>
+    <Compile Include="Screens\SpecialCutsEditor.cs">
+      <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Screens\JobsScreen.cs">
       <SubType>UserControl</SubType>
@@ -206,6 +206,10 @@
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Screens\ProfilesScreen.Drawing.cs">
+      <DependentUpon>ProfilesScreen.cs</DependentUpon>
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Screens\ProfilesScreen.SpecialCuts.cs">
       <DependentUpon>ProfilesScreen.cs</DependentUpon>
       <SubType>UserControl</SubType>
     </Compile>
@@ -721,6 +725,9 @@
       <Link>SimSeed.Station2.txt</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <Visible>false</Visible>
+    </None>
+    <None Include="SpecialCutSamples.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="PlcLabels.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
