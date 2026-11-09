@@ -6,6 +6,16 @@ Claude reads this file at the start of every batch, does the items, and moves ea
 ## To do
 
 ## Done
+- 7 November (the PLC Monitor's labels, folding and conditions of several devices; the special cut recipes on the Profiles page; the mullion notching):
+  - 803f962 - PLC Monitor, the tab HMI -> PLC: no machine options / conditions on it, no heading line above its tables; every label shown in
+    words ("PC Is Listesi Pozisyon"); the label list's divisor and decimal places (the job list's positions 100 and 2, D95 / D97 / D106 10000 and 2).
+  - b53003a - PLC Monitor: a fold mark on every comment line (the list) and every table's caption (the tables' page); a gap between the tables.
+  - 786b6d6 - FA2010, the special cut recipes on the Profiles page (the Accessories pane's tab Special cuts), the values of the profile on display
+    under them; the device list's six samples of "Kırlangıç Kesim" (their codes, starting angle and saw dust width to be typed in).
+  - ea09b73 - FA2010, the profile's mullion notching steps (the profile details' tab Mullion notching, per profile, the group's template's
+    when it has none of its own) - written with each bar into R25700 before the profile's parameters, as the old program.
+  - 9b2796d - Machine conditions of several devices (each device its own test, all met - or one): on the PLC Monitor a line under the
+    condition's for each further device, its value, what it asks, whether it is met. None of FA2010's conditions has a second device yet.
 - 6 November, late night (the job list's labels as one table, the conditions' column):
   - e3c9437 - PLC Monitor, the tab HMI -> PLC: every array a table under its heading - the job list's ID / position / code ONE table of
     500 lines, the milling parameters 100, the milling and cutting steps their first lines; a member shows its own name (Tool No).
