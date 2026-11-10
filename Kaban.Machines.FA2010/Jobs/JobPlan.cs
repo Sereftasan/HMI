@@ -15,7 +15,8 @@ namespace Kaban.Machines.FA2010.Jobs
     {
         internal const string SawThicknessCode = "job_saw_thickness_mm", VerticalShareCode = "job_saw_vertical_share_mm",
                               SquareFromCode = "job_square_leftover_from_mm", LongestCode = "job_longest_piece_mm",
-                              VSawsCode = "job_v_saws_distance_mm", RecipesCode = "job_special_cut_recipes";
+                              VSawsCode = "job_v_saws_distance_mm", RecipesCode = "job_special_cut_recipes",
+                              TypesCode = "job_special_cut_types";
 
         /// <summary>null: not entered - nothing can be laid out.</summary>
         public double? SawThickness;
@@ -24,6 +25,8 @@ namespace Kaban.Machines.FA2010.Jobs
         public double VSawsDistance;
         /// <summary>The special cut recipes ("&lt;&gt;" cuts - the old program's saw receipts).</summary>
         public List<SpecialCutRecipe> Recipes = new List<SpecialCutRecipe>();
+        /// <summary>The special cut types: the codes the job files' SpecialCut lines give and their names (the old program's specialcuttings).</summary>
+        public List<SpecialCutType> Types = new List<SpecialCutType>();
 
         public static JobSettings Of(long instance)
         {
@@ -35,6 +38,7 @@ namespace Kaban.Machines.FA2010.Jobs
             s.Longest = Num(Library.Setting(instance, LongestCode, "")) ?? 0;
             s.VSawsDistance = Num(Library.Setting(instance, VSawsCode, "")) ?? 0;
             s.Recipes = SpecialCuts.Parse(Library.Setting(instance, RecipesCode, ""));
+            s.Types = SpecialCuts.ParseTypes(Library.Setting(instance, TypesCode, ""));
             return s;
         }
 
@@ -42,6 +46,12 @@ namespace Kaban.Machines.FA2010.Jobs
         public static void SaveRecipes(long instance, IEnumerable<SpecialCutRecipe> recipes)
         {
             Library.SetSetting(instance, RecipesCode, SpecialCuts.Format(recipes));
+        }
+
+        /// <summary>The special cut types kept (with the recipes).</summary>
+        public static void SaveTypes(long instance, IEnumerable<SpecialCutType> types)
+        {
+            Library.SetSetting(instance, TypesCode, SpecialCuts.FormatTypes(types));
         }
 
         public void Save(long instance)
@@ -242,7 +252,7 @@ namespace Kaban.Machines.FA2010.Jobs
             {
                 SawThickness = _settings.SawThickness ?? 0, SawVerticalShare = _settings.VerticalShare, ProfileHeight = height,
                 MouldDifference = mould, MinimumLeftover = _settings.SquareFrom, MaximumCutLength = _settings.Longest,
-                Recipes = _settings.Recipes, VSawsDistance = _settings.VSawsDistance, ProfileWidth = MachineNum(machine, WidthMember)
+                Recipes = _settings.Recipes, Types = _settings.Types, VSawsDistance = _settings.VSawsDistance, ProfileWidth = MachineNum(machine, WidthMember)
             };
             plan.Layout = BarLayout.Of(bar, cs);
             plan.Problems.AddRange(plan.Layout.Problems);
@@ -277,7 +287,7 @@ namespace Kaban.Machines.FA2010.Jobs
                         lastJoint = s.Joint;
                         var sp = plan.Special.First(x => x.Number == s.Joint.Number);
                         plan.Steps.Add(new PlanStep { No = no++, Position = s.Position, Code = sp.Code, Piece = s.Piece, Step = s, Special = sp,
-                                                      What = sp.Label + " (" + s.Joint.Describe() + ")" });
+                                                      What = sp.Label + " (" + s.Joint.Describe(_settings.Types) + ")" });
                         continue;
                     }
                     lastJoint = null;
@@ -346,7 +356,7 @@ namespace Kaban.Machines.FA2010.Jobs
         /// <summary>A joint's special cut: its parameters and steps with the recipe's formulas worked out (T, D, W, O and the joint's L, R).</summary>
         private static SpecialCutPlan Special(SpecialJoint j, CutSettings cs, Dictionary<string, Library.MachineValue> machine, List<string> problems)
         {
-            var sp = new SpecialCutPlan { Number = j.Number, Joint = j, Recipe = j.Recipe, StartingAngle = j.Recipe.StartingAngle, VCutY = MachineNum(machine, VCutYMember) };
+            var sp = new SpecialCutPlan { Number = j.Number, Joint = j, Recipe = j.Recipe, StartingAngle = j.Recipe.EffectiveStartingAngle, VCutY = MachineNum(machine, VCutYMember) };
             var v = cs.Values(j);
             Func<string, string, double> eval = (what, f) =>
             {

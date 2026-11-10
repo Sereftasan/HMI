@@ -134,7 +134,7 @@ class JS {
         File.WriteAllText(dc, "Id,CommandNo,LeftClamp,RightClamp,Robot1,Robot2,Angle,VCutting_Y,SawReceiptId\n" +
                               "x1,1,true,true,,,0,,a1\nx2,4,false,false,,,45,,a1\nx3,5,false,false,,,0,W/2,b2\nx4,3,false,false,L+100,W-10,0,,b2\n");
         said.Clear();
-        Check("the old program's recipes imported (asked before the one here is replaced)", (bool)Call(d, "ImportFrom", rc, dc) && said.Any(s => s.Contains("Replace")) &&
+        Check("the old program's recipes imported (asked before the one here is replaced)", (bool)Call(d, "ImportFrom", rc, dc, "") && said.Any(s => s.Contains("Replace")) &&
               ((List<SpecialCutRecipe>)Get(d, "Recipes")).Count == 2 && rg.Rows.Count == 2, string.Join(" / ", said));
         rec = (List<SpecialCutRecipe>)Get(d, "Recipes");
         Check("  not kept until saved", (bool)Get(d, "Dirty") && !Library.Setting(inst, "job_special_cut_recipes", "").Contains("Son"));
@@ -194,8 +194,9 @@ class JS {
         Check("sent (the question names the special cuts)", (bool)Call(page, "SendSelected") && said.Any(s => s.Contains("2 special cut(s)")), string.Join(" / ", said));
         short[] w;
         sim.TryReadBlock("R25650", 10, out w);
-        Check("  R25650: special cut 1 - its angle x10, the V saw's Y approach 12.5 x100, holding W/2 = 35 x100, X offset -T = -4.2 x100",
-              w[0] == 900 && w[1] == 1250 && w[2] == 3500 && w[3] == -420, string.Join(",", w.Take(5)));
+        // its starting angle its first normal cut's (10 November: "'starting angle' is the first '4' coded cut operation angle value at the recipe")
+        Check("  R25650: special cut 1 - its starting angle (its first normal cut's, 45) x10, the V saw's Y approach 12.5 x100, holding W/2 = 35 x100, X offset -T = -4.2 x100",
+              w[0] == 450 && w[1] == 1250 && w[2] == 3500 && w[3] == -420, string.Join(",", w.Take(5)));
         Check("  R25655: special cut 2 - 45 degrees, X offset 10", w[5] == 450 && w[6] == 1250 && w[8] == 1000, string.Join(",", w.Skip(5)));
         sim.TryReadBlock("D7000", 10, out w);
         Check("  D7000: the codes as planned", Enumerable.Range(0, 5).All(i => Dw(w, 2 * i) == codes[i]), string.Join(",", Enumerable.Range(0, 5).Select(i => Dw(w, 2 * i))));

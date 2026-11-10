@@ -454,12 +454,14 @@ namespace Kaban.Machines.FA2010.Screens
             var plan = i < Plans.Count ? Plans[i] : null;
             _lblBar.Text = string.Format(T("Job_BarHead", "Bar {0}: {1} {2}, {3} mm"), b.Title, b.Code, b.Name, b.Length.ToString("0.#", CI)) +
                            (plan != null && plan.Profile != null ? "   (" + plan.Profile.Group + ")" : "");
+            var types = Settings.Types;         // a special end's code with its name ("1 Arrow")
+            Func<string, string> code = c => { double v; return double.TryParse(c, NumberStyles.Float, CI, out v) ? SpecialCuts.CodeText(v, types) : c; };
             for (int n = 0; n < b.Pieces.Count; n++)
             {
                 var p = b.Pieces[n];
                 var what = p.Recs.Select(r => r.Code + " @" + r.Position.ToString("0.#", CI)).ToList();
                 what.AddRange(p.VCuts.Select(v => "V @" + v.Position.ToString("0.#", CI)));
-                if (p.Special != null) what.Insert(0, "<> " + p.Special.LeftCode + " / " + p.Special.RightCode);
+                if (p.Special != null) what.Insert(0, "<> " + code(p.Special.LeftCode) + " / " + code(p.Special.RightCode));
                 _pieces.Rows.Add(n + 1, p.CutLength.ToString("0.#", CI), p.LeftAngle.ToString("0.#", CI), p.RightAngle.ToString("0.#", CI), p.Position,
                                  (p.OrderNo + (p.OrderLineNo.Length > 0 ? "/" + p.OrderLineNo : "")).Trim('/'), p.Customer, p.Barcode, string.Join(", ", what));
             }
@@ -501,7 +503,7 @@ namespace Kaban.Machines.FA2010.Screens
                 foreach (var sp in plan.Special)
                 {
                     notes.Add(string.Format(CI, "  {0} (code {1}) - {2}: angle {3:0.#}\u00B0, V cut Y {4:0.##}, holding {5:0.##}, X offset {6:0.##}", sp.Label, sp.Code,
-                        sp.Joint.Describe(), sp.StartingAngle, sp.VCutY, sp.Holding, sp.XOffset));
+                        sp.Joint.Describe(Settings.Types), sp.StartingAngle, sp.VCutY, sp.Holding, sp.XOffset));
                     for (int k = 0; k < sp.Steps.Count; k++)
                     {
                         var st = sp.Steps[k];

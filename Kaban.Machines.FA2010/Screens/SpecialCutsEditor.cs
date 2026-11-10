@@ -19,12 +19,13 @@ namespace Kaban.Machines.FA2010.Screens
     /// device list's samples (its "Kırlangıç Kesim" sheet). On the Profiles page (7 November: "The special cut recipes should be edited in
     /// the profiles page ... just like the accessories, they are defined as independent from the profiles but they have their values
     /// calculated according the machine and profile parameters dynamically with the job operation"): a tab beside the accessories, the
-    /// values of the selected profile shown under the recipe. Built in code (no designer file).
+    /// values of the selected profile shown under the recipe. Beside them the special cut types (the old program's specialcuttings: the
+    /// codes the job files' SpecialCut lines give an end, and their names - 10 November). Built in code (no designer file).
     /// </summary>
     internal sealed class SpecialCutsEditor : UserControl
     {
         private static readonly CultureInfo CI = CultureInfo.InvariantCulture;
-        private readonly DataGridView _recipes = new DataGridView(), _steps = new DataGridView();
+        private readonly DataGridView _recipes = new DataGridView(), _steps = new DataGridView(), _types = new DataGridView();
         private readonly Label _problem = new Label(), _preview = new Label(), _state = new Label();
         private bool _canEdit;
         private bool _filling;
@@ -33,12 +34,16 @@ namespace Kaban.Machines.FA2010.Screens
 
         /// <summary>The recipes as edited (a copy of the kept ones until saved).</summary>
         internal List<SpecialCutRecipe> Recipes = new List<SpecialCutRecipe>();
+        /// <summary>The special cut types as edited: the job files' codes and their names (the old program's specialcuttings).</summary>
+        internal List<SpecialCutType> Types = new List<SpecialCutType>();
         /// <summary>Changed since loaded or saved.</summary>
         internal bool Dirty { get; private set; }
-        /// <summary>The recipes to keep (the Profiles page saves them in the library); true when kept.</summary>
-        internal Func<List<SpecialCutRecipe>, bool> SaveHook;
+        /// <summary>The recipes and the special cut types to keep (the Profiles page saves them in the library); true when kept.</summary>
+        internal Func<List<SpecialCutRecipe>, List<SpecialCutType>, bool> SaveHook;
         /// <summary>The kept recipes, read again (Revert).</summary>
         internal Func<List<SpecialCutRecipe>> LoadHook;
+        /// <summary>The kept special cut types, read again (Revert).</summary>
+        internal Func<List<SpecialCutType>> TypesLoadHook;
         /// <summary>The values of the selected profile (null: none) and its name - the preview under the recipe.</summary>
         private FormulaValues _values;
         private string _valuesOf = "";
@@ -73,9 +78,9 @@ namespace Kaban.Machines.FA2010.Screens
             var help = new Label
             {
                 Dock = DockStyle.Top, Height = 48, Font = UiStyle.Small, ForeColor = Color.FromArgb(60, 70, 85), Padding = new Padding(6, 4, 6, 0),
-                Text = T("Job_RecipesHelp2", "A recipe makes the joint of a piece's right end (its right code) and the next piece's left end (its left code) - " +
-                         "an ordinary end's code is its angle, 0 any: a recipe of one special end is merged with one of the other end when no recipe has both. " +
-                         "Formulas: T the saw blade, D the saw - V cut distance, W the profile's Cut Full Width, O the cut length offset, L and R the job file's left and right values.")
+                Text = T("Job_RecipesHelp3", "A recipe makes the joint of a piece's right end (its right code) and the next piece's left end (its left code) - " +
+                         "a special end's code is the job file's (its SpecialCut line: the special cut types at the right), an ordinary end's its angle, 0 any: a recipe of one special end is merged with one of the other end when no recipe has both. " +
+                         "The starting angle is its first normal cut's. Formulas: T the saw blade, D the saw - V cut distance, W the profile's Cut Full Width, O the cut length offset, L and R the job file's left and right values.")
             };
 
             // ---- the recipes ------------------------------------------------------------------------------
@@ -92,6 +97,20 @@ namespace Kaban.Machines.FA2010.Screens
             _recipes.Columns.Add(new DataGridViewCheckBoxColumn { Name = "offR", HeaderText = T("Job_RcOffR", "With R value"), Width = 92, SortMode = DataGridViewColumnSortMode.NotSortable });
             _recipes.Columns["offL"].ToolTipText = T("Job_TipRcOffL", "The recipe for a left end that has a value (L not 0)");
             _recipes.Columns["offR"].ToolTipText = T("Job_TipRcOffR", "The recipe for a right end that has a value (R not 0)");
+            _recipes.Columns["left"].ToolTipText = T("Job_TipRcLeftCode", "The next piece's left end: a special cut type's code (the job file's), an ordinary end's angle, 0 any");
+            _recipes.Columns["right"].ToolTipText = T("Job_TipRcRightCode", "The piece's right end: a special cut type's code (the job file's), an ordinary end's angle, 0 any");
+            _recipes.Columns["angle"].ToolTipText = T("Job_TipRcAngle", "The angle of its first normal cut - written to the PLC before its steps, so the saw turns in time (typed in only for a recipe without a normal cut)");
+            // a code shown with its type's name ("3 Arrow")
+            _recipes.CellFormatting += (s, e) =>
+            {
+                if (e.RowIndex < 0 || e.ColumnIndex < 0) return;
+                string col = _recipes.Columns[e.ColumnIndex].Name;
+                if (col != "left" && col != "right") return;
+                double code;
+                if (!double.TryParse(Convert.ToString(e.Value, CI), NumberStyles.Float, CI, out code)) return;
+                e.Value = SpecialCuts.CodeText(code, Types);
+                e.FormattingApplied = true;
+            };
             _recipes.SelectionChanged += (s, e) => { if (!_filling) { FillSteps(); ShowPreview(); } };
             _recipes.CellValueChanged += (s, e) => { if (!_filling && e.RowIndex >= 0) TakeRecipe(e.RowIndex); };
             _recipes.CurrentCellDirtyStateChanged += (s, e) => { if (_recipes.IsCurrentCellDirty && _recipes.CurrentCell is DataGridViewCheckBoxCell) _recipes.CommitEdit(DataGridViewDataErrorContexts.Commit); };
@@ -117,6 +136,28 @@ namespace Kaban.Machines.FA2010.Screens
                     _steps.CommitEdit(DataGridViewDataErrorContexts.Commit);
             };
             _steps.DataError += (s, e) => { e.ThrowException = false; };
+
+            // ---- the special cut types: the job files' codes and their names ---------------------------------
+            Grid(_types);
+            AddText(_types, "no", T("Job_TyCode", "Code"), 56, true);
+            AddText(_types, "name", T("Job_TyName", "Special cut"), 150, false);
+            _types.Columns["no"].ToolTipText = T("Job_TipTyCode", "The code a job file's SpecialCut line gives the end");
+            _types.CellValueChanged += (s, e) => { if (!_filling && e.RowIndex >= 0) TakeType(e.RowIndex); };
+            var typesHead = new Label
+            {
+                Dock = DockStyle.Top, Height = 22, Font = UiStyle.Small, ForeColor = Color.FromArgb(60, 70, 85), Padding = new Padding(6, 4, 0, 0),
+                Text = T("Job_TypesHead", "Special cut types (the job files' codes)")
+            };
+            var typesBar = Buttons(new[]
+            {
+                Btn("+ " + T("Job_TyAdd", "Type"), (s, e) => AddType(), true),
+                Btn("\u2212 " + T("Job_TyDelete", "Type"), (s, e) => DeleteType(), true)
+            });
+            _editButtons.AddRange(typesBar.Controls.OfType<Button>());
+            var typesPanel = new Panel { Dock = DockStyle.Right, Width = 240, Padding = new Padding(6, 0, 0, 0) };
+            typesPanel.Controls.Add(_types);
+            typesPanel.Controls.Add(typesBar);
+            typesPanel.Controls.Add(typesHead);
 
             // ---- the buttons ------------------------------------------------------------------------------
             _btnSave = Btn("\uD83D\uDCBE " + T("Job_RcSave", "Save"), (s, e) => Save(), true);
@@ -159,6 +200,7 @@ namespace Kaban.Machines.FA2010.Screens
 
             var split = new SplitContainer { Dock = DockStyle.Fill, Orientation = Orientation.Horizontal, SplitterWidth = 6 };
             split.Panel1.Controls.Add(_recipes);
+            split.Panel1.Controls.Add(typesPanel);
             split.Panel1.Controls.Add(bar1);
             split.Panel2.Controls.Add(_steps);
             split.Panel2.Controls.Add(bar2);
@@ -174,10 +216,12 @@ namespace Kaban.Machines.FA2010.Screens
         }
 
         /// <summary>The recipes kept, shown (what is being changed and not saved is forgotten).</summary>
-        internal void LoadRecipes(IEnumerable<SpecialCutRecipe> recipes)
+        internal void LoadRecipes(IEnumerable<SpecialCutRecipe> recipes, IEnumerable<SpecialCutType> types = null)
         {
             Recipes = (recipes ?? new SpecialCutRecipe[0]).Select(r => r.Clone()).OrderBy(r => r.No).ToList();
+            if (types != null) Types = types.Select(t => new SpecialCutType { No = t.No, Name = t.Name }).OrderBy(t => t.No).ToList();
             SetDirty(false);
+            FillTypes();
             FillRecipes(0);
         }
 
@@ -189,6 +233,8 @@ namespace Kaban.Machines.FA2010.Screens
             _btnRevert.Enabled = Dirty;
             _recipes.ReadOnly = !canEdit;
             _steps.ReadOnly = !canEdit;
+            _types.ReadOnly = !canEdit;
+            for (int i = 0; i < _recipes.Rows.Count; i++) ShowAngle(i);
             for (int i = 0; i < _steps.Rows.Count; i++) Shade(i);
         }
 
@@ -204,14 +250,14 @@ namespace Kaban.Machines.FA2010.Screens
         internal bool Save()
         {
             if (!_canEdit || !Check()) return false;
-            if (SaveHook != null && !SaveHook(Recipes.Select(r => r.Clone()).ToList())) return false;
+            if (SaveHook != null && !SaveHook(Recipes.Select(r => r.Clone()).ToList(), Types.Select(t => new SpecialCutType { No = t.No, Name = t.Name }).ToList())) return false;
             SetDirty(false);
             return true;
         }
 
         internal void Revert()
         {
-            if (LoadHook != null) LoadRecipes(LoadHook());
+            if (LoadHook != null) LoadRecipes(LoadHook(), TypesLoadHook != null ? TypesLoadHook() : null);
         }
 
         /// <summary>The values the formulas take for the profile selected on the page (null: none) - shown under the recipe.</summary>
@@ -313,12 +359,84 @@ namespace Kaban.Machines.FA2010.Screens
             {
                 _recipes.Rows.Clear();
                 foreach (var r in Recipes)
-                    _recipes.Rows.Add(r.No.ToString(CI), r.Name, N(r.LeftCode), N(r.RightCode), N(r.StartingAngle), r.HoldingPosition, r.RobotXOffset, r.SawDustWidth,
+                    _recipes.Rows.Add(r.No.ToString(CI), r.Name, N(r.LeftCode), N(r.RightCode), N(r.EffectiveStartingAngle), r.HoldingPosition, r.RobotXOffset, r.SawDustWidth,
                                       r.WithOffsetLeft, r.WithOffsetRight);
+                for (int i = 0; i < _recipes.Rows.Count; i++) ShowAngle(i);
                 if (_recipes.Rows.Count > 0) _recipes.CurrentCell = _recipes.Rows[Math.Max(0, Math.Min(select, _recipes.Rows.Count - 1))].Cells["name"];
             }
             finally { _filling = false; }
             FillSteps();
+        }
+
+        /// <summary>
+        /// A recipe's starting angle: its first normal cut's (greyed - it follows the steps), typed in only for a recipe without one.
+        /// </summary>
+        private void ShowAngle(int i)
+        {
+            if (i < 0 || i >= Recipes.Count || i >= _recipes.Rows.Count) return;
+            var r = Recipes[i];
+            var cell = _recipes.Rows[i].Cells["angle"];
+            var first = r.FirstCutAngle;
+            if (first.HasValue) r.StartingAngle = first.Value;        // kept as it is sent
+            bool was = _filling;
+            _filling = true;
+            try
+            {
+                if (Str(cell.Value) != N(r.EffectiveStartingAngle)) cell.Value = N(r.EffectiveStartingAngle);
+                cell.ReadOnly = first.HasValue || !_canEdit;
+                cell.Style.BackColor = first.HasValue ? Color.FromArgb(238, 240, 243) : Color.Empty;
+                cell.ToolTipText = first.HasValue ? T("Job_TipRcAngleFirst", "Its first normal cut's angle - written before its steps so the saw turns in time") : "";
+            }
+            finally { _filling = was; }
+        }
+
+        private void FillTypes()
+        {
+            if (IsDisposed || _types.Columns.Count == 0) return;
+            _filling = true;
+            try
+            {
+                _types.Rows.Clear();
+                foreach (var t in Types) _types.Rows.Add(t.No.ToString(CI), t.Name);
+            }
+            finally { _filling = false; }
+            _recipes.Invalidate();
+        }
+
+        private void TakeType(int i)
+        {
+            if (i < 0 || i >= Types.Count) return;
+            var row = _types.Rows[i];
+            int no;
+            if (int.TryParse(Str(row.Cells["no"].Value), NumberStyles.Integer, CI, out no)) Types[i].No = no;
+            Types[i].Name = Str(row.Cells["name"].Value).Replace(";", ",");
+            SetDirty(true);
+            Check();
+            _recipes.Invalidate();
+        }
+
+        internal void AddType()
+        {
+            int no = Types.Count == 0 ? 1 : Types.Max(t => t.No) + 1;
+            Types.Add(new SpecialCutType { No = no, Name = T("Job_TyNew", "New special cut") });
+            SetDirty(true);
+            FillTypes();
+            _types.CurrentCell = _types.Rows[_types.Rows.Count - 1].Cells["name"];
+        }
+
+        internal void DeleteType()
+        {
+            if (_types.CurrentCell == null) return;
+            int i = _types.CurrentCell.RowIndex;
+            if (i < 0 || i >= Types.Count) return;
+            var t = Types[i];
+            int used = Recipes.Count(r => r.LeftCode == t.No || r.RightCode == t.No);
+            if (used > 0 && !Ask.YesNo(this, T("Job_RecipesTitle", "Special cut recipes"),
+                    string.Format(T("Job_TyAskDelete", "{0} recipe(s) use the code {1} ({2}). Delete the type anyway? (their codes stay)"), used, t.No, t.Name))) return;
+            Types.RemoveAt(i);
+            SetDirty(true);
+            FillTypes();
+            Check();
         }
 
         private void FillSteps()
@@ -375,7 +493,7 @@ namespace Kaban.Machines.FA2010.Screens
             r.Name = Str(row.Cells["name"].Value).Replace(";", ",");
             r.LeftCode = Num(row.Cells["left"].Value);
             r.RightCode = Num(row.Cells["right"].Value);
-            r.StartingAngle = Num(row.Cells["angle"].Value);
+            if (!r.FirstCutAngle.HasValue) r.StartingAngle = Num(row.Cells["angle"].Value);      // else its first normal cut's
             r.HoldingPosition = Str(row.Cells["holding"].Value);
             r.RobotXOffset = Str(row.Cells["offset"].Value);
             r.SawDustWidth = Str(row.Cells["dust"].Value);
@@ -403,6 +521,7 @@ namespace Kaban.Machines.FA2010.Screens
             st.VCutY = Str(row.Cells["vcut"].Value);
             Shade(i);
             SetDirty(true);
+            ShowAngle(Recipes.IndexOf(r));
             Check();
             ShowPreview();
         }
@@ -448,6 +567,7 @@ namespace Kaban.Machines.FA2010.Screens
             r.Steps.Insert(Math.Min(at, r.Steps.Count), new SpecialCutStep { Command = (int)SpecialCutCommand.Clamp, LeftClamp = true, RightClamp = true });
             SetDirty(true);
             FillSteps();
+            ShowAngle(Recipes.IndexOf(r));
             if (_steps.Rows.Count > 0) _steps.CurrentCell = _steps.Rows[Math.Min(at, _steps.Rows.Count - 1)].Cells["command"];
             Check();
         }
@@ -461,6 +581,7 @@ namespace Kaban.Machines.FA2010.Screens
             r.Steps.RemoveAt(i);
             SetDirty(true);
             FillSteps();
+            ShowAngle(Recipes.IndexOf(r));
             if (_steps.Rows.Count > 0) _steps.CurrentCell = _steps.Rows[Math.Min(i, _steps.Rows.Count - 1)].Cells["command"];
             Check();
         }
@@ -477,6 +598,7 @@ namespace Kaban.Machines.FA2010.Screens
             SetDirty(true);
             int col = _steps.CurrentCell.ColumnIndex;
             FillSteps();
+            ShowAngle(Recipes.IndexOf(r));
             _steps.CurrentCell = _steps.Rows[j].Cells[col];
         }
 
@@ -494,7 +616,13 @@ namespace Kaban.Machines.FA2010.Screens
             {
                 steps = d.ShowDialog(this) == DialogResult.OK ? d.FileName : "";
             }
-            ImportFrom(recipes, steps);
+            string types;
+            using (var d = new OpenFileDialog { Filter = "CSV (*.csv)|*.csv|*.*|*.*", Title = T("Job_RcImportTypes", "The special cut types: the table specialcuttings as CSV (Cancel: none)"),
+                                                 InitialDirectory = Path.GetDirectoryName(recipes) })
+            {
+                types = d.ShowDialog(this) == DialogResult.OK ? d.FileName : "";
+            }
+            ImportFrom(recipes, steps, types);
         }
 
         /// <summary>
@@ -510,37 +638,71 @@ namespace Kaban.Machines.FA2010.Screens
             if (list.Count == 0) { Ask.Tell(this, title, T("Job_RcNoSamples", "The samples' file (SpecialCutSamples.csv) is not beside the program.")); return 0; }
             int no = Recipes.Count == 0 ? 0 : Recipes.Max(r => r.No);
             var names = new HashSet<string>(Recipes.Select(r => r.Name), StringComparer.OrdinalIgnoreCase);
-            int added = 0;
-            foreach (var r in list.Where(x => !names.Contains(x.Name)))
+            var fresh = list.Where(x => !names.Contains(x.Name)).ToList();
+            if (fresh.Count == 0) { Ask.Tell(this, title, T("Job_RcSamplesThere", "The device list's samples are here already.")); return 0; }
+            // their codes are named by the special cut ("Arrow"): the type's code here, else asked (the job files' code) and the type added
+            var codes = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+            var unknown = new List<string>();
+            bool typesAdded = false;
+            foreach (string name in fresh.SelectMany(r => new[] { r.LeftType, r.RightType }).Where(n => n.Length > 0).Distinct(StringComparer.OrdinalIgnoreCase))
             {
+                var t = Types.FirstOrDefault(x => string.Equals(x.Name.Trim(), name, StringComparison.OrdinalIgnoreCase));
+                if (t != null) { codes[name] = t.No; continue; }
+                string answer = Ask.Text(this, title, string.Format(T("Job_RcAskTypeCode",
+                    "The samples have the special cut \"{0}\". What is its code in the job files (their SpecialCut lines)? Nothing: 0 - type it in later."), name), "");
+                int code;
+                if (answer != null && int.TryParse(answer.Trim(), NumberStyles.Integer, CI, out code) && code > 0)
+                {
+                    codes[name] = code;
+                    if (!Types.Any(x => x.No == code)) { Types.Add(new SpecialCutType { No = code, Name = name }); typesAdded = true; }
+                }
+                else unknown.Add(name);
+            }
+            foreach (var r in fresh)
+            {
+                int c;
+                if (r.LeftType.Length > 0) r.LeftCode = codes.TryGetValue(r.LeftType, out c) ? c : 0;
+                if (r.RightType.Length > 0) r.RightCode = codes.TryGetValue(r.RightType, out c) ? c : 0;
+                r.LeftType = r.RightType = "";
                 r.No = ++no;
                 Recipes.Add(r);
-                added++;
             }
-            if (added == 0) { Ask.Tell(this, title, T("Job_RcSamplesThere", "The device list's samples are here already.")); return 0; }
+            int added = fresh.Count;
+            if (typesAdded) { Types = Types.OrderBy(x => x.No).ToList(); FillTypes(); }
             SetDirty(true);
             FillRecipes(Recipes.Count - added);
-            Ask.Tell(this, title, string.Format(T("Job_RcSamplesAdded",
-                "{0} sample recipe(s) of the device list added. Their left and right codes, starting angle and saw dust width are not in the device list - type them in, then Save."), added));
+            Ask.Tell(this, title, string.Format(T("Job_RcSamplesAdded2",
+                "{0} sample recipe(s) of the device list added - check their codes, then Save."), added) +
+                (unknown.Count > 0 ? " " + string.Format(T("Job_RcSamplesNoCode", "Without a code (0): {0}."), string.Join(", ", unknown)) : ""));
             return added;
         }
 
         /// <summary>The import (a test calls it with its files): asked before the recipes here are replaced.</summary>
-        internal bool ImportFrom(string recipesCsv, string stepsCsv)
+        internal bool ImportFrom(string recipesCsv, string stepsCsv, string typesCsv = "")
         {
             var problems = new List<string>();
             List<SpecialCutRecipe> list;
-            try { list = SpecialCuts.ImportOld(recipesCsv, stepsCsv, problems); }
+            List<SpecialCutType> types = null;
+            try
+            {
+                list = SpecialCuts.ImportOld(recipesCsv, stepsCsv, problems);
+                if (!string.IsNullOrEmpty(typesCsv)) types = SpecialCuts.ImportOldTypes(typesCsv, problems);
+            }
             catch (Exception ex) { Ask.Tell(this, T("Job_RecipesTitle", "Special cut recipes"), ex.Message); return false; }
             if (list.Count == 0) { Ask.Tell(this, T("Job_RecipesTitle", "Special cut recipes"), T("Job_RcImportNone", "No recipe was found in the file.") + (problems.Count > 0 ? "\r\n" + string.Join("\r\n", problems.Distinct()) : "")); return false; }
             string q = string.Format(T("Job_RcImportAsk", "{0} recipe(s) with {1} step(s) were read. Replace the {2} recipe(s) here with them?"),
                                      list.Count, list.Sum(r => r.Steps.Count), Recipes.Count);
             if (problems.Count > 0) q += "\r\n\r\n" + string.Join("\r\n", problems.Distinct().Take(8));
-            if (Recipes.Count > 0 && !Ask.YesNo(this, T("Job_RecipesTitle", "Special cut recipes"), q)) return false;
+            if (types != null)
+                q += "\r\n" + string.Format(T("Job_RcImportTypesToo", "And {0} special cut type(s) instead of the {1} here."), types.Count, Types.Count);
+            if ((Recipes.Count > 0 || (types != null && Types.Count > 0)) && !Ask.YesNo(this, T("Job_RecipesTitle", "Special cut recipes"), q)) return false;
             Recipes = list;
+            if (types != null) Types = types;
             SetDirty(true);
+            FillTypes();
             FillRecipes(0);
-            AuditLogger.Log(string.Format(CI, "[JOB] special cut recipes imported from {0}{1}: {2} recipe(s)", recipesCsv, stepsCsv.Length > 0 ? " and " + stepsCsv : "", list.Count));
+            AuditLogger.Log(string.Format(CI, "[JOB] special cut recipes imported from {0}{1}{2}: {3} recipe(s){4}", recipesCsv, stepsCsv.Length > 0 ? " and " + stepsCsv : "",
+                                          types != null ? " and " + typesCsv : "", list.Count, types != null ? ", " + types.Count + " type(s)" : ""));
             return true;
         }
 
@@ -550,6 +712,9 @@ namespace Kaban.Machines.FA2010.Screens
             var bad = new List<string>();
             foreach (var g in Recipes.GroupBy(r => r.No).Where(g => g.Count() > 1))
                 bad.Add(string.Format(T("Job_RcTwice", "recipe number {0} twice"), g.Key));
+            foreach (var g in Types.GroupBy(t => t.No).Where(g => g.Count() > 1))
+                bad.Add(string.Format(T("Job_TyTwice", "special cut code {0} twice"), g.Key));
+            if (Types.Any(t => t.No <= 0)) bad.Add(T("Job_TyZero", "a special cut type's code must be 1 or more (0 is any end)"));
             for (int i = 0; i < Recipes.Count; i++)
             {
                 var r = Recipes[i];

@@ -22,6 +22,8 @@ namespace Kaban.Profiles.Jobs
         public double MaximumCutLength;
         /// <summary>The machine's special cut recipes (none: a special end cannot be cut).</summary>
         public List<SpecialCutRecipe> Recipes = new List<SpecialCutRecipe>();
+        /// <summary>The special cut types: a code's name in what is said ("3 Arrow").</summary>
+        public List<SpecialCutType> Types = new List<SpecialCutType>();
         /// <summary>The V saws' distance (the formulas' D) and the profile's width (W: its Cut Full Width).</summary>
         public double VSawsDistance, ProfileWidth;
 
@@ -122,7 +124,7 @@ namespace Kaban.Profiles.Jobs
                 if (j.Recipe == null)
                 {
                     r.Problems.Add(string.Format(ci, "{0}: no special cut recipe for it ({1}) - nor one of each end to merge (the Jobs page's special cut recipes)",
-                        Where(j), j.Describe()));
+                        Where(j), j.Describe(s.Types)));
                     continue;      // cut as an ordinary end: the layout still shown
                 }
                 joints[k] = j;
@@ -274,7 +276,7 @@ namespace Kaban.Profiles.Jobs
             /// </summary>
             public void SpecialLeftover(SpecialJoint j, CutSettings s)
             {
-                double angle = 180 - j.Recipe.StartingAngle;
+                double angle = 180 - j.Recipe.EffectiveStartingAngle;
                 double additional = 0;
                 if (_lastCut != null && LastLeftover >= _s.MinimumLeftover && !Square(angle))
                     additional = LeftCut(90, -1, StepKind.LeftoverCut, angle);

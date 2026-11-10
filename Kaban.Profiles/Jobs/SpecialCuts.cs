@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -54,8 +54,29 @@ namespace Kaban.Profiles.Jobs
         public int No;
         public string Name = "";
         public double LeftCode, RightCode;
-        /// <summary>The saw's angle at the start (degrees) - the special cut's parameters' Cut Angle.</summary>
+        /// <summary>
+        /// The left / right code as a special cut type's NAME (the device list's samples: "Arrow") until it is given the type's code - not kept.
+        /// </summary>
+        public string LeftType = "", RightType = "";
+        /// <summary>The saw's angle at the start (degrees) as entered - a recipe without a normal cut (see <see cref="EffectiveStartingAngle"/>).</summary>
         public double StartingAngle;
+
+        /// <summary>The angle of its first normal cut (command 4); null: it has none.</summary>
+        public double? FirstCutAngle
+        {
+            get
+            {
+                var s = Steps.FirstOrDefault(x => x.Command == (int)SpecialCutCommand.NormalCut);
+                return s != null ? s.Angle : (double?)null;
+            }
+        }
+
+        /// <summary>
+        /// THE STARTING ANGLE (10 November: "'starting angle' is the first '4' coded cut operation angle value at the recipe, it is written to
+        /// the PLC earlier than the recipe so the axis get ready (for machine timing optimization) before the recipe operation starts"): its
+        /// first normal cut's angle - one without a normal cut its own entered. A merged recipe's: the right one's first (its steps go first).
+        /// </summary>
+        public double EffectiveStartingAngle { get { return FirstCutAngle ?? StartingAngle; } }
         /// <summary>Formulas: the exit robot's holding position, the robot's X offset, the width the saw takes at the joint.</summary>
         public string HoldingPosition = "", RobotXOffset = "", SawDustWidth = "";
         /// <summary>The recipe for an end that has a value (L / R not 0) - one without is taken only when the end has none.</summary>
@@ -82,6 +103,17 @@ namespace Kaban.Profiles.Jobs
     }
 
     /// <summary>
+    /// A SPECIAL CUT TYPE (the old program's specialcuttings: No and JobName - 10 November: "'left/right special-cut codes' are the special
+    /// cut codes which is taken from the cutting job ... 'SpecialCut;3;1;10;25' ... '3' is the left cut side special cut code, '1' is the
+    /// right cut side special cut code"): the code a job file's SpecialCut line gives an end, and its name (Arrow ...).
+    /// </summary>
+    public sealed class SpecialCutType
+    {
+        public int No;
+        public string Name = "";
+    }
+
+    /// <summary>
     /// A joint of the bar that a special cut makes: the right end of the piece before it (<see cref="Before"/>, -1 at the bar's start)
     /// and the left end of the piece after it (<see cref="After"/>, -1 at the bar's end) - the codes and values its recipe is found by
     /// (the old program's SpecialCutInfo).
@@ -104,10 +136,11 @@ namespace Kaban.Profiles.Jobs
             }
         }
 
-        public string Describe()
+        /// <summary>"right end 90, left end 1 Arrow (L 10, R 0)" - a special cut type's code with its name.</summary>
+        public string Describe(IEnumerable<SpecialCutType> types = null)
         {
             var ci = CultureInfo.InvariantCulture;
-            return string.Format(ci, "right end {0}, left end {1}{2}", RightCode.ToString("0.#", ci), LeftCode.ToString("0.#", ci),
+            return string.Format(ci, "right end {0}, left end {1}{2}", SpecialCuts.CodeText(RightCode, types), SpecialCuts.CodeText(LeftCode, types),
                 LeftParam != 0 || RightParam != 0 ? string.Format(ci, " (L {0:0.##}, R {1:0.##})", LeftParam, RightParam) : "");
         }
     }
@@ -358,7 +391,9 @@ namespace Kaban.Profiles.Jobs
                     cur = new SpecialCutRecipe
                     {
                         No = no, Name = f(2), LeftCode = Num(f(3)), RightCode = Num(f(4)), StartingAngle = Num(f(5)), HoldingPosition = f(6),
-                        RobotXOffset = f(7), SawDustWidth = f(8), WithOffsetLeft = f(9) == "1", WithOffsetRight = f(10) == "1"
+                        RobotXOffset = f(7), SawDustWidth = f(8), WithOffsetLeft = f(9) == "1", WithOffsetRight = f(10) == "1",
+                        // a code written as a special cut type's name (the samples: "Arrow") - given its code where it is added
+                        LeftType = TypeName(f(3)), RightType = TypeName(f(4))
                     };
                     list.Add(cur);
                 }
@@ -370,6 +405,63 @@ namespace Kaban.Profiles.Jobs
                 }
             }
             return list;
+        }
+
+        /// <summary>A code field that is a type's name, not a number ("" for a number or nothing).</summary>
+        private static string TypeName(string field)
+        {
+            string t = (field ?? "").Trim();
+            double v;
+            return t.Length == 0 || double.TryParse(t, NumberStyles.Float, CI, out v) ? "" : t;
+        }
+
+        // ---- the special cut types (the job file's codes) -------------------------------------------------
+
+        /// <summary>The types as the library keeps them: "type;no;name" a line.</summary>
+        public static string FormatTypes(IEnumerable<SpecialCutType> types)
+        {
+            var sb = new StringBuilder();
+            foreach (var t in (types ?? new SpecialCutType[0]).OrderBy(x => x.No))
+                sb.Append("type;").Append(t.No.ToString(CI)).Append(";").Append((t.Name ?? "").Replace(";", ",").Replace("\r", " ").Replace("\n", " ").Trim()).Append("\n");
+            return sb.ToString();
+        }
+
+        public static List<SpecialCutType> ParseTypes(string text)
+        {
+            var list = new List<SpecialCutType>();
+            foreach (var raw in (text ?? "").Split('\n'))
+            {
+                var t = raw.TrimEnd('\r').Split(';');
+                int no;
+                if (t.Length >= 3 && t[0] == "type" && int.TryParse(t[1], NumberStyles.Integer, CI, out no))
+                    list.Add(new SpecialCutType { No = no, Name = string.Join(",", t.Skip(2)).Trim() });
+            }
+            return list.OrderBy(x => x.No).ToList();
+        }
+
+        /// <summary>
+        /// The old program's special cut types: its table specialcuttings exported as CSV (pgAdmin, with the headers - Id, No, JobName): the
+        /// codes the job files' SpecialCut lines give and their names.
+        /// </summary>
+        public static List<SpecialCutType> ImportOldTypes(string typesCsv, List<string> problems)
+        {
+            var list = new List<SpecialCutType>();
+            foreach (var r in Csv(typesCsv))
+            {
+                Func<string, string> f = n => { string v; return r.TryGetValue(n.ToLowerInvariant(), out v) ? v : ""; };
+                int no;
+                if (!int.TryParse(f("No"), NumberStyles.Integer, CI, out no)) { problems.Add("a special cut type without its number (No) - left out"); continue; }
+                list.Add(new SpecialCutType { No = no, Name = f("JobName") });
+            }
+            return list.OrderBy(x => x.No).ToList();
+        }
+
+        /// <summary>A code in words: a special cut type's "3 Arrow", else the number (an ordinary end's angle, 0 any).</summary>
+        public static string CodeText(double code, IEnumerable<SpecialCutType> types)
+        {
+            var t = code == Math.Floor(code) && types != null ? types.FirstOrDefault(x => x.No == (int)code) : null;
+            string n = code.ToString("0.###", CI);
+            return t != null && !string.IsNullOrWhiteSpace(t.Name) ? n + " " + t.Name.Trim() : n;
         }
 
         // ---- the old program's tables ---------------------------------------------------------------------

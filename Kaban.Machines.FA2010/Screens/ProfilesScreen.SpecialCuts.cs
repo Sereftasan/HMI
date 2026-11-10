@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -30,16 +30,18 @@ namespace Kaban.Machines.FA2010.Screens
             accTab.Controls.Add(accessories);
             var cutTab = new TabPage(T("Prf_TabSpecialCuts", "Special cuts (<>)")) { BackColor = System.Drawing.Color.White, Name = "specialCuts" };
             _specialCuts = new SpecialCutsEditor(false);
-            _specialCuts.SaveHook = list =>
+            _specialCuts.SaveHook = (list, types) =>
             {
                 if (!_libraryOk || _instance <= 0 || !CanEdit) return false;
                 JobSettings.SaveRecipes(_instance, list);
+                JobSettings.SaveTypes(_instance, types);
                 AuditLogger.Log(string.Format(CultureInfo.InvariantCulture, "profile library: the special cut recipes saved - {0} recipe(s) ({1})", list.Count,
                                               string.Join(", ", list.Select(r => r.No.ToString(CultureInfo.InvariantCulture)))));
                 Status(string.Format(T("Prf_RecipesSaved", "{0} special cut recipe(s) saved."), list.Count));
                 return true;
             };
             _specialCuts.LoadHook = () => _libraryOk && _instance > 0 ? JobSettings.Of(_instance).Recipes : new List<SpecialCutRecipe>();
+            _specialCuts.TypesLoadHook = () => _libraryOk && _instance > 0 ? JobSettings.Of(_instance).Types : new List<SpecialCutType>();
             cutTab.Controls.Add(_specialCuts);
             _accTabs.TabPages.Add(accTab);
             _accTabs.TabPages.Add(cutTab);
@@ -50,7 +52,8 @@ namespace Kaban.Machines.FA2010.Screens
         private void LoadSpecialCuts()
         {
             if (_specialCuts == null || _specialCuts.Dirty) return;
-            _specialCuts.LoadRecipes(_libraryOk && _instance > 0 ? JobSettings.Of(_instance).Recipes : new List<SpecialCutRecipe>());
+            var job = _libraryOk && _instance > 0 ? JobSettings.Of(_instance) : null;
+            _specialCuts.LoadRecipes(job != null ? job.Recipes : new List<SpecialCutRecipe>(), job != null ? job.Types : new List<SpecialCutType>());
             _specialCuts.ApplyAccess(CanEdit && _libraryOk);
             ShowSpecialCutValues();
         }
