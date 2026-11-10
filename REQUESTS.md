@@ -6,6 +6,12 @@ Claude reads this file at the start of every batch, does the items, and moves ea
 ## To do
 
 ## Done
+- 10 November (the answers: D100 >= D700 conditions; 42 = 4.2 mm; the special cut codes and the starting angle; the notching once with the bar):
+  - 18d55be - Machine conditions comparing two devices (D100 >= D700): the registration's last argument a device; FA2010's example Robot X at
+    or past its Reference Position (W0 >= D316, bit 27, for the tests); the PLC Monitor shows the device compared with on a line of its own.
+  - 432f882 - FA2010, the special cut types beside the recipes (a job file's code and its name, as the old program's specialcuttings), a code
+    shown with its name ("1 Arrow"); a recipe's starting angle its first normal cut's; the device list's samples' codes from their names, their
+    saw dust width 4.2. The notching steps go once with the bar, the special cut steps on L105 - as it was.
 - 7 November (the PLC Monitor's labels, folding and conditions of several devices; the special cut recipes on the Profiles page; the mullion notching):
   - 803f962 - PLC Monitor, the tab HMI -> PLC: no machine options / conditions on it, no heading line above its tables; every label shown in
     words ("PC Is Listesi Pozisyon"); the label list's divisor and decimal places (the job list's positions 100 and 2, D95 / D97 / D106 10000 and 2).
