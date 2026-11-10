@@ -4,6 +4,9 @@ Write here what is missing or wrong, whenever you notice it - one line or a para
 Claude reads this file at the start of every batch, does the items, and moves each one to "Done" with its commit.
 
 ## To do
+- 10 November: "I don't quite understand how to use the profile and accessory entry pages, can you check the old program and create the
+  screens closer to it (with the profile group and accessory group relations)" - studied (the old program's Companies > Company Profiles,
+  Profile Brands / Series, Preparation > Group Mapping); waiting for screenshots of those old screens and the steps used there.
 
 ## Done
 - 10 November (the answers: D100 >= D700 conditions; 42 = 4.2 mm; the special cut codes and the starting angle; the notching once with the bar):
@@ -12,6 +15,9 @@ Claude reads this file at the start of every batch, does the items, and moves ea
   - 432f882 - FA2010, the special cut types beside the recipes (a job file's code and its name, as the old program's specialcuttings), a code
     shown with its name ("1 Arrow"); a recipe's starting angle its first normal cut's; the device list's samples' codes from their names, their
     saw dust width 4.2. The notching steps go once with the bar, the special cut steps on L105 - as it was.
+  - e07e761 - FA2010, the Jobs page draws every bar of the job above the tables (as the old program's home page): its pieces with their
+    angles and lengths, the leftover, a numbered dot at each accessory operation (its distance from the piece's start), V cuts green,
+    special cuts red, what the numbers are under the bar; a click on a bar selects it.
 - 7 November (the PLC Monitor's labels, folding and conditions of several devices; the special cut recipes on the Profiles page; the mullion notching):
   - 803f962 - PLC Monitor, the tab HMI -> PLC: no machine options / conditions on it, no heading line above its tables; every label shown in
     words ("PC Is Listesi Pozisyon"); the label list's divisor and decimal places (the job list's positions 100 and 2, D95 / D97 / D106 10000 and 2).
