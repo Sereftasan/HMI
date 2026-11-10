@@ -934,6 +934,9 @@ Tip_ColTable;Type the table's width: the columns shown share it as they share it
 Cond_AllDevices;Met while all its devices are:;Tüm cihazları sağlarken sağlanır:;;;;
 Cond_And;and;ve;;;;
 Cond_AnyDevice;Met while one of its devices is:;Cihazlarından biri sağlarken sağlanır:;;;;
+Cond_ComparedName;{0} - compared with;{0} - karşılaştırılan;;;;
+Cond_ComparedTip;{0}: {1} is compared with this device's value.;{0}: {1} bu cihazın değeriyle karşılaştırılır.;;;;
+Cond_ComparedWith;compared with {0};{0} ile karşılaştırılır;;;;
 Cond_DeviceOf;its device {0} of {1};{1} cihazından {0}. cihazı;;;;
 Cond_Met;met;sağlanıyor;выполнено;erfüllt;soddisfatta;cumplida
 Cond_NotMet;not met;sağlanmıyor;не выполнено;nicht erfüllt;non soddisfatta;no cumplida

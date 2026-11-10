@@ -531,8 +531,8 @@ namespace Kaban.Core.Helpers
                         if (!string.IsNullOrWhiteSpace(a)) yield return new KeyValuePair<int, string>(c.Station, a.Trim());
                 }
                 foreach (var rule in PositionRules(c))
-                    foreach (var d in rule.Devices)          // every device of a condition of several
-                        if (!string.IsNullOrWhiteSpace(d.Address)) yield return new KeyValuePair<int, string>(c.Station, d.Address.Trim());
+                    foreach (var a in MachineConditionMap.AddressesOf(rule))      // every device of a condition of several, one compared with another
+                        yield return new KeyValuePair<int, string>(c.Station, a);
             }
             foreach (var x in _axes)
             {
@@ -591,7 +591,11 @@ namespace Kaban.Core.Helpers
             add(x.UnitWord, false);
             foreach (var r in new[] { x.Running, x.ManualMode })
                 if (r != null && r.PlcNumber == x.Station)
-                    foreach (var d in r.Devices) add(d.Address, d.DataType == DataTypeEnum.Bin_32);
+                    foreach (var d in r.Devices)
+                    {
+                        add(d.Address, d.DataType == DataTypeEnum.Bin_32);
+                        if (d.ComparesDevices) add(d.CompareAddress, d.DataType == DataTypeEnum.Bin_32);
+                    }
             return list.Distinct(StringComparer.OrdinalIgnoreCase).ToList();
         }
 

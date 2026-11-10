@@ -100,6 +100,11 @@ namespace Kaban.UI.Forms
             /// whole condition in the Condition column).
             /// </summary>
             public int ConditionPart;
+            /// <summary>
+            /// The line of the device its condition's device <see cref="ConditionPart"/> is compared with (10 November: "D100 &gt;= D700"): its
+            /// value, no test of its own ("cmp=1" in the list).
+            /// </summary>
+            public bool ConditionCompare;
 
             /// <summary>Decimal (""), Hexadecimal or Binary - how a whole number is shown and typed.</summary>
             public string DisplayFormat = "";
@@ -310,7 +315,7 @@ namespace Kaban.UI.Forms
                                       DataTypeOverride = DataTypeOverride, Comment = Comment,
                                       DisplayFormat = DisplayFormat, StringLength = StringLength,
                                       ArrayCount = Head == null ? ArrayCount : 1, Expanded = Expanded,
-                                      ConditionKey = Head == null ? ConditionKey : "", ConditionPart = Head == null ? ConditionPart : 0,
+                                      ConditionKey = Head == null ? ConditionKey : "", ConditionPart = Head == null ? ConditionPart : 0, ConditionCompare = Head == null && ConditionCompare,
                                       Divisor = EffectiveDivisor, Decimals = EffectiveDecimals };
             }
         }
@@ -3108,8 +3113,9 @@ namespace Kaban.UI.Forms
         {
             return new HashSet<string>(MachineConditionMap.All().Where(c => c.Rule != null && AlarmManager.StationOf(c.Rule) == station)
                                                          .SelectMany(c => c.Rule.Devices)      // a condition of several devices: all of them
-                                                         .Where(d => !string.IsNullOrWhiteSpace(d.Address))
-                                                         .Select(d => d.Address.Trim().ToUpperInvariant()), StringComparer.OrdinalIgnoreCase);
+                                                         .SelectMany(d => new[] { d.Address, d.CompareAddress })   // and those they are compared with
+                                                         .Where(a => !string.IsNullOrWhiteSpace(a))
+                                                         .Select(a => a.Trim().ToUpperInvariant()), StringComparer.OrdinalIgnoreCase);
         }
 
         /// <summary>
@@ -3277,23 +3283,16 @@ namespace Kaban.UI.Forms
             }
             Remember(T("Undo_Collect", "add the devices"), mon);
             var sh = EnsureSheet(mon);
-            var have = new HashSet<string>(sh.Rows.Where(r => !string.IsNullOrEmpty(r.ConditionKey) && r.ConditionPart == 0).Select(r => r.ConditionKey), StringComparer.OrdinalIgnoreCase);
+            var have = new HashSet<string>(sh.Rows.Where(r => !string.IsNullOrEmpty(r.ConditionKey) && r.ConditionPart == 0 && !r.ConditionCompare).Select(r => r.ConditionKey), StringComparer.OrdinalIgnoreCase);
             var rows = new List<WatchRow>();
             foreach (var e in entries)
             {
                 if (!have.Add(e.Key)) continue;
-                rows.Add(new WatchRow
-                {
-                    Station = mon.Station, Address = e.Rule.Address.Trim().ToUpperInvariant(),
-                    LabelOverride = e.Name, DataTypeOverride = ConditionDeviceType(e.Rule), ConditionKey = e.Key
-                });
-                mon.Hidden.Remove(e.Rule.Address);
-                // a condition of several devices: a line under it for each further one, its value and its own test
-                for (int p = 1; p <= e.Rule.Also.Count; p++)
-                {
-                    rows.Add(ConditionPartRow(mon.Station, e, p));
-                    mon.Hidden.Remove(e.Rule.Also[p - 1].Address ?? "");
-                }
+                // its line; a condition of several devices a line under it for each further one (its value and its own test), a device
+                // compared with another a line for that one (its value)
+                var lines = ConditionRows(mon.Station, e);
+                rows.AddRange(lines);
+                foreach (var x in lines) mon.Hidden.Remove(x.Address);
             }
             if (rows.Count > 0)
             {
@@ -3308,10 +3307,18 @@ namespace Kaban.UI.Forms
         }
 
         /// <summary>The data type a condition's device is shown in: a 32-bit one's double word, a bit, else a word.</summary>
-        internal static string ConditionDeviceType(ConditionRule d)
+        internal static string ConditionDeviceType(ConditionRule d, string address = null)
         {
             return d.DataType == Kaban.Core.Enums.DataTypeEnum.Bin_32 ? DeviceCollector.DoubleWord
-                 : DeviceCollector.IsBitDevice(d.Address ?? "") ? DeviceCollector.Bit : DeviceCollector.Word;
+                 : DeviceCollector.IsBitDevice(address ?? d.Address ?? "") ? DeviceCollector.Bit : DeviceCollector.Word;
+        }
+
+        /// <summary>A condition's device <paramref name="part"/>: 0 its own, 1 its second (Also[0]) ...; null: it has none such.</summary>
+        internal static ConditionRule ConditionDevice(MachineConditionMap.Entry e, int part)
+        {
+            if (e == null || e.Rule == null || part < 0) return null;
+            if (part == 0) return e.Rule;
+            return part <= e.Rule.Also.Count ? e.Rule.Also[part - 1] : null;
         }
 
         /// <summary>The line of a condition's further device <paramref name="part"/> (1: its second): "↳ " and the device's label, else the condition's name and its number.</summary>
@@ -3330,9 +3337,49 @@ namespace Kaban.UI.Forms
         }
 
         /// <summary>
-        /// A list's condition rows and their further devices' lines (a list made before a condition had several devices, or since one was
-        /// added or taken off the machine): the missing lines put under the condition's row, those of a device it no longer has taken off.
-        /// The changes made.
+        /// The line of the device a condition's device <paramref name="part"/> is compared with (10 November: "D100 &gt;= D700"): "↳ " and its
+        /// label, else "compared with" - its value under the device's.
+        /// </summary>
+        internal static WatchRow ConditionCompareRow(int station, MachineConditionMap.Entry e, int part)
+        {
+            var d = ConditionDevice(e, part);
+            string address = (d.CompareAddress ?? "").Trim().ToUpperInvariant();
+            var label = PlcLabelTable.ByAddress(station, address);
+            string name = label != null && !string.IsNullOrWhiteSpace(label.Label) ? Words(label.Label)
+                        : string.Format(T("Cond_ComparedName", "{0} - compared with"), e.Name);
+            return new WatchRow
+            {
+                Station = station, Address = address, LabelOverride = "\u21B3 " + name, DataTypeOverride = ConditionDeviceType(d, address),
+                ConditionKey = e.Key, ConditionPart = part, ConditionCompare = true
+            };
+        }
+
+        /// <summary>
+        /// A condition's lines, in their order: its own (its first device), the device that one is compared with, then each further
+        /// device and the one it is compared with.
+        /// </summary>
+        internal static List<WatchRow> ConditionRows(int station, MachineConditionMap.Entry e)
+        {
+            var rows = new List<WatchRow>
+            {
+                new WatchRow
+                {
+                    Station = station, Address = (e.Rule.Address ?? "").Trim().ToUpperInvariant(),
+                    LabelOverride = e.Name, DataTypeOverride = ConditionDeviceType(e.Rule), ConditionKey = e.Key
+                }
+            };
+            for (int p = 0; p <= e.Rule.Also.Count; p++)
+            {
+                if (p > 0) rows.Add(ConditionPartRow(station, e, p));
+                if (ConditionDevice(e, p).ComparesDevices) rows.Add(ConditionCompareRow(station, e, p));
+            }
+            return rows;
+        }
+
+        /// <summary>
+        /// A list's condition rows and their further devices' lines (a list made before a condition had several devices or compared two, or
+        /// since the machine changed it): the lines put under the condition's row in their order - the ones there kept as they are named -
+        /// those of a device it no longer has taken off, a device that changed its address given the new one. The changes made.
         /// </summary>
         internal static int EnsureConditionParts(Sheet sh)
         {
@@ -3341,41 +3388,43 @@ namespace Kaban.UI.Forms
             for (int i = 0; i < sh.Rows.Count; i++)
             {
                 var r = sh.Rows[i];
-                if (string.IsNullOrEmpty(r.ConditionKey) || r.ConditionPart != 0 || r.Head != null) continue;
+                if (string.IsNullOrEmpty(r.ConditionKey) || r.ConditionPart != 0 || r.ConditionCompare || r.Head != null) continue;
                 var e = MachineConditionMap.Find(r.ConditionKey);
                 if (e == null || e.Rule == null) continue;               // another machine's: its lines as they are
-                int n = e.Rule.Also.Count;
-                // a device it no longer has
-                for (int k = sh.Rows.Count - 1; k >= 0; k--)
+                Func<WatchRow, bool> mine = x => x != r && x.Head == null && string.Equals(x.ConditionKey, r.ConditionKey, StringComparison.OrdinalIgnoreCase) &&
+                                                 (x.ConditionPart > 0 || x.ConditionCompare);
+                // the lines there are, wherever they are (right under it, or moved away by a sort)
+                Func<string> shape = () => string.Join("|", sh.Rows.Select((x, k) => new { x, k })
+                    .Where(t => t.x == r || mine(t.x)).Select(t => t.k + ":" + t.x.ConditionPart + (t.x.ConditionCompare ? "c" : "") + ":" + t.x.Address));
+                string before = shape();
+                var had = sh.Rows.Where(mine).ToList();
+                var lines = new List<WatchRow>();
+                foreach (var w in ConditionRows(r.Station, e).Skip(1))
                 {
-                    var x = sh.Rows[k];
-                    if (x.ConditionPart > n && string.Equals(x.ConditionKey, r.ConditionKey, StringComparison.OrdinalIgnoreCase))
-                    {
-                        sh.Rows.RemoveAt(k);
-                        if (k < i) i--;
-                        changes++;
-                    }
+                    var keep = had.FirstOrDefault(x => x.ConditionPart == w.ConditionPart && x.ConditionCompare == w.ConditionCompare && !lines.Contains(x));
+                    if (keep == null) { lines.Add(w); continue; }
+                    if (!string.Equals(keep.Address, w.Address, StringComparison.OrdinalIgnoreCase)) { keep.Address = w.Address; keep.DataTypeOverride = w.DataTypeOverride; }
+                    lines.Add(keep);
                 }
-                // the missing ones, after its lines there are
-                int at = i + 1;
-                while (at < sh.Rows.Count && sh.Rows[at].ConditionPart > 0 &&
-                       string.Equals(sh.Rows[at].ConditionKey, r.ConditionKey, StringComparison.OrdinalIgnoreCase)) at++;
-                for (int p = 1; p <= n; p++)
-                {
-                    if (sh.Rows.Any(x => x.ConditionPart == p && string.Equals(x.ConditionKey, r.ConditionKey, StringComparison.OrdinalIgnoreCase))) continue;
-                    sh.Rows.Insert(at++, ConditionPartRow(r.Station, e, p));
-                    changes++;
-                }
+                foreach (var x in had) sh.Rows.Remove(x);              // a device it no longer has goes with them
+                int at = sh.Rows.IndexOf(r);
+                sh.Rows.InsertRange(at + 1, lines);
+                if (shape() != before) changes++;
+                i = at + lines.Count;
             }
             return changes;
         }
 
-        /// <summary>The test a condition row stands for: a further device's own (ConditionPart), else the whole condition's.</summary>
+        /// <summary>
+        /// The test a condition row stands for: a further device's own (ConditionPart), the whole condition's on its own row - and on the line
+        /// of a device compared with, the test of the device it belongs to.
+        /// </summary>
         internal static ConditionRule ConditionRuleOf(WatchRow model, MachineConditionMap.Entry entry)
         {
             if (entry == null || entry.Rule == null || model == null) return null;
-            if (model.ConditionPart <= 0) return entry.Rule;
-            return model.ConditionPart <= entry.Rule.Also.Count ? entry.Rule.Also[model.ConditionPart - 1] : null;
+            var d = ConditionDevice(entry, model.ConditionPart);
+            if (model.ConditionCompare && (d == null || !d.ComparesDevices)) return null;
+            return d;
         }
 
         // ==================================================================
@@ -4040,7 +4089,7 @@ namespace Kaban.UI.Forms
             if (model == null || string.IsNullOrEmpty(model.ConditionKey)) return null;
             var entry = MachineConditionMap.Find(model.ConditionKey);
             var rule = ConditionRuleOf(model, entry);
-            if (rule == null) return null;
+            if (rule == null || model.ConditionCompare) return null;       // a device compared with: no test of its own
             double value;
             Func<string, int?> read = a => { int v; return mon.Values.TryGetValue(a, out v) ? v : (int?)null; };
             return model.ConditionPart > 0 ? MachineConditionMap.EvaluateDevice(rule, read, out value) : MachineConditionMap.Evaluate(rule, read, out value);
@@ -4057,6 +4106,8 @@ namespace Kaban.UI.Forms
             var entry = MachineConditionMap.Find(model.ConditionKey);
             var rule = ConditionRuleOf(model, entry);
             if (rule == null) return "?";
+            // the device a test compares with: "compared with D100" (its device's test is on that one's line)
+            if (model.ConditionCompare) return string.Format(T("Cond_ComparedWith", "compared with {0}"), (rule.Address ?? "").Trim().ToUpperInvariant());
             if (model.ConditionPart > 0 || rule.Also.Count == 0) return DeviceRuleText(rule);
             // the condition's row of several devices: what each asks ("M22 OFF and M23 OFF")
             return string.Join(rule.AnyDevice ? " " + T("Cond_Or", "or") + " " : " " + T("Cond_And", "and") + " ", rule.Devices.Select(DeviceRuleText));
@@ -4067,7 +4118,7 @@ namespace Kaban.UI.Forms
         {
             string address = (rule.Address ?? "").Trim().ToUpperInvariant();
             bool bit = DeviceCollector.IsBitDevice(address);
-            if (bit && (rule.RequiredValue == 0 || rule.RequiredValue == 1) &&
+            if (bit && !rule.ComparesDevices && (rule.RequiredValue == 0 || rule.RequiredValue == 1) &&
                 (rule.Operator == Kaban.Core.Enums.ComparisonOperator.Equal || rule.Operator == Kaban.Core.Enums.ComparisonOperator.NotEqual))
             {
                 bool on = (rule.RequiredValue == 1) == (rule.Operator == Kaban.Core.Enums.ComparisonOperator.Equal);
@@ -4089,6 +4140,13 @@ namespace Kaban.UI.Forms
                 return;
             }
             var rule = ConditionRuleOf(model, entry);
+            if (rule != null && model.ConditionCompare)
+            {
+                // a device compared with: no test of its own - its value is on its line, the test on its device's
+                Set(cell, "");
+                Tip(cell, string.Format(T("Cond_ComparedTip", "{0}: {1} is compared with this device's value."), entry.Name, MachineConditionMap.DeviceText(rule)));
+                return;
+            }
             if (rule == null)
             {
                 // a further device the condition no longer has
@@ -4532,6 +4590,7 @@ namespace Kaban.UI.Forms
             if (r.StringLength != 16) parts.Add("len=" + r.StringLength.ToString(CultureInfo.InvariantCulture));
             if (!string.IsNullOrEmpty(r.ConditionKey)) parts.Add("cond=" + r.ConditionKey);
             if (!string.IsNullOrEmpty(r.ConditionKey) && r.ConditionPart > 0) parts.Add("part=" + r.ConditionPart.ToString(CultureInfo.InvariantCulture));
+            if (!string.IsNullOrEmpty(r.ConditionKey) && r.ConditionCompare) parts.Add("cmp=1");
             if (r.Divisor != 1 && r.Divisor != 0) parts.Add("div=" + r.Divisor.ToString("R", CultureInfo.InvariantCulture));
             if (r.Decimals != 0) parts.Add("dec=" + r.Decimals.ToString(CultureInfo.InvariantCulture));
             if (r.Joined) parts.Add("join=1");
@@ -4555,6 +4614,7 @@ namespace Kaban.UI.Forms
                     case "open": r.Expanded = v == "1"; break;
                     case "len": if (int.TryParse(v, NumberStyles.Integer, CultureInfo.InvariantCulture, out n)) r.StringLength = Math.Max(1, Math.Min(256, n)); break;
                     case "cond": r.ConditionKey = v; break;
+                    case "cmp": r.ConditionCompare = v == "1"; break;
                     case "part": if (int.TryParse(v, NumberStyles.Integer, CultureInfo.InvariantCulture, out n)) r.ConditionPart = Math.Max(0, Math.Min(64, n)); break;
                     case "div":
                         double d;

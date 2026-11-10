@@ -141,6 +141,19 @@ namespace Kaban.Machines.FA2010
             MachineConditionMap.RegisterMachineBit(ctx.AllocateMachineBit("CuttingLeftFrontAirExhaust"),
                 ctx.Scoped("CuttingLeftFrontAirExhaust"), "Cutting Left Front with Air Exhaust", plc1, "L35",
                 DataTypeEnum.Bin_16, ComparisonOperator.Equal, 1);
+
+            // A DEVICE COMPARED WITH ANOTHER DEVICE (10 November: "Sometime the conditions could be entered as D100 >= D700 maybe (an axis
+            // position is at one side of the parameter or not). Can you write a condition this way in FA2010 for me so I can see how to
+            // introduce it this way"): the last argument is the device to compare with - a text (a device), where the conditions above give a
+            // number. Both are read in the condition's data type (Bin_32: each with its next word - W0/W1 and D316/D317) from the same PLC.
+            //     D100 >= D700:  RegisterMachineBit(bit, tag, name, plc1, "D100", DataTypeEnum.Bin_16, ComparisonOperator.GreaterOrEqual, "D700");
+            // Here: the Robot X axis's position (W0, Axis Settings' axRobot_X.PositionAddress) at or past its reference position parameter
+            // (D316, its ReferenceAddress) - FOR THE TESTS, as the conditions above; met while W0 >= D316. Another device of the same
+            // condition: MachineConditionMap.AddMachineBitDevice(bit, "D110", DataTypeEnum.Bin_32, ComparisonOperator.Less, "D710") after
+            // it (met then while both are). New conditions go after this one (bit 27), never between.
+            MachineConditionMap.RegisterMachineBit(ctx.AllocateMachineBit("RobotXPastReference"),
+                ctx.Scoped("RobotXPastReference"), "Robot X at or past its Reference Position", plc1, "W0",
+                DataTypeEnum.Bin_32, ComparisonOperator.GreaterOrEqual, "D316");
         }
 
         /// <summary>Where the PLC writes the number of the message to show (0: none).</summary>

@@ -14,6 +14,16 @@ namespace Kaban.Core.Helpers
         public int RequiredValue { get; set; } = 1;
 
         /// <summary>
+        /// A DEVICE COMPARED WITH ANOTHER (10 November: "Sometime the conditions could be entered as D100 >= D700 maybe (an axis position is at
+        /// one side of the parameter or not)"): the device whose value <see cref="Address"/> is compared with - read in the same data type
+        /// (a 32-bit one with its next device too), on the same PLC - instead of <see cref="RequiredValue"/>. Empty: the number.
+        /// </summary>
+        public string CompareAddress { get; set; } = "";
+
+        /// <summary>Compared with another device (<see cref="CompareAddress"/>), not with a number.</summary>
+        public bool ComparesDevices { get { return !string.IsNullOrWhiteSpace(CompareAddress); } }
+
+        /// <summary>
         /// A CONDITION OF SEVERAL DEVICES (7 November: "Each machine condition might have multiple device address so it should be able to
         /// show all of their values"): the further devices it reads, each with its own test - on the condition's PLC (MachineConditionMap
         /// .AddDevice). Met while every device's test is (AnyDevice: while one is).
@@ -54,9 +64,26 @@ namespace Kaban.Core.Helpers
             _map[cond] = new ConditionRule { PlcNumber = plc, Address = addr, DataType = type, Operator = op, RequiredValue = val };
         }
 
+        /// <summary>A system condition met while <paramref name="addr"/> compares so with <paramref name="compareAddr"/> ("D100 >= D700").</summary>
+        public static void Register(SystemCondition cond, int plc, string addr, DataTypeEnum type, ComparisonOperator op, string compareAddr)
+        {
+            _map[cond] = new ConditionRule { PlcNumber = plc, Address = addr, DataType = type, Operator = op, RequiredValue = 0, CompareAddress = compareAddr ?? "" };
+        }
+
         // Machine: (Bit, Tag, Name, PLC, Address)
         public static void RegisterMachineBit(long bit, string tag, string name, int plc, string addr)
             => RegisterMachineBit(bit, tag, name, plc, addr, DataTypeEnum.Bin_16, ComparisonOperator.Equal, 1);
+
+        /// <summary>
+        /// A machine's own condition met while <paramref name="addr"/> compares so with the device <paramref name="compareAddr"/> - an axis's
+        /// position on one side of a parameter: RegisterMachineBit(bit, tag, "Robot X past its reference", plc1, "W0", DataTypeEnum.Bin_32,
+        /// ComparisonOperator.GreaterOrEqual, "D316") is W0 &gt;= D316.
+        /// </summary>
+        public static void RegisterMachineBit(long bit, string tag, string name, int plc, string addr, DataTypeEnum type, ComparisonOperator op, string compareAddr)
+        {
+            RegisterMachineBit(bit, tag, name, plc, addr, type, op, 0);
+            _machineBits[bit].CompareAddress = compareAddr ?? "";
+        }
 
         public static void RegisterMachineBit(long bit, string tag, string name, int plc, string addr, DataTypeEnum type, ComparisonOperator op, int val)
         {
@@ -81,6 +108,40 @@ namespace Kaban.Core.Helpers
             return true;
         }
 
+        /// <summary>A further device a system condition reads, compared with another device (<see cref="ConditionRule.CompareAddress"/>).</summary>
+        public static bool AddDevice(SystemCondition cond, string addr, DataTypeEnum type, ComparisonOperator op, string compareAddr)
+        {
+            if (!AddDevice(cond, addr, type, op, 0)) return false;
+            _map[cond].Also[_map[cond].Also.Count - 1].CompareAddress = compareAddr ?? "";
+            return true;
+        }
+
+        /// <summary>A further device a machine's own condition reads, compared with another device (<see cref="ConditionRule.CompareAddress"/>).</summary>
+        public static bool AddMachineBitDevice(long bit, string addr, DataTypeEnum type, ComparisonOperator op, string compareAddr)
+        {
+            if (!AddMachineBitDevice(bit, addr, type, op, 0)) return false;
+            _machineBits[bit].Also[_machineBits[bit].Also.Count - 1].CompareAddress = compareAddr ?? "";
+            return true;
+        }
+
+        /// <summary>
+        /// Every device a rule's test reads: each of its devices, the one each is compared with, a 32-bit one's next device - what the scanner
+        /// reads for it.
+        /// </summary>
+        public static IEnumerable<string> AddressesOf(ConditionRule rule)
+        {
+            if (rule == null) yield break;
+            foreach (var d in rule.Devices)
+            {
+                foreach (var a in new[] { d.Address, d.CompareAddress })
+                {
+                    if (string.IsNullOrWhiteSpace(a)) continue;
+                    yield return a.Trim();
+                    if (d.DataType == DataTypeEnum.Bin_32) yield return PlcAddressHelper.GetNextAddress(a.Trim());
+                }
+            }
+        }
+
         /// <summary>A further device a machine's own condition reads (registered after the condition): <see cref="ConditionRule.Also"/>.</summary>
         public static bool AddMachineBitDevice(long bit, string addr, DataTypeEnum type, ComparisonOperator op, int val)
         {
@@ -94,14 +155,17 @@ namespace Kaban.Core.Helpers
         public static bool CheckDevice(ConditionRule device, Func<string, int> lookup)
         {
             if (device == null || string.IsNullOrWhiteSpace(device.Address)) return false;
-            int low = lookup(device.Address);
-            double currentVal = low;
-            if (device.DataType == DataTypeEnum.Bin_32)
+            Func<string, double> value = a =>
             {
-                int high = lookup(PlcAddressHelper.GetNextAddress(device.Address));
-                currentVal = PlcValueConverter.ConvertToDouble(low, high, device.DataType, DisplayFormatEnum.Signed_Decimal, 0);
-            }
-            return ComparisonHelper.Compare(currentVal, device.Operator, device.RequiredValue);
+                int low = lookup(a);
+                if (device.DataType != DataTypeEnum.Bin_32) return low;
+                int high = lookup(PlcAddressHelper.GetNextAddress(a));
+                return PlcValueConverter.ConvertToDouble(low, high, device.DataType, DisplayFormatEnum.Signed_Decimal, 0);
+            };
+            double currentVal = value(device.Address);
+            // compared with another device's value (D100 >= D700), else with the number
+            double required = device.ComparesDevices ? value(device.CompareAddress.Trim()) : device.RequiredValue;
+            return ComparisonHelper.Compare(currentVal, device.Operator, required);
         }
 
         /// <summary>A rule's test on the values read: every device's (AnyDevice: one's).</summary>
@@ -238,17 +302,30 @@ namespace Kaban.Core.Helpers
         {
             value = 0;
             if (device == null || string.IsNullOrWhiteSpace(device.Address) || lookup == null) return null;
-            int? low = lookup(device.Address);
-            if (!low.HasValue) return null;
-            double current = low.Value;
-            if (device.DataType == DataTypeEnum.Bin_32)
+            double? current = ReadValue(device, device.Address, lookup);
+            if (!current.HasValue) return null;
+            value = current.Value;
+            double required = device.RequiredValue;
+            if (device.ComparesDevices)
             {
-                int? high = lookup(PlcAddressHelper.GetNextAddress(device.Address));
-                if (!high.HasValue) return null;
-                current = PlcValueConverter.ConvertToDouble(low.Value, high.Value, device.DataType, DisplayFormatEnum.Signed_Decimal, 0);
+                // compared with another device (D100 >= D700): that one read too
+                var other = ReadValue(device, device.CompareAddress.Trim(), lookup);
+                if (!other.HasValue) return null;
+                required = other.Value;
             }
-            value = current;
-            return ComparisonHelper.Compare(current, device.Operator, device.RequiredValue);
+            return ComparisonHelper.Compare(value, device.Operator, required);
+        }
+
+        /// <summary>A device's value in a rule's data type (a 32-bit one with its next device as the high word); null: not read yet.</summary>
+        public static double? ReadValue(ConditionRule rule, string address, Func<string, int?> lookup)
+        {
+            if (rule == null || string.IsNullOrWhiteSpace(address) || lookup == null) return null;
+            int? low = lookup(address.Trim());
+            if (!low.HasValue) return null;
+            if (rule.DataType != DataTypeEnum.Bin_32) return low.Value;
+            int? high = lookup(PlcAddressHelper.GetNextAddress(address.Trim()));
+            if (!high.HasValue) return null;
+            return PlcValueConverter.ConvertToDouble(low.Value, high.Value, rule.DataType, DisplayFormatEnum.Signed_Decimal, 0);
         }
 
         /// <summary>"M100 = 0", "D200 (32-bit) > 0" - what a rule asks; of several devices "M22 = 0 and M23 = 0" (AnyDevice: "or").</summary>
@@ -277,7 +354,7 @@ namespace Kaban.Core.Helpers
                 default: op = rule.Operator.ToString(); break;
             }
             return (rule.Address ?? "") + (rule.DataType == DataTypeEnum.Bin_32 ? " (32-bit)" : "") + " " + op + " " +
-                   rule.RequiredValue.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                   (rule.ComparesDevices ? rule.CompareAddress.Trim() : rule.RequiredValue.ToString(System.Globalization.CultureInfo.InvariantCulture));
         }
 
         /// <summary>True when nothing is registered (the designer before a machine is loaded).</summary>

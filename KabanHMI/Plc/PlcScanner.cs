@@ -221,13 +221,8 @@ namespace Kaban.UI.Plc
                     if (rule != null && !string.IsNullOrEmpty(rule.Address))
                     {
                         int st = AlarmManager.StationOf(rule);
-                        // every device of it (a condition of several reads them all - on its PLC)
-                        foreach (var d in rule.Devices)
-                        {
-                            if (string.IsNullOrEmpty(d.Address)) continue;
-                            AddTo(st, d.Address);
-                            if (d.DataType == DataTypeEnum.Bin_32) AddTo(st, PlcAddressHelper.GetNextAddress(d.Address));
-                        }
+                        // every device of it (a condition of several reads them all, a device compared with another that one too - on its PLC)
+                        foreach (var a in MachineConditionMap.AddressesOf(rule)) AddTo(st, a);
                     }
                 }
 
@@ -237,13 +232,8 @@ namespace Kaban.UI.Plc
                     if ((val & bit.Key) != 0)
                     {
                         int st = AlarmManager.StationOf(bit.Value);
-                        foreach (var d in bit.Value.Devices)
-                        {
-                            if (string.IsNullOrEmpty(d.Address)) continue;
-                            AddTo(st, d.Address);
-                            // Automatically poll the next address if the hardware tag is 32-bit
-                            if (d.DataType == DataTypeEnum.Bin_32) AddTo(st, PlcAddressHelper.GetNextAddress(d.Address));
-                        }
+                        // its devices, those they are compared with, a 32-bit one's next device
+                        foreach (var a in MachineConditionMap.AddressesOf(bit.Value)) AddTo(st, a);
                     }
                 }
             };

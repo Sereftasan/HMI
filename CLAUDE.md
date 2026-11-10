@@ -138,7 +138,7 @@
   no "where to start" / "how this page goes" (step 1 branches).
 - An encoder the machine has only with an option, or one input switched between two encoders (30 October):
   CylinderEncoderSettingHMI.EncoderConditions (FA2010: L33, L34) and MeasuredConditions (Y120 / M450, the left or the
-  right profile recognition unit). New machine conditions go after the last one (FA2010: bits 22 - 26 now), never between.
+  right profile recognition unit). New machine conditions go after the last one (FA2010: bits 22 - 27 now), never between.
 
 ## Open questions (answer here or in a message)
 (none now)
@@ -155,6 +155,9 @@ valve a 5/3 open centre (CylinderUnitHMI.OptionValveType / OptionValveConditions
 - A machine condition of several devices (7 November): MachineConditionMap.AddDevice / AddMachineBitDevice after the condition is
   registered (on its PLC) - met while every device's test is (ConditionRule.AnyDevice: one); the PLC Monitor shows a line for each
   further device under the condition's (WatchRow.ConditionPart, "part=" in the list).
+  A device compared with another device (10 November: "D100 >= D700"): the registration's last argument a device (a text) instead of a
+  number - ConditionRule.CompareAddress, read in the condition's data type from its PLC; FA2010's example RobotXPastReference (bit 27,
+  W0 >= D316). The PLC Monitor shows the device compared with on a line of its own (ConditionCompare, "cmp=1").
 - One copy of the HMI at a time (5 November, the user's choice): every machine's exe holds the mutex `Global\Kaban.HMI.OneCopy`
   (Helpers\SingleInstance, right after AppBootstrap.AwaitPreviousInstance in each Program.Main); a second start brings the running
   one to the front, says why and ends; a restart's new instance waits for it (the old one lets it go just before starting it).
