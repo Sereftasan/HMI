@@ -210,6 +210,9 @@
       <DependentUpon>ProfilesScreen.cs</DependentUpon>
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="Screens\JobBarsView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Screens\ProfilesScreen.Notch.cs">
       <DependentUpon>ProfilesScreen.cs</DependentUpon>
       <SubType>UserControl</SubType>

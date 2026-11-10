@@ -45,6 +45,8 @@ namespace Kaban.Machines.FA2010.Screens
         private Button _btnSend, _btnOpen, _btnReload;
         private readonly DataGridView _bars = new DataGridView(), _pieces = new DataGridView(), _steps = new DataGridView();
         private readonly TextBox _notes = new TextBox();
+        /// <summary>The job's bars drawn (10 November: "it draws a bar image for each job bar with the cut and accessory operation points marked").</summary>
+        private readonly JobBarsView _pictures = new JobBarsView { Dock = DockStyle.Fill };
         private readonly Label _lblBar = new Label();
         private bool _filling, _libraryTried, _libraryOk;
         private string _libraryWhy = "";
@@ -171,7 +173,12 @@ namespace Kaban.Machines.FA2010.Screens
             lower.Panel2.Controls.Add(_notes);
             right.Panel2.Controls.Add(lower);
             split.Panel2.Controls.Add(right);
-            Controls.Add(split);
+            // above them, across the page: every bar of the job drawn - a click on one selects it
+            var pictures = new SplitContainer { Dock = DockStyle.Fill, Orientation = Orientation.Horizontal, SplitterWidth = 6 };
+            pictures.Panel1.Controls.Add(_pictures);
+            pictures.Panel2.Controls.Add(split);
+            _pictures.BarClicked += i => { if (i != SelectedIndex) Select(i); };
+            Controls.Add(pictures);
             Controls.Add(cutting);
             Controls.Add(top);
             _lblStatus.Dock = DockStyle.Bottom;
@@ -179,6 +186,7 @@ namespace Kaban.Machines.FA2010.Screens
             _lblStatus.Font = UiStyle.Small;
             _lblStatus.ForeColor = Color.FromArgb(70, 76, 86);
             Controls.Add(_lblStatus);
+            Proportional(pictures, 0.42);
             Proportional(split, 0.40);
             Proportional(right, 0.34);
             Proportional(lower, 0.70);
@@ -405,6 +413,7 @@ namespace Kaban.Machines.FA2010.Screens
                 }
             }
             finally { _filling = false; }
+            _pictures.SetPlans(Plans, Math.Max(0, Math.Min(keep, _bars.Rows.Count - 1)));
             if (_bars.Rows.Count > 0) Select(Math.Max(0, Math.Min(keep, _bars.Rows.Count - 1)));
             else ShowBar();
         }
@@ -443,6 +452,7 @@ namespace Kaban.Machines.FA2010.Screens
             _pieces.Rows.Clear();
             _steps.Rows.Clear();
             int i = SelectedIndex;
+            _pictures.Selected = i;
             if (Job == null || i < 0 || i >= Job.Bars.Count)
             {
                 _lblBar.Text = "";
