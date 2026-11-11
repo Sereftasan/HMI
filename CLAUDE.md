@@ -54,6 +54,10 @@
 - FA2010's pages are generated from the old program's: `tools\legacy_fa2010_pages.py` (it keeps what was set by hand) -
   except Machine Settings' Options, Conveyor, Robot, Milling, Cutting and Others, kept by hand (3 November: it does not
   write them). Its wiring list: `tools\build_wiring.py` -> `Kaban.Machines.FA2010\Wiring.csv`.
+- MD3020's pages (11 November) come from the old program's `_MD3030` project: `tools\legacy_md3030_pages.py` writes them
+  from its tables (tools\legacy\MD3030 - the README says which old page is which new one and what looks wrong there),
+  a table a page's columns and rows of the program's own controls; `--check` compares the devices with the old pages.
+  It keeps what was set on a control by hand (found by its name). The manual pages' bar: `Screens\Shared\JogBar`.
 - Machine Settings' rows (3 November): a page of settings is rows, UiStyle.SettingRowHeight (38) high, touching, a light
   line under each (UiStyle.RowRule, lighter than a table's GridRule) - every row 450 wide (the user's choice; a frame 474,
   its rows 12 in) - a switch: CheckBoxHMI SwitchRow; a value: NumericInputHMI.RowWidth (its caption is the row, words at the

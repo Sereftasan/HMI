@@ -90,59 +90,65 @@
   <ItemGroup>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Screens\Parameters\AxisSettings.cs">
+    <Compile Include="Screens\Manual\ManualGeneral.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Screens\Parameters\AxisSettings.Designer.cs">
-      <DependentUpon>AxisSettings.cs</DependentUpon>
+    <Compile Include="Screens\Manual\ManualGeneral.Designer.cs">
+      <DependentUpon>ManualGeneral.cs</DependentUpon>
     </Compile>
-    <Compile Include="Screens\MachineOptions.cs">
+    <Compile Include="Screens\Manual\ManualMovement.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Screens\MachineOptions.Designer.cs">
-      <DependentUpon>MachineOptions.cs</DependentUpon>
+    <Compile Include="Screens\Manual\ManualMovement.Designer.cs">
+      <DependentUpon>ManualMovement.cs</DependentUpon>
     </Compile>
-    <Compile Include="Screens\MachineParameters.cs">
+    <Compile Include="Screens\Manual\ManualServos.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Screens\MachineParameters.Designer.cs">
-      <DependentUpon>MachineParameters.cs</DependentUpon>
+    <Compile Include="Screens\Manual\ManualServos.Designer.cs">
+      <DependentUpon>ManualServos.cs</DependentUpon>
     </Compile>
-    <Compile Include="Screens\MachineStatus.cs">
+    <Compile Include="Screens\Parameters\ParamAxisCalibration.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Screens\MachineStatus.Designer.cs">
-      <DependentUpon>MachineStatus.cs</DependentUpon>
+    <Compile Include="Screens\Parameters\ParamAxisCalibration.Designer.cs">
+      <DependentUpon>ParamAxisCalibration.cs</DependentUpon>
     </Compile>
-    <Compile Include="Screens\ManualAxes.cs">
+    <Compile Include="Screens\Parameters\ParamGeneral.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Screens\ManualAxes.Designer.cs">
-      <DependentUpon>ManualAxes.cs</DependentUpon>
+    <Compile Include="Screens\Parameters\ParamGeneral.Designer.cs">
+      <DependentUpon>ParamGeneral.cs</DependentUpon>
     </Compile>
-    <Compile Include="Screens\ManualClamping.cs">
+    <Compile Include="Screens\Parameters\ParamPositionDefinition.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Screens\ManualClamping.Designer.cs">
-      <DependentUpon>ManualClamping.cs</DependentUpon>
+    <Compile Include="Screens\Parameters\ParamPositionDefinition.Designer.cs">
+      <DependentUpon>ParamPositionDefinition.cs</DependentUpon>
     </Compile>
-    <Compile Include="Screens\ManualConveyor.cs">
+    <Compile Include="Screens\Parameters\ParamSpeed.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Screens\ManualConveyor.Designer.cs">
-      <DependentUpon>ManualConveyor.cs</DependentUpon>
+    <Compile Include="Screens\Parameters\ParamSpeed.Designer.cs">
+      <DependentUpon>ParamSpeed.cs</DependentUpon>
     </Compile>
-    <Compile Include="Screens\ManualDrilling.cs">
+    <Compile Include="Screens\Parameters\ParamProcess.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Screens\ManualDrilling.Designer.cs">
-      <DependentUpon>ManualDrilling.cs</DependentUpon>
+    <Compile Include="Screens\Parameters\ParamProcess.Designer.cs">
+      <DependentUpon>ParamProcess.cs</DependentUpon>
     </Compile>
-    <Compile Include="Screens\ManualOther.cs">
+    <Compile Include="Screens\Parameters\ParamOffset.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Screens\ManualOther.Designer.cs">
-      <DependentUpon>ManualOther.cs</DependentUpon>
+    <Compile Include="Screens\Parameters\ParamOffset.Designer.cs">
+      <DependentUpon>ParamOffset.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Screens\Shared\JogBar.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Screens\Shared\JogBar.Designer.cs">
+      <DependentUpon>JogBar.cs</DependentUpon>
     </Compile>
     <Compile Include="MD3020Module.cs" />
     <Compile Include="Program.cs" />
