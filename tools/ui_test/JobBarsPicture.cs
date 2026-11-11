@@ -137,6 +137,22 @@ class JBP {
         Pump(150);
         Check("  bar 2 clicked on the Home page: the Jobs page selects it", grid.CurrentRow != null && grid.CurrentRow.Index == 1 && (int)Get(view, "Selected") == 1,
               grid.CurrentRow != null ? grid.CurrentRow.Index.ToString() : "none");
+        // 11 November: "it could be nice for some screens to scale to the window width" - the page is docked in the
+        // window; the drawing as wide and as high as the page, Start / Pause / Cancel under it in the middle
+        home.Dock = DockStyle.Fill;
+        var place = hview.Parent;
+        var start = (Control)Get(home, "btnStart");
+        hform.ClientSize = new Size(1000, 940);
+        Pump(150);
+        Check("the Home page in a window of another size: the job's drawing as wide and high as the window, 14 px from its sides",
+              place.Left == 14 && place.Right == 1000 - 14 && place.Bottom == 940 - 176 && hview.Width == place.Width,
+              place.Bounds + " " + hview.Width);
+        Check("  Start, Pause, Cancel under it, in the middle", start.Bottom == 940 - 108 && Math.Abs((start.Left + ((Control)Get(home, "btnCancel")).Right) / 2 - 500) < 40,
+              start.Bounds.ToString());
+        Check("  the bars drawn across it again (each bar's row as wide as the drawing)", ((IList<Rectangle>)Get(hview, "Rows")).All(r => r.Width == hview.ClientSize.Width),
+              ((IList<Rectangle>)Get(hview, "Rows"))[0].Width + " / " + hview.ClientSize.Width);
+        hform.ClientSize = new Size(1266, 818);
+        Pump(100);
         if (args.Length > 1) {
             hform.Activate(); Pump(300);
             using (var bmp = new Bitmap(hform.ClientSize.Width, hform.ClientSize.Height)) {

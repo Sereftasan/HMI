@@ -42,6 +42,7 @@
             // btnStart
             // 
             this.btnStart.ActiveBackColor = System.Drawing.Color.White;
+            this.btnStart.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.btnStart.AlertBlink = false;
             this.btnStart.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
             bitAction22.Action = Kaban.Core.Enums.BitActionType.SET;
@@ -114,6 +115,7 @@
             // btnPause
             // 
             this.btnPause.ActiveBackColor = System.Drawing.Color.White;
+            this.btnPause.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.btnPause.AlertBlink = false;
             this.btnPause.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
             bitAction23.Action = Kaban.Core.Enums.BitActionType.Alternate;
@@ -186,6 +188,7 @@
             // btnCancel
             // 
             this.btnCancel.ActiveBackColor = System.Drawing.Color.White;
+            this.btnCancel.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.btnCancel.AlertBlink = false;
             this.btnCancel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
             bitAction24.Action = Kaban.Core.Enums.BitActionType.SET;
@@ -288,8 +291,13 @@
             this.speedOverride.TabIndex = 3;
             this.speedOverride.TranslationKey = "Lbl_Speed";
             // 
-            // jobBarsPlace - the opened job's bars, drawn there by the page (HomeScreen.cs: JobBarsView)
+            // jobBarsPlace - the opened job's bars, drawn there by the page (HomeScreen.cs: JobBarsView);
+            // anchored on all four sides: as wide and as high as the window (11 November), Start, Pause and
+            // Cancel under it (anchored to the bottom only: they keep to the middle)
             // 
+            this.jobBarsPlace.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.jobBarsPlace.BackColor = System.Drawing.Color.White;
             this.jobBarsPlace.Location = new System.Drawing.Point(14, 66);
             this.jobBarsPlace.Name = "jobBarsPlace";

@@ -51,6 +51,10 @@
   `%LOCALAPPDATA%\Microsoft\VisualStudio\<version>\ProjectAssemblies`, and build again. Never "Ignore and Continue":
   the designer then saves the page without what it could not load.
   AxisJogBar is also shown by the program above the Manual Movement tabs and on the Axis Monitor.
+- A page as wide / high as the window (11 November): the program docks every page in the window, so a control of a page
+  follows the window by its Anchor (Properties > Anchor): Top, Bottom, Left, Right - it grows with the window; Bottom
+  only - it keeps to the bottom, in the middle. FA2010's Home: the job's drawing (jobBarsPlace) on all four sides,
+  Start / Pause / Cancel at the bottom.
 - FA2010's pages are generated from the old program's: `tools\legacy_fa2010_pages.py` (it keeps what was set by hand) -
   except Machine Settings' Options, Conveyor, Robot, Milling, Cutting and Others, kept by hand (3 November: it does not
   write them). Its wiring list: `tools\build_wiring.py` -> `Kaban.Machines.FA2010\Wiring.csv`.
