@@ -1,6 +1,6 @@
 ﻿# The special cut recipes of FA2010_DeviceList_22.09.14_FX5.xls (sheet "Kırlangıç Kesim") - tools/special_cuts_from_devicelist.py.
 # Their codes from their names ("Right 90 Left Arrow": right 90, left Arrow - a special cut by its name, given the job files' code
-# where they are added; "Back Open Y" / "Front Open Y" at both ends - to be confirmed), the saw dust width column C / 10 (42: 4.2 mm),
+# where they are added; "Back Open Y" / "Front Open Y" at both ends), the saw dust width column C / 10 (42: 4.2 mm),
 # the starting angle their first normal cut's.
 # recipe;no;name;left code;right code;starting angle;exit robot holding;robot X offset;saw dust width;with L value;with R value
 # step;command;left clamp;right clamp;robot 1;robot 2;angle;V cut Y

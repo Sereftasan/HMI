@@ -7,7 +7,7 @@ The sheet's formulas name its value cells: K2 T (the saw blade), K3 D (saw - V c
 K5 O (the cut length offset), K6 R and K7 L (the job file's right / left values) - they become the recipes' letters.
 Its recipes' codes come from their names (10 November: "'Right 90 Left Arrow' means the previous pieces right cut ... is 90 degrees
 normal cut and the following cut pieces left cut is an arrow special cut"): "Right <a> Left <b>" the right code <a>, the left code <b>;
-"First End <b>" the left code <b> at the bar's start (right 0); another ("Back Open Y") the special cut itself at both ends - an angle
+"First End <b>" the left code <b> at the bar's start (right 0); another ("Back Open Y") the special cut itself at both ends (11 November: "Yes") - an angle
 as its number, a special cut by its NAME (the Profiles page gives it the job files' code when the samples are added). Column C beside a
 recipe's name (Excel's value, the .xls) is its saw dust width x10 (10 November: "42 ... it means 4.2mm"). The starting angle is the
 recipe's first normal cut's (the HMI works it out).
@@ -71,7 +71,7 @@ def main(path, xls=None):
                                  'r2': formula(ws.cell(r, 7).value), 'angle': num(ws.cell(r, 8).value), 'v': formula(ws.cell(r, 9).value)})
     out = ['# The special cut recipes of FA2010_DeviceList_22.09.14_FX5.xls (sheet "Kırlangıç Kesim") - tools/special_cuts_from_devicelist.py.',
            '# Their codes from their names ("Right 90 Left Arrow": right 90, left Arrow - a special cut by its name, given the job files\' code',
-           '# where they are added; "Back Open Y" / "Front Open Y" at both ends - to be confirmed), the saw dust width column C / 10 (42: 4.2 mm),',
+           '# where they are added; "Back Open Y" / "Front Open Y" at both ends), the saw dust width column C / 10 (42: 4.2 mm),',
            '# the starting angle their first normal cut\'s.',
            '# recipe;no;name;left code;right code;starting angle;exit robot holding;robot X offset;saw dust width;with L value;with R value',
            '# step;command;left clamp;right clamp;robot 1;robot 2;angle;V cut Y']
