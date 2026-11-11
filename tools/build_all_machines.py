@@ -41,6 +41,7 @@ def build(machine, ns_suffix="Screens"):
     return [c for c, _ in made]
 
 if __name__ == "__main__":
-    for m in sys.argv[1:] or ["H800", "H500", "MD3020", "FA2010"]:
+    # MD3020 and MK2010: their pages come from the old program (tools/legacy_md3030_pages.py, legacy_mk2010_pages.py)
+    for m in sys.argv[1:] or ["H800", "H500", "FA2010"]:
         build(m)
 

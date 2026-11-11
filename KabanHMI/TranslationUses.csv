@@ -4,6 +4,14 @@ About_Machines;KabanHMI\Settings\HmiManual.cs;56;Text;sb.AppendLine(LanguageMana
 About_Program;KabanHMI\Settings\HmiManual.cs;39;Text;sb.AppendLine(LanguageManager.GetString("About_Program", "Program") + ": " +
 Actual;Kaban.Machines.MD3020\Screens\Parameters\ParamOffset.Designer.cs;1930;Text;this.hdActual.TranslationKey = "Actual";
 Actual;Kaban.Machines.MD3020\Screens\Parameters\ParamOffset.Designer.cs;1931;Text;this.hdActual.Text = "Actual";
+Actual;Kaban.Machines.MK2010\Screens\Home\HomeJob.Designer.cs;102;Text;this.hdActual.TranslationKey = "Actual";
+Actual;Kaban.Machines.MK2010\Screens\Home\HomeJob.Designer.cs;103;Text;this.hdActual.Text = "Actual";
+Actual;Kaban.Machines.MK2010\Screens\Home\HomeJob.Designer.cs;295;Text;this.hdActual_2.TranslationKey = "Actual";
+Actual;Kaban.Machines.MK2010\Screens\Home\HomeJob.Designer.cs;296;Text;this.hdActual_2.Text = "Actual";
+Actual;Kaban.Machines.MK2010\Screens\Home\HomeJob.Designer.cs;448;Text;this.hdActual_3.TranslationKey = "Actual";
+Actual;Kaban.Machines.MK2010\Screens\Home\HomeJob.Designer.cs;449;Text;this.hdActual_3.Text = "Actual";
+Actual;Kaban.Machines.MK2010\Screens\Parameters\ParamCalibration.Designer.cs;66;Text;this.hdActual.TranslationKey = "Actual";
+Actual;Kaban.Machines.MK2010\Screens\Parameters\ParamCalibration.Designer.cs;67;Text;this.hdActual.Text = "Actual";
 AiC_Active;KabanHMI\Settings\AiChatsEditor.cs;93;Heading;Name = "active", HeaderText = T("AiC_Active", "Active"),
 AiC_ActiveTip;KabanHMI\Settings\AiChatsEditor.cs;94;Tooltip;ToolTipText = T("AiC_ActiveTip", "Offered in the help lists as 'Ask <name>'. Not ticked: kept here, not offered.")
 AiC_Add;KabanHMI\Settings\AiChatsEditor.cs;62;Tooltip;_add = UiStyle.ToolButton("➕", T("AiC_Add", "Add an AI chat to the list"), tips, (s, e) => AddRow());
@@ -58,6 +66,10 @@ Axis;Kaban.Machines.MD3020\Screens\Parameters\ParamAxisCalibration.Designer.cs;4
 Axis;Kaban.Machines.MD3020\Screens\Parameters\ParamAxisCalibration.Designer.cs;466;Text;this.hdAxis.Text = "Axis";
 Axis;Kaban.Machines.MD3020\Screens\Parameters\ParamAxisCalibration.Designer.cs;1159;Text;this.hdAxis_2.TranslationKey = "Axis";
 Axis;Kaban.Machines.MD3020\Screens\Parameters\ParamAxisCalibration.Designer.cs;1160;Text;this.hdAxis_2.Text = "Axis";
+Axis;Kaban.Machines.MK2010\Screens\Home\HomeJob.Designer.cs;273;Text;this.hdAxis.TranslationKey = "Axis";
+Axis;Kaban.Machines.MK2010\Screens\Home\HomeJob.Designer.cs;274;Text;this.hdAxis.Text = "Axis";
+Axis;Kaban.Machines.MK2010\Screens\Parameters\ParamCalibration.Designer.cs;55;Text;this.hdAxis.TranslationKey = "Axis";
+Axis;Kaban.Machines.MK2010\Screens\Parameters\ParamCalibration.Designer.cs;56;Text;this.hdAxis.Text = "Axis";
 Axis;KabanHMI\Controls\AxisSettingHMI.cs;612;Text;Column("Axis", x, WAxis);
 Axis;KabanHMI\Controls\AxisSettingHMI.cs;841;Text;if (l == null || !_columns.TryGetValue("Axis", out col)) return;
 Axis;KabanHMI\Controls\AxisSettingHMI.cs;867;Text;if (host == null || !_columns.TryGetValue("Axis", out col)) return;
@@ -140,6 +152,8 @@ Back;Kaban.Machines.MD3020\Screens\Parameters\ParamAxisCalibration.Designer.cs;4
 Back;Kaban.Machines.MD3020\Screens\Parameters\ParamAxisCalibration.Designer.cs;477;Text;this.hdBack.Text = "Back";
 Back;Kaban.Machines.MD3020\Screens\Parameters\ParamAxisCalibration.Designer.cs;1170;Text;this.hdBack_2.TranslationKey = "Back";
 Back;Kaban.Machines.MD3020\Screens\Parameters\ParamAxisCalibration.Designer.cs;1171;Text;this.hdBack_2.Text = "Back";
+Back;Kaban.Machines.MK2010\Screens\Manual\ManualControl.Designer.cs;163;Text;this.hdBack.TranslationKey = "Back";
+Back;Kaban.Machines.MK2010\Screens\Manual\ManualControl.Designer.cs;164;Text;this.hdBack.Text = "Back";
 Back;KabanHMI\Forms\TouchKeyboard.cs;381;Text;_repeat.Tick += (s, e) => { _repeat.Interval = 70; if (_down != null && _down.Word == "Back") _kb.Key(KeyBack); };
 Back;KabanHMI\Forms\TouchKeyboard.cs;396;Text;var r0 = chars("1 2 3 4 5 6 7 8 9 0 * -"); r0.Add(new K { Word = "Back", Units = 1.5f });
 Back;KabanHMI\Forms\TouchKeyboard.cs;478;Text;if (_down != null && _down.Word == "Back") { _kb.Key(KeyBack); _repeat.Interval = 450; _repeat.Start(); }
@@ -398,6 +412,14 @@ Calibrate;Kaban.Machines.MD3020\Screens\Parameters\ParamAxisCalibration.Designer
 Calibrate;Kaban.Machines.MD3020\Screens\Parameters\ParamAxisCalibration.Designer.cs;5268;Text;this.btnHeads_Head_4_Z1_Calibrate.FallbackText = "Calibrate";
 Calibrate;Kaban.Machines.MD3020\Screens\Parameters\ParamAxisCalibration.Designer.cs;5442;Text;this.btnHeads_Head_4_Z2_Calibrate.TranslationKey = "Calibrate";
 Calibrate;Kaban.Machines.MD3020\Screens\Parameters\ParamAxisCalibration.Designer.cs;5443;Text;this.btnHeads_Head_4_Z2_Calibrate.FallbackText = "Calibrate";
+Calibrate;Kaban.Machines.MK2010\Screens\Parameters\ParamCalibration.Designer.cs;88;Text;this.hdCalibrate.TranslationKey = "Calibrate";
+Calibrate;Kaban.Machines.MK2010\Screens\Parameters\ParamCalibration.Designer.cs;89;Text;this.hdCalibrate.Text = "Calibrate";
+Calibrate;Kaban.Machines.MK2010\Screens\Parameters\ParamCalibration.Designer.cs;146;Text;this.btnCalibration_Axis_X_Calibrate.TranslationKey = "Calibrate";
+Calibrate;Kaban.Machines.MK2010\Screens\Parameters\ParamCalibration.Designer.cs;147;Text;this.btnCalibration_Axis_X_Calibrate.FallbackText = "Calibrate";
+Calibrate;Kaban.Machines.MK2010\Screens\Parameters\ParamCalibration.Designer.cs;206;Text;this.btnCalibration_Axis_Y1_Calibrate.TranslationKey = "Calibrate";
+Calibrate;Kaban.Machines.MK2010\Screens\Parameters\ParamCalibration.Designer.cs;207;Text;this.btnCalibration_Axis_Y1_Calibrate.FallbackText = "Calibrate";
+Calibrate;Kaban.Machines.MK2010\Screens\Parameters\ParamCalibration.Designer.cs;266;Text;this.btnCalibration_Axis_Y2_Calibrate.TranslationKey = "Calibrate";
+Calibrate;Kaban.Machines.MK2010\Screens\Parameters\ParamCalibration.Designer.cs;267;Text;this.btnCalibration_Axis_Y2_Calibrate.FallbackText = "Calibrate";
 Calibrate;KabanHMI\Controls\PneumaticPositioningHMI.cs;55;Tooltip;AddSection("Calibration", "Col_PpCalibration", "Calibration", "Calibration", "Tip_PpCalibration", "Calibrate", "Tip_PpCalibrate");
 Chk_BakOnlyThis;KabanHMI\Settings\PlcBackupForms.cs;396;Text;_onlyThis.Text = string.Format(T("Chk_BakOnlyThis", "Only {0}'s backups"), (_machine + " " + _plc).Trim());
 Chk_BakOnlyThis;KabanHMI\Settings\PlcBackupSelection.cs;376;Text;_onlyThis.Text = string.Format(T("Chk_BakOnlyThis", "Only {0}'s backups"), (_machine + " " + _plc).Trim());
@@ -585,6 +607,8 @@ Conveyor;Kaban.Machines.H500\Screens\Manual\ManualEntry_Conveyor.Designer.cs;423
 Conveyor;Kaban.Machines.H800\H800Module.cs;103;Text;new Kaban.UI.Settings.SimplePage("Tab_H800_ManualConveyor", "Conveyor",
 Conveyor;Kaban.Machines.MD3020\Screens\Manual\ManualGeneral.Designer.cs;532;Text;this.lblConveyor.TranslationKey = "Conveyor";
 Conveyor;Kaban.Machines.MD3020\Screens\Manual\ManualGeneral.Designer.cs;533;Text;this.lblConveyor.Text = "Conveyor";
+Conveyor;Kaban.Machines.MK2010\Screens\Manual\ManualControl.Designer.cs;1100;Text;this.capConveyor.TranslationKey = "Conveyor";
+Conveyor;Kaban.Machines.MK2010\Screens\Manual\ManualControl.Designer.cs;1101;Text;this.capConveyor.Text = "Conveyor";
 Cooling;Kaban.Machines.FA2010\Screens\Parameters\Options.Designer.cs;85;Text;this.optCooling.DescriptionText = "Cooling";
 Cpl_Between;KabanHMI\Helpers\UnitCoupling.cs;351;Text;return p == "A" ? unit.SideText(true) : p == "B" ? unit.SideText(false) : T("Cpl_Between", "between its ends");
 Cpl_CannotAct;KabanHMI\Helpers\UnitCoupling.cs;373;Text;if (!b.CanAct) return string.Format(T("Cpl_CannotAct", "'{0}' cannot do '{1}' now"), o.CouplingName, o.SideText(sideA));
@@ -621,6 +645,11 @@ Cyc_StartedDelay;KabanHMI\Helpers\UnitCycling.cs;235;Text;? string.Format(T("Cyc
 Cyc_StartedDelays;KabanHMI\Helpers\UnitCycling.cs;236;Text;: string.Format(T("Cyc_StartedDelays", "Back and forth: {0} s this way, {1} s back (just under the alarm delays) - press a button of it again to stop."),
 Cyc_Stopped;KabanHMI\Helpers\UnitCycling.cs;303;Text;if (shownOn != null) Say(shownOn, T("Cyc_Stopped", "Back and forth stopped") + (string.IsNullOrEmpty(why) ? "." : ": " + why + "."));
 Cyc_UserChanged;KabanHMI\Helpers\UnitCycling.cs;38;Text;SecurityManager.UserChanged += (s, e) => { if (Active) SetActive(false, T("Cyc_UserChanged", "another user signed in")); };
+Demo;Kaban.Machines.MK2010\MK2010Module.cs;83;Text;new Kaban.UI.Settings.SimplePage("Tab_MK2010_ParamDemo", "Demo",
+Demo;Kaban.Machines.MK2010\Screens\Parameters\ParamDemo.Designer.cs;37;Text;this.hdDemo.TranslationKey = "Demo";
+Demo;Kaban.Machines.MK2010\Screens\Parameters\ParamDemo.Designer.cs;38;Text;this.hdDemo.Text = "Demo";
+Demo;Kaban.Machines.MK2010\Screens\Parameters\ParamDemo.Designer.cs;59;Text;this.capDemo.TranslationKey = "Demo";
+Demo;Kaban.Machines.MK2010\Screens\Parameters\ParamDemo.Designer.cs;60;Text;this.capDemo.Text = "Demo";
 Diag_ColDrops;KabanHMI\Settings\StationConnectionControl.cs;254;Text;_table.Controls.Add(HeaderCell(LanguageManager.GetString("Diag_ColDrops", "Drops today")), 6, r);
 Diag_ColError;KabanHMI\Settings\StationConnectionControl.cs;255;Text;_table.Controls.Add(HeaderCell(LanguageManager.GetString("Diag_ColError", "Last error")), 7, r);
 Diag_ColLast;KabanHMI\Settings\StationConnectionControl.cs;253;Text;_table.Controls.Add(HeaderCell(LanguageManager.GetString("Diag_ColLast", "Last answer")), 5, r);
@@ -631,6 +660,8 @@ Diag_NoAnswerFor;KabanHMI\Settings\PlcConnectionDiagnostics.cs;105;Text;r.State 
 Diag_NotActive;KabanHMI\Settings\StationConnectionControl.cs;446;Text;Set(row.Status, LanguageManager.GetString("Diag_NotActive", "Not active"), ColDim);
 Diag_NotConnected;KabanHMI\Settings\PlcConnectionDiagnostics.cs;89;Text;r.State = LanguageManager.GetString("Diag_NotConnected", "not connected (none set)");
 Diag_ProgramVersion;KabanHMI\Settings\PlcConnectionDiagnostics.cs;124;Text;r.State += " (" + string.Format(LanguageManager.GetString("Diag_ProgramVersion", "Version: {0}"), r.Version) + ")";
+Done;Kaban.Machines.MK2010\Screens\Home\HomeJob.Designer.cs;587;Text;this.hdDone.TranslationKey = "Done";
+Done;Kaban.Machines.MK2010\Screens\Home\HomeJob.Designer.cs;588;Text;this.hdDone.Text = "Done";
 Down;Kaban.Core\Helpers\TroubleshootingCatalog.Steps.cs;494;Text;new[] { "Up", "Down" }, new[] { "Forward", "Back" }, new[] { "Forward", "Backward" }, new[] { "Clamp", "Release" },
 Down;Kaban.Core\Helpers\TroubleshootingCatalog.Steps.cs;557;Text;var english = new Dictionary<string, string> { { "\u25B2", "Up" }, { "\u25BC", "Down" }, { "\u25C0", "Left" }, { "\u25B6", "Right" } };
 Down;Kaban.Machines.MD3020\Screens\Parameters\ParamOffset.Designer.cs;2557;Text;this.hdDown.TranslationKey = "Down";
@@ -641,19 +672,23 @@ Drv_Delta;Kaban.Machines.FA2010\Program.cs;129;Text;"DeltaModbusTcp", "Drv_Delta
 Drv_Delta;Kaban.Machines.H500\Program.cs;103;Text;"DeltaModbusTcp", "Drv_Delta", "Delta AS/DVP (Modbus TCP)",
 Drv_Delta;Kaban.Machines.H800\Program.cs;103;Text;"DeltaModbusTcp", "Drv_Delta", "Delta AS/DVP (Modbus TCP)",
 Drv_Delta;Kaban.Machines.MD3020\Program.cs;103;Text;"DeltaModbusTcp", "Drv_Delta", "Delta AS/DVP (Modbus TCP)",
+Drv_Delta;Kaban.Machines.MK2010\Program.cs;103;Text;"DeltaModbusTcp", "Drv_Delta", "Delta AS/DVP (Modbus TCP)",
 Drv_Mitsubishi;Kaban.Machines.FA2010\Program.cs;110;Text;PlcDriverCatalog.MitsubishiActUtlId, "Drv_Mitsubishi", "Mitsubishi (MX Component)",
 Drv_Mitsubishi;Kaban.Machines.H500\Program.cs;92;Text;PlcDriverCatalog.MitsubishiActUtlId, "Drv_Mitsubishi", "Mitsubishi (MX Component)",
 Drv_Mitsubishi;Kaban.Machines.H800\Program.cs;92;Text;PlcDriverCatalog.MitsubishiActUtlId, "Drv_Mitsubishi", "Mitsubishi (MX Component)",
 Drv_Mitsubishi;Kaban.Machines.MD3020\Program.cs;92;Text;PlcDriverCatalog.MitsubishiActUtlId, "Drv_Mitsubishi", "Mitsubishi (MX Component)",
+Drv_Mitsubishi;Kaban.Machines.MK2010\Program.cs;92;Text;PlcDriverCatalog.MitsubishiActUtlId, "Drv_Mitsubishi", "Mitsubishi (MX Component)",
 Drv_None;Kaban.Core\Helpers\PlcDriverCatalog.cs;127;Text;Register(NoneId, "Drv_None", "(not connected)", null, false, false);
 Drv_Siemens;Kaban.Machines.FA2010\Program.cs;119;Text;"SiemensS7", "Drv_Siemens", "Siemens S7-1200/1500 (TCP)",
 Drv_Siemens;Kaban.Machines.H500\Program.cs;97;Text;"SiemensS7", "Drv_Siemens", "Siemens S7-1200/1500 (TCP)",
 Drv_Siemens;Kaban.Machines.H800\Program.cs;97;Text;"SiemensS7", "Drv_Siemens", "Siemens S7-1200/1500 (TCP)",
 Drv_Siemens;Kaban.Machines.MD3020\Program.cs;97;Text;"SiemensS7", "Drv_Siemens", "Siemens S7-1200/1500 (TCP)",
+Drv_Siemens;Kaban.Machines.MK2010\Program.cs;97;Text;"SiemensS7", "Drv_Siemens", "Siemens S7-1200/1500 (TCP)",
 Drv_Simulation;Kaban.Machines.FA2010\Program.cs;101;Text;PlcDriverCatalog.SimulationId, "Drv_Simulation", "Simulation (in-memory)",
 Drv_Simulation;Kaban.Machines.H500\Program.cs;85;Text;PlcDriverCatalog.SimulationId, "Drv_Simulation", "Simulation (in-memory)",
 Drv_Simulation;Kaban.Machines.H800\Program.cs;85;Text;PlcDriverCatalog.SimulationId, "Drv_Simulation", "Simulation (in-memory)",
 Drv_Simulation;Kaban.Machines.MD3020\Program.cs;85;Text;PlcDriverCatalog.SimulationId, "Drv_Simulation", "Simulation (in-memory)",
+Drv_Simulation;Kaban.Machines.MK2010\Program.cs;85;Text;PlcDriverCatalog.SimulationId, "Drv_Simulation", "Simulation (in-memory)",
 Dsh_ActiveShift;KabanHMI\Dashboard\DashboardScreen.cs;644;Text;parts.Add(T("Dsh_ActiveShift", "Active Shift") + ": " + string.Join(", ", _filter.Shifts.Select(s => s.Shown)));
 Dsh_AlarmLogs;KabanHMI\Dashboard\DashboardScreen.Sections.cs;60;Text;{ "alarm_logs", new[] { "Dsh_AlarmLogs", "Logs" } }
 Dsh_AllAlarms;KabanHMI\Dashboard\DashboardScreen.Sections.cs;319;Text;_alarmFilter.ClearText = T("Dsh_AllAlarms", "All Alarms");
@@ -852,6 +887,10 @@ Forward;Kaban.Machines.MD3020\Screens\Parameters\ParamAxisCalibration.Designer.c
 Forward;Kaban.Machines.MD3020\Screens\Parameters\ParamAxisCalibration.Designer.cs;499;Text;this.hdForward.Text = "Forward";
 Forward;Kaban.Machines.MD3020\Screens\Parameters\ParamAxisCalibration.Designer.cs;1192;Text;this.hdForward_2.TranslationKey = "Forward";
 Forward;Kaban.Machines.MD3020\Screens\Parameters\ParamAxisCalibration.Designer.cs;1193;Text;this.hdForward_2.Text = "Forward";
+Forward;Kaban.Machines.MK2010\Screens\Manual\ManualControl.Designer.cs;174;Text;this.hdForward.TranslationKey = "Forward";
+Forward;Kaban.Machines.MK2010\Screens\Manual\ManualControl.Designer.cs;175;Text;this.hdForward.Text = "Forward";
+Forward;Kaban.Machines.MK2010\Screens\Manual\ManualReference.Designer.cs;71;Text;this.hdForward.TranslationKey = "Forward";
+Forward;Kaban.Machines.MK2010\Screens\Manual\ManualReference.Designer.cs;72;Text;this.hdForward.Text = "Forward";
 Ftr_Logging;KabanHMI\Settings\FeaturesControl.cs;66;Text;Feature(HmiFeatures.Industry4Logging, T("Ftr_Logging", "Industry 4 logging in the HMI"), _loggingNow);
 Ftr_LoggingOff;KabanHMI\Settings\FeaturesControl.cs;153;Text;if (!HmiFeatures.LoggingOn) _loggingNow.Text = T("Ftr_LoggingOff", "Now: the Industry 4 service logs (when it is installed) - the HMI's log is in its files.");
 Ftr_NoLogMachine;KabanHMI\Settings\FeaturesControl.cs;162;Text;if (lines.Count == 0) lines.Add(T("Ftr_NoLogMachine", "No machine of this panel keeps a log database (its Dashboard settings)."));
@@ -1010,6 +1049,9 @@ Inp_PanelNote;KabanHMI\Forms\MainForm.Touch.cs;112;Text;: LanguageManager.GetStr
 IoShow_All;KabanHMI\Screens\IoMonitorPage.cs;66;Text;_show.AllText = T("IoShow_All", "All lists");
 IoShow_Inputs;KabanHMI\Screens\IoMonitorPage.cs;195;Menu;if (sec.Inputs != null) items.Add(new Kaban.UI.Dashboard.PickList.Item(sec.Station + ":I", sec.Heading.Text + " - " + T("IoShow_Inputs", "inputs")));
 IoShow_Outputs;KabanHMI\Screens\IoMonitorPage.cs;196;Menu;if (sec.Outputs != null) items.Add(new Kaban.UI.Dashboard.PickList.Item(sec.Station + ":O", sec.Heading.Text + " - " + T("IoShow_Outputs", "outputs")));
+Job;Kaban.Machines.MK2010\Screens\Home\HomeJob.Designer.cs;565;Text;this.hdJob.TranslationKey = "Job";
+Job;Kaban.Machines.MK2010\Screens\Home\HomeJob.Designer.cs;566;Text;this.hdJob.Text = "Job";
+Job;KabanHMI\Screens\MachineHomeScreen.cs;170;Text;var job = NewGroup("Job", rx, 16, 500, 150);
 Job_Ask;Kaban.Machines.FA2010\Screens\JobsScreen.cs;586;Text;string question = string.Format(T("Job_Ask", "Send bar {0} ({1}, {2} piece(s), {3} mm) to the machine?"), plan.Bar.Title, plan.Bar.Code, plan.Bar.Pieces.Count,
 Job_AskNotch;Kaban.Machines.FA2010\Screens\JobsScreen.cs;591;Text;question += "\r\n" + string.Format(T("Job_AskNotch", "{0} mullion notching step(s) of the profile (R25700)."), plan.Notch.Count);
 Job_AskSpecial;Kaban.Machines.FA2010\Screens\JobsScreen.cs;593;Text;question += "\r\n" + string.Format(T("Job_AskSpecial", "{0} special cut(s): their parameters - the saw gets their steps when it asks (L105)."), plan.Special.Count);
@@ -1222,6 +1264,7 @@ Lbl_Simulated;KabanHMI\Forms\SimulationMonitorForm.cs;4283;Text;(mon.IsSimulated
 Lbl_Speed;Kaban.Machines.FA2010\Screens\HomeScreen.Designer.cs;292;Text;this.speedOverride.TranslationKey = "Lbl_Speed";
 Lbl_Speed;Kaban.Machines.FA2010\Screens\Shared\AxisJogBar.Designer.cs;129;Text;this.speedOverrideHMI1.TranslationKey = "Lbl_Speed";
 Lbl_Speed;Kaban.Machines.MD3020\Screens\Shared\JogBar.Designer.cs;40;Text;this.speedOverrideHMI1.TranslationKey = "Lbl_Speed";
+Lbl_Speed;Kaban.Machines.MK2010\Screens\Shared\JogBar.Designer.cs;32;Text;this.speedOverrideHMI1.TranslationKey = "Lbl_Speed";
 Lbl_Speed;KabanHMI\Controls\SpeedOverrideHMI.cs;57;Text;private string _key = "Lbl_Speed", _fallback = "Speed";
 Lbl_Station;KabanHMI\Helpers\PlcEndpointNaming.cs;75;Text;? LanguageManager.GetString("Lbl_Station", "Station") + " " + endpoint.StationId
 Lbl_StationLower;KabanHMI\Helpers\PlcEndpointNaming.cs;88;Text;LanguageManager.GetString("Lbl_StationLower", "station") + " " + endpoint.StationId + ")";
@@ -1471,6 +1514,10 @@ Lib_TypeDefaults;KabanHMI\Profiles\LibraryEditorForm.cs;209;Text;Section(acc, "d
 Lib_Unsaved;KabanHMI\Profiles\LibraryEditorForm.cs;102;Message;var answer = MessageBox.Show(this, T("Lib_Unsaved", "Some tables have changes that are not saved. Save them now?"),
 Lib_Variants;KabanHMI\Profiles\LibraryEditorForm.cs;169;Text;Section(prof, "variants", T("Lib_Variants", "Variants"), T("Lib_HintVariants", "A series' variants (standard, hidden vent). A series without any has one, 'Standard'."), () => Ta...
 Lib_Vendors;KabanHMI\Profiles\LibraryEditorForm.cs;162;Text;Section(prof, "vendors", T("Lib_Vendors", "Vendors"), T("Lib_HintVendors", "Who makes the profiles."), () => Table("profile_vendor", "name", ed => ed
+Limit;Kaban.Machines.MK2010\Screens\Manual\ManualControl.Designer.cs;196;Text;this.hdLimit.TranslationKey = "Limit";
+Limit;Kaban.Machines.MK2010\Screens\Manual\ManualControl.Designer.cs;197;Text;this.hdLimit.Text = "Limit";
+Limit;Kaban.Machines.MK2010\Screens\Manual\ManualReference.Designer.cs;93;Text;this.hdLimit.TranslationKey = "Limit";
+Limit;Kaban.Machines.MK2010\Screens\Manual\ManualReference.Designer.cs;94;Text;this.hdLimit.Text = "Limit";
 Log_AdminOnly;KabanHMI\Settings\LogSettingsControl.cs;129;Text;_adminNote = Kaban.UI.Dashboard.DashboardSettingsControl.NewNote(LanguageManager.GetString("Log_AdminOnly", "Only an Admin can change the log settings."));
 Log_AllPlcs;KabanHMI\Dashboard\DashboardScreen.cs;364;Text;_plcPick.AllText = T("Log_AllPlcs", "All controllers");
 Log_AllPlcs;KabanHMI\Settings\LogViewerControl.cs;160;Text;_plc.Items.Add(new Choice(null, LanguageManager.GetString("Log_AllPlcs", "All controllers")));
@@ -1547,6 +1594,10 @@ Lubrication;Kaban.Machines.FA2010\Screens\Manual\ManualOther.Designer.cs;76;Text
 Lubrication;Kaban.Machines.FA2010\Screens\Manual\ManualOther.Designer.cs;105;Text;this.btnLubrication.TranslationKey = "Lubrication";
 Lubrication;Kaban.Machines.H800\Screens\MachineStatus.Designer.cs;128;Text;this.lLubrication.DescriptionText = "Lubrication";
 Lubrication;Kaban.Machines.H800\Screens\ManualAxes.Designer.cs;98;Text;this.bLubrication.FallbackText = "Lubrication";
+Lubrication;Kaban.Machines.MK2010\Screens\Manual\ManualControl.Designer.cs;567;Text;this.capLubrication.TranslationKey = "Lubrication";
+Lubrication;Kaban.Machines.MK2010\Screens\Manual\ManualControl.Designer.cs;568;Text;this.capLubrication.Text = "Lubrication";
+Lubrication;Kaban.Machines.MK2010\Screens\Manual\ManualControl.Designer.cs;580;Text;this.btnAxes_Lubrication_Forward.TranslationKey = "Lubrication";
+Lubrication;Kaban.Machines.MK2010\Screens\Manual\ManualControl.Designer.cs;581;Text;this.btnAxes_Lubrication_Forward.FallbackText = "Lubrication";
 Lvl_Admin;KabanHMI\Settings\UsersPreferencesControl.cs;1055;Text;case SecurityLevel.Admin: return T("Lvl_Admin", "Admin");
 Lvl_Maintenance;KabanHMI\Settings\UsersPreferencesControl.cs;1054;Text;case SecurityLevel.Maintenance: return T("Lvl_Maintenance", "Maintenance");
 Lvl_Operator;KabanHMI\Settings\UsersPreferencesControl.cs;1053;Text;case SecurityLevel.Operator: return T("Lvl_Operator", "Operator");
@@ -1554,6 +1605,7 @@ Machine_FA2010;Kaban.Machines.FA2010\FA2010Module.cs;23;Text;public string Displ
 Machine_H500;Kaban.Machines.H500\H500Module.cs;20;Text;public string DisplayNameKey { get { return "Machine_H500"; } }
 Machine_H800;Kaban.Machines.H800\H800Module.cs;19;Text;public string DisplayNameKey { get { return "Machine_H800"; } }
 Machine_MD3020;Kaban.Machines.MD3020\MD3020Module.cs;21;Text;public string DisplayNameKey { get { return "Machine_MD3020"; } }
+Machine_MK2010;Kaban.Machines.MK2010\MK2010Module.cs;23;Text;public string DisplayNameKey { get { return "Machine_MK2010"; } }
 Man_And;KabanHMI\Settings\HmiManual.cs;197;Text;string names = string.Join(" " + Word(lang, "Man_And", "and") + " ", subs.Select(m => "<b>" + Enc(m.Label) + "</b>"));
 Man_Controller;KabanHMI\Settings\HmiManual.cs;221;Text;.Append(EncWord(Word(lang, "Man_Controller", "Controller"))).Append("</th><th>").Append(EncWord(Word(lang, "Man_Pages", "Its pages")))
 Man_For;KabanHMI\Settings\HmiManual.cs;202;Text;var html = Fill(template, "machines", Word(lang, "Man_For", "For {0}.", who));
@@ -1565,6 +1617,8 @@ Man_SubMachine;KabanHMI\Settings\HmiManual.cs;224;Text;ch.Append("<tr><td>").App
 Man_User;KabanHMI\Settings\HmiManual.cs;204;Text;html = Fill(html, "svg-title", "KABAN &nbsp; " + Enc(main.Label) + " &nbsp;&middot;&nbsp; " + EncWord(Word(lang, "Man_User", "user")));
 Man_WithSub;KabanHMI\Settings\HmiManual.cs;199;Text;? Word(lang, "Man_WithSub", "{0}, with the sub-machine {1} mounted with it", who, names)
 Man_WithSubs;KabanHMI\Settings\HmiManual.cs;200;Text;: Word(lang, "Man_WithSubs", "{0}, with the sub-machines {1} mounted with it", who, names);
+Melting;Kaban.Machines.MK2010\Screens\Home\HomeJob.Designer.cs;485;Text;this.capMelting.TranslationKey = "Melting";
+Melting;Kaban.Machines.MK2010\Screens\Home\HomeJob.Designer.cs;486;Text;this.capMelting.Text = "Melting";
 Milling;Kaban.Machines.FA2010\FA2010Module.cs;211;Text;new Screens.GeneratedPage("Tab_ManualMilling", "Milling", SecurityLevel.Operator, () => new Screens.Manual.ManualMilling()),
 Milling;Kaban.Machines.FA2010\FA2010Module.cs;231;Text;new Screens.GeneratedPage("Tab_ParamMilling", "Milling", SecurityLevel.Maintenance, () => new Screens.Parameters.ParamMilling()),
 Milling;Kaban.Machines.FA2010\Screens\Manual\ManualYZ_Cross_Rollers.Designer.cs;242;Text;this.unitMilling.TitleTextKey = "Milling";
@@ -1995,6 +2049,22 @@ Name;Kaban.Machines.MD3020\Screens\Parameters\ParamProcess.Designer.cs;44;Text;t
 Name;Kaban.Machines.MD3020\Screens\Parameters\ParamProcess.Designer.cs;45;Text;this.hdName.Text = "Name";
 Name;Kaban.Machines.MD3020\Screens\Parameters\ParamSpeed.Designer.cs;69;Text;this.hdName.TranslationKey = "Name";
 Name;Kaban.Machines.MD3020\Screens\Parameters\ParamSpeed.Designer.cs;70;Text;this.hdName.Text = "Name";
+Name;Kaban.Machines.MK2010\Screens\Home\HomeJob.Designer.cs;80;Text;this.hdName.TranslationKey = "Name";
+Name;Kaban.Machines.MK2010\Screens\Home\HomeJob.Designer.cs;81;Text;this.hdName.Text = "Name";
+Name;Kaban.Machines.MK2010\Screens\Manual\ManualControl.Designer.cs;152;Text;this.hdName.TranslationKey = "Name";
+Name;Kaban.Machines.MK2010\Screens\Manual\ManualControl.Designer.cs;153;Text;this.hdName.Text = "Name";
+Name;Kaban.Machines.MK2010\Screens\Manual\ManualReference.Designer.cs;60;Text;this.hdName.TranslationKey = "Name";
+Name;Kaban.Machines.MK2010\Screens\Manual\ManualReference.Designer.cs;61;Text;this.hdName.Text = "Name";
+Name;Kaban.Machines.MK2010\Screens\Parameters\ParamProduction.Designer.cs;58;Text;this.hdName.TranslationKey = "Name";
+Name;Kaban.Machines.MK2010\Screens\Parameters\ParamProduction.Designer.cs;59;Text;this.hdName.Text = "Name";
+Name;Kaban.Machines.MK2010\Screens\Parameters\ParamSystem.Designer.cs;90;Text;this.hdName.TranslationKey = "Name";
+Name;Kaban.Machines.MK2010\Screens\Parameters\ParamSystem.Designer.cs;91;Text;this.hdName.Text = "Name";
+Name;Kaban.Machines.MK2010\Screens\Parameters\ParamSystem.Designer.cs;624;Text;this.hdName_2.TranslationKey = "Name";
+Name;Kaban.Machines.MK2010\Screens\Parameters\ParamSystem.Designer.cs;625;Text;this.hdName_2.Text = "Name";
+Name;Kaban.Machines.MK2010\Screens\Parameters\ParamSystem2.Designer.cs;85;Text;this.hdName.TranslationKey = "Name";
+Name;Kaban.Machines.MK2010\Screens\Parameters\ParamSystem2.Designer.cs;86;Text;this.hdName.Text = "Name";
+Name;Kaban.Machines.MK2010\Screens\Parameters\ParamSystem2.Designer.cs;820;Text;this.hdName_2.TranslationKey = "Name";
+Name;Kaban.Machines.MK2010\Screens\Parameters\ParamSystem2.Designer.cs;821;Text;this.hdName_2.Text = "Name";
 Name;KabanHMI\Controls\CylinderRowHMI.cs;90;Text;_name.Name = prefix + "Name";
 Name;KabanHMI\Controls\CylinderRowHMI.cs;459;Text;Column("Name", x, nameWidth);
 Name;KabanHMI\Controls\CylinderRowHMI.cs;491;Text;if (c == _name) return "Name";
@@ -2277,12 +2347,54 @@ On;Kaban.Core\Helpers\ViewPreferences.cs;330;Text;public static bool AlarmSoundO
 On;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;56;Heading;_accGrid.Columns.Add(new DataGridViewCheckBoxColumn { Name = "on", HeaderText = T("Prf_AccOn", "On"), Width = 40, ToolTipText = T("Prf_TipAccOn", "Off: the group keeps the acces...
 On;Kaban.Machines.MD3020\Screens\Parameters\ParamProcess.Designer.cs;55;Text;this.hdOn.TranslationKey = "On";
 On;Kaban.Machines.MD3020\Screens\Parameters\ParamProcess.Designer.cs;56;Text;this.hdOn.Text = "On";
+On;Kaban.Machines.MK2010\Screens\Parameters\ParamDemo.Designer.cs;48;Text;this.hdOn.TranslationKey = "On";
+On;Kaban.Machines.MK2010\Screens\Parameters\ParamDemo.Designer.cs;49;Text;this.hdOn.Text = "On";
+On;Kaban.Machines.MK2010\Screens\Parameters\ParamProduction.Designer.cs;283;Text;this.hdOn.TranslationKey = "On";
+On;Kaban.Machines.MK2010\Screens\Parameters\ParamProduction.Designer.cs;284;Text;this.hdOn.Text = "On";
+On;Kaban.Machines.MK2010\Screens\Parameters\ParamSystem.Designer.cs;635;Text;this.hdOn.TranslationKey = "On";
+On;Kaban.Machines.MK2010\Screens\Parameters\ParamSystem.Designer.cs;636;Text;this.hdOn.Text = "On";
+On;Kaban.Machines.MK2010\Screens\Parameters\ParamSystem2.Designer.cs;831;Text;this.hdOn.TranslationKey = "On";
+On;Kaban.Machines.MK2010\Screens\Parameters\ParamSystem2.Designer.cs;832;Text;this.hdOn.Text = "On";
 On;KabanHMI\Controls\CheckBoxHMI.cs;521;Text;string state = Checked ? LanguageManager.GetString("Chk_On", "On") : LanguageManager.GetString("Chk_Off", "Off");
 On;KabanHMI\Controls\LampHMI.cs;196;Tooltip;string state = _isOn ? LanguageManager.GetString("Tip_LampOn", "On") : LanguageManager.GetString("Tip_LampOff", "Off");
 On;KabanHMI\Profiles\LibraryEditorForm.cs;199;Text;.Bool("is_enabled", T("LCol_On", "On"), 60, true)));
 On;KabanHMI\Settings\PreferencePreview.cs;594;Text;bool on = _valueOf(ViewPreferences.AlarmSound) == "On";
 On;KabanHMI\Settings\UsersPreferencesControl.cs;740;Text;if (moved && key == ViewPreferences.AlarmSound && hovered == "On")
 On;KabanHMI\Settings\UsersPreferencesControl.cs;1120;Text;case "AlarmSound.On": return T("VP_On", "On");
+On/Off;Kaban.Machines.MK2010\Screens\Manual\ManualControl.Designer.cs;605;Text;this.hdOn_Off.TranslationKey = "On/Off";
+On/Off;Kaban.Machines.MK2010\Screens\Manual\ManualControl.Designer.cs;606;Text;this.hdOn_Off.Text = "On/Off";
+On/Off;Kaban.Machines.MK2010\Screens\Manual\ManualControl.Designer.cs;673;Text;this.btnUnits_Supporting_Plate_On_Off.TranslationKey = "On/Off";
+On/Off;Kaban.Machines.MK2010\Screens\Manual\ManualControl.Designer.cs;674;Text;this.btnUnits_Supporting_Plate_On_Off.FallbackText = "On/Off";
+On/Off;Kaban.Machines.MK2010\Screens\Manual\ManualControl.Designer.cs;764;Text;this.btnUnits_Back_Plate_On_Off.TranslationKey = "On/Off";
+On/Off;Kaban.Machines.MK2010\Screens\Manual\ManualControl.Designer.cs;765;Text;this.btnUnits_Back_Plate_On_Off.FallbackText = "On/Off";
+On/Off;Kaban.Machines.MK2010\Screens\Manual\ManualControl.Designer.cs;855;Text;this.btnUnits_Top_Press_On_Off.TranslationKey = "On/Off";
+On/Off;Kaban.Machines.MK2010\Screens\Manual\ManualControl.Designer.cs;856;Text;this.btnUnits_Top_Press_On_Off.FallbackText = "On/Off";
+On/Off;Kaban.Machines.MK2010\Screens\Manual\ManualControl.Designer.cs;882;Text;this.btnUnits_Heater_Plates_On_Off.TranslationKey = "On/Off";
+On/Off;Kaban.Machines.MK2010\Screens\Manual\ManualControl.Designer.cs;883;Text;this.btnUnits_Heater_Plates_On_Off.FallbackText = "On/Off";
+On/Off;Kaban.Machines.MK2010\Screens\Manual\ManualControl.Designer.cs;973;Text;this.btnUnits_Sliding_Sash_Press_On_Off.TranslationKey = "On/Off";
+On/Off;Kaban.Machines.MK2010\Screens\Manual\ManualControl.Designer.cs;974;Text;this.btnUnits_Sliding_Sash_Press_On_Off.FallbackText = "On/Off";
+On/Off;Kaban.Machines.MK2010\Screens\Manual\ManualControl.Designer.cs;1032;Text;this.btnUnits_Automatic_On_Off_On_Off.TranslationKey = "On/Off";
+On/Off;Kaban.Machines.MK2010\Screens\Manual\ManualControl.Designer.cs;1033;Text;this.btnUnits_Automatic_On_Off_On_Off.FallbackText = "On/Off";
+On/Off;Kaban.Machines.MK2010\Screens\Manual\ManualControl.Designer.cs;1059;Text;this.btnUnits_Profile_Lifting_On_Off.TranslationKey = "On/Off";
+On/Off;Kaban.Machines.MK2010\Screens\Manual\ManualControl.Designer.cs;1060;Text;this.btnUnits_Profile_Lifting_On_Off.FallbackText = "On/Off";
+On/Off;Kaban.Machines.MK2010\Screens\Manual\ManualControl.Designer.cs;1086;Text;this.btnUnits_Profile_Release_On_Off.TranslationKey = "On/Off";
+On/Off;Kaban.Machines.MK2010\Screens\Manual\ManualControl.Designer.cs;1087;Text;this.btnUnits_Profile_Release_On_Off.FallbackText = "On/Off";
+On/Off;Kaban.Machines.MK2010\Screens\Manual\ManualControl.Designer.cs;1113;Text;this.btnUnits_Conveyor_On_Off.TranslationKey = "On/Off";
+On/Off;Kaban.Machines.MK2010\Screens\Manual\ManualControl.Designer.cs;1114;Text;this.btnUnits_Conveyor_On_Off.FallbackText = "On/Off";
+On/Off;Kaban.Machines.MK2010\Screens\Manual\ManualControl.Designer.cs;1140;Text;this.btnUnits_Gasket_Pressing_G_On_Off.TranslationKey = "On/Off";
+On/Off;Kaban.Machines.MK2010\Screens\Manual\ManualControl.Designer.cs;1141;Text;this.btnUnits_Gasket_Pressing_G_On_Off.FallbackText = "On/Off";
+On/Off;Kaban.Machines.MK2010\Screens\Manual\ManualControl.Designer.cs;1183;Text;this.btnUnits_Gasket_Pressing_Y_A_On_Off.TranslationKey = "On/Off";
+On/Off;Kaban.Machines.MK2010\Screens\Manual\ManualControl.Designer.cs;1184;Text;this.btnUnits_Gasket_Pressing_Y_A_On_Off.FallbackText = "On/Off";
+On/Off;Kaban.Machines.MK2010\Screens\Parameters\ParamDemo.Designer.cs;72;Text;this.btnDemo_Demo_On.TranslationKey = "On/Off";
+On/Off;Kaban.Machines.MK2010\Screens\Parameters\ParamDemo.Designer.cs;73;Text;this.btnDemo_Demo_On.FallbackText = "On/Off";
+On/Off;Kaban.Machines.MK2010\Screens\Parameters\ParamSystem.Designer.cs;659;Text;this.btnFunctions_Heater_Auto_tuning_On.TranslationKey = "On/Off";
+On/Off;Kaban.Machines.MK2010\Screens\Parameters\ParamSystem.Designer.cs;660;Text;this.btnFunctions_Heater_Auto_tuning_On.FallbackText = "On/Off";
+On/Off;Kaban.Machines.MK2010\Screens\Parameters\ParamSystem.Designer.cs;686;Text;this.btnFunctions_All_Profile_Code_On.TranslationKey = "On/Off";
+On/Off;Kaban.Machines.MK2010\Screens\Parameters\ParamSystem.Designer.cs;687;Text;this.btnFunctions_All_Profile_Code_On.FallbackText = "On/Off";
+On/Off;Kaban.Machines.MK2010\Screens\Parameters\ParamSystem2.Designer.cs;855;Text;this.btnFunctions2_Separate_Supporting_and_Heater_Plates_On.TranslationKey = "On/Off";
+On/Off;Kaban.Machines.MK2010\Screens\Parameters\ParamSystem2.Designer.cs;856;Text;this.btnFunctions2_Separate_Supporting_and_Heater_Plates_On.FallbackText = "On/Off";
+On/Off;Kaban.Machines.MK2010\Screens\Parameters\ParamSystem2.Designer.cs;882;Text;this.btnFunctions2_Maximum_20_Series_On.TranslationKey = "On/Off";
+On/Off;Kaban.Machines.MK2010\Screens\Parameters\ParamSystem2.Designer.cs;883;Text;this.btnFunctions2_Maximum_20_Series_On.FallbackText = "On/Off";
 Opt_BakByPoints;KabanHMI\Settings\PlcBackupForms.cs;427;Text;_byPoints.Text = T("Opt_BakByPoints", "Points + Start");
 Opt_BakByRange;KabanHMI\Settings\PlcBackupForms.cs;428;Text;_byRange.Text = T("Opt_BakByRange", "Start + End");
 Other;Kaban.Core\Helpers\AxisMoment.cs;257;Text;default: return "Other";
@@ -2335,6 +2447,18 @@ Pop_Retry;KabanHMI\Forms\PlcPopupForm.cs;98;Text;case "retry": return T("Pop_Ret
 Pop_SignIn;KabanHMI\Forms\PlcPopupForm.cs;162;Text;_note.Text = T("Pop_SignIn", "Sign in to answer the machine.");
 Pop_Unknown;KabanHMI\Helpers\PlcPopupHost.cs;86;Text;{ "EN", string.Format(LanguageManager.GetString("Pop_Unknown", "The PLC shows message {0}, which this HMI does not know yet (not in the machine's Popups.json)."), number) }
 Pop_Yes;KabanHMI\Forms\PlcPopupForm.cs;94;Text;case "yes": return T("Pop_Yes", "Yes");
+Positions;Kaban.Core\Helpers\SimpleMotion.cs;142;Text;I("FeedCurrentValue", "Feed current value", "Md.20", 2400, 100, Kind.Position, "Positions", dbl: true, signed: true),
+Positions;Kaban.Core\Helpers\SimpleMotion.cs;143;Text;I("RealCurrentValue", "Real current value", "Md.101", 2450, 100, Kind.Position, "Positions", dbl: true, signed: true),
+Positions;Kaban.Core\Helpers\SimpleMotion.cs;144;Text;I("DeviationCounter", "Deviation counter", "Md.102", 2452, 100, Kind.Pulses, "Positions", dbl: true, signed: true),
+Positions;Kaban.Core\Helpers\SimpleMotion.cs;145;Text;I("TargetValue", "Target value", "Md.32", 2418, 100, Kind.Position, "Positions", dbl: true, signed: true),
+Positions;Kaban.Core\Helpers\SimpleMotion.cs;146;Text;I("Feedrate", "Feedrate", "Md.22", 2404, 100, Kind.Speed, "Positions", dbl: true),
+Positions;Kaban.Core\Helpers\SimpleMotion.cs;147;Text;I("CurrentSpeed", "Current speed", "Md.27", 2410, 100, Kind.Speed, "Positions", dbl: true),
+Positions;Kaban.Core\Helpers\SimpleMotion.cs;148;Text;I("MotorSpeed", "Motor rotation speed", "Md.103", 2454, 100, Kind.Rpm, "Positions", dbl: true, signed: true),
+Positions;Kaban.Core\Helpers\SimpleMotion.cs;200;Text;new KeyValuePair<string, string>("Positions", "Positions and speeds"),
+Positions;Kaban.Machines.MK2010\Screens\Manual\ManualControl.Designer.cs;185;Text;this.hdPositions.TranslationKey = "Positions";
+Positions;Kaban.Machines.MK2010\Screens\Manual\ManualControl.Designer.cs;186;Text;this.hdPositions.Text = "Positions";
+Positions;Kaban.Machines.MK2010\Screens\Manual\ManualReference.Designer.cs;82;Text;this.hdPositions.TranslationKey = "Positions";
+Positions;Kaban.Machines.MK2010\Screens\Manual\ManualReference.Designer.cs;83;Text;this.hdPositions.Text = "Positions";
 Prf_AccAdded;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;526;Status;Status(string.Format(T("Prf_AccAdded", "{0} is on every profile of the group {1}: its placements are worked out - check and confirm them."), code, _current.Group));
 Prf_AccCode;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;58;Heading;_accGrid.Columns.Add(new DataGridViewTextBoxColumn { Name = "code", HeaderText = T("Prf_AccCode", "Accessory"), Width = 130, ReadOnly = true });
 Prf_AccDesc;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;59;Heading;_accGrid.Columns.Add(new DataGridViewTextBoxColumn { Name = "desc", HeaderText = T("Prf_AccDesc", "Description"), Width = 220, ReadOnly = true });
@@ -2686,6 +2810,13 @@ Prf_UseSize;Kaban.Machines.FA2010\Screens\ProfilesScreen.Details.cs;360;Text;Siz
 Prf_ViewReset;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;909;Status;Status(T("Prf_ViewReset", "Grouping, sorting and filters cleared."));
 Prf_WholeAccessory;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;130;Text;_chkWholeAccessory = new CheckBox { Text = T("Prf_WholeAccessory", "all its operations"), AutoSize = true, Font = UiStyle.Small, Margin = new Padding(6, 6, 3, 3) };
 Prf_Width;Kaban.Machines.FA2010\Screens\ProfilesScreen.Details.cs;109;Text;_txtWidth = (TextBox)line(T("Prf_Width", "Width (mm) :"), new TextBox { Font = UiStyle.Small, TextAlign = HorizontalAlignment.Right }, _lblWidthCue);
+Profile;Kaban.Machines.FA2010\Screens\JobsScreen.cs;139;Text;new[] { T("Job_ColBar", "Bar"), T("Job_ColProfile", "Profile"), T("Job_ColState", "State"), T("Job_ColPieces", "Pieces"),
+Profile;Kaban.Machines.FA2010\Screens\ProfilesScreen.Details.cs;51;Text;var profileTab = new TabPage(T("Prf_TabProfile", "Profile")) { BackColor = Color.White };
+Profile;Kaban.Machines.MK2010\Screens\Home\HomeJob.Designer.cs;426;Text;this.hdProfile.TranslationKey = "Profile";
+Profile;Kaban.Machines.MK2010\Screens\Home\HomeJob.Designer.cs;427;Text;this.hdProfile.Text = "Profile";
+Profile;Kaban.Profiles\Jobs\KbnFile.cs;262;Text;"Profile", Tenths(p.CutLength), Tenths(p.OtherLength), Angle(p.LeftAngle), Angle(p.RightAngle), p.TrolleyName, p.TrolleySection,
+Profile;KabanHMI\Profiles\LibraryEditorForm.cs;532;Text;foreach (var c in new[] { T("LCol_Profile", "Profile"), T("LCol_Group", "Group"), T("LCol_Reference", "Reference"), "Y", "Z", T("LCol_Source", "Found by"), T("LCol_Confidence", ...
+Profile;KabanHMI\Profiles\LibraryEditorForm.cs;544;Text;foreach (var c in new[] { T("LCol_Profile", "Profile"), T("LCol_Group", "Group"), T("LCol_Accessory", "Accessory"), "#", T("LCol_Macro", "Macro"), T("LCol_Status", "Status"), T(...
 PV_AiAs;KabanHMI\Settings\PreferencePreview.cs;178;Text;return T("PV_AiAs", "How 'Create AI prompt' and 'Ask <AI>' put the prompt on the clipboard: as a file - pasted into the chat (Ctrl+V) it is attached, however long - or as its te...
 PV_AiPaste;KabanHMI\Settings\PreferencePreview.cs;180;Text;return T("PV_AiPaste", "'Ask <AI>' opens the chat and, a few seconds later, presses Ctrl+V in it: the prompt goes in by itself - you check it and send it (Enter).");
 PV_Blink;KabanHMI\Settings\PreferencePreview.cs;168;Text;return T("PV_Blink", "Codes, lamps, borders, the alarm and connection marks on the top bar, the sign-in reminder.");
@@ -2729,9 +2860,14 @@ PV_TopBar;KabanHMI\Settings\PreferencePreview.cs;642;Text;TextRenderer.DrawText(
 PV_Unit;KabanHMI\Settings\PreferencePreview.cs;185;Text;return T("PV_Unit", "Every value of this kind on screen, and what is typed into it - the PLC keeps its own unit, converted both ways.");
 PV_UnitOf;KabanHMI\Settings\UsersPreferencesControl.cs;810;Text;if (UnitOf(kv.Key) != UnitType.None) name = string.Format(T("PV_UnitOf", "{0} unit"), name);
 PV_UnitPlc;KabanHMI\Settings\PreferencePreview.cs;293;Text;TextRenderer.DrawText(g, T("PV_UnitPlc", "The PLC keeps") + ":  " + refText, f, new Rectangle(r.Left, r.Top + S(82), r.Width, S(20)), Grey, TextFormatFlags.Left);
+Quantity;Kaban.Machines.MK2010\Screens\Home\HomeJob.Designer.cs;670;Text;this.capQuantity.TranslationKey = "Quantity";
+Quantity;Kaban.Machines.MK2010\Screens\Home\HomeJob.Designer.cs;671;Text;this.capQuantity.Text = "Quantity";
+Quantity;KabanHMI\Dashboard\DashboardScreen.Sections.cs;311;Text;new TableGrid.Col(T("Dsh_Quantity", "Quantity"), 0, "0"));
 Rcd_Hmi;KabanHMI\Controls\LogRecordHMI.cs;299;Text;words += "   (" + T("Rcd_Hmi", "HMI record") + " " + RecordCode + ": " + Trigger + ", " + Values.Count + " " + T("Rcd_Values", "values") + ")";
 Rcd_Record;KabanHMI\Controls\LogRecordHMI.cs;255;Text;return RecordCode > 0 ? T("Rcd_Record", "Record") + " " + RecordCode : T("Rcd_Record", "Record");
 Rcd_Values;KabanHMI\Controls\LogRecordHMI.cs;299;Text;words += "   (" + T("Rcd_Hmi", "HMI record") + " " + RecordCode + ": " + Trigger + ", " + Values.Count + " " + T("Rcd_Values", "values") + ")";
+Real;Kaban.Machines.MK2010\Screens\Parameters\ParamCalibration.Designer.cs;77;Text;this.hdReal.TranslationKey = "Real";
+Real;Kaban.Machines.MK2010\Screens\Parameters\ParamCalibration.Designer.cs;78;Text;this.hdReal.Text = "Real";
 Rec_AxisAlarm;KabanHMI\Dashboard\MachineRecords.cs;88;Text;new Kind { Code = AxisAlarm, Key = "axis_alarm", TextKey = "Rec_AxisAlarm", Text = "Axis alarm", Group = "Axes" },
 Rec_AxisAlarmTip;KabanHMI\Dashboard\MachineLogSettings.cs;105;Text;T("Rec_AxisAlarmTip", "A servo alarm or an axis error: its code, the position, what the axis was doing, its loads.")));
 Rec_AxisOverload;KabanHMI\Dashboard\MachineRecords.cs;89;Text;new Kind { Code = AxisOverload, Key = "axis_overload", TextKey = "Rec_AxisOverload", Text = "Axis overload", Group = "Axes" },
@@ -2840,6 +2976,13 @@ Reference;KabanHMI\Forms\PlcPopupForm.cs;419;Text;AddRow(new Label { Text = "", 
 Reference;KabanHMI\Profiles\LibraryEditorForm.cs;212;Text;.Lookup("reference_code", T("LCol_Reference", "Reference"), "SELECT code, name FROM reference_type ORDER BY name", 150, true)
 Reference;KabanHMI\Profiles\LibraryEditorForm.cs;339;Text;.Lookup("reference_code", T("LCol_Reference", "Reference"), "SELECT code, name FROM reference_type ORDER BY name", 140)
 Reference;KabanHMI\Profiles\LibraryEditorForm.cs;532;Text;foreach (var c in new[] { T("LCol_Profile", "Profile"), T("LCol_Group", "Group"), T("LCol_Reference", "Reference"), "Y", "Z", T("LCol_Source", "Found by"), T("LCol_Confidence", ...
+Remove;Kaban.Machines.MK2010\Screens\Parameters\ParamReports.Designer.cs;106;Text;this.btnReports_Processed_Corner_Number.TranslationKey = "Remove";
+Remove;Kaban.Machines.MK2010\Screens\Parameters\ParamReports.Designer.cs;107;Text;this.btnReports_Processed_Corner_Number.FallbackText = "Remove";
+Remove;KabanHMI\Design\HelpFilesEditor.cs;98;Text;btn("Remove", (s, e) => RemoveSelected());
+Remove;KabanHMI\Profiles\TableEditor.cs;410;Message;T("Tbl_Remove", "Remove"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes);
+Remove;KabanHMI\Screens\NotesPage.cs;1558;Text;Act(acts, "✖", T("Nts_Remove", "Remove"), T("Nts_TipRemove2", "Take this note away (yours, or of a level below yours)"), (s, e) =>
+Remove;KabanHMI\Screens\NotesPage.cs;1703;Text;if (NotesStore.CanRemove(n)) Act(acts, "✖", T("Nts_Remove", "Remove"), T("Nts_TipRemove2", "Take this note away (yours, or of a level below yours)"), (s, e) => RemoveNote(n), "n...
+Remove;KabanHMI\Settings\AlarmSettingsControl.cs;486;Text;btn(LanguageManager.GetString("Btn_Remove", "Remove"), (s, e) => RemoveSelected());
 Right;Kaban.Core\Helpers\TroubleshootingCatalog.Steps.cs;495;Text;new[] { "Open", "Close" }, new[] { "In", "Out" }, new[] { "Left", "Right" }, new[] { "Lock", "Unlock" },
 Right;Kaban.Core\Helpers\TroubleshootingCatalog.Steps.cs;557;Text;var english = new Dictionary<string, string> { { "\u25B2", "Up" }, { "\u25BC", "Down" }, { "\u25C0", "Left" }, { "\u25B6", "Right" } };
 Right;Kaban.Core\Helpers\ViewPreferences.cs;108;Text;P(CaptionAlign, "Captions", "Right", "Left"),
@@ -2868,6 +3011,8 @@ Send;Kaban.Machines.MD3020\Screens\Parameters\ParamGeneral.Designer.cs;654;Text;
 Send;Kaban.Machines.MD3020\Screens\Parameters\ParamGeneral.Designer.cs;655;Text;this.btnMaintenance_Milling_Thickness_Send.FallbackText = "Send";
 Send;Kaban.Machines.MD3020\Screens\Parameters\ParamOffset.Designer.cs;1974;Text;this.btnTemperature_Resistance_Temperature_Tolerance_Actual.TranslationKey = "Send";
 Send;Kaban.Machines.MD3020\Screens\Parameters\ParamOffset.Designer.cs;1975;Text;this.btnTemperature_Resistance_Temperature_Tolerance_Actual.FallbackText = "Send";
+Set;Kaban.Machines.MK2010\Screens\Home\HomeJob.Designer.cs;437;Text;this.hdSet.TranslationKey = "Set";
+Set;Kaban.Machines.MK2010\Screens\Home\HomeJob.Designer.cs;438;Text;this.hdSet.Text = "Set";
 Set_AiPrompt;KabanHMI\Settings\AiPromptControl.cs;42;Text;public string TitleKey { get { return "Set_AiPrompt"; } }
 Set_AlarmColDelay;KabanHMI\Settings\AlarmSettingsControl.cs;169;Heading;HeaderText = LanguageManager.GetString("Set_AlarmColDelay", "Cylinder delay (s)"),
 Set_AlarmDelayBad;KabanHMI\Settings\AlarmSettingsControl.cs;204;Status;_status.Text = string.Format(LanguageManager.GetString("Set_AlarmDelayBad", "A delay is a number of seconds from {0} to 600, or blank for the general delay."),
@@ -2997,6 +3142,14 @@ Tab_MD3020_ParamOffset;Kaban.Machines.MD3020\MD3020Module.cs;124;Text;new Kaban.
 Tab_MD3020_ParamPositionDefinition;Kaban.Machines.MD3020\MD3020Module.cs;118;Text;new Kaban.UI.Settings.SimplePage("Tab_MD3020_ParamPositionDefinition", "Position Definition",
 Tab_MD3020_ParamProcess;Kaban.Machines.MD3020\MD3020Module.cs;122;Text;new Kaban.UI.Settings.SimplePage("Tab_MD3020_ParamProcess", "Process Parameters",
 Tab_MD3020_ParamSpeed;Kaban.Machines.MD3020\MD3020Module.cs;120;Text;new Kaban.UI.Settings.SimplePage("Tab_MD3020_ParamSpeed", "Speed Parameters",
+Tab_MK2010_ManualControl;Kaban.Machines.MK2010\MK2010Module.cs;64;Text;new Kaban.UI.Settings.SimplePage("Tab_MK2010_ManualControl", "Manual Control",
+Tab_MK2010_ManualReference;Kaban.Machines.MK2010\MK2010Module.cs;66;Text;new Kaban.UI.Settings.SimplePage("Tab_MK2010_ManualReference", "References",
+Tab_MK2010_ParamCalibration;Kaban.Machines.MK2010\MK2010Module.cs;77;Text;new Kaban.UI.Settings.SimplePage("Tab_MK2010_ParamCalibration", "Calibration",
+Tab_MK2010_ParamDemo;Kaban.Machines.MK2010\MK2010Module.cs;83;Text;new Kaban.UI.Settings.SimplePage("Tab_MK2010_ParamDemo", "Demo",
+Tab_MK2010_ParamProduction;Kaban.Machines.MK2010\MK2010Module.cs;75;Text;new Kaban.UI.Settings.SimplePage("Tab_MK2010_ParamProduction", "Production Parameters",
+Tab_MK2010_ParamReports;Kaban.Machines.MK2010\MK2010Module.cs;85;Text;new Kaban.UI.Settings.SimplePage("Tab_MK2010_ParamReports", "Reports",
+Tab_MK2010_ParamSystem;Kaban.Machines.MK2010\MK2010Module.cs;79;Text;new Kaban.UI.Settings.SimplePage("Tab_MK2010_ParamSystem", "System Parameters",
+Tab_MK2010_ParamSystem2;Kaban.Machines.MK2010\MK2010Module.cs;81;Text;new Kaban.UI.Settings.SimplePage("Tab_MK2010_ParamSystem2", "System Parameters 2",
 Tab_MonListLabels;KabanHMI\Forms\SimulationMonitorForm.Table.cs;573;Text;sh.ListPage = new TabPage(T("Tab_MonListLabels", "List viewed labels")) { BackColor = Color.White, Name = "listPage" };
 Tab_MonMain;KabanHMI\Forms\SimulationMonitorForm.cs;1119;Text;if (mon.Sheets.Count == 0 && mon.SavedTabCount != 0) mon.Sheets.Add(new Sheet { Name = T("Tab_MonMain", "Main") });
 Tab_MonMain;KabanHMI\Forms\SimulationMonitorForm.cs;1323;Text;sh = AddSheet(mon, UniqueName(mon, T("Tab_MonMain", "Main")), 0);
@@ -3024,6 +3177,24 @@ Tab_Translations;KabanHMI\Settings\TranslationsControl.cs;1129;Text;public strin
 Tab_Translations;KabanHMI\Settings\TranslationsControl.Import.cs;352;Message;if (!Ask.YesNo(this, T("Tab_Translations", "Translation"), string.Format(T("Msg_TrnImportLangs",
 Tab_Translations;KabanHMI\Settings\TranslationsControl.Undo.cs;102;Message;if (step.Written && !Ask.YesNo(this, T("Tab_Translations", "Translation"),
 Tab_Translations;KabanHMI\Settings\TranslationsControl.Undo.cs;120;Message;if (step.Written && !Ask.YesNo(this, T("Tab_Translations", "Translation"),
+Target;Kaban.Machines.MK2010\Screens\Home\HomeJob.Designer.cs;284;Text;this.hdTarget.TranslationKey = "Target";
+Target;Kaban.Machines.MK2010\Screens\Home\HomeJob.Designer.cs;285;Text;this.hdTarget.Text = "Target";
+Target;KabanHMI\Controls\AxisSettingHMI.cs;1504;Text;case "TargetValue": return "Target";
+Target;KabanHMI\Controls\PneumaticPositioningHMI.cs;43;Text;new[] { "Target", "Col_PpTarget", "Target position" },
+Target;KabanHMI\Controls\PneumaticPositioningHMI.cs;54;Tooltip;AddSection("Target", "Col_PpTarget", "Target position", "Target", "Tip_PpTarget", "Start", "Tip_PpStart", operatorLevel: true);
+Target;KabanHMI\Controls\PneumaticPositioningHMI.cs;62;Text;public string TargetPosition { get { return FieldAddress("Target"); } set { SetFieldAddress("Target", value); } }
+Target;KabanHMI\Controls\PneumaticPositioningHMI.cs;65;Text;public string PositioningStartAddress { get { return CommandAddress("Target"); } set { SetCommandAddress("Target", value); } }
+Target;KabanHMI\Controls\PneumaticPositioningHMI.cs;80;Text;public NumericInputHMI TargetField { get { return FieldOf("Target"); } }
+Target;KabanHMI\Controls\PneumaticPositioningHMI.cs;82;Text;public ButtonHMI StartButton { get { return CommandOf("Target"); } }
+Target;KabanHMI\Settings\PlcBackupForms.cs;458;Heading;_areas.Columns.Add(new DataGridViewTextBoxColumn { Name = "Target", HeaderText = T("Col_BakTarget", "Write to"), Width = 150 });
+Target;KabanHMI\Settings\PlcBackupForms.cs;551;Text;var to = Convert.ToString(cells["Target"].Value);
+Target;KabanHMI\Settings\PlcBackupForms.cs;552;Text;if (to.Trim().Length > 0 && PlcBackup.TryParseTarget(a, from, count, to, out target, out error, true)) cells["Target"].Value = target;
+Target;KabanHMI\Settings\PlcBackupForms.cs;669;Text;mod.Row.Cells["Target"].ReadOnly = false;
+Target;KabanHMI\Settings\PlcBackupForms.cs;713;Text;foreach (var col in new[] { "Read", "Target", "Devices" }) row.Cells[col].ReadOnly = true;
+Target;KabanHMI\Settings\PlcBackupForms.cs;715;Text;if (item.Kind == ItemKind.Device) { row.Cells["Read"].ReadOnly = false; row.Cells["Target"].ReadOnly = false; }
+Target;KabanHMI\Settings\PlcBackupForms.cs;791;Text;else if (item.Kind == ItemKind.Module && column == "Target") CheckModule(item);
+Target;KabanHMI\Settings\PlcBackupForms.cs;854;Text;if (!read || !PlcBackup.TryParseTarget(a, from, count, Convert.ToString(row.Cells["Target"].Value), out target, out error, _simulator))
+Target;KabanHMI\Settings\PlcBackupForms.cs;879;Text;string text = item == null ? "" : Convert.ToString(item.Row.Cells["Target"].Value).Trim();
 Tbl_Add;KabanHMI\Profiles\TableEditor.cs;77;Tooltip;_add = UiStyle.ToolButton("\u2795", T("Tbl_Add", "Add a row"), _tips, (s, e) => AddRow());
 Tbl_ConfirmDelete;KabanHMI\Profiles\TableEditor.cs;409;Message;string.Format(T("Tbl_ConfirmDelete", "{0} row(s) will be removed, with what belongs only to them. Save?"), n),
 Tbl_Delete;KabanHMI\Profiles\TableEditor.cs;78;Tooltip;_del = UiStyle.ToolButton("\uD83D\uDDD1", T("Tbl_Delete", "Remove the selected rows (saved with the rest)"), _tips, (s, e) => DeleteRows());
@@ -3044,6 +3215,8 @@ Tbl_Saved;KabanHMI\Profiles\TableEditor.cs;457;Status;_status.Text = T("Tbl_Save
 Tbl_Unsaved;KabanHMI\Profiles\TableEditor.cs;153;Status;_status.Text = T("Tbl_Unsaved", "changed - not saved yet");
 Tch_NotNow;KabanHMI\Helpers\TouchInput.Gestures.cs;266;Tooltip;return !string.IsNullOrWhiteSpace(item.ToolTipText) ? item.ToolTipText : LanguageManager.GetString("Tch_NotNow", "Not available now.");
 Tch_NotNow;KabanHMI\Helpers\TouchInput.Gestures.cs;279;Text;return LanguageManager.GetString("Tch_NotNow", "Not available now.");
+Temperature;Kaban.Machines.MK2010\Screens\Home\HomeJob.Designer.cs;91;Text;this.hdTemperature.TranslationKey = "Temperature";
+Temperature;Kaban.Machines.MK2010\Screens\Home\HomeJob.Designer.cs;92;Text;this.hdTemperature.Text = "Temperature";
 Tip_AiAsk;KabanHMI\Helpers\AiMenu.cs;70;Tooltip;ask.ToolTipText = string.Format(T("Tip_AiAsk", "Opens {0} in the browser and pastes the briefing into it by itself (Ctrl+V) - you check it and send it."), chat.Name);
 Tip_AiPrompt;KabanHMI\Helpers\AiMenu.cs;59;Tooltip;? T("Tip_AiPrompt", "Copies a briefing for an AI chat (Claude, ChatGPT, Gemini, Grok...) with everything about this alarm, its unit, its devices and the machine, and the HMI's o...
 Tip_AlarmBit;KabanHMI\Controls\ButtonHMI.cs;1438;Tooltip;lines.Add(LanguageManager.GetString("Tip_AlarmBit", "Alarm bit") + ": " + address +
@@ -3441,6 +3614,14 @@ Value;Kaban.Machines.MD3020\Screens\Parameters\ParamGeneral.Designer.cs;285;Text
 Value;Kaban.Machines.MD3020\Screens\Parameters\ParamGeneral.Designer.cs;286;Text;this.hdValue.Text = "Value";
 Value;Kaban.Machines.MD3020\Screens\Parameters\ParamOffset.Designer.cs;1919;Text;this.hdValue.TranslationKey = "Value";
 Value;Kaban.Machines.MD3020\Screens\Parameters\ParamOffset.Designer.cs;1920;Text;this.hdValue.Text = "Value";
+Value;Kaban.Machines.MK2010\Screens\Home\HomeJob.Designer.cs;576;Text;this.hdValue.TranslationKey = "Value";
+Value;Kaban.Machines.MK2010\Screens\Home\HomeJob.Designer.cs;577;Text;this.hdValue.Text = "Value";
+Value;Kaban.Machines.MK2010\Screens\Parameters\ParamProduction.Designer.cs;69;Text;this.hdValue.TranslationKey = "Value";
+Value;Kaban.Machines.MK2010\Screens\Parameters\ParamProduction.Designer.cs;70;Text;this.hdValue.Text = "Value";
+Value;Kaban.Machines.MK2010\Screens\Parameters\ParamReports.Designer.cs;58;Text;this.hdValue.TranslationKey = "Value";
+Value;Kaban.Machines.MK2010\Screens\Parameters\ParamReports.Designer.cs;59;Text;this.hdValue.Text = "Value";
+Value;Kaban.Machines.MK2010\Screens\Parameters\ParamSystem.Designer.cs;101;Text;this.hdValue.TranslationKey = "Value";
+Value;Kaban.Machines.MK2010\Screens\Parameters\ParamSystem.Designer.cs;102;Text;this.hdValue.Text = "Value";
 Value;KabanHMI\Dashboard\MachineRecords.cs;144;Text;public const string DMotor = "Motor", DFault = "Fault", DCurrent = "Current (A)", DValue = "Value", DRunningFor = "Running for (s)",
 Value;KabanHMI\Design\PropertyOrder.cs;39;Text;"Reference", "Measuring tolerance", "Minimum limit", "Unclamping interval", "Value", "Settings",
 Value;KabanHMI\Design\PropertyOrder.cs;147;Text;C("Value", "SettingDataType", "Divisor", "DecimalPlaces", "Digits", "Suffix",
@@ -3546,6 +3727,8 @@ VP_TableFont;KabanHMI\Settings\UsersPreferencesControl.cs;1069;Text;case ViewPre
 VP_TableRows;KabanHMI\Settings\UsersPreferencesControl.cs;1068;Text;case ViewPreferences.TableRows: return T("VP_TableRows", "Table rows");
 VP_TimeFormat;KabanHMI\Settings\UsersPreferencesControl.cs;1067;Text;case ViewPreferences.TimeFormat: return T("VP_TimeFormat", "Time");
 VP_TooltipDelay;KabanHMI\Settings\UsersPreferencesControl.cs;1073;Text;case ViewPreferences.TooltipDelay: return T("VP_TooltipDelay", "Tooltips appear after");
+Welding;Kaban.Machines.MK2010\Screens\Home\HomeJob.Designer.cs;525;Text;this.capWelding.TranslationKey = "Welding";
+Welding;Kaban.Machines.MK2010\Screens\Home\HomeJob.Designer.cs;526;Text;this.capWelding.Text = "Welding";
 Why_AdminOnly;KabanHMI\Controls\MotionValueHMI.cs;210;Text;down ? T("Why_PlcDown", "The PLC is not answering") : T("Why_AdminOnly", "For an Admin (sign in as one)")));
 Why_AdminOnly;KabanHMI\Controls\MotionValueHMI.cs;222;Text;if (!SecurityManager.HasAccess(SecurityLevel.Admin)) return T("Why_AdminOnly", "For an Admin (sign in as one)");
 Why_AdminOnly;KabanHMI\Forms\MainForm.cs;2114;Text;LanguageManager.GetString("Why_AdminOnly", "For an Admin (sign in as one)"));

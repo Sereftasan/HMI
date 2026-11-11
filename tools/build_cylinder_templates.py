@@ -136,7 +136,7 @@ def header(lang, v, f):
             '  tools/cylinder_templates/Cylinder_master.en.html (not over a file changed by hand).\n-->\n') % (v[2], f[2])
 
 
-PROJECTS = ['Kaban.Machines.FA2010', 'Kaban.Machines.H500', 'Kaban.Machines.H800', 'Kaban.Machines.MD3020']
+PROJECTS = ['Kaban.Machines.FA2010', 'Kaban.Machines.H500', 'Kaban.Machines.H800', 'Kaban.Machines.MD3020', 'Kaban.Machines.MK2010']
 
 
 def update_projects():

@@ -352,7 +352,8 @@ class Grid:
 # ============================================================================
 #  CHECK: the old pages' devices
 # ============================================================================
-SHOWN_TYPES = ('KabanButton', 'KabanLambButton', 'KabanLamb', 'KabanLedLabel', 'KabanNumericButton', 'KabanSwitchButton', 'KabanProgressBar')
+SHOWN_TYPES = ('KabanButton', 'KabanLambButton', 'KabanLamb', 'KabanLambNegative', 'KabanLambAlternative', 'KabanLedLabel',
+               'KabanNumericButton', 'KabanSwitchButton', 'KabanProgressBar')
 
 def old_controls(old):
     """The visible controls of an old page: name -> dict(t, Device, LambDevice, Divisor, ...)."""
@@ -373,7 +374,7 @@ def old_devices(old):
     out = set(CODE_DEVICES.get(old, ()))
     for c in old_controls(old).values():
         for k in ('Device', 'LambDevice'):
-            if c.get(k): out.add(c[k])
+            if c.get(k) and c[k] != 'null': out.add(c[k])
     return out
 
 def cells(pg):
@@ -405,8 +406,9 @@ def divisors(pg):
             dev = c.get('Device')
             if not dev: continue
             if c['t'] == 'KabanLedLabel':
-                div = float(c.get('Divisor', '1').rstrip('D')) * 10
-                dec = int(c.get('FloatingPoint', '0'))
+                # DirectShow: the raw value as it is
+                div = 1.0 if c.get('DirectShow') == 'true' else float(c.get('Divisor', '1').rstrip('D')) * 10
+                dec = 0 if c.get('DirectShow') == 'true' else int(c.get('FloatingPoint', '0'))
                 bits = 32 if 'Bit_32' in c.get('DataType', '') else 16
                 old.setdefault(dev, set()).add(('V', div, dec, bits))
             elif c['t'] == 'KabanNumericButton':
@@ -437,10 +439,10 @@ def actions(pg):
                 old.setdefault(c['Device'], set()).add(OLD_ACTION.get(c.get('ButtonType', 'Momentary').split('.')[-1], '?'))
     for c in cells(pg):
         if c['kind'] != 'btn': continue
-        for cmd, act in [(c['cmd'], c['action'])] + list(c.get('more', ())):
-            seen = old.get(cmd)
-            if seen and act not in seen:
-                problems.append('%s: %s, the old page %s' % (cmd, act, sorted(seen)))
+        # (a button of several commands - Reference All, Calibrate All - was the old page's code: its first one only)
+        seen = old.get(c['cmd'])
+        if seen and not c.get('more') and c['action'] not in seen:
+            problems.append('%s: %s, the old page %s' % (c['cmd'], c['action'], sorted(seen)))
     return problems
 
 def check():
