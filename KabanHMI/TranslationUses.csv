@@ -220,7 +220,7 @@ Btn_BakSelectAll;KabanHMI\Settings\PlcBackupForms.cs;444;Text;var all = UiStyle.
 Btn_BakSelectAll;KabanHMI\Settings\PlcBackupSelection.cs;203;Text;var all = UiStyle.TextButton(T("Btn_BakSelectAll", "Select all"), 0, (s, e) => SetAll(true));
 Btn_BakWrite;KabanHMI\Settings\PlcBackupForms.cs;483;Text;_write = UiStyle.TextButton(T("Btn_BakWrite", "Write..."), 110, (s, e) => DoWrite());
 Btn_Browse;KabanHMI\Settings\ImportSettingsControl.cs;93;Text;Text = T("Btn_Browse", "Browse..."), Size = new Size(96, 28), BackColor = Color.White, Margin = new Padding(0, 3, 0, 0)
-Btn_Cancel;Kaban.Machines.FA2010\Screens\HomeScreen.Designer.cs;254;Text;this.btnCancel.TranslationKey = "Btn_Cancel";
+Btn_Cancel;Kaban.Machines.FA2010\Screens\HomeScreen.Designer.cs;257;Text;this.btnCancel.TranslationKey = "Btn_Cancel";
 Btn_Cancel;Kaban.Machines.H500\Screens\HomeScreen.Designer.cs;78;Text;this.btnCancel.TranslationKey = "Btn_Cancel";
 Btn_Cancel;KabanHMI\Forms\InputForm.cs;73;Text;btnCancel = UiStyle.DialogButton(LanguageManager.GetString("Btn_Cancel", "Cancel"), DialogResult.Cancel); // Cancel is always safe
 Btn_Cancel;KabanHMI\Forms\LoginForm.cs;94;Text;btnCancel = UiStyle.DialogButton(LanguageManager.GetString("Btn_Cancel", "Cancel"), DialogResult.Cancel);
@@ -266,9 +266,9 @@ Btn_Home;Kaban.Machines.SB3012\Program.cs;72;Text;shell.AddMenuButton("Btn_Home"
 Btn_Home;Kaban.Machines.SB3015\Program.cs;65;Text;shell.AddMenuButton("Btn_Home", "Home", null, new Screens.HomeScreen());
 Btn_Home;KabanHMI\Screens\StandardScreens.cs;83;Text;TitleKey = "Btn_Home",
 Btn_Home;KabanHMI\Settings\PreferencePreview.cs;420;Text;new[] { "Btn_Home", "Home" }, new[] { "Btn_ManualMovement", "Manual Movement" },
-Btn_HomePause;Kaban.Machines.FA2010\Screens\HomeScreen.Designer.cs;182;Text;this.btnPause.TranslationKey = "Btn_HomePause";
+Btn_HomePause;Kaban.Machines.FA2010\Screens\HomeScreen.Designer.cs;184;Text;this.btnPause.TranslationKey = "Btn_HomePause";
 Btn_HomePause;Kaban.Machines.H500\Screens\HomeScreen.Designer.cs;63;Text;this.btnPause.TranslationKey = "Btn_HomePause";
-Btn_HomeStart;Kaban.Machines.FA2010\Screens\HomeScreen.Designer.cs;110;Text;this.btnStart.TranslationKey = "Btn_HomeStart";
+Btn_HomeStart;Kaban.Machines.FA2010\Screens\HomeScreen.Designer.cs;111;Text;this.btnStart.TranslationKey = "Btn_HomeStart";
 Btn_HomeStart;Kaban.Machines.H500\Screens\HomeScreen.Designer.cs;44;Text;this.btnStart.TranslationKey = "Btn_HomeStart";
 Btn_ImpBackups;KabanHMI\Settings\ImportSettingsControl.cs;121;Text;Text = T("Btn_ImpBackups", "Backups..."), Size = new Size(120, 30), BackColor = Color.White, Name = "impBackups"
 Btn_ImpCompare;KabanHMI\Settings\ImportSettingsControl.cs;109;Text;Text = T("Btn_ImpCompare", "Compare..."), Size = new Size(130, 30), BackColor = Color.White, Name = "impCompare", Enabled = false
@@ -1219,7 +1219,7 @@ Lbl_Password;KabanHMI\Forms\LoginForm.cs;76;Text;LanguageManager.GetString("Lbl_
 Lbl_SheetName;KabanHMI\Forms\SimulationMonitorForm.cs;2768;Text;string name = AskText(T("Ttl_SheetNew", "New tab"), T("Lbl_SheetName", "Name of the tab:"),
 Lbl_SheetName;KabanHMI\Forms\SimulationMonitorForm.cs;2791;Text;string name = AskText(T("Ttl_SheetRename", "Rename tab"), T("Lbl_SheetName", "Name of the tab:"), sh.Name, mon, sh);
 Lbl_Simulated;KabanHMI\Forms\SimulationMonitorForm.cs;4283;Text;(mon.IsSimulated ? "  \u00B7  " + T("Lbl_Simulated", "simulated") : "");
-Lbl_Speed;Kaban.Machines.FA2010\Screens\HomeScreen.Designer.cs;289;Text;this.speedOverride.TranslationKey = "Lbl_Speed";
+Lbl_Speed;Kaban.Machines.FA2010\Screens\HomeScreen.Designer.cs;292;Text;this.speedOverride.TranslationKey = "Lbl_Speed";
 Lbl_Speed;Kaban.Machines.FA2010\Screens\Shared\AxisJogBar.Designer.cs;129;Text;this.speedOverrideHMI1.TranslationKey = "Lbl_Speed";
 Lbl_Speed;Kaban.Machines.MD3020\Screens\Shared\JogBar.Designer.cs;40;Text;this.speedOverrideHMI1.TranslationKey = "Lbl_Speed";
 Lbl_Speed;KabanHMI\Controls\SpeedOverrideHMI.cs;57;Text;private string _key = "Lbl_Speed", _fallback = "Speed";
@@ -1760,7 +1760,7 @@ Msg_BakWritingStart;KabanHMI\Forms\SimulationMonitorForm.Backup.cs;235;Text;var 
 Msg_BakWritingStart;KabanHMI\Settings\PlcBackupForms.cs;996;Text;result = WorkForm.Run(this, Text, T("Msg_BakWritingStart", "Writing..."), p =>
 Msg_BakWritten;KabanHMI\Forms\SimulationMonitorForm.Backup.cs;266;Text;string text = string.Format(T("Msg_BakWritten", "{0} devices written."), result.Points.ToString("N0"));
 Msg_BakWritten;KabanHMI\Settings\PlcBackupForms.cs;1004;Text;string text = string.Format(T("Msg_BakWritten", "{0} devices written."), result.Points.ToString("N0"));
-Msg_CancelOperation;Kaban.Machines.FA2010\Screens\HomeScreen.Designer.cs;205;Text;this.btnCancel.ConfirmationTextKey = "Msg_CancelOperation";
+Msg_CancelOperation;Kaban.Machines.FA2010\Screens\HomeScreen.Designer.cs;208;Text;this.btnCancel.ConfirmationTextKey = "Msg_CancelOperation";
 Msg_CmpCount;KabanHMI\Settings\SettingsCompareForm.cs;137;Text;: string.Format(T("Msg_CmpCount", "{0} line(s) changed, {1} only in this program's, {2} only in the older one's - {3} the same."),
 Msg_CmpFailed;KabanHMI\Settings\SettingsCompareForm.cs;48;Message;MessageBox.Show(owner, string.Format(T("Msg_CmpFailed", "The files could not be compared: {0}"), ex.Message),
 Msg_CmpNew;KabanHMI\Settings\SettingsCompareForm.cs;136;Text;? (f.TargetExists ? T("Msg_CmpSame", "The two are the same - the import changes nothing in it.") : T("Msg_CmpNew", "This program has no such file - the import adds it."))

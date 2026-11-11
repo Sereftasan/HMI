@@ -6,6 +6,14 @@ Claude reads this file at the start of every batch, does the items, and moves ea
 ## To do
 
 ## Done
+- 11 November (MD3020 from the old program's _MD3030; a page as wide as the window):
+  - 0e00fab - MD3020, the old program's MD3030 pages kept as the specification (tools/legacy/MD3030, its README: which old page is which
+    new one, what is not brought over, what the old pages show that looks wrong).
+  - 3bee712 - MD3020, the old program's manual and parameter pages as the old tables (tools/legacy_md3030_pages.py, --check against the old
+    pages): Manual Movement - General, Manual Movement (Head 1 - 4, the body, the units, the piston sensors), Servos, and the old bar (speed,
+    JOG / 1 / 0.1 / 0.01 mm); Machine Parameters - Axis Calibration, General, Position Definition, Speed, Process, Offset. EN / TR.
+    Still to do: the Home page - the job preparation and control panel, sending a profile's recipe when the PLC asks (M101).
+  - 3e5e59f - FA2010, the Home page's job drawing as wide and as high as the window, Start / Pause / Cancel under it in the middle.
 - 11 November (the answers: Open Y at both ends; the old screens from the program's code; the bars on the Home page too):
   - eaaf48c - FA2010, the Home page draws the opened job's bars (the Jobs page's job; a bar clicked there selected on the Jobs page).
   - 421578c - the device list's samples: Back Open Y / Front Open Y at both ends - confirmed.
