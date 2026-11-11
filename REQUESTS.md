@@ -6,6 +6,13 @@ Claude reads this file at the start of every batch, does the items, and moves ea
 ## To do
 
 ## Done
+- 11 November (MK2010 from the old program's _MK2010; MD3020's main page):
+  - feb32ac - tools: the old table pages' machinery shared (tools/legacy_grid_pages.py) for MD3020 and MK2010.
+  - 6228df9 - MK2010, the old program's MK2010 pages kept as the specification (tools/legacy/MK2010, its README).
+  - 6406e5c - MK2010, a machine project of its own (Kaban.Machines.MK2010, in KabanHMI.sln): Home (the job page's values), Manual
+    Control, References, the speed bar; Machine Parameters - Production, Calibration, System Parameters 1 and 2, Demo, Reports. EN / TR.
+  - 3a792fd - MD3020, the Home page from the old Job Preparations: Start / Pause / Cancel, the speed, the frame's sizes, the active
+    job's values. Still to do (MD3020 and MK2010): the profile recipes - the profile chosen or read from a barcode, its settings sent.
 - 11 November (MD3020 from the old program's _MD3030; a page as wide as the window):
   - 0e00fab - MD3020, the old program's MD3030 pages kept as the specification (tools/legacy/MD3030, its README: which old page is which
     new one, what is not brought over, what the old pages show that looks wrong).
