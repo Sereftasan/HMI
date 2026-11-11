@@ -5,6 +5,7 @@ Lbl_Plc2Header;PLC 2;PLC 2;ПЛК 2;SPS 2;PLC 2;PLC 2
 Btn_Demo;Demo Button;Demo Butonu;Демо-кнопка;Demo-Taste;Pulsante demo;Botón de demostración
 Btn_Demo2;Demo Button (PLC2);Demo Butonu (PLC2);Демо-кнопка (ПЛК2);Demo-Taste (SPS2);Pulsante demo (PLC2);Botón demo (PLC2)
 Btn_Forward;Forward;İleri;Вперёд;Vorwärts;Avanti;Adelante
+Btn_ProfileGroups;Profile groups;Profil grupları;;;;
 Btn_Reverse;Reverse;Geri;Назад;Rückwärts;Indietro;Retroceso
 Fnc_Demo_Unit;Demo Unit (PLC1);Demo Ünite (PLC1);Демо-узел (ПЛК1);Demo-Einheit (SPS1);Unità demo (PLC1);Unidad demo (PLC1)
 Fnc_Demo_Unit2;Demo Unit (PLC2);Demo Ünite (PLC2);Демо-узел (ПЛК2);Demo-Einheit (SPS2);Unità demo (PLC2);Unidad demo (PLC2)
@@ -881,3 +882,48 @@ Job_TyTwice;special cut code {0} twice;{0} özel kesim kodu iki kez;;;;
 Job_TyZero;a special cut type's code must be 1 or more (0 is any end);bir özel kesim tipinin kodu 1 veya daha büyük olmalı (0 herhangi bir uçtur);;;;
 Home_Job;Job {0}: {1} bar(s) - {2} can go to the machine;İş {0}: {1} bar - {2} tanesi makineye gönderilebilir;;;;
 Home_NoJob;No job opened - the Jobs page opens one (its bars are drawn here).;Açık iş yok - İşler sayfası bir iş açar (barları burada çizilir).;;;;
+Grp_AccOff;{0}: not on this group.;{0}: bu grupta yok.;;;;
+Grp_AccOn;{0}: on every profile of the group - its places are worked out on the Profiles page.;{0}: grubun her profilinde - yerleri Profiller sayfasında hesaplanır.;;;;
+Grp_AttachedGroup;{0}: all its accessories on every profile of the group.;{0}: tüm aksesuarları grubun her profilinde.;;;;
+Grp_BtnAccessories;Accessories and their operations;Aksesuarlar ve işlemleri;;;;
+Grp_BtnAccGroups;Accessory groups;Aksesuar grupları;;;;
+Grp_BtnBrands;Profile brands;Profil markaları;;;;
+Grp_BtnEditAccessory;Its operations in the library...;Kütüphanedeki işlemleri...;;;;
+Grp_BtnGroups;Profile groups;Profil grupları;;;;
+Grp_BtnRefresh;Read again;Yeniden oku;;;;
+Grp_BtnSeries;Profile series;Profil serileri;;;;
+Grp_Choose;Choose a profile group on the left.;Soldan bir profil grubu seçin.;;;;
+Grp_ChooseGroup;choose one of its profile groups.;profil gruplarından birini seçin.;;;;
+Grp_ColAccessories;Accessories;Aksesuarlar;;;;
+Grp_ColAccGroup;Accessory group;Aksesuar grubu;;;;
+Grp_ColAlong;Along the bar;Bar boyunca;;;;
+Grp_ColCode;Accessory;Aksesuar;;;;
+Grp_ColDescription;Description;Açıklama;;;;
+Grp_ColHow;On this profile group;Bu profil grubunda;;;;
+Grp_ColMacro;Macro;Makro;;;;
+Grp_ColOps;Operations;İşlemler;;;;
+Grp_ColType;Type;Tip;;;;
+Grp_ColWhere;Where on the profile;Profilde nerede;;;;
+Grp_DetachedGroup;{0}: taken off the group.;{0}: gruptan çıkarıldı.;;;;
+Grp_HeadAccessories;Its accessories - ticked: on every profile of the group (one of a ticked accessory group comes with it, unticked: not on this group);Aksesuarları - işaretli: grubun her profilinde (işaretli bir aksesuar grubununki onunla gelir, işaretsiz: bu grupta yok);;;;
+Grp_HeadAccessory;{0} {1} - {2} ({3}): its operations, made on every profile of the groups it is given to;{0} {1} - {2} ({3}): verildiği grupların her profilinde yapılan işlemleri;;;;
+Grp_HeadAccGroups;Its accessory groups - ticked: all their accessories, those added to them later too;Aksesuar grupları - işaretli: tüm aksesuarları, sonradan eklenenler de;;;;
+Grp_HeadGroup;{0} / {1} / {2} ({3}) - {4} profile(s): every one takes the accessories below{5};{0} / {1} / {2} ({3}) - {4} profil: her biri aşağıdaki aksesuarları alır{5};;;;
+Grp_HeadProfile;{0} {1} - a profile of the group {2};{0} {1} - {2} grubunun profili;;;;
+Grp_HeadReference;, its reference profile {0};, referans profili {0};;;;
+Grp_HowOff;off for this group (its accessory group is ticked);bu grupta kapalı (aksesuar grubu işaretli);;;;
+Grp_HowOwn;given one by one;tek tek verildi;;;;
+Grp_HowVia;with its accessory group {0};aksesuar grubu {0} ile;;;;
+Grp_Inactive;put aside;kenara alındı;;;;
+Grp_MenuAccessories;Its accessories one by one...;Tek tek aksesuarları...;;;;
+Grp_MenuAccGroups;Its accessory groups...;Aksesuar grupları...;;;;
+Grp_MenuEditGroup;The group in the library (its name, type, reference profile)...;Kütüphanedeki grup (adı, tipi, referans profili)...;;;;
+Grp_Mirrored;mirrored at the far end;uzak uçta aynalı;;;;
+Grp_NodeAccGroups;Accessory groups ({0});Aksesuar grupları ({0});;;;
+Grp_NodeCounts;{0} profile(s), {1} accessory(ies);{0} profil, {1} aksesuar;;;;
+Grp_NodeProfiles;Profiles ({0});Profiller ({0});;;;
+Grp_NodeSingle;Accessories one by one ({0});Tek tek aksesuarlar ({0});;;;
+Grp_NoPlaces;not worked out yet;henüz hesaplanmadı;;;;
+Grp_ProfileText;Brand {0}, series {1}, group {2} ({3}).\r\nSize {4} x {5} mm.\r\nIts accessories are the group's: their places on it {6} - confirmed / placed (the Profiles page shows and confirms them).;Marka {0}, seri {1}, grup {2} ({3}).\r\nÖlçü {4} x {5} mm.\r\nAksesuarları grubunkilerdir: üzerindeki yerleri {6} - onaylı / yerleşen (Profiller sayfası gösterir ve onaylar).;;;;
+Grp_Status;{0} profile group(s). A right click on a group gives it its accessory groups and accessories, the places on each profile are on the Profiles page.;{0} profil grubu. Bir gruba sağ tık ona aksesuar gruplarını ve aksesuarlarını verir, her profildeki yerleri Profiller sayfasındadır.;;;;
+Grp_TipAccGroupOn;Ticked: every accessory of the group - those added to it later too - on every profile of this profile group;İşaretli: grubun her aksesuarı - sonradan eklenenler de - bu profil grubunun her profilinde;;;;

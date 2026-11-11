@@ -259,6 +259,15 @@ namespace Kaban.Machines.FA2010
                         SortOrder = 30,
                         CreateView = () => new Screens.ProfilesScreen()
                     },
+                    // The profile groups and their accessories (11 November: "closer to" the old program's Preparation > Group Mapping)
+                    new MachineScreen
+                    {
+                        TitleKey = "Btn_ProfileGroups",
+                        TitleFallback = "Profile groups",
+                        Icon = () => Kaban.UI.Properties.Resources.rule_settings_24,
+                        SortOrder = 31,
+                        CreateView = () => new Screens.ProfileGroupsScreen()
+                    },
                 // The same bar on the Axis Monitor (14 October). Machine Parameters > Axis has a
                 // copy of its controls on the page itself (16 October).
                     new MachineScreen

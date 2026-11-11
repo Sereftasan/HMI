@@ -211,6 +211,9 @@
       <DependentUpon>ProfilesScreen.cs</DependentUpon>
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="Screens\ProfileGroupsScreen.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Screens\JobBarsView.cs">
       <SubType>UserControl</SubType>
     </Compile>

@@ -62,6 +62,10 @@
   Accessories + menu, the library editor's "Accessory groups of the profile groups") - every accessory of it, those added later too, on every
   profile of the group; the resolver and the counts read v_group_accessory (one by one or with their group; switched off for the group: off).
   profile_machine_setting: a profile's machine settings (FA2010's profile parameters) per machine instance.
+  FA2010's Profile groups page (11 November, "closer to" the old program's Preparation > Group Mapping and Company Profiles' toolbar):
+  a tree of brand > series > profile group > its profiles / accessory groups / accessories one by one; a group's accessory groups and
+  accessories ticked on the right (one of a ticked accessory group unticked: off for that group only - group_accessory_assignment
+  is_enabled 0); the library's tables from its buttons (Profile brands = vendors, Profile series, ...).
 - FA2010's job list (6 November, the Jobs page): Send to the machine writes the profile's parameters (R25600), the milling operations'
   (R26000 + 10 each), the special cuts' (R25650 + 5 each), the bar's length and first / last right cut (D106, D95, D97) and the job list
   (D5000 / D6000 / D7000, 999999 last). Codes: a cut 1000 + 10 x angle (2800 - 10 x angle at a right end), a milling operation 1 - 100, a special
