@@ -36,6 +36,7 @@
             this.btnPause = new Kaban.UI.Controls.ButtonHMI();
             this.btnCancel = new Kaban.UI.Controls.ButtonHMI();
             this.speedOverride = new Kaban.UI.Controls.SpeedOverrideHMI();
+            this.jobBarsPlace = new System.Windows.Forms.Panel();
             this.SuspendLayout();
             // 
             // btnStart
@@ -287,6 +288,14 @@
             this.speedOverride.TabIndex = 3;
             this.speedOverride.TranslationKey = "Lbl_Speed";
             // 
+            // jobBarsPlace - the opened job's bars, drawn there by the page (HomeScreen.cs: JobBarsView)
+            // 
+            this.jobBarsPlace.BackColor = System.Drawing.Color.White;
+            this.jobBarsPlace.Location = new System.Drawing.Point(14, 66);
+            this.jobBarsPlace.Name = "jobBarsPlace";
+            this.jobBarsPlace.Size = new System.Drawing.Size(1238, 576);
+            this.jobBarsPlace.TabIndex = 4;
+            // 
             // HomeScreen
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -295,6 +304,7 @@
             this.Controls.Add(this.btnPause);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.speedOverride);
+            this.Controls.Add(this.jobBarsPlace);
             this.Name = "HomeScreen";
             this.Size = new System.Drawing.Size(1266, 818);
             this.ResumeLayout(false);
@@ -307,5 +317,6 @@
         private Kaban.UI.Controls.ButtonHMI btnPause;
         private Kaban.UI.Controls.ButtonHMI btnCancel;
         private Kaban.UI.Controls.SpeedOverrideHMI speedOverride;
+        private System.Windows.Forms.Panel jobBarsPlace;
     }
 }

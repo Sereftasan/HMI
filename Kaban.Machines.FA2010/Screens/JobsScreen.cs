@@ -194,6 +194,15 @@ namespace Kaban.Machines.FA2010.Screens
             _onUserChanged = (s, e) => { if (IsHandleCreated) BeginInvoke(new Action(ApplyAccess)); };
             SecurityManager.UserChanged += _onUserChanged;
             Disposed += (s, e) => SecurityManager.UserChanged -= _onUserChanged;
+            // a bar selected on another page (the Home page's drawing): selected here
+            Action onSelected = () =>
+            {
+                if (IsDisposed || !IsHandleCreated) return;
+                int bar = CurrentJob.Selected;
+                if (bar >= 0 && bar != SelectedIndex) BeginInvoke((Action)(() => Select(bar)));
+            };
+            CurrentJob.SelectionChanged += onSelected;
+            Disposed += (s, e) => CurrentJob.SelectionChanged -= onSelected;
             // the library opened when the page is first shown (never while the program starts), the last job with it
             VisibleChanged += (s, e) => { if (Visible) EnsureLibrary(); };
             FillRecent();
@@ -414,6 +423,7 @@ namespace Kaban.Machines.FA2010.Screens
             }
             finally { _filling = false; }
             _pictures.SetPlans(Plans, Math.Max(0, Math.Min(keep, _bars.Rows.Count - 1)));
+            CurrentJob.Set(Job != null ? Job.Name : "", Plans, Math.Max(0, Math.Min(keep, _bars.Rows.Count - 1)));       // the Home page draws it too
             if (_bars.Rows.Count > 0) Select(Math.Max(0, Math.Min(keep, _bars.Rows.Count - 1)));
             else ShowBar();
         }
@@ -453,6 +463,7 @@ namespace Kaban.Machines.FA2010.Screens
             _steps.Rows.Clear();
             int i = SelectedIndex;
             _pictures.Selected = i;
+            CurrentJob.Select(i);
             if (Job == null || i < 0 || i >= Job.Bars.Count)
             {
                 _lblBar.Text = "";

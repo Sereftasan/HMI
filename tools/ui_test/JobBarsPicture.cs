@@ -119,6 +119,32 @@ class JBP {
         Check("a V cut drawn at its place", drawn.Any(d => d.StartsWith("bar 1 vcut V @")), string.Join(" | ", drawn));
         Call(page, "OpenJob", job);
         Pump(150);
+        // ---- the Home page: the same job's bars (11 November: "Yes") ----
+        var hform = new Form { ClientSize = new Size(1266, 818), StartPosition = FormStartPosition.Manual, Location = new Point(0, 0) };
+        var home = new Kaban.Machines.FA2010.Screens.HomeScreen();
+        hform.Controls.Add(home);
+        hform.Show();
+        Pump(200);
+        var hview = (Control)Get(home, "_jobBars");
+        var hhead = (Label)Get(home, "_jobHead");
+        Check("the Home page draws the opened job's bars (7) under its name", ((IList<Rectangle>)Get(hview, "Rows")).Count == 7 && hhead.Text.Contains("JobSample_Library") &&
+              hview.Parent.Name == "jobBarsPlace", hhead.Text);
+        Call(page, "Select", 5);
+        Pump(100);
+        Check("  the bar selected on the Jobs page (6) marked there", (int)Get(hview, "Selected") == 5, Get(hview, "Selected").ToString());
+        var hr = ((IList<Rectangle>)Get(hview, "Rows"))[1];
+        Call(hview, "OnMouseDown", new MouseEventArgs(MouseButtons.Left, 1, 40, hr.Top + 30 + ((Point)Get(hview, "AutoScrollPosition")).Y, 0));
+        Pump(150);
+        Check("  bar 2 clicked on the Home page: the Jobs page selects it", grid.CurrentRow != null && grid.CurrentRow.Index == 1 && (int)Get(view, "Selected") == 1,
+              grid.CurrentRow != null ? grid.CurrentRow.Index.ToString() : "none");
+        if (args.Length > 1) {
+            hform.Activate(); Pump(300);
+            using (var bmp = new Bitmap(hform.ClientSize.Width, hform.ClientSize.Height)) {
+                using (var g = Graphics.FromImage(bmp)) g.CopyFromScreen(hform.PointToScreen(Point.Empty), Point.Empty, bmp.Size);
+                bmp.Save(args[1]);
+            }
+        }
+        hform.Close();
         if (args.Length > 0) {
             using (var bmp = new Bitmap(form.ClientSize.Width, form.ClientSize.Height)) {
                 form.Activate(); Pump(300);

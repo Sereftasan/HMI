@@ -183,6 +183,7 @@
     <Compile Include="Screens\GeneratedPage.cs" />
     <Compile Include="Jobs\JobMilling.cs" />
     <Compile Include="Jobs\MullionNotch.cs" />
+    <Compile Include="Jobs\CurrentJob.cs" />
     <Compile Include="Jobs\JobPlan.cs" />
     <Compile Include="Jobs\JobSender.cs" />
     <Compile Include="Screens\SpecialCutsEditor.cs">

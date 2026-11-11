@@ -879,3 +879,5 @@ Job_TyNew;New special cut;Yeni özel kesim;;;;
 Job_TypesHead;Special cut types (the job files' codes);Özel kesim tipleri (iş dosyalarının kodları);;;;
 Job_TyTwice;special cut code {0} twice;{0} özel kesim kodu iki kez;;;;
 Job_TyZero;a special cut type's code must be 1 or more (0 is any end);bir özel kesim tipinin kodu 1 veya daha büyük olmalı (0 herhangi bir uçtur);;;;
+Home_Job;Job {0}: {1} bar(s) - {2} can go to the machine;İş {0}: {1} bar - {2} tanesi makineye gönderilebilir;;;;
+Home_NoJob;No job opened - the Jobs page opens one (its bars are drawn here).;Açık iş yok - İşler sayfası bir iş açar (barları burada çizilir).;;;;
