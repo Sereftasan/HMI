@@ -4,11 +4,15 @@ Write here what is missing or wrong, whenever you notice it - one line or a para
 Claude reads this file at the start of every batch, does the items, and moves each one to "Done" with its commit.
 
 ## To do
-- 10 November: "I don't quite understand how to use the profile and accessory entry pages, can you check the old program and create the
-  screens closer to it (with the profile group and accessory group relations)" - studied (the old program's Companies > Company Profiles,
-  Profile Brands / Series, Preparation > Group Mapping); waiting for screenshots of those old screens and the steps used there.
 
 ## Done
+- 11 November (the answers: Open Y at both ends; the old screens from the program's code; the bars on the Home page too):
+  - eaaf48c - FA2010, the Home page draws the opened job's bars (the Jobs page's job; a bar clicked there selected on the Jobs page).
+  - 421578c - the device list's samples: Back Open Y / Front Open Y at both ends - confirmed.
+  - 638c6e8 - FA2010, a Profile groups page as the old program's Preparation > Group Mapping (10 November: "create the screens closer to
+    it (with the profile group and accessory group relations)"): the tree brand > series > profile group > its profiles / accessory groups /
+    accessories; a group's accessory groups and accessories ticked on the right; the library's tables from buttons as the old Company
+    Profiles' toolbar (Profile brands, Profile series ...).
 - 10 November (the answers: D100 >= D700 conditions; 42 = 4.2 mm; the special cut codes and the starting angle; the notching once with the bar):
   - 18d55be - Machine conditions comparing two devices (D100 >= D700): the registration's last argument a device; FA2010's example Robot X at
     or past its Reference Position (W0 >= D316, bit 27, for the tests); the PLC Monitor shows the device compared with on a line of its own.
