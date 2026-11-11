@@ -57,42 +57,14 @@ namespace Kaban.Machines.MD3020
                 replaceExisting: false, moduleId: ctx.ModuleId, stationRemap: ctx.Station);
         }
 
-        /// <summary>
-        /// The home screen is described, not hand-laid - see MachineHomeScreen.
-        /// Addresses come from this machine's own label list.
-        /// </summary>
-        private MachineHomeScreen.MachineHomeSpec HomeSpec(IMachineMountContext ctx)
-        {
-            var spec = new MachineHomeScreen.MachineHomeSpec
-            {
-                MachineName = "MD3020",
-                // This machine's OWN controller: station 3 when H500 is mounted
-                // under FA2010. "1" showed FA2010's PLC on the sub-machine's home.
-                PlcNumber = ctx.Station(1),
-                StartAddress = "M20",
-                PauseAddress = "M21",
-                CancelAddress = "M22",
-                ResetAddress = "M23",
-                RunningLamp = "M1400",
-                AlarmLamp = "M1401",
-                ReadyLamp = "M1402",
-                OverrideAddress = "D326",
-                JobCountAddress = "D328",
-                JobDoneAddress = "D330",
-                TrendAddress = "W0",
-                TrendCaption = "X Actual Position trend",
-            };
-            spec.Axes.Add(new MachineHomeScreen.AxisSpec { Caption = "X", Address = "W0", DataType = DataTypeEnum.Bin_32, Divisor = 10000, DecimalPlaces = 1, Suffix = "mm", HomedAddress = "M1300" });
-            spec.Axes.Add(new MachineHomeScreen.AxisSpec { Caption = "Y", Address = "W10", DataType = DataTypeEnum.Bin_32, Divisor = 10000, DecimalPlaces = 1, Suffix = "mm", HomedAddress = "M1301" });
-            spec.Axes.Add(new MachineHomeScreen.AxisSpec { Caption = "Z", Address = "W20", DataType = DataTypeEnum.Bin_32, Divisor = 10000, DecimalPlaces = 1, Suffix = "mm", HomedAddress = "M1302" });
-            return spec;
-        }
-
         public IEnumerable<MachineScreen> GetScreens(IMachineMountContext ctx)
         {
             return StandardScreens.Build(ctx, new StandardScreens.Options
             {
-                Home = () => new MachineHomeScreen(HomeSpec(ctx)),
+                // the old Home > Job Preparations (11 November: "can you update this main page as well"):
+                // Start / Pause / Cancel, the speed, the frame's sizes and the active job's values
+                // (tools/legacy_md3030_pages.py) - this machine's own controller when mounted under another
+                Home = () => Kaban.UI.Helpers.StationMap.Apply(ctx, new Screens.Home.HomeJob()),
                 // The old program's (_MD3030) pages, 11 November - tools/legacy_md3030_pages.py makes them
                 // from its designers (tools/legacy/MD3030): Manual - General, Manual Movement (its
                 // Input Output Watch tab showed old placeholder addresses: not brought over) and its

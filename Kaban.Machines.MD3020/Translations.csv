@@ -1,4 +1,5 @@
 ﻿Key;EN;TR;RU;DE;IT;ES
+Machine;Machine;Makine;;;;
 Machine_MD3020;Edge Cleaning Centre;Kenar Temizleme Merkezi;Центр зачистки кромок;Kantenreinigungszentrum;Centro di pulizia bordi;Centro de limpieza de cantos
 Btn_H800_Manual;Manual;Manuel;Ручной;Manuell;Manuale;Manual
 Fnc_H800_Unit1;Unit 1;Ünite 1;Узел 1;Einheit 1;Unità 1;Unidad 1
@@ -145,3 +146,18 @@ Welding Position;Welding Position;Kaynak Pozisyonu;;;;
 Welding Speed;Welding Speed;Kaynak Hızı;;;;
 Welding Torque;Welding Torque;Kaynak Torku;;;;
 X Unloading Progress Amount;X Unloading Progress Amount;X Boşaltma İlerleme Miktarı;;;;
+Cancel;Cancel;İptal;;;;
+Frame;Frame;Kasa;;;;
+Frame Depth (Y);Frame Depth (Y);Kasa Derinliği (Y);;;;
+Frame Width (X);Frame Width (X);Kasa Genişliği (X);;;;
+Head;Head;Kafa;;;;
+Melting;Melting;Eritme;;;;
+Online Time;Online Time;Çalışma Süresi;;;;
+Pause;Pause;Duraklat;;;;
+Profile;Profile;Profil;;;;
+Profile Width;Profile Width;Profil Genişliği;;;;
+Speed;Speed;Hız;;;;
+Start;Start;Başlat;;;;
+Temperature;Temperature;Sıcaklık;;;;
+Welding;Welding;Kaynatma;;;;
+Cycle;Cycle;Döngü;;;;

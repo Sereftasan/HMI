@@ -11,7 +11,7 @@ using Kaban.UI.Forms;
 namespace Kaban.Machines.MD3020
 {
     /// <summary>
-    /// STANDALONE entry point for MD3020 (profile edge cleaning).
+    /// STANDALONE entry point for MD3020 (the old program's _MD3030: a machine of four heads).
     ///
     /// This project is a full machine in its own right: it builds its own .exe and
     /// its own bin\Debug folder, and can be run and debugged on its own. When run
@@ -143,14 +143,6 @@ namespace Kaban.Machines.MD3020
 
                 sim.LoadSeedFile(Path.Combine(Application.StartupPath,
                                               "SimSeed.Station" + endpoint.StationId + ".txt"));
-                // MD3020's own sample devices: axis references made, machine ready.
-                sim.Seed("M1300", 1).Seed("M1301", 1).Seed("M1302", 1)   // X/Y/Z ref sensors
-                   .Seed("M1402", 1)                                     // machine ready
-                   .Seed("D326", 100);                                   // 100% override
-                sim.AddMirror("M10", "X10").AddMirror("M11", "X11")
-                   .AddMirror("M20", "X20").AddMirror("M21", "X21");
-                sim.AddRamp("D10", 0, 2500, 120);
-                sim.AddRamp("D20", 0, 2500, 120);
             }
         }
     }

@@ -1,16 +1,1 @@
-[
-  {
-    "PlcAddress": "M910",
-    "TagCode": "H800_Fault1",
-    "Severity": "Warning",
-    "PlcNumber": 1,
-    "Comment": "code 1 - converted from the legacy format (was Alm_H800_Fault1); the loader skipped the old layout, so MD3020 had no alarms"
-  },
-  {
-    "PlcAddress": "M911",
-    "TagCode": "H800_NotHome",
-    "Severity": "Fault",
-    "PlcNumber": 1,
-    "Comment": "code 2 - converted from the legacy format (was Alm_H800_NotHome); the loader skipped the old layout, so MD3020 had no alarms"
-  }
-]
+[]

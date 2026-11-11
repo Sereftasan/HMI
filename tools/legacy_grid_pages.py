@@ -17,6 +17,7 @@ program's own controls:
   Lp a lamp (LampHMI); inv=True lit while the bit is OFF (the old KabanLambNegative)
   P  a servo's load or torque (MeterHMI, %)
   S  an option bit (CheckBoxHMI)
+  Spd a speed in % on a slider (SpeedOverrideHMI)
 
 A machine's tool (tools/legacy_md3030_pages.py, tools/legacy_mk2010_pages.py) calls
 setup() with its project and its old pages' folder, writes its PAGES with these
@@ -59,20 +60,23 @@ L.OWNED['ButtonHMI'] = L.OWNED['ButtonHMI'] | {'Direction'}
 L.OWNED['NumericInputHMI'] = L.OWNED['NumericInputHMI'] | {'MinLimit.Type', 'MinLimit.StaticValue', 'MinLimit.TagAddress',
                                                            'MaxLimit.Type', 'MaxLimit.StaticValue', 'MaxLimit.TagAddress'}
 L.OWNED['LampHMI'] = L.OWNED['LampHMI'] | {'OnColor', 'OffColor'}
+L.OWNED['ButtonHMI'] = L.OWNED['ButtonHMI'] | {'ConfirmationNeeded'}
+L.TYPES['SpeedOverrideHMI'] = 'Kaban.UI.Controls.SpeedOverrideHMI'
+L.OWNED['SpeedOverrideHMI'] = {'Name', 'PlcNumber', 'Address', 'BackColor', 'FallbackText', 'TranslationKey', 'Location', 'Size', 'LogAction', 'TabIndex'}
 L.OWNED['LabelHMI'] = {'Name', 'TranslationKey', 'Text', 'Font', 'ForeColor', 'TextAlign', 'Location', 'Size', 'BackColor'}
 
 # ============================================================================
 #  THE SPECIFICATION'S PIECES
 # ============================================================================
 
-def B(spec, text=None, span=1, note=None):
+def B(spec, text=None, span=1, note=None, confirm=False):
     """A button: 'M45/W0.0' (command / lamp), 'M100!Set', 'M30!Set,M31!Set' (several commands, the
     lamp after the first); '<' '>' 'v' '^' as the text: an arrow."""
     parts = [L.side(x) for x in spec.split(',')]
     s = parts[0]
     arrow = {'<': 'Left', '>': 'Right', 'v': 'Down', '^': 'Up'}.get(text)
     return dict(kind='btn', cmd=s['cmd'], lamp=s['lamp'], action=s['action'], text=None if arrow else text,
-                more=[(x['cmd'], x['action']) for x in parts[1:]], arrow=arrow, span=span, note=note)
+                more=[(x['cmd'], x['action']) for x in parts[1:]], arrow=arrow, span=span, note=note, confirm=confirm)
 
 def V(spec, unit='mm', span=1, note=None):
     return dict(kind='disp', val=L.value(spec), unit=unit, span=span, note=note)
@@ -86,6 +90,10 @@ def Lp(addr, span=1, note=None, inv=False):
 
 def P(addr, span=1, note=None):
     return dict(kind='meter', addr=addr, span=span, note=note)
+
+def Spd(addr, span=1, note=None):
+    """A speed in % set with a slider (SpeedOverrideHMI): the old page's track bar."""
+    return dict(kind='speed', addr=addr, span=span, note=note)
 
 def S(addr, span=1, note=None):
     return dict(kind='opt', addr=addr, span=span, note=note)
@@ -145,7 +153,7 @@ def col_x(p, x):
     return xs
 
 def cell_name(pg, p, sec, row, ci, kind):
-    pre = {'btn': 'btn', 'disp': 'disp', 'entry': 'num', 'lamp': 'lamp', 'meter': 'load', 'opt': 'opt'}[kind]
+    pre = {'btn': 'btn', 'disp': 'disp', 'entry': 'num', 'lamp': 'lamp', 'meter': 'load', 'opt': 'opt', 'speed': 'spd'}[kind]
     parts = [p['key']] + ([sec] if sec else []) + [row, p['cols'][ci][0].replace('|', ' ')]
     return pre + '_'.join(ident(x) for x in parts if x)
 
@@ -198,6 +206,7 @@ class Grid:
             em.p(name, 'Location', 'new System.Drawing.Point(%d, %d)' % (x, cy))
             em.p(name, 'Size', 'new System.Drawing.Size(%d, %d)' % (w, CELL_H))
             em.p(name, 'LogAction', 'true')
+            if c.get('confirm'): em.p(name, 'ConfirmationNeeded', 'true')
             em.kept(name, 'ButtonHMI', old)
             em.security(name, 'ButtonHMI', old, self.level())
             em.add(name)
@@ -277,6 +286,21 @@ class Grid:
             em.p(name, 'Size', 'new System.Drawing.Size(%d, 26)' % w)
             em.kept(name, 'MeterHMI', old)
             em.add(name)
+        elif k == 'speed':
+            em.decl(name, 'SpeedOverrideHMI')
+            em.header(name, c.get('note'))
+            em.p(name, 'Name', cs(name))
+            em.p(name, 'PlcNumber', '1')
+            em.p(name, 'Address', cs(c['addr']))
+            em.p(name, 'BackColor', 'System.Drawing.Color.White')
+            em.p(name, 'FallbackText', '"Speed"')
+            em.p(name, 'TranslationKey', '"Lbl_Speed"')
+            em.p(name, 'Location', 'new System.Drawing.Point(%d, %d)' % (x, cy))
+            em.p(name, 'Size', 'new System.Drawing.Size(%d, %d)' % (w, CELL_H + 2))
+            em.p(name, 'LogAction', 'true')
+            em.kept(name, 'SpeedOverrideHMI', old)
+            em.security(name, 'SpeedOverrideHMI', old, self.level())
+            em.add(name)
         elif k == 'opt':
             em.decl(name, 'CheckBoxHMI')
             em.header(name + '  (%s)' % c['addr'], c.get('note'))
@@ -353,7 +377,7 @@ class Grid:
 #  CHECK: the old pages' devices
 # ============================================================================
 SHOWN_TYPES = ('KabanButton', 'KabanLambButton', 'KabanLamb', 'KabanLambNegative', 'KabanLambAlternative', 'KabanLedLabel',
-               'KabanNumericButton', 'KabanSwitchButton', 'KabanProgressBar')
+               'KabanNumericButton', 'KabanSwitchButton', 'KabanProgressBar', 'KabanTrackBar')
 
 def old_controls(old):
     """The visible controls of an old page: name -> dict(t, Device, LambDevice, Divisor, ...)."""

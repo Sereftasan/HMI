@@ -9,6 +9,7 @@ using Kaban.Core.Helpers;
 using Kaban.UI.Controls;
 using Kaban.Machines.MD3020.Screens.Manual;
 using Kaban.Machines.MD3020.Screens.Parameters;
+using Kaban.Machines.MD3020.Screens.Home;
 
 // 11 November: "Can you fulfil "Kaban.Machines.MD3020" project using our current operating program "_MD3030" project
 // as well" - the old program's MD3030 pages (tools/legacy_md3030_pages.py, its --check against tools/legacy/MD3030):
@@ -45,6 +46,26 @@ class MDP {
         AuditLogger.LogDirectory = Path.Combine(Path.GetTempPath(), "mdp_" + Guid.NewGuid().ToString("N"));
         LanguageManager.LoadCommonTranslations("CommonTranslations.csv");
         UnitManager.EnsureDefaults();
+
+        Console.WriteLine("--- Home (the old Job Preparations: ucMainControlPanel, ucJobDimentions, ucActiveJobScreen) ---");
+        // 11 November: "can you update this main page as well" - the sample's Cycle / Job / Axis positions page replaced
+        var home = new HomeJob();
+        var start = Tree(home).OfType<ButtonHMI>().FirstOrDefault(b => b.FallbackText == "Start");
+        var pause = Tree(home).OfType<ButtonHMI>().FirstOrDefault(b => b.FallbackText == "Pause");
+        var cancel = Tree(home).OfType<ButtonHMI>().FirstOrDefault(b => b.FallbackText == "Cancel");
+        Check("Start sets M83 (the machine works), lit by M316; Pause M111 (alternate, its lamp) and M84; Cancel sets M85 after a question",
+              start != null && Bits(start) == "M83:SET" && start.Lamp1Address == "M316" && pause != null && Bits(pause) == "M111:Alternate,M84:SET" &&
+              pause.Lamp1Address == "M111" && cancel != null && Bits(cancel) == "M85:SET" && cancel.ConfirmationNeeded,
+              (start == null ? "-" : Bits(start)) + " " + (pause == null ? "-" : Bits(pause)));
+        Check("  the speed D408 on a slider", Tree(home).OfType<SpeedOverrideHMI>().Single().Address == "D408");
+        var fx = Tree(home).OfType<NumericInputHMI>().FirstOrDefault(n => n.Address == "D1200");
+        var fy = Tree(home).OfType<NumericInputHMI>().FirstOrDefault(n => n.Address == "D1202");
+        Check("the frame's width D1200 (at most 4100) and depth D1202 (at most 2300), 32-bit / 10 - an operator's",
+              fx != null && fx.Divisor == 10 && fx.MaxLimit.StaticValue == 4100 && fy != null && fy.MaxLimit.StaticValue == 2300 &&
+              fx.RequiredSecurity == SecurityLevel.Operator);
+        var hd = Tree(home).OfType<NumericDisplayHMI>().ToList();
+        Check("  the heads' thermocouples D4 ... D11, the axes D320 / D340 / D360, the profile's temperature D349, width D346, melting D2408, welding D2414, online time D1854",
+              new[] { "D4", "D7", "D8", "D11", "D320", "D340", "D360", "D349", "D346", "D2408", "D2414", "D1854" }.All(a => hd.Any(d => d.Address == a)));
 
         Console.WriteLine("--- Manual Movement (ucManualMovement) ---");
         var mm = new ManualMovement();
@@ -128,7 +149,7 @@ class MDP {
         Check("  a Maintenance's to change", prm.SelectMany(Tree).Where(c => c is NumericInputHMI || c is CheckBoxHMI || c is ButtonHMI)
               .All(c => (SecurityLevel)c.GetType().GetProperty("RequiredSecurity").GetValue(c, null) == SecurityLevel.Maintenance));
 
-        var all = new Control[] { mm, gen, servos, cal, gp, pos, speed, proc, off };
+        var all = new Control[] { home, mm, gen, servos, cal, gp, pos, speed, proc, off };
         Check("every control on the machine's PLC 1", all.SelectMany(Tree).Where(c => c.GetType().GetProperty("PlcNumber") != null)
               .All(c => (int)c.GetType().GetProperty("PlcNumber").GetValue(c, null) == 1));
         var overlaps = new List<string>();
@@ -170,6 +191,7 @@ class MDP {
         LanguageManager.ChangeLanguage("EN");
 
         if (args.Length > 0) {
+            Shot(new HomeJob(), Path.Combine(args[0], "md_home.png"));
             Shot(new ManualMovement(), Path.Combine(args[0], "md_manual.png"));
             Shot(new ParamAxisCalibration(), Path.Combine(args[0], "md_calib.png"));
             Shot(new ParamOffset(), Path.Combine(args[0], "md_offset.png"));

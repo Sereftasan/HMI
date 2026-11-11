@@ -15,12 +15,38 @@ import os, sys
 sys.dont_write_bytecode = True
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import legacy_grid_pages as G
-from legacy_grid_pages import B, V, N, Lp, P, S, Row, Sec, Panel, page
+from legacy_grid_pages import B, V, N, Lp, P, S, Spd, Row, Sec, Panel, page
 
 G.setup('Kaban.Machines.MD3020', 'MD3030', 'tools/legacy_md3030_pages.py', '11 November')
 
 # column widths
 CAP, AX, ARW, POS, LOAD, NUM, BTN = 150, 46, 72, 104, 120, 104, 96
+
+# ------------------------------------------------------------------ HOME ----
+
+# The old Home > Job Preparations (11 November: "can you update this main page as well"): its main control
+# panel (ucMainControlPanel - Start writes the frame's sizes and sets M83, Pause M111 and M84, Cancel asks and
+# sets M85; Start lit by M316, the speed D408), the frame's sizes (ucJobDimentions - at most 4100 x 2300) and the
+# active job's values (ucActiveJobScreen). The profile's settings and its name come with the profile recipes.
+page('HomeJob', 'Home', ['ucMainControlPanel', 'ucJobDimentions', 'ucActiveJobScreen'], 'Home',
+    [Panel('Cycle', [('Cycle', 110), ('Start', 130), ('Pause', 130), ('Cancel', 130)], [
+        Row('Machine', B('M83/M316!Set', 'Start'), B('M111/M111!Alt,M84!Set', 'Pause'), B('M85!Set', 'Cancel', confirm=True)),
+        Row('Speed', Spd('D408', span=3))]),
+     Panel('Job', [('Frame', 150), ('Value', NUM)], [
+        Row('Frame Width (X)', N('D1200 32 /10 1', lo=0, hi=4100)),
+        Row('Frame Depth (Y)', N('D1202 32 /10 1', lo=0, hi=2300)),
+        Row('Online Time', V('D1854 32 /10 1', 's'))])],
+    [Panel('Heads', [('Head', 110), ('Thermocouple Lower', 130), ('Thermocouple Upper', 130)], [
+        Row('Head %d' % h, V('D%d 16 /10 2' % (3 + h), '°C'), V('D%d 16 /10 2' % (7 + h), '°C')) for h in (1, 2, 3, 4)]),
+     Panel('Axes', [('Axis', 110), ('Actual Position', 130)], [
+        Row('X', V('D320 32 /10000 1')),
+        Row('Y1', V('D340 32 /10000 1')),
+        Row('Y2', V('D360 32 /10000 1'))]),
+     Panel('Profile', [('Profile', 130), ('Value', NUM)], [
+        Row('Temperature', V('D349 16 /10 0', '°C')),
+        Row('Profile Width', V('D346 16 /10 1')),
+        Row('Melting', V('D2408 16 /10 1', 's')),
+        Row('Welding', V('D2414 16 /10 0', 's'))])])
 
 # ---------------------------------------------------------------- MANUAL ----
 
@@ -249,7 +275,11 @@ page('ParamOffset', 'Parameters', 'ucOffset', 'Offset',
         Row('Upper Press', B('M201/M201', 'v'), B('M202/M202', '^'))])])
 
 # the process page's options: toggle switches the page's code reads and writes (ucProcessParameters.cs)
-G.CODE_DEVICES.update({'ucProcessParameters': {'L3', 'L0', 'L5', 'L6', 'L13'}})
+G.CODE_DEVICES.update({'ucProcessParameters': {'L3', 'L0', 'L5', 'L6', 'L13'},
+                       # the main control panel's Start, Pause and Cancel (ucMainControlPanel.cs, the Constants: M83 M84 M85, Start lit by M316)
+                       'ucMainControlPanel': {'M83', 'M84', 'M85', 'M316'},
+                       # the active job's online time (ucActiveJobScreen.cs: D1854 / 10 seconds)
+                       'ucActiveJobScreen': {'D1854'}})
 
 if __name__ == '__main__':
     G.main()
