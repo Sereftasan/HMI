@@ -41,8 +41,10 @@ class F {
         var fb = TC.Parameter2(TC.ErrorType.CylinderMovement);
         // 8 October: "most of the 3 way valves we use are closed center valves" - the 5/3's two
         // kinds are offered apart (the manual's part for both is its 5/3).
-        Check("four valves (+ unspecified): 5/2 double, 5/2 single, 5/3 closed and 5/3 open centre", v.Options.Length == 5 &&
-              v.Options.Count(o => o.Contains("5/3")) == 2, string.Join(" | ", v.Options));
+        // 12 November: and the same four on a valve island (5 - 8)
+        Check("four valves (+ unspecified): 5/2 double, 5/2 single, 5/3 closed and 5/3 open centre - and the four on a valve island",
+              v.Options.Length == 9 && v.Options.Count(o => o.Contains("5/3")) == 4 && v.Options.Count(o => o.StartsWith("Valve island")) == 4 &&
+              v.Values.Skip(5).SequenceEqual(new[] { 5, 6, 7, 8 }), string.Join(" | ", v.Options));
         Check("six feedbacks (+ unspecified), encoder included",
               fb.Options.Length == 7 && fb.Options.Any(o => o.Contains("encoder")), string.Join(" | ", fb.Options.Skip(1)));
         Check("no 'timed' feedback - the manual has none", !fb.Options.Any(o => o.Contains("timed")));
