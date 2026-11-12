@@ -108,7 +108,7 @@
 </header>
 <div class="layout">
 <nav class="path"><div class="pathhead"><b>{{Unit}}</b> &middot; {{Move}}</div>
-<div class="chain">{{[<span class="arrow">&darr;</span>}}{{#Spring}}<a class="box" href="#A1"><span class="cap">PLC output OFF</span><span class="val">{{>OutCode}}</span></a>{{|}}{{#Relay}}<a class="box" href="#A4"><span class="cap">relay drops out</span><span class="val"><b>{{Relay}}</b></span></a>{{/Relay}}{{|}}<a class="box" href="#A5"><span class="cap">coil without power</span><span class="val">{{#Coil}}<b>{{Coil}}</b>{{/Coil}}{{^Coil}}coil{{/Coil}}</span></a>{{|}}<a class="box" href="#A6"><span class="cap">spring switches the valve</span><span class="val">{{#ValveTag}}<b>{{ValveTag}}</b>{{/ValveTag}}{{^ValveTag}}valve{{/ValveTag}}</span></a>{{/Spring}}{{^Spring}}<a class="box" href="#A1"><span class="cap">PLC output ON</span><span class="val">{{>OutCode}}</span></a>{{|}}{{#Relay}}<a class="box" href="#A4"><span class="cap">relay</span><span class="val"><b>{{Relay}}</b></span></a>{{/Relay}}{{|}}<a class="box" href="#A5"><span class="cap">valve coil</span><span class="val">{{#Coil}}<b>{{Coil}}</b>{{/Coil}}{{^Coil}}coil{{/Coil}}</span></a>{{|}}<a class="box" href="#A6"><span class="cap">valve switches</span><span class="val">{{#ValveTag}}<b>{{ValveTag}}</b>{{/ValveTag}}{{^ValveTag}}valve{{/ValveTag}}</span></a>{{/Spring}}{{|}}<a class="box" href="#A7"><span class="cap">air{{#Hoses}} through {{>HosePlain}}{{/Hoses}}</span></a>{{|}}<a class="box" href="#A8"><span class="cap">cylinder moves</span>{{#CylName}}<span class="val"><b>{{CylName}}</b></span>{{/CylName}}</a>{{|}}{{#PositionFb}}<a class="box" href="#C1"><span class="cap">confirmed</span><span class="val">position{{#Position}} {{Position}}{{/Position}}{{#HasMustOn}}<br>{{OnNames}} ON{{/HasMustOn}}</span></a>{{/PositionFb}}{{^PositionFb}}{{#HasMustOn}}<a class="box" href="#C1"><span class="cap">confirmed</span><span class="val">{{#MustOn}}{{Name}} ON{{^Last}}<br>{{/Last}}{{/MustOn}}</span></a>{{/HasMustOn}}{{^HasMustOn}}{{#EndNotSensed}}{{#HasMustOff}}<a class="box" href="#C1"><span class="cap">confirmed</span><span class="val">{{OffNames}} OFF + time</span></a>{{/HasMustOff}}{{/EndNotSensed}}{{/HasMustOn}}{{/PositionFb}}{{]}}</div>
+<div class="chain">{{[<span class="arrow">&darr;</span>}}{{#Spring}}<a class="box" href="#A1"><span class="cap">PLC output OFF</span><span class="val">{{>OutCode}}</span></a>{{|}}{{#Island}}<a class="box" href="#A3"><span class="cap">valve island switches it off</span></a>{{|}}{{/Island}}{{#Relay}}<a class="box" href="#A4"><span class="cap">relay drops out</span><span class="val"><b>{{Relay}}</b></span></a>{{/Relay}}{{|}}<a class="box" href="#A5"><span class="cap">{{#Island}}coil LED off at its slot{{/Island}}{{^Island}}coil without power{{/Island}}</span><span class="val">{{#Coil}}<b>{{Coil}}</b>{{/Coil}}{{^Coil}}coil{{/Coil}}</span></a>{{|}}<a class="box" href="#A6"><span class="cap">spring switches the valve</span><span class="val">{{#ValveTag}}<b>{{ValveTag}}</b>{{/ValveTag}}{{^ValveTag}}valve{{/ValveTag}}</span></a>{{/Spring}}{{^Spring}}<a class="box" href="#A1"><span class="cap">PLC output ON</span><span class="val">{{>OutCode}}</span></a>{{|}}{{#Island}}<a class="box" href="#A3"><span class="cap">valve island gets it</span></a>{{|}}{{/Island}}{{#Relay}}<a class="box" href="#A4"><span class="cap">relay</span><span class="val"><b>{{Relay}}</b></span></a>{{/Relay}}{{|}}<a class="box" href="#A5"><span class="cap">{{#Island}}coil LED at its slot{{/Island}}{{^Island}}valve coil{{/Island}}</span><span class="val">{{#Coil}}<b>{{Coil}}</b>{{/Coil}}{{^Coil}}coil{{/Coil}}</span></a>{{|}}<a class="box" href="#A6"><span class="cap">valve switches</span><span class="val">{{#ValveTag}}<b>{{ValveTag}}</b>{{/ValveTag}}{{^ValveTag}}valve{{/ValveTag}}</span></a>{{/Spring}}{{|}}<a class="box" href="#A7"><span class="cap">air{{#Island}} from the island{{/Island}}{{#Hoses}} through {{>HosePlain}}{{/Hoses}}</span></a>{{|}}<a class="box" href="#A8"><span class="cap">cylinder moves</span>{{#CylName}}<span class="val"><b>{{CylName}}</b></span>{{/CylName}}</a>{{|}}{{#PositionFb}}<a class="box" href="#C1"><span class="cap">confirmed</span><span class="val">position{{#Position}} {{Position}}{{/Position}}{{#HasMustOn}}<br>{{OnNames}} ON{{/HasMustOn}}</span></a>{{/PositionFb}}{{^PositionFb}}{{#HasMustOn}}<a class="box" href="#C1"><span class="cap">confirmed</span><span class="val">{{#MustOn}}{{Name}} ON{{^Last}}<br>{{/Last}}{{/MustOn}}</span></a>{{/HasMustOn}}{{^HasMustOn}}{{#EndNotSensed}}{{#HasMustOff}}<a class="box" href="#C1"><span class="cap">confirmed</span><span class="val">{{OffNames}} OFF + time</span></a>{{/HasMustOff}}{{/EndNotSensed}}{{/HasMustOn}}{{/PositionFb}}{{]}}</div>
 {{#V1}}
 <p class="ref">5/2 double solenoid: a short signal switches it and it stays; its two coils never ON together.</p>
 {{/V1}}
@@ -118,6 +118,9 @@
 {{#V3}}
 <p class="ref">5/3 valve: it moves only while a coil is ON; with both off it stops in the centre{{#ClosedCentre}} and holds the air (closed centre){{/ClosedCentre}}{{#OpenCentre}} with both sides open (open centre){{/OpenCentre}}.</p>
 {{/V3}}
+{{#Island}}
+<p class="ref">On a valve island: the PLC's output reaches the valve over the island's network; the island powers the coil (its LED at the valve's slot lights) and feeds every valve on it from one air supply.</p>
+{{/Island}}
 </nav>
 <main>
 <div class="safety"><b>&#9888; Safety first.</b> Before you touch the cylinder, the valve or anything that moves: <b>lock out</b> the machine (electrical and air) and exhaust both sides of the cylinder &ndash; it can move suddenly when air returns. Never bypass a guard or an emergency stop. Measuring in the cabinet and replacing parts is for trained, authorized people.</div>
@@ -255,6 +258,23 @@
 <p class="man">manual 1.6 (1)</p>
 </div></div>
 
+{{#Island}}
+<div class="step" id="A3" data-part="A"><div class="num"></div><div class="body">
+<h3>Does the valve island get the signal?</h3>
+<ul>
+<li>{{>Look}} The island's status LEDs: its supply (<b>POWER</b>) lit, the network (<b>NS</b> / <b>LINK</b>) lit green, no <b>error</b> LED.</li>
+<li>{{>Look}} Another valve on the same island: does it switch? Then the island, its network and its supply are fine.</li>
+<li>{{>Measure}} The island's load supply (the valves' 24 V, often cut by the emergency stop): <b>24 V DC</b> at its supply connector.</li>
+</ul>
+<table class="out">
+<tr class="fault"><td class="when">The network LED is off or red, or the error LED is lit.</td><td>The island does not talk to the PLC: its network cable and connector, the switch it is plugged into, the island's address; the PLC shows a communication error. Repair it (maintenance). {{>AgainA5}}</td></tr>
+<tr class="fault"><td class="when">No load supply.</td><td>Its fuse, the emergency stop circuit (released?), the cable to the island: repair it. {{>AgainA5}}</td></tr>
+<tr class="good"><td class="when">The island is in order.</td><td>&rarr; <a class="go" href="#A5"></a></td></tr>
+</table>
+<p class="man">manual 1.6 (2)</p>
+</div></div>
+{{/Island}}
+{{^Island}}
 <div class="step" id="A3" data-part="A"><div class="num"></div><div class="body">
 <h3>Does the output card switch {{>OutCode}}?</h3>
 <div class="pics">{{#OutHasLed}}{{>DrawCard}}{{/OutHasLed}}{{#OutWire}}{{>DrawTerminal}}{{/OutWire}}</div>
@@ -270,6 +290,7 @@
 </table>
 <p class="man">manual 1.6 (2)</p>
 </div></div>
+{{/Island}}
 
 {{#Relay}}
 <div class="step" id="A4" data-part="A"><div class="num"></div><div class="body">
@@ -290,6 +311,22 @@
 </div></div>
 {{/Relay}}
 
+{{#Island}}
+<div class="step" id="A5" data-part="A"><div class="num"></div><div class="body">
+<h3>Does the coil's LED light at its slot?</h3>
+<div class="pics">{{>DrawCoil}}</div>
+<ul>
+<li>{{>Look}} {{>CoilName}} of {{>ValveName}} on the island{{>PnSheetP}}: each coil has its own LED at the valve's slot.</li>
+<li>{{>RunIt}} {{>Look}} Its LED lights while {{>OutCode}} is ON.</li>
+</ul>
+<table class="out">
+<tr class="fault"><td class="when">{{>OutCode}} ON, the LED stays off.</td><td>The island does not power this coil: the slot's output, or the output is set on another slot (the island's configuration) &ndash; maintenance. {{>AgainA6}}</td></tr>
+<tr class="good"><td class="when">The LED lights.</td><td>&rarr; <a class="go" href="#A6"></a></td></tr>
+</table>
+<p class="man">manual 1.3 (1)</p>
+</div></div>
+{{/Island}}
+{{^Island}}
 <div class="step" id="A5" data-part="A"><div class="num"></div><div class="body">
 <h3>Does {{>CoilPlain}} get power?</h3>
 <div class="pics">{{>DrawCoil}}</div>
@@ -305,6 +342,7 @@
 </table>
 <p class="man">manual 1.3 (1){{#Relay}}, 1.5 (2){{/Relay}}</p>
 </div></div>
+{{/Island}}
 
 <div class="step" id="A6" data-part="A"><div class="num"></div><div class="body">
 <h3>Does the valve switch?</h3>
@@ -314,7 +352,7 @@
 <li>{{>Hand}} Press the <b>manual override</b> (the blue button) of {{>CoilName}} on {{>ValveName}}.</li>
 </ul>
 <table class="out">
-<tr class="fault"><td class="when">With the override it <b>moves</b>.</td><td>The valve is fine, the coil does not shift it: replace {{>CoilPlain}}. {{>AgainA7}}</td></tr>
+<tr class="fault"><td class="when">With the override it <b>moves</b>.</td><td>The valve is fine, the coil does not shift it: replace {{>CoilPlain}}{{#Island}} on its slot (the island's air off first){{/Island}}. {{>AgainA7}}</td></tr>
 <tr class="go"><td class="when">It does not move with the override either.</td><td>&rarr; <a class="go" href="#A7"></a></td></tr>
 </table>
 <p class="man">manual 1.3 (2)</p>
@@ -351,6 +389,21 @@
 <p class="man">manual 1.6 (1)</p>
 </div></div>
 
+{{#Island}}
+<div class="step" id="A3" data-part="A"><div class="num"></div><div class="body">
+<h3>Does the valve island switch the coil off?</h3>
+<ul>
+<li>{{>Look}} The island's status LEDs: its supply and network in order, no error LED.</li>
+<li>{{>Look}} When the network is lost, an island keeps its outputs as they were or switches them off &ndash; as it is set.</li>
+</ul>
+<table class="out">
+<tr class="fault"><td class="when">The network LED is off or red, or the error LED is lit.</td><td>The island does not get the PLC's OFF: its network cable and connector, the island's address &ndash; repair it (maintenance). {{>AgainA5}}</td></tr>
+<tr class="good"><td class="when">The island is in order.</td><td>&rarr; <a class="go" href="#A5"></a></td></tr>
+</table>
+<p class="man">manual 1.6 (2)</p>
+</div></div>
+{{/Island}}
+{{^Island}}
 <div class="step" id="A3" data-part="A"><div class="num"></div><div class="body">
 <h3>Does the output card switch it off?</h3>
 <div class="pics">{{#OutHasLed}}{{>DrawCard}}{{/OutHasLed}}</div>
@@ -366,6 +419,7 @@
 </table>
 <p class="man">manual 1.6 (2)</p>
 </div></div>
+{{/Island}}
 
 {{#Relay}}
 <div class="step" id="A4" data-part="A"><div class="num"></div><div class="body">
@@ -382,6 +436,21 @@
 </div></div>
 {{/Relay}}
 
+{{#Island}}
+<div class="step" id="A5" data-part="A"><div class="num"></div><div class="body">
+<h3>Has the coil's LED gone off at its slot?</h3>
+<div class="pics">{{>DrawCoil}}</div>
+<ul>
+<li>{{>Look}} {{>CoilName}} of {{>ValveName}} on the island{{>PnSheetP}}: its LED at the valve's slot goes <b>off</b> with {{>OutCode}}.</li>
+</ul>
+<table class="out">
+<tr class="fault"><td class="when">{{>OutCode}} OFF, the LED stays lit.</td><td>The island still powers the coil: the slot's output is stuck, or the output is set on another slot &ndash; maintenance. {{>AgainA6}}</td></tr>
+<tr class="good"><td class="when">The LED is off.</td><td>&rarr; <a class="go" href="#A6"></a></td></tr>
+</table>
+<p class="man">manual 1.3</p>
+</div></div>
+{{/Island}}
+{{^Island}}
 <div class="step" id="A5" data-part="A"><div class="num"></div><div class="body">
 <h3>Is {{>CoilPlain}} without power?</h3>
 <div class="pics">{{>DrawCoil}}</div>
@@ -395,6 +464,7 @@
 </table>
 <p class="man">manual 1.3</p>
 </div></div>
+{{/Island}}
 
 <div class="step" id="A6" data-part="A"><div class="num"></div><div class="body">
 <h3>Does the valve spring back?</h3>
@@ -405,7 +475,7 @@
 </ul>
 <table class="out">
 <tr class="fault"><td class="when">The override was locked.</td><td>Release it. {{>AgainA7}}</td></tr>
-<tr class="fault"><td class="when">The valve does not return.</td><td>The spool sticks or the spring is broken: clean or replace {{>ValvePlain}}; check the air (filter, water, oil). {{>AgainA7}}</td></tr>
+<tr class="fault"><td class="when">The valve does not return.</td><td>The spool sticks or the spring is broken: clean or replace {{>ValvePlain}}{{#Island}} on its slot (the island's air off first){{/Island}}; check the air (filter, water, oil). {{>AgainA7}}</td></tr>
 <tr class="go"><td class="when">It returns, the cylinder still does not move.</td><td>&rarr; <a class="go" href="#A7"></a></td></tr>
 </table>
 <p class="man">manual 1.3 (2)</p>
@@ -417,6 +487,9 @@
 <div class="pics">{{>DrawAir}}</div>
 <ul>
 <li>{{>Look}} The gauge at the air unit: the working pressure, at least <b>5 bar</b>.</li>
+{{#Island}}
+<li>{{>Look}} Every valve of the island takes its air from the island's one supply and blows out through its silencers: do the island's other cylinders move? Then the supply reaches the island.</li>
+{{/Island}}
 {{#MainAir}}
 <li>{{>Look}} {{#MainAirTag}}<b>{{MainAirTag}}</b> {{/MainAirTag}}{{#MainAirCode}}({{MainAirCode}}){{/MainAirCode}}{{#MainAirText}} {{MainAirText}}{{/MainAirText}}: <b>ON</b> on the <i>Inputs / Outputs</i> page.</li>
 {{/MainAir}}
@@ -427,6 +500,9 @@
 </ul>
 <table class="out">
 <tr class="fault"><td class="when">Low pressure, or no air.</td><td>Open the shut-off valve, check the compressor, change a clogged filter, repair leaks. {{>AgainA8}}</td></tr>
+{{#Island}}
+<tr class="fault"><td class="when">The island's cylinders all move slowly.</td><td>The island's silencers are clogged, or its supply line is too small: clean or replace the silencers. {{>AgainA8}}</td></tr>
+{{/Island}}
 <tr class="fault"><td class="when">Air at the valve, none comes out{{#Hoses}} into {{>Hose}}{{/Hoses}}.</td><td>The spool is stuck: clean or replace {{>ValvePlain}}; check the air (filter, water, oil). {{>AgainA8}}</td></tr>
 <tr class="fault"><td class="when">A hose leaks, is kinked or has come off.</td><td>Repair or replace the hose or its fitting. {{>AgainA8}}</td></tr>
 <tr class="fault"><td class="when">A flow control is closed (little or no air through it).</td><td>Open the flow control to its mark. {{>AgainA8}}</td></tr>
@@ -473,7 +549,12 @@
 <li>{{OtherMove}}'s output {{OtherOut}} must not come ON on the way.</li>
 {{/OtherOut}}
 {{/V1}}
+{{#Island}}
+<li>{{>Hand}} Move the island's network cable gently at its connector while it moves: a lost connection drops the signal (the network LED flickers).</li>
+{{/Island}}
+{{^Island}}
 <li>{{>Hand}} Wiggle the coil's connector and cable while it moves: a loose contact drops the signal.</li>
+{{/Island}}
 </ul>
 <table class="out">
 <tr class="fault"><td class="when">{{#Spring}}It comes ON on the way.{{/Spring}}{{^Spring}}It goes OFF too early{{#V1}}{{#OtherOut}}, or the other output comes ON{{/OtherOut}}{{/V1}}.{{/Spring}}</td><td>A loose connector or wire: repair it. If the PLC switches it itself, the program must keep it until {{#HasMustOn}}{{OnNames}} confirms the end{{/HasMustOn}}{{^HasMustOn}}the end is reached{{/HasMustOn}} &ndash; ask the PLC programmer.{{#V3}} In manual mode, keep {{>Button}} held until it arrives.{{/V3}} {{>AgainB2}}</td></tr>

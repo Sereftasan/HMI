@@ -651,6 +651,7 @@ namespace Kaban.Core.Helpers
         private static CylinderSide SideFrom(Cylinder c, TroubleshootingCatalog.MovementInfo mv, int valve, int feedback)
         {
             string output = Addr(mv.Output), otherOutput = Addr(mv.OtherOutput), cmd = Addr(mv.Command), otherCmd = Addr(mv.OtherCommand);
+            valve = TroubleshootingCatalog.BaseValve(valve);              // an island's valve acts as the valve it is
             bool single = valve == (int)TroubleshootingCatalog.ValveType.SingleSolenoidSpring;
             bool own = output.Length > 0 || cmd.Length > 0;
             var s = new CylinderSide { Side = string.IsNullOrEmpty(mv.Side) ? "A" : mv.Side, Movement = mv };

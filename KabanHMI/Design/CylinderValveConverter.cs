@@ -12,6 +12,7 @@ namespace Kaban.UI.Design
     /// C# name cannot begin with a digit, so in code they are ThreeWayClosedCenter
     /// and ThreeWayOpenCenter; the Properties window, the type check and every
     /// text the program writes use these names, and every earlier name is read.
+    /// A valve island's are "IslandDoubleSolenoid" ... "Island3WayOpenCenter" (12 November).
     /// </summary>
     public class CylinderValveConverter : EnumConverter
     {
@@ -20,12 +21,8 @@ namespace Kaban.UI.Design
         /// <summary>The valve's name on the screen.</summary>
         public static string Name(CylinderValve v)
         {
-            switch (v)
-            {
-                case CylinderValve.ThreeWayClosedCenter: return "3WayClosedCenter";
-                case CylinderValve.ThreeWayOpenCenter: return "3WayOpenCenter";
-                default: return v.ToString();
-            }
+            // "3WayClosedCenter", "Island3WayOpenCenter" (12 November: the valves of a valve island)
+            return v.ToString().Replace("ThreeWay", "3Way");
         }
 
         /// <summary>A valve from its name: the screen's, the code's or an earlier one ("DoubleSolenoid_3Way...").</summary>
@@ -35,7 +32,8 @@ namespace Kaban.UI.Design
             string t = (text ?? "").Trim();
             if (t.Length == 0) return false;
             if (t.StartsWith("DoubleSolenoid_", StringComparison.OrdinalIgnoreCase)) t = t.Substring("DoubleSolenoid_".Length);
-            if (t.StartsWith("3Way", StringComparison.OrdinalIgnoreCase)) t = "Three" + t.Substring(1);
+            int at = t.IndexOf("3Way", StringComparison.OrdinalIgnoreCase);
+            if (at >= 0) t = t.Substring(0, at) + "ThreeWay" + t.Substring(at + 4);
             if (t.Equals("ThreeWay", StringComparison.OrdinalIgnoreCase)) t = "ThreeWayClosedCenter";   // the one 5/3 before 8 October
             int n;
             if (int.TryParse(t, out n)) { if (!Enum.IsDefined(typeof(CylinderValve), n)) return false; v = (CylinderValve)n; return true; }

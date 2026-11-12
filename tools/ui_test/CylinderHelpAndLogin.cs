@@ -42,7 +42,8 @@ class CH {
               !props["Valve"].IsBrowsable && !props["Feedback"].IsBrowsable &&
               props["Valve"].SerializationVisibility == DesignerSerializationVisibility.Hidden);
         Check("  the valve names read as the manual's", Enum.GetNames(typeof(CylinderValve)).SequenceEqual(
-              new[] { "Unspecified", "DoubleSolenoid", "SingleSolenoid", "ThreeWayClosedCenter", "ThreeWayOpenCenter" }));
+              new[] { "Unspecified", "DoubleSolenoid", "SingleSolenoid", "ThreeWayClosedCenter", "ThreeWayOpenCenter",
+                      "IslandDoubleSolenoid", "IslandSingleSolenoid", "IslandThreeWayClosedCenter", "IslandThreeWayOpenCenter" }));
         Check("  with the manual's numbers kept", (int)CylinderValve.DoubleSolenoid == 1 && (int)CylinderValve.SingleSolenoid == 2 &&
               (int)CylinderValve.ThreeWayClosedCenter == 3 && (int)CylinderValve.ThreeWayOpenCenter == 4 &&
               (int)CylinderFeedback.EncoderPlusReference == 6);
@@ -50,7 +51,20 @@ class CH {
         var valveConv = TypeDescriptor.GetConverter(typeof(CylinderValve));
         var shown = valveConv.GetStandardValues().Cast<object>().Select(v => valveConv.ConvertToString(v)).ToList();
         Check("  shown in the Properties window as 3WayClosedCenter and 3WayOpenCenter, no prefix",
-              shown.SequenceEqual(new[] { "Unspecified", "DoubleSolenoid", "SingleSolenoid", "3WayClosedCenter", "3WayOpenCenter" }), string.Join(",", shown));
+              shown.Take(5).SequenceEqual(new[] { "Unspecified", "DoubleSolenoid", "SingleSolenoid", "3WayClosedCenter", "3WayOpenCenter" }), string.Join(",", shown));
+        // 12 November: "The pneumatic valves are valve islands here (not separate valves). We need to add new models for the valve ... types"
+        Check("  a valve island's four after them: IslandDoubleSolenoid ... Island3WayOpenCenter (5 - 8), read back by those names",
+              shown.Skip(5).SequenceEqual(new[] { "IslandDoubleSolenoid", "IslandSingleSolenoid", "Island3WayClosedCenter", "Island3WayOpenCenter" }) &&
+              (int)CylinderValve.IslandDoubleSolenoid == 5 && (int)CylinderValve.IslandThreeWayOpenCenter == 8 &&
+              (CylinderValve)valveConv.ConvertFromString("Island3WayOpenCenter") == CylinderValve.IslandThreeWayOpenCenter &&
+              (CylinderValve)valveConv.ConvertFromString("IslandThreeWayClosedCenter") == CylinderValve.IslandThreeWayClosedCenter, string.Join(",", shown));
+        var islandSpring = new CylinderUnitHMI { ValveType = CylinderValve.IslandSingleSolenoid, FeedbackType = CylinderFeedback.SingleInductive,
+                                                 CommandAAddress = "M1", CommandBAddress = "M2", Lamp1AAddress = "X1" };
+        var islandOk = new CylinderUnitHMI { ValveType = CylinderValve.IslandThreeWayOpenCenter, FeedbackType = CylinderFeedback.TwoEndMagnetic,
+                                             CommandAAddress = "M1", CommandBAddress = "M2", Lamp1AAddress = "X1", Lamp1BAddress = "X2" };
+        Check("  an island's valve checked as the valve it is (one coil: one action; a 5/3: both)",
+              islandSpring.TypeCheck.StartsWith("IslandSingleSolenoid: one coil drives ONE movement") && islandOk.TypeCheck == "OK",
+              islandSpring.TypeCheck + " / " + islandOk.TypeCheck);
         Check("  typed or read back by any of their names, the earlier ones too",
               (CylinderValve)valveConv.ConvertFromString("3WayOpenCenter") == CylinderValve.ThreeWayOpenCenter &&
               (CylinderValve)valveConv.ConvertFromString("DoubleSolenoid_3WayClosedCenter") == CylinderValve.ThreeWayClosedCenter &&

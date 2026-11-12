@@ -154,7 +154,7 @@ terminal = klemens
 </header>
 <div class="layout">
 <nav class="path"><div class="pathhead"><b>{{Unit}}</b> &middot; {{Move}}</div>
-<div class="chain">{{[<span class="arrow">&darr;</span>}}{{#Spring}}<a class="box" href="#A1"><span class="cap">PLC çıkışı KAPALI</span><span class="val">{{>OutBox}}</span></a>{{|}}{{#Relay}}<a class="box" href="#A4"><span class="cap">röle bırakır</span><span class="val"><b>{{Relay}}</b></span></a>{{/Relay}}{{|}}<a class="box" href="#A5"><span class="cap">bobinde enerji yok</span><span class="val">{{#Coil}}<b>{{Coil}}</b>{{/Coil}}{{^Coil}}bobin{{/Coil}}</span></a>{{|}}<a class="box" href="#A6"><span class="cap">valfi yay geri döndürür</span><span class="val">{{#ValveTag}}<b>{{ValveTag}}</b>{{/ValveTag}}{{^ValveTag}}valf{{/ValveTag}}</span></a>{{/Spring}}{{^Spring}}<a class="box" href="#A1"><span class="cap">PLC çıkışı AÇIK</span><span class="val">{{>OutBox}}</span></a>{{|}}{{#Relay}}<a class="box" href="#A4"><span class="cap">röle</span><span class="val"><b>{{Relay}}</b></span></a>{{/Relay}}{{|}}<a class="box" href="#A5"><span class="cap">valf bobini</span><span class="val">{{#Coil}}<b>{{Coil}}</b>{{/Coil}}{{^Coil}}bobin{{/Coil}}</span></a>{{|}}<a class="box" href="#A6"><span class="cap">valf konum değiştirir</span><span class="val">{{#ValveTag}}<b>{{ValveTag}}</b>{{/ValveTag}}{{^ValveTag}}valf{{/ValveTag}}</span></a>{{/Spring}}{{|}}<a class="box" href="#A7"><span class="cap">hava{{#Hoses}}: {{>HosePlain}}{{/Hoses}}</span></a>{{|}}<a class="box" href="#A8"><span class="cap">silindir hareket eder</span>{{#CylName}}<span class="val"><b>{{CylName}}</b></span>{{/CylName}}</a>{{|}}{{#PositionFb}}<a class="box" href="#C1"><span class="cap">varış onaylanır</span><span class="val">konum{{#Position}} {{Position}}{{/Position}}{{#HasMustOn}}<br>{{OnNames}} AÇIK{{/HasMustOn}}</span></a>{{/PositionFb}}{{^PositionFb}}{{#HasMustOn}}<a class="box" href="#C1"><span class="cap">varış onaylanır</span><span class="val">{{#MustOn}}{{Name}} AÇIK{{^Last}}<br>{{/Last}}{{/MustOn}}</span></a>{{/HasMustOn}}{{^HasMustOn}}{{#EndNotSensed}}{{#HasMustOff}}<a class="box" href="#C1"><span class="cap">varış onaylanır</span><span class="val">{{OffNames}} KAPALI + süre</span></a>{{/HasMustOff}}{{/EndNotSensed}}{{/HasMustOn}}{{/PositionFb}}{{]}}</div>
+<div class="chain">{{[<span class="arrow">&darr;</span>}}{{#Spring}}<a class="box" href="#A1"><span class="cap">PLC çıkışı KAPALI</span><span class="val">{{>OutBox}}</span></a>{{|}}{{#Island}}<a class="box" href="#A3"><span class="cap">valf adası kapatır</span></a>{{|}}{{/Island}}{{#Relay}}<a class="box" href="#A4"><span class="cap">röle bırakır</span><span class="val"><b>{{Relay}}</b></span></a>{{/Relay}}{{|}}<a class="box" href="#A5"><span class="cap">{{#Island}}yuvadaki bobin LED'i söner{{/Island}}{{^Island}}bobinde enerji yok{{/Island}}</span><span class="val">{{#Coil}}<b>{{Coil}}</b>{{/Coil}}{{^Coil}}bobin{{/Coil}}</span></a>{{|}}<a class="box" href="#A6"><span class="cap">valfi yay geri döndürür</span><span class="val">{{#ValveTag}}<b>{{ValveTag}}</b>{{/ValveTag}}{{^ValveTag}}valf{{/ValveTag}}</span></a>{{/Spring}}{{^Spring}}<a class="box" href="#A1"><span class="cap">PLC çıkışı AÇIK</span><span class="val">{{>OutBox}}</span></a>{{|}}{{#Island}}<a class="box" href="#A3"><span class="cap">valf adasına ulaşır</span></a>{{|}}{{/Island}}{{#Relay}}<a class="box" href="#A4"><span class="cap">röle</span><span class="val"><b>{{Relay}}</b></span></a>{{/Relay}}{{|}}<a class="box" href="#A5"><span class="cap">{{#Island}}yuvadaki bobin LED'i{{/Island}}{{^Island}}valf bobini{{/Island}}</span><span class="val">{{#Coil}}<b>{{Coil}}</b>{{/Coil}}{{^Coil}}bobin{{/Coil}}</span></a>{{|}}<a class="box" href="#A6"><span class="cap">valf konum değiştirir</span><span class="val">{{#ValveTag}}<b>{{ValveTag}}</b>{{/ValveTag}}{{^ValveTag}}valf{{/ValveTag}}</span></a>{{/Spring}}{{|}}<a class="box" href="#A7"><span class="cap">hava{{#Island}} adadan{{/Island}}{{#Hoses}}: {{>HosePlain}}{{/Hoses}}</span></a>{{|}}<a class="box" href="#A8"><span class="cap">silindir hareket eder</span>{{#CylName}}<span class="val"><b>{{CylName}}</b></span>{{/CylName}}</a>{{|}}{{#PositionFb}}<a class="box" href="#C1"><span class="cap">varış onaylanır</span><span class="val">konum{{#Position}} {{Position}}{{/Position}}{{#HasMustOn}}<br>{{OnNames}} AÇIK{{/HasMustOn}}</span></a>{{/PositionFb}}{{^PositionFb}}{{#HasMustOn}}<a class="box" href="#C1"><span class="cap">varış onaylanır</span><span class="val">{{#MustOn}}{{Name}} AÇIK{{^Last}}<br>{{/Last}}{{/MustOn}}</span></a>{{/HasMustOn}}{{^HasMustOn}}{{#EndNotSensed}}{{#HasMustOff}}<a class="box" href="#C1"><span class="cap">varış onaylanır</span><span class="val">{{OffNames}} KAPALI + süre</span></a>{{/HasMustOff}}{{/EndNotSensed}}{{/HasMustOn}}{{/PositionFb}}{{]}}</div>
 {{#V1}}
 <p class="ref">5/2 çift bobinli valf: kısa bir sinyalle konum değiştirir ve o konumda kalır; iki bobini asla aynı anda AÇIK olmamalı.</p>
 {{/V1}}
@@ -164,6 +164,9 @@ terminal = klemens
 {{#V3}}
 <p class="ref">5/3 valf: silindir yalnızca bir bobin AÇIK iken hareket eder; ikisi de KAPALI iken valf orta konuma geçer{{#ClosedCentre}} ve havayı içeride tutar (orta konumu kapalı){{/ClosedCentre}}{{#OpenCentre}} ve iki taraf da egzoza açılır (orta konumu açık){{/OpenCentre}}.</p>
 {{/V3}}
+{{#Island}}
+<p class="ref">Valf adasında: PLC'nin çıkışı valfe adanın ağı üzerinden ulaşır; bobini ada besler (valfin yuvasındaki LED'i yanar) ve adadaki her valf havasını adanın tek beslemesinden alır.</p>
+{{/Island}}
 </nav>
 <main>
 <div class="safety"><b>&#9888; Önce güvenlik.</b> Silindire, valfe ya da hareket eden herhangi bir şeye dokunmadan önce makinenin <b>enerjisini kesin ve kilitleyin</b> (elektrik ve hava), silindirin iki tarafının da havasını boşaltın &ndash; hava geri gelince silindir aniden hareket edebilir. Bir koruyucuyu ya da acil stopu asla devre dışı bırakmayın. Pano içinde ölçüm ve parça değişimi eğitimli ve yetkili kişilerin işidir.</div>
@@ -301,6 +304,23 @@ terminal = klemens
 <p class="man">kılavuz 1.6 (1)</p>
 </div></div>
 
+{{#Island}}
+<div class="step" id="A3" data-part="A"><div class="num"></div><div class="body">
+<h3>Valf adası sinyali alıyor mu?</h3>
+<ul>
+<li>{{>Look}} Adanın durum LED'leri: beslemesi (<b>POWER</b>) yanık, ağ (<b>NS</b> / <b>LINK</b>) yeşil yanık, <b>hata</b> LED'i sönük.</li>
+<li>{{>Look}} Aynı adadaki başka bir valf: konum değiştiriyor mu? Öyleyse ada, ağı ve beslemesi sağlam.</li>
+<li>{{>Measure}} Adanın yük beslemesi (valflerin 24 V'u, çoğu zaman acil stop keser): besleme konnektöründe <b>24 V DC</b>.</li>
+</ul>
+<table class="out">
+<tr class="fault"><td class="when">Ağ LED'i sönük ya da kırmızı, ya da hata LED'i yanık.</td><td>Ada PLC ile haberleşmiyor: ağ kablosu ve konnektörü, takılı olduğu switch, adanın adresi; PLC bir haberleşme hatası gösterir. Onarın (bakım). {{>AgainA5}}</td></tr>
+<tr class="fault"><td class="when">Yük beslemesi yok.</td><td>Sigortası, acil stop devresi (bırakıldı mı?), adaya giden kablo: onarın. {{>AgainA5}}</td></tr>
+<tr class="good"><td class="when">Ada sorunsuz.</td><td>&rarr; <a class="go" href="#A5"></a></td></tr>
+</table>
+<p class="man">kılavuz 1.6 (2)</p>
+</div></div>
+{{/Island}}
+{{^Island}}
 <div class="step" id="A3" data-part="A"><div class="num"></div><div class="body">
 <h3>Çıkış kartı {{>OutCode}} çıkışını açıyor mu?</h3>
 <div class="pics">{{#OutHasLed}}{{>DrawCard}}{{/OutHasLed}}{{#OutWire}}{{>DrawTerminal}}{{/OutWire}}</div>
@@ -316,6 +336,7 @@ terminal = klemens
 </table>
 <p class="man">kılavuz 1.6 (2)</p>
 </div></div>
+{{/Island}}
 
 {{#Relay}}
 <div class="step" id="A4" data-part="A"><div class="num"></div><div class="body">
@@ -336,6 +357,22 @@ terminal = klemens
 </div></div>
 {{/Relay}}
 
+{{#Island}}
+<div class="step" id="A5" data-part="A"><div class="num"></div><div class="body">
+<h3>Bobinin LED'i yuvasında yanıyor mu?</h3>
+<div class="pics">{{>DrawCoil}}</div>
+<ul>
+<li>{{>Look}} Adadaki {{>ValveGen}} {{>CoilPlainNom}}{{>PnSheetP}}: her bobinin valfin yuvasında kendi LED'i vardır.</li>
+<li>{{>RunIt}} {{>Look}} {{>OutCode}} AÇIK iken LED'i yanar.</li>
+</ul>
+<table class="out">
+<tr class="fault"><td class="when">{{>OutCode}} AÇIK, LED sönük kalıyor.</td><td>Ada bu bobini beslemiyor: yuvanın çıkışı, ya da çıkış başka bir yuvaya ayarlı (adanın konfigürasyonu) &ndash; bakım. {{>AgainA6}}</td></tr>
+<tr class="good"><td class="when">LED yanıyor.</td><td>&rarr; <a class="go" href="#A6"></a></td></tr>
+</table>
+<p class="man">kılavuz 1.3 (1)</p>
+</div></div>
+{{/Island}}
+{{^Island}}
 <div class="step" id="A5" data-part="A"><div class="num"></div><div class="body">
 <h3>{{>CoilPlainNom}} enerji alıyor mu?</h3>
 <div class="pics">{{>DrawCoil}}</div>
@@ -351,6 +388,7 @@ terminal = klemens
 </table>
 <p class="man">kılavuz 1.3 (1){{#Relay}}, 1.5 (2){{/Relay}}</p>
 </div></div>
+{{/Island}}
 
 <div class="step" id="A6" data-part="A"><div class="num"></div><div class="body">
 <h3>Valf konum değiştiriyor mu?</h3>
@@ -360,7 +398,7 @@ terminal = klemens
 <li>{{>Hand}} {{>ValveLoc}} {{>CoilGen}} <b>manuel kumanda butonuna</b> (mavi buton) basın.</li>
 </ul>
 <table class="out">
-<tr class="fault"><td class="when">Manuel kumandayla <b>hareket ediyor</b>.</td><td>Valf sağlam, bobin arızalı: {{>CoilPlainAcc}} değiştirin. {{>AgainA7}}</td></tr>
+<tr class="fault"><td class="when">Manuel kumandayla <b>hareket ediyor</b>.</td><td>Valf sağlam, bobin arızalı: {{>CoilPlainAcc}} {{#Island}}yuvasında {{/Island}}değiştirin{{#Island}} (önce adanın havasını kesin){{/Island}}. {{>AgainA7}}</td></tr>
 <tr class="go"><td class="when">Manuel kumandayla da hareket etmiyor.</td><td>&rarr; <a class="go" href="#A7"></a></td></tr>
 </table>
 <p class="man">kılavuz 1.3 (2)</p>
@@ -397,6 +435,21 @@ terminal = klemens
 <p class="man">kılavuz 1.6 (1)</p>
 </div></div>
 
+{{#Island}}
+<div class="step" id="A3" data-part="A"><div class="num"></div><div class="body">
+<h3>Valf adası bobini kapatıyor mu?</h3>
+<ul>
+<li>{{>Look}} Adanın durum LED'leri: beslemesi ve ağı yerinde, hata LED'i sönük.</li>
+<li>{{>Look}} Ağ koptuğunda ada çıkışlarını ayarına göre olduğu gibi tutar ya da kapatır.</li>
+</ul>
+<table class="out">
+<tr class="fault"><td class="when">Ağ LED'i sönük ya da kırmızı, ya da hata LED'i yanık.</td><td>Ada PLC'nin KAPAT komutunu almıyor: ağ kablosu ve konnektörü, adanın adresi &ndash; onarın (bakım). {{>AgainA5}}</td></tr>
+<tr class="good"><td class="when">Ada sorunsuz.</td><td>&rarr; <a class="go" href="#A5"></a></td></tr>
+</table>
+<p class="man">kılavuz 1.6 (2)</p>
+</div></div>
+{{/Island}}
+{{^Island}}
 <div class="step" id="A3" data-part="A"><div class="num"></div><div class="body">
 <h3>Çıkış kartı {{>OutCode}} çıkışını kapatıyor mu?</h3>
 <div class="pics">{{#OutHasLed}}{{>DrawCard}}{{/OutHasLed}}</div>
@@ -412,6 +465,7 @@ terminal = klemens
 </table>
 <p class="man">kılavuz 1.6 (2)</p>
 </div></div>
+{{/Island}}
 
 {{#Relay}}
 <div class="step" id="A4" data-part="A"><div class="num"></div><div class="body">
@@ -428,6 +482,21 @@ terminal = klemens
 </div></div>
 {{/Relay}}
 
+{{#Island}}
+<div class="step" id="A5" data-part="A"><div class="num"></div><div class="body">
+<h3>Bobinin LED'i yuvasında söndü mü?</h3>
+<div class="pics">{{>DrawCoil}}</div>
+<ul>
+<li>{{>Look}} Adadaki {{>ValveGen}} {{>CoilPlainNom}}{{>PnSheetP}}: {{>OutCode}} ile birlikte yuvadaki LED'i <b>söner</b>.</li>
+</ul>
+<table class="out">
+<tr class="fault"><td class="when">{{>OutCode}} KAPALI, LED yanık kalıyor.</td><td>Ada bobini hâlâ besliyor: yuvanın çıkışı takılı kalmış, ya da çıkış başka bir yuvaya ayarlı &ndash; bakım. {{>AgainA6}}</td></tr>
+<tr class="good"><td class="when">LED sönük.</td><td>&rarr; <a class="go" href="#A6"></a></td></tr>
+</table>
+<p class="man">kılavuz 1.3</p>
+</div></div>
+{{/Island}}
+{{^Island}}
 <div class="step" id="A5" data-part="A"><div class="num"></div><div class="body">
 <h3>{{>CoilPlainNom}} enerjisiz mi?</h3>
 <div class="pics">{{>DrawCoil}}</div>
@@ -441,6 +510,7 @@ terminal = klemens
 </table>
 <p class="man">kılavuz 1.3</p>
 </div></div>
+{{/Island}}
 
 <div class="step" id="A6" data-part="A"><div class="num"></div><div class="body">
 <h3>Valf yayla geri dönüyor mu?</h3>
@@ -451,7 +521,7 @@ terminal = klemens
 </ul>
 <table class="out">
 <tr class="fault"><td class="when">Manuel kumanda kilitliydi.</td><td>Kilidi açın. {{>AgainA7}}</td></tr>
-<tr class="fault"><td class="when">Valf geri dönmüyor.</td><td>Sürgü sıkışmış ya da yay kırık: {{>ValvePlainAcc}} temizleyin ya da değiştirin; havayı kontrol edin (filtre, su, yağ). {{>AgainA7}}</td></tr>
+<tr class="fault"><td class="when">Valf geri dönmüyor.</td><td>Sürgü sıkışmış ya da yay kırık: {{>ValvePlainAcc}} {{#Island}}yuvasında {{/Island}}temizleyin ya da değiştirin{{#Island}} (önce adanın havasını kesin){{/Island}}; havayı kontrol edin (filtre, su, yağ). {{>AgainA7}}</td></tr>
 <tr class="go"><td class="when">Geri dönüyor, silindir yine hareket etmiyor.</td><td>&rarr; <a class="go" href="#A7"></a></td></tr>
 </table>
 <p class="man">kılavuz 1.3 (2)</p>
@@ -463,6 +533,9 @@ terminal = klemens
 <div class="pics">{{>DrawAir}}</div>
 <ul>
 <li>{{>Look}} Şartlandırıcıdaki manometre: çalışma basıncı, en az <b>5 bar</b>.</li>
+{{#Island}}
+<li>{{>Look}} Adanın her valfi havasını adanın tek beslemesinden alır ve susturucularından boşaltır: adanın diğer silindirleri hareket ediyor mu? Öyleyse besleme adaya ulaşıyor.</li>
+{{/Island}}
 {{#MainAir}}
 <li>{{>Look}} {{#MainAirTag}}<b>{{MainAirTag}}</b> {{/MainAirTag}}{{#MainAirCode}}({{MainAirCode}}){{/MainAirCode}}{{#MainAirText}} {{MainAirText}}{{/MainAirText}}: <i>Girişler / Çıkışlar</i> sayfasında <b>AÇIK</b>.</li>
 {{/MainAir}}
@@ -473,6 +546,9 @@ terminal = klemens
 </ul>
 <table class="out">
 <tr class="fault"><td class="when">Basınç düşük ya da hava yok.</td><td>Kapama vanasını açın, kompresörü kontrol edin, tıkanmış filtreyi değiştirin, kaçakları onarın. {{>AgainA8}}</td></tr>
+{{#Island}}
+<tr class="fault"><td class="when">Adanın silindirlerinin hepsi yavaş.</td><td>Adanın susturucuları tıkalı ya da besleme hattı yetersiz: susturucuları temizleyin ya da değiştirin. {{>AgainA8}}</td></tr>
+{{/Island}}
 <tr class="fault"><td class="when">Hava valfe geliyor, {{#Hoses}}{{>HoseDat}} {{/Hoses}}hiç çıkmıyor.</td><td>Sürgü sıkışmış: {{>ValvePlainAcc}} temizleyin ya da değiştirin; havayı kontrol edin (filtre, su, yağ). {{>AgainA8}}</td></tr>
 <tr class="fault"><td class="when">Hortum kaçırıyor, ezilmiş ya da yerinden çıkmış.</td><td>Hortumu ya da rakorunu onarın ya da değiştirin. {{>AgainA8}}</td></tr>
 <tr class="fault"><td class="when">Hız ayar valfi kapalı (içinden az hava geçiyor ya da hiç geçmiyor).</td><td>Hız ayar valfini işaretine kadar açın. {{>AgainA8}}</td></tr>
@@ -519,7 +595,12 @@ terminal = klemens
 <li>Yolda <b>{{OtherMove}}</b> hareketinin çıkışı {{OtherOut}} AÇIK olmamalı.</li>
 {{/OtherOut}}
 {{/V1}}
+{{#Island}}
+<li>{{>Hand}} Silindir hareket ederken adanın ağ kablosunu konnektöründe hafifçe oynatın: kopan bağlantı sinyali düşürür (ağ LED'i titrer).</li>
+{{/Island}}
+{{^Island}}
 <li>{{>Hand}} Silindir hareket ederken bobinin konnektörünü ve kabloyu oynatın: gevşek bir kontak sinyali düşürür.</li>
+{{/Island}}
 </ul>
 <table class="out">
 <tr class="fault"><td class="when">{{#Spring}}Yolda AÇIK oluyor.{{/Spring}}{{^Spring}}Çok erken KAPANIYOR{{#V1}}{{#OtherOut}}, ya da diğer çıkış AÇIK oluyor{{/OtherOut}}{{/V1}}.{{/Spring}}</td><td>Gevşek bir konnektör ya da kablo: onarın. Sinyali PLC'nin kendisi değiştiriyorsa, program sinyali {{#HasMustOn}}{{OnNames}} sonu onaylayana{{/HasMustOn}}{{^HasMustOn}}sona varılana{{/HasMustOn}} kadar tutmalıdır &ndash; PLC programcısına sorun.{{#V3}} Manuel modda {{>ButtonAcc}} silindir varana kadar basılı tutun.{{/V3}} {{>AgainB2}}</td></tr>

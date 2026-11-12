@@ -44,12 +44,15 @@ class CT {
         WiringTable.Load(Path.Combine(baseDir, "Wiring.csv"), plc => plc);
 
         Console.WriteLine("--- the templates beside the program ---");
-        var valves = new[] { TC.ValveType.Unspecified, TC.ValveType.DoubleSolenoid, TC.ValveType.SingleSolenoidSpring, TC.ValveType.ClosedCentre };
+        var valves = new[] { TC.ValveType.Unspecified, TC.ValveType.DoubleSolenoid, TC.ValveType.SingleSolenoidSpring, TC.ValveType.ClosedCentre,
+                             TC.ValveType.IslandDoubleSolenoid, TC.ValveType.IslandSingleSolenoidSpring, TC.ValveType.IslandClosedCentre };
         var feedbacks = new[] { TC.FeedbackType.Unspecified, TC.FeedbackType.SingleMagnetic, TC.FeedbackType.TwoMagnetic, TC.FeedbackType.SingleInductive,
                                 TC.FeedbackType.AnalogueMagnetic, TC.FeedbackType.PressureSwitch, TC.FeedbackType.EncoderReference, TC.NoSensor };
         var names = valves.SelectMany(v => feedbacks.Select(f => TC.TemplateName(v, f))).ToList();
-        Check("one per valve and feedback pair: 4 x 8", names.Distinct().Count() == 32, names.Count + "");
+        Check("one per valve and feedback pair: 7 x 8 (12 November: a valve island's three)", names.Distinct().Count() == 56, names.Count + "");
         Check("  named after them", TC.TemplateName(TC.ValveType.ClosedCentre, TC.FeedbackType.PressureSwitch) == "Cylinder_5-3_PressureSwitch.html" &&
+              TC.TemplateName(TC.ValveType.IslandOpenCentre, TC.FeedbackType.TwoMagnetic) == "Cylinder_Island-5-3_TwoMagnetic.html" &&
+              TC.TemplateName(TC.ValveType.IslandSingleSolenoidSpring, TC.FeedbackType.SingleInductive) == "Cylinder_Island-5-2-Spring_OneInductive.html" &&
               TC.TemplateName(TC.ValveType.OpenCentre, TC.FeedbackType.None) == "Cylinder_5-3_Feedback-NotSet.html" &&
               TC.TemplateName((TC.ValveType)2, TC.NoSensor) == "Cylinder_5-2-Spring_NoSensor.html");
         foreach (var lang in new[] { "EN", "TR" }) {
@@ -123,6 +126,17 @@ class CT {
         Check("  the same drawings in both, their few words in the page's language", Regex.Matches(en, "<svg class=\"pic\"").Count == Regex.Matches(tr, "<svg class=\"pic\"").Count &&
               Regex.Matches(en, "<svg class=\"pic\"").Count >= 8 && tr.Contains(">bas\u0131n</text>") && en.Contains(">press</text>") &&
               tr.Contains("Giri\u015fler / \u00c7\u0131k\u0131\u015flar</text>"), Regex.Matches(en, "<svg class=\"pic\"").Count + " / " + Regex.Matches(tr, "<svg class=\"pic\"").Count);
+
+        // 12 November: the same movement with its valve on a valve island - the island's path, its steps
+        var isEn = TC.BuildSteps(mv, TC.ValveType.IslandClosedCentre, TC.FeedbackType.PressureSwitch, 0, "EN");
+        var isTr = TC.BuildSteps(mv, TC.ValveType.IslandClosedCentre, TC.FeedbackType.PressureSwitch, 0, "TR");
+        var tIsEn = Text(isEn); var tIsTr = Text(isTr);
+        Check("a valve island's valve: the island in the path, its own steps (the network, the coil's LED at its slot, the island's air)",
+              nav(isEn).Contains("valve island gets it") && nav(isEn).Contains("coil LED at its slot") && tIsEn.Contains("Does the valve island get the signal?") &&
+              tIsEn.Contains("Does the coil's LED light at its slot?") && tIsEn.Contains("the island's one supply") && !tIsEn.Contains("Does the output card switch") &&
+              tIsEn.Contains("5/3 closed centre") && !isEn.Contains("{{"), nav(isEn));
+        Check("  in Turkish too, the same steps in the same order", tIsTr.Contains("Valf adası sinyali alıyor mu?") && tIsTr.Contains("Bobinin LED'i yuvasında yanıyor mu?") &&
+              Steps(isEn).SequenceEqual(Steps(isTr)) && !isTr.Contains("{{"), string.Join(",", Steps(isEn)) + " / " + string.Join(",", Steps(isTr)));
 
         LanguageManager.ChangeLanguage("DE");
         var de = TC.BuildSteps(mv, TC.ValveType.ClosedCentre, TC.FeedbackType.PressureSwitch);

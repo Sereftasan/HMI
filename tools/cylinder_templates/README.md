@@ -17,6 +17,14 @@ program: they are in a **template per valve and feedback pair, per language**.
 |                 |                                       | `PressureSwitch`   | magnetic sensor + pressure switch (clamping) |
 |                 |                                       | `Encoder`          | encoder + reference sensor                   |
 |                 |                                       | `NoSensor`         | no sensor: only the time confirms the move   |
+| `Island-5-2-Double` / `Island-5-2-Spring` / `Island-5-3` | the same valves on a valve island | | |
+
+A valve island's valve (12 November, MD3020's Festo island) acts as the valve it
+is; its page follows the island instead of a coil's wiring: `{{#Island}}` - the
+island in the signal path, its network and load supply (A3), the coil's LED at
+its slot (A5), the valve replaced on its slot, the island's one air supply and its
+silencers (A7), its network cable when the signal drops (B1). `{{^Island}}` keeps
+the output card, the relay and the coil's connector for every other valve.
 
 The numbers - output, card terminal, relay, coil, valve, hoses, cylinder,
 sensors, wires and sheets - are **not** in the templates: they come from the

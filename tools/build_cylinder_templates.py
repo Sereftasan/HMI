@@ -35,6 +35,10 @@ VALVES = [  # digit, file part, words (EN, TR)
     (1, '5-2-Double', '5/2 double solenoid', '5/2 çift bobinli'),
     (2, '5-2-Spring', '5/2 single solenoid, spring return', '5/2 tek bobinli, yay geri dönüşlü'),
     (3, '5-3', '5/3, centre position', '5/3, orta konumlu'),
+    # 12 November: the same valves on a valve island (MD3020's Festo island) - the digit the unit stores
+    (5, 'Island-5-2-Double', 'valve island, 5/2 double solenoid', 'valf adası, 5/2 çift bobinli'),
+    (6, 'Island-5-2-Spring', 'valve island, 5/2 single solenoid, spring return', 'valf adası, 5/2 tek bobinli, yay geri dönüşlü'),
+    (7, 'Island-5-3', 'valve island, 5/3, centre position', 'valf adası, 5/3, orta konumlu'),
 ]
 FEEDBACKS = [
     (0, 'Feedback-NotSet', 'feedback not set (the unit\'s lamps, or none)', 'geri bildirim girilmemiş (ünitenin lambaları ya da hiçbiri)'),
@@ -49,8 +53,13 @@ FEEDBACKS = [
 
 
 def flags(v, f):
-    """The pair's own flags - decided in its file - and the ones that cannot be set for it."""
+    """The pair's own flags - decided in its file - and the ones that cannot be set for it. An island's
+    valve (5 - 8) is the valve it is (1 - 4) and Island."""
+    island = v >= 5
+    if island:
+        v -= 4
     d = {'V%d' % i: v == i for i in range(4)}
+    d['Island'] = island
     d.update({'F%d' % i: f == i for i in range(8)})
     d.update(Double=v in (1, 3), FiveThree=v == 3, SpringValve=v == 2,
              PositionFb=f in (4, 6), MagneticFb=f in (1, 2), InductiveFb=f == 3, SwitchFb=f == 5)

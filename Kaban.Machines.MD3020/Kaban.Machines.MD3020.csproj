@@ -288,6 +288,126 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <Visible>false</Visible>
     </None>
+    <None Include="..\KabanHMI\Help\Templates\EN\Cylinder_Island-5-2-Double_Analogue.html">
+      <Link>Help\Templates\EN\Cylinder_Island-5-2-Double_Analogue.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\EN\Cylinder_Island-5-2-Double_Encoder.html">
+      <Link>Help\Templates\EN\Cylinder_Island-5-2-Double_Encoder.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\EN\Cylinder_Island-5-2-Double_Feedback-NotSet.html">
+      <Link>Help\Templates\EN\Cylinder_Island-5-2-Double_Feedback-NotSet.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\EN\Cylinder_Island-5-2-Double_NoSensor.html">
+      <Link>Help\Templates\EN\Cylinder_Island-5-2-Double_NoSensor.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\EN\Cylinder_Island-5-2-Double_OneInductive.html">
+      <Link>Help\Templates\EN\Cylinder_Island-5-2-Double_OneInductive.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\EN\Cylinder_Island-5-2-Double_OneMagnetic.html">
+      <Link>Help\Templates\EN\Cylinder_Island-5-2-Double_OneMagnetic.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\EN\Cylinder_Island-5-2-Double_PressureSwitch.html">
+      <Link>Help\Templates\EN\Cylinder_Island-5-2-Double_PressureSwitch.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\EN\Cylinder_Island-5-2-Double_TwoMagnetic.html">
+      <Link>Help\Templates\EN\Cylinder_Island-5-2-Double_TwoMagnetic.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\EN\Cylinder_Island-5-2-Spring_Analogue.html">
+      <Link>Help\Templates\EN\Cylinder_Island-5-2-Spring_Analogue.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\EN\Cylinder_Island-5-2-Spring_Encoder.html">
+      <Link>Help\Templates\EN\Cylinder_Island-5-2-Spring_Encoder.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\EN\Cylinder_Island-5-2-Spring_Feedback-NotSet.html">
+      <Link>Help\Templates\EN\Cylinder_Island-5-2-Spring_Feedback-NotSet.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\EN\Cylinder_Island-5-2-Spring_NoSensor.html">
+      <Link>Help\Templates\EN\Cylinder_Island-5-2-Spring_NoSensor.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\EN\Cylinder_Island-5-2-Spring_OneInductive.html">
+      <Link>Help\Templates\EN\Cylinder_Island-5-2-Spring_OneInductive.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\EN\Cylinder_Island-5-2-Spring_OneMagnetic.html">
+      <Link>Help\Templates\EN\Cylinder_Island-5-2-Spring_OneMagnetic.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\EN\Cylinder_Island-5-2-Spring_PressureSwitch.html">
+      <Link>Help\Templates\EN\Cylinder_Island-5-2-Spring_PressureSwitch.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\EN\Cylinder_Island-5-2-Spring_TwoMagnetic.html">
+      <Link>Help\Templates\EN\Cylinder_Island-5-2-Spring_TwoMagnetic.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\EN\Cylinder_Island-5-3_Analogue.html">
+      <Link>Help\Templates\EN\Cylinder_Island-5-3_Analogue.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\EN\Cylinder_Island-5-3_Encoder.html">
+      <Link>Help\Templates\EN\Cylinder_Island-5-3_Encoder.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\EN\Cylinder_Island-5-3_Feedback-NotSet.html">
+      <Link>Help\Templates\EN\Cylinder_Island-5-3_Feedback-NotSet.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\EN\Cylinder_Island-5-3_NoSensor.html">
+      <Link>Help\Templates\EN\Cylinder_Island-5-3_NoSensor.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\EN\Cylinder_Island-5-3_OneInductive.html">
+      <Link>Help\Templates\EN\Cylinder_Island-5-3_OneInductive.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\EN\Cylinder_Island-5-3_OneMagnetic.html">
+      <Link>Help\Templates\EN\Cylinder_Island-5-3_OneMagnetic.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\EN\Cylinder_Island-5-3_PressureSwitch.html">
+      <Link>Help\Templates\EN\Cylinder_Island-5-3_PressureSwitch.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\EN\Cylinder_Island-5-3_TwoMagnetic.html">
+      <Link>Help\Templates\EN\Cylinder_Island-5-3_TwoMagnetic.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
     <None Include="..\KabanHMI\Help\Templates\EN\Cylinder_Valve-NotSet_Analogue.html">
       <Link>Help\Templates\EN\Cylinder_Valve-NotSet_Analogue.html</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -445,6 +565,126 @@
     </None>
     <None Include="..\KabanHMI\Help\Templates\TR\Cylinder_5-3_TwoMagnetic.html">
       <Link>Help\Templates\TR\Cylinder_5-3_TwoMagnetic.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\TR\Cylinder_Island-5-2-Double_Analogue.html">
+      <Link>Help\Templates\TR\Cylinder_Island-5-2-Double_Analogue.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\TR\Cylinder_Island-5-2-Double_Encoder.html">
+      <Link>Help\Templates\TR\Cylinder_Island-5-2-Double_Encoder.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\TR\Cylinder_Island-5-2-Double_Feedback-NotSet.html">
+      <Link>Help\Templates\TR\Cylinder_Island-5-2-Double_Feedback-NotSet.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\TR\Cylinder_Island-5-2-Double_NoSensor.html">
+      <Link>Help\Templates\TR\Cylinder_Island-5-2-Double_NoSensor.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\TR\Cylinder_Island-5-2-Double_OneInductive.html">
+      <Link>Help\Templates\TR\Cylinder_Island-5-2-Double_OneInductive.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\TR\Cylinder_Island-5-2-Double_OneMagnetic.html">
+      <Link>Help\Templates\TR\Cylinder_Island-5-2-Double_OneMagnetic.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\TR\Cylinder_Island-5-2-Double_PressureSwitch.html">
+      <Link>Help\Templates\TR\Cylinder_Island-5-2-Double_PressureSwitch.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\TR\Cylinder_Island-5-2-Double_TwoMagnetic.html">
+      <Link>Help\Templates\TR\Cylinder_Island-5-2-Double_TwoMagnetic.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\TR\Cylinder_Island-5-2-Spring_Analogue.html">
+      <Link>Help\Templates\TR\Cylinder_Island-5-2-Spring_Analogue.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\TR\Cylinder_Island-5-2-Spring_Encoder.html">
+      <Link>Help\Templates\TR\Cylinder_Island-5-2-Spring_Encoder.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\TR\Cylinder_Island-5-2-Spring_Feedback-NotSet.html">
+      <Link>Help\Templates\TR\Cylinder_Island-5-2-Spring_Feedback-NotSet.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\TR\Cylinder_Island-5-2-Spring_NoSensor.html">
+      <Link>Help\Templates\TR\Cylinder_Island-5-2-Spring_NoSensor.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\TR\Cylinder_Island-5-2-Spring_OneInductive.html">
+      <Link>Help\Templates\TR\Cylinder_Island-5-2-Spring_OneInductive.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\TR\Cylinder_Island-5-2-Spring_OneMagnetic.html">
+      <Link>Help\Templates\TR\Cylinder_Island-5-2-Spring_OneMagnetic.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\TR\Cylinder_Island-5-2-Spring_PressureSwitch.html">
+      <Link>Help\Templates\TR\Cylinder_Island-5-2-Spring_PressureSwitch.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\TR\Cylinder_Island-5-2-Spring_TwoMagnetic.html">
+      <Link>Help\Templates\TR\Cylinder_Island-5-2-Spring_TwoMagnetic.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\TR\Cylinder_Island-5-3_Analogue.html">
+      <Link>Help\Templates\TR\Cylinder_Island-5-3_Analogue.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\TR\Cylinder_Island-5-3_Encoder.html">
+      <Link>Help\Templates\TR\Cylinder_Island-5-3_Encoder.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\TR\Cylinder_Island-5-3_Feedback-NotSet.html">
+      <Link>Help\Templates\TR\Cylinder_Island-5-3_Feedback-NotSet.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\TR\Cylinder_Island-5-3_NoSensor.html">
+      <Link>Help\Templates\TR\Cylinder_Island-5-3_NoSensor.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\TR\Cylinder_Island-5-3_OneInductive.html">
+      <Link>Help\Templates\TR\Cylinder_Island-5-3_OneInductive.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\TR\Cylinder_Island-5-3_OneMagnetic.html">
+      <Link>Help\Templates\TR\Cylinder_Island-5-3_OneMagnetic.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\TR\Cylinder_Island-5-3_PressureSwitch.html">
+      <Link>Help\Templates\TR\Cylinder_Island-5-3_PressureSwitch.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\TR\Cylinder_Island-5-3_TwoMagnetic.html">
+      <Link>Help\Templates\TR\Cylinder_Island-5-3_TwoMagnetic.html</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <Visible>false</Visible>
     </None>

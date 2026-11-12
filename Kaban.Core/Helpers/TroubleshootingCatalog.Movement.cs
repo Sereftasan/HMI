@@ -23,7 +23,10 @@ namespace Kaban.Core.Helpers
         private sealed class Chain
         {
             public MovementInfo Mv;
+            /// <summary>The valve as it acts (an island's valve: the valve it is - BaseValve).</summary>
             public ValveType Valve;
+            /// <summary>The valve is on a valve island (12 November): the island powers its coil and feeds its air.</summary>
+            public bool Island;
             public FeedbackType Feedback;
             /// <summary>The coil outputs: this movement's and the other side's (a double solenoid's second coil).</summary>
             public WiringTable.Point Out, OtherOut;
@@ -51,7 +54,7 @@ namespace Kaban.Core.Helpers
 
             public static Chain Build(MovementInfo mv, ValveType valve, FeedbackType feedback)
             {
-                var c = new Chain { Mv = mv, Valve = valve, Feedback = feedback };
+                var c = new Chain { Mv = mv, Valve = (ValveType)BaseValve((int)valve), Island = IslandValve((int)valve), Feedback = feedback };
                 Func<MovementInfo.Device, MovementInfo.Device, WiringTable.Point> driven = (output, command) =>
                 {
                     var w = output != null && !string.IsNullOrWhiteSpace(output.Address) ? WiringTable.Find(mv.Station, output.Address) : null;

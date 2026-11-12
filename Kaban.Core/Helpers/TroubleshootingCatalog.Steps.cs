@@ -61,7 +61,10 @@ namespace Kaban.Core.Helpers
         /// <summary>Where the page templates are: Help/Templates/&lt;language&gt;/.</summary>
         public static string TemplateFolder { get { return Path.Combine(HelpFolder, "Templates"); } }
 
-        /// <summary>The template file of a valve and feedback pair: "Cylinder_5-3_PressureSwitch.html".</summary>
+        /// <summary>
+        /// The template file of a valve and feedback pair: "Cylinder_5-3_PressureSwitch.html"; a valve
+        /// island's valve "Cylinder_Island-5-3_PressureSwitch.html" (12 November).
+        /// </summary>
         public static string TemplateName(ValveType valve, FeedbackType feedback)
         {
             string v, f;
@@ -72,6 +75,7 @@ namespace Kaban.Core.Helpers
                 case ValveType.ClosedCentre: v = "5-3"; break;
                 default: v = "Valve-NotSet"; break;
             }
+            if (IslandValve((int)valve) && v != "Valve-NotSet") v = "Island-" + v;
             switch ((FeedbackType)CanonicalFeedback((int)feedback))
             {
                 case FeedbackType.SingleMagnetic: f = "OneMagnetic"; break;
@@ -842,6 +846,7 @@ namespace Kaban.Core.Helpers
 
                 // the template's own valve and feedback (a pair's file has them written in)
                 int v = (int)c.Valve, f = (int)c.Feedback;
+                m["Island"] = c.Island;                                  // the valve on a valve island (12 November)
                 for (int i = 0; i <= 3; i++) m["V" + i] = v == i;
                 if (v == (int)ValveType.OpenCentre) m["V3"] = true;      // the 5/3's template for both centres
                 for (int i = 0; i <= 7; i++) m["F" + i] = f == i;

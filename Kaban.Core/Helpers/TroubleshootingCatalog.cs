@@ -62,7 +62,13 @@ namespace Kaban.Core.Helpers
             DoubleSolenoid = 1,          // 5/2, two coils, stays where it was left
             SingleSolenoidSpring = 2,    // 5/2, one coil, springs back
             ClosedCentre = 3,            // 5/3 double solenoid, closed centre (3WayClosedCenter): stops and holds
-            OpenCentre = 4               // 5/3 double solenoid, open centre (3WayOpenCenter): both sides exhaust - 8 October
+            OpenCentre = 4,              // 5/3 double solenoid, open centre (3WayOpenCenter): both sides exhaust - 8 October
+            // 12 November: the same four on a VALVE ISLAND - they act as they are (BaseValve), the
+            // island powers their coils and feeds their air (IslandValve: its own help, its own template)
+            IslandDoubleSolenoid = 5,
+            IslandSingleSolenoidSpring = 6,
+            IslandClosedCentre = 7,
+            IslandOpenCentre = 8
         }
 
         /// <summary>Third digit when the error type is CylinderMovement.</summary>
@@ -115,7 +121,9 @@ namespace Kaban.Core.Helpers
                 case ErrorType.CylinderMovement:
                     // The valve variants of detail 1.4, in the manual's order; the 5/3's two centres.
                     return Spec("Valve", new[] { ValveType.Unspecified, ValveType.DoubleSolenoid,
-                                                 ValveType.SingleSolenoidSpring, ValveType.ClosedCentre, ValveType.OpenCentre },
+                                                 ValveType.SingleSolenoidSpring, ValveType.ClosedCentre, ValveType.OpenCentre,
+                                                 ValveType.IslandDoubleSolenoid, ValveType.IslandSingleSolenoidSpring,
+                                                 ValveType.IslandClosedCentre, ValveType.IslandOpenCentre },
                                 v => (int)v, v => Describe(v));
                 case ErrorType.ServoFault:
                     return new ParameterSpec { Caption = "Axis" };   // free number
@@ -158,10 +166,22 @@ namespace Kaban.Core.Helpers
         /// valve again since 8 October (it was read as the closed one, 3); both
         /// use the manual's one 5/3 part and the same step-by-step template.
         /// </summary>
-        public static int CanonicalValve(int v) { return v >= 0 && v <= (int)ValveType.OpenCentre ? v : 0; }
+        public static int CanonicalValve(int v) { return v >= 0 && v <= (int)ValveType.IslandOpenCentre ? v : 0; }
 
-        /// <summary>The digit of the manual's part and of the template: a 5/3 is a 5/3, whatever its centre.</summary>
-        public static int ManualValve(int v) { v = CanonicalValve(v); return v == (int)ValveType.OpenCentre ? (int)ValveType.ClosedCentre : v; }
+        /// <summary>
+        /// The valve as it ACTS (12 November): an island's valve is the valve it is - its coils,
+        /// its actions, its centre (IslandSingleSolenoidSpring: SingleSolenoidSpring).
+        /// </summary>
+        public static int BaseValve(int v) { v = CanonicalValve(v); return v >= (int)ValveType.IslandDoubleSolenoid ? v - 4 : v; }
+
+        /// <summary>True for a valve on a valve island: its coils powered by the island, its air from the island's supply.</summary>
+        public static bool IslandValve(int v) { return CanonicalValve(v) >= (int)ValveType.IslandDoubleSolenoid; }
+
+        /// <summary>
+        /// The digit of the manual's part and of the template: a 5/3 is a 5/3, whatever its centre;
+        /// an island's valve is the manual's part of the valve it is (the template adds the island).
+        /// </summary>
+        public static int ManualValve(int v) { v = BaseValve(v); return v == (int)ValveType.OpenCentre ? (int)ValveType.ClosedCentre : v; }
         public static int CanonicalFeedback(int f) { return f == (int)FeedbackType.None ? 0 : f; }
 
         /// <summary>Which option in the list stands for a stored digit (0 if none).</summary>
@@ -837,6 +857,10 @@ namespace Kaban.Core.Helpers
                 case ValveType.SingleSolenoidSpring: return "Single solenoid 5/2 (spring return)";
                 case ValveType.ClosedCentre:         return "Double solenoid 5/3, closed center (3WayClosedCenter)";
                 case ValveType.OpenCentre:           return "Double solenoid 5/3, open center (3WayOpenCenter)";
+                case ValveType.IslandDoubleSolenoid:       return "Valve island: double solenoid 5/2 (impulse / memory)";
+                case ValveType.IslandSingleSolenoidSpring: return "Valve island: single solenoid 5/2 (spring return)";
+                case ValveType.IslandClosedCentre:         return "Valve island: double solenoid 5/3, closed center (Island3WayClosedCenter)";
+                case ValveType.IslandOpenCentre:           return "Valve island: double solenoid 5/3, open center (Island3WayOpenCenter)";
                 default:                             return "unspecified";
             }
         }

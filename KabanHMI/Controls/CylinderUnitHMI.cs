@@ -49,7 +49,31 @@ namespace Kaban.UI.Controls
         // Shown as "3WayClosedCenter" / "3WayOpenCenter" (CylinderValveConverter):
         // every 3 way valve is a double solenoid, so the name does not say it.
         ThreeWayClosedCenter = 3,
-        ThreeWayOpenCenter = 4
+        ThreeWayOpenCenter = 4,
+        // (5) - (8) THE SAME VALVES ON A VALVE ISLAND (12 November: "The pneumatic valves are
+        // valve islands here (not separate valves). We need to add new models for the valve
+        // ... types, alarm helper for them" - MD3020's Festo island). A valve of an island acts
+        // as the one it is - the same actions, the same check - but it is not wired coil by
+        // coil: the island takes the PLC's outputs over its network, powers each coil itself
+        // (a LED per coil at its slot) and feeds every valve from one air supply and exhaust.
+        // Its help follows that path. Shown as "Island..." (CylinderValveConverter).
+        IslandDoubleSolenoid = 5,
+        IslandSingleSolenoid = 6,
+        IslandThreeWayClosedCenter = 7,
+        IslandThreeWayOpenCenter = 8
+    }
+
+    /// <summary>What an island's valve is off the island (12 November) - the actions and the check are that valve's.</summary>
+    public static class CylinderValves
+    {
+        /// <summary>The valve as it acts: an island's valve is the valve it is (IslandSingleSolenoid: SingleSolenoid).</summary>
+        public static CylinderValve Base(CylinderValve v)
+        {
+            return (int)v >= (int)CylinderValve.IslandDoubleSolenoid && (int)v <= (int)CylinderValve.IslandThreeWayOpenCenter ? (CylinderValve)((int)v - 4) : v;
+        }
+
+        /// <summary>True for a valve on a valve island.</summary>
+        public static bool OnIsland(CylinderValve v) { return Base(v) != v; }
     }
 
     /// <summary>
@@ -1151,6 +1175,7 @@ namespace Kaban.UI.Controls
         [Category("  Valve & Feedback"), DefaultValue(CylinderValve.Unspecified), RefreshProperties(RefreshProperties.All),
          Description("The valve: it decides the ACTIONS. SingleSolenoid - one coil, one action (A or B; the spring makes the other movement). " +
                      "DoubleSolenoid (5/2), 3WayClosedCenter / 3WayOpenCenter (5/3, double solenoid) - a coil for each movement, both actions. " +
+                     "Island... - the same valve on a valve island (the island powers its coils, its help follows the island). " +
                      "On an error the '?' opens the cylinder manual with only this valve's part.")]
         public CylinderValve ValveType { get { return _valve; } set { _valve = value; ApplySettings(); } }
 
@@ -1234,7 +1259,9 @@ namespace Kaban.UI.Controls
             int lamps = lampsA + lampsB;
             bool pos = Has(_positionAddress);
 
-            switch (_valve)
+            // an island's valve acts as the valve it is (12 November)
+            string valveName = Kaban.UI.Design.CylinderValveConverter.Name(_valve);
+            switch (CylinderValves.Base(_valve))
             {
                 case CylinderValve.Unspecified:
                     if (_feedback != CylinderFeedback.Unspecified)
@@ -1242,23 +1269,23 @@ namespace Kaban.UI.Controls
                     break;
                 case CylinderValve.SingleSolenoid:
                     if (cmdA && cmdB)
-                        p.Add("SingleSolenoid: one coil drives ONE movement, the spring the other - keep one action: clear CommandAAddress or CommandBAddress.");
+                        p.Add(valveName + ": one coil drives ONE movement, the spring the other - keep one action: clear CommandAAddress or CommandBAddress.");
                     else if (!cmdA && !cmdB)
-                        p.Add("SingleSolenoid: set the command of the driven movement - CommandAAddress or CommandBAddress.");
+                        p.Add(valveName + ": set the command of the driven movement - CommandAAddress or CommandBAddress.");
                     if (Has(_outputAAddress) && Has(_outputBAddress))
-                        p.Add("SingleSolenoid: one coil is one output - set OutputAAddress or OutputBAddress, not both.");
+                        p.Add(valveName + ": one coil is one output - set OutputAAddress or OutputBAddress, not both.");
                     if (cmdA != cmdB)
                     {
                         string idle = cmdA ? "B" : "A";
                         if (Has(cmdA ? _outputBAddress : _outputAAddress) || Has(cmdA ? _relayBAddress : _relayAAddress))
-                            p.Add("SingleSolenoid: Action " + idle + " has no command, so its output and relay are not used - clear them.");
+                            p.Add(valveName + ": Action " + idle + " has no command, so its output and relay are not used - clear them.");
                     }
                     break;
                 case CylinderValve.DoubleSolenoid:
                 case CylinderValve.ThreeWayClosedCenter:
                 case CylinderValve.ThreeWayOpenCenter:
                     if (!cmdA || !cmdB)
-                        p.Add(Kaban.UI.Design.CylinderValveConverter.Name(_valve) + ": a coil for each movement - set both CommandAAddress and CommandBAddress" +
+                        p.Add(valveName + ": a coil for each movement - set both CommandAAddress and CommandBAddress" +
                               (!cmdA && !cmdB ? "." : " (" + (cmdA ? "B" : "A") + " is missing)."));
                     break;
                 default:
