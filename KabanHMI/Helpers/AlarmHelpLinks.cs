@@ -95,6 +95,12 @@ namespace Kaban.UI.Helpers
 
         private static readonly Dictionary<string, Link> _links =
             new Dictionary<string, Link>(StringComparer.OrdinalIgnoreCase);
+
+        // ONE ALARM BIT, SEVERAL UNITS (12 November, MK2010: "the supporting strips did not go down" is one bit for
+        // the four heads' strips - each head's unit carries it): the other units described the same way as the
+        // first, so the alarm's help offers each one's page, not only the first one's.
+        private static readonly Dictionary<string, List<Link>> _shared =
+            new Dictionary<string, List<Link>>(StringComparer.OrdinalIgnoreCase);
         private static readonly List<string> _conflicts = new List<string>();
 
         public static int Count { get { return _links.Count; } }
@@ -114,6 +120,7 @@ namespace Kaban.UI.Helpers
             AlarmGeneration.Clear();       // so are the movements the HMI times itself
             Kaban.UI.Dashboard.RecordTriggers.Clear();     // and the log records taken when their triggers come
             _links.Clear();
+            _shared.Clear();
             _conflicts.Clear();
             _axes.Clear();
             _axisList.Clear();
@@ -333,6 +340,13 @@ namespace Kaban.UI.Helpers
                         AuditLogger.Log("help link conflict - " + msg);
                     }
                 }
+                else if (!string.IsNullOrEmpty(link.Unit) && !string.Equals(link.Unit, existing.Unit, StringComparison.Ordinal))
+                {
+                    // another unit with the same bit (one alarm for several heads' cylinders) - kept beside the first
+                    List<Link> more;
+                    if (!_shared.TryGetValue(key, out more)) _shared[key] = more = new List<Link>();
+                    if (!more.Any(m => string.Equals(m.Unit, link.Unit, StringComparison.Ordinal))) more.Add(link);
+                }
                 return;
             }
             _links[key] = link;
@@ -342,6 +356,18 @@ namespace Kaban.UI.Helpers
         {
             Link l;
             return _links.TryGetValue(Key(station, address), out l) ? l : null;
+        }
+
+        /// <summary>Every unit an alarm bit belongs to: the first found, then the others that carry it too (12 November).</summary>
+        public static List<Link> FindAll(int station, string address)
+        {
+            var all = new List<Link>();
+            var first = Find(station, address);
+            if (first == null) return all;
+            all.Add(first);
+            List<Link> more;
+            if (_shared.TryGetValue(Key(station, address), out more)) all.AddRange(more);
+            return all;
         }
 
         /// <summary>Collects every unit under a control, pages inside settings screens included.</summary>
@@ -722,17 +748,22 @@ namespace Kaban.UI.Helpers
                 // A unit's movement: its step-by-step troubleshooter, the manual inside it (18 October:
                 // one help per fault); the manual on its own only with no movement to go through.
                 var movement = cylinder ? link.CurrentMovement() : null;
-                if (movement != null)
+                // each unit the bit belongs to (12 November: one alarm for several heads' cylinders) - its own page
+                foreach (var unit in cylinder ? FindAll(station, address) : new List<Link>())
+                {
+                    var mv = unit == link ? movement : unit.CurrentMovement();
+                    if (mv == null) continue;
                     docs.Add(new TC.HelpDocument
                     {
                         FileName = file,
                         StepByStep = true,
                         Title = LanguageManager.GetString("Hlp_CylinderSteps", "Step by step") +
-                                (string.IsNullOrEmpty(link.Unit) ? "" : " - " + link.Unit) + " - " + TC.MovementName(movement),
-                        Valve = TC.CanonicalValve(link.ValveNow),
-                        Feedback = TC.CanonicalFeedback(link.Feedback),
-                        Movement = movement
+                                (string.IsNullOrEmpty(unit.Unit) ? "" : " - " + unit.Unit) + " - " + TC.MovementName(mv),
+                        Valve = TC.CanonicalValve(unit.ValveNow),
+                        Feedback = TC.CanonicalFeedback(unit.Feedback),
+                        Movement = mv
                     });
+                }
                 if (movement == null)
                     docs.Add(new TC.HelpDocument
                     {

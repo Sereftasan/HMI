@@ -62,6 +62,11 @@ class CH {
                                                  CommandAAddress = "M1", CommandBAddress = "M2", Lamp1AAddress = "X1" };
         var islandOk = new CylinderUnitHMI { ValveType = CylinderValve.IslandThreeWayOpenCenter, FeedbackType = CylinderFeedback.TwoEndMagnetic,
                                              CommandAAddress = "M1", CommandBAddress = "M2", Lamp1AAddress = "X1", Lamp1BAddress = "X2" };
+        var toggle = new CylinderUnitHMI { ValveType = CylinderValve.SingleSolenoid, FeedbackType = CylinderFeedback.SingleMagnetic,
+                                           CommandAAddress = "M101", CommandAAction = BitActionType.RESET, CommandBAddress = "M101",
+                                           CommandBAction = BitActionType.SET, Lamp1AAddress = "X11" };
+        Check("  a single coil's toggle as two buttons (one bit: Reset - the spring, Set - the coil) is one command (12 November, MK2010)",
+              toggle.TypeCheck == "OK", toggle.TypeCheck);
         Check("  an island's valve checked as the valve it is (one coil: one action; a 5/3: both)",
               islandSpring.TypeCheck.StartsWith("IslandSingleSolenoid: one coil drives ONE movement") && islandOk.TypeCheck == "OK",
               islandSpring.TypeCheck + " / " + islandOk.TypeCheck);

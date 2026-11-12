@@ -1268,13 +1268,18 @@ namespace Kaban.UI.Controls
                         p.Add("ValveType is not set: choose the valve - it decides the actions (and the manual shows every valve).");
                     break;
                 case CylinderValve.SingleSolenoid:
-                    if (cmdA && cmdB)
+                    // a toggle's two sides (12 November, MK2010): one bit set by one button (the coil ON) and reset by the
+                    // other (the coil OFF - the spring) is still one coil's one command
+                    bool toggle = cmdA && cmdB && string.Equals(_commandAAddress.Trim(), _commandBAddress.Trim(), StringComparison.OrdinalIgnoreCase) &&
+                                  ((_commandAAction == BitActionType.SET && _commandBAction == BitActionType.RESET) ||
+                                   (_commandAAction == BitActionType.RESET && _commandBAction == BitActionType.SET));
+                    if (cmdA && cmdB && !toggle)
                         p.Add(valveName + ": one coil drives ONE movement, the spring the other - keep one action: clear CommandAAddress or CommandBAddress.");
                     else if (!cmdA && !cmdB)
                         p.Add(valveName + ": set the command of the driven movement - CommandAAddress or CommandBAddress.");
                     if (Has(_outputAAddress) && Has(_outputBAddress))
                         p.Add(valveName + ": one coil is one output - set OutputAAddress or OutputBAddress, not both.");
-                    if (cmdA != cmdB)
+                    if (cmdA != cmdB && !toggle)
                     {
                         string idle = cmdA ? "B" : "A";
                         if (Has(cmdA ? _outputBAddress : _outputAAddress) || Has(cmdA ? _relayBAddress : _relayAAddress))
