@@ -24,7 +24,8 @@ program's own controls:
       as the drawings show them, its error bits from the alarm list (12 November: "change
       ButtonHMI controls (and the related LampHMI controls as the feedback and LabelHMI
       controls as the description text ...) to cylinder unit HMI controls ... so we can
-      create the alarm helpers accordingly")
+      create the alarm helpers accordingly"); 'M104!Rst' - a toggle bit reset (its other
+      side 'M104!Set')
   AxisRows  the axis settings page's rows (AxisSettingHMI), one AR per axis, in sections
 
 A machine's tool (tools/legacy_md3030_pages.py, tools/legacy_mk2010_pages.py) calls
@@ -121,14 +122,24 @@ def Ax(number, span=1, note=None):
     """An axis on a manual page (AxisUnitHMI): its number (HMIAxisIndex) on the axis settings page, whose row gives it the rest."""
     return dict(kind='axis', number=number, span=span, note=note)
 
+L.ACTION['Reset'] = 'RESET'
+
+def _side(spec):
+    """L.side, and '!Rst' - a toggle bit's two sides as two buttons: Set on one, Reset on the other (MK2010)."""
+    if spec and spec.endswith('!Rst'):
+        d = L.side(spec[:-4])
+        d['action'] = 'Reset'
+        return d
+    return L.side(spec)
+
 def Cy(title, a=None, b=None, lampA=None, lampB=None, valve=None, feedback=None, errA=None, errB=None, pos=None, arrows=None,
        text=None, span=1, note=None):
     """A cylinder (CylinderUnitHMI): title - its name's key; a / b - the left and right buttons' commands ('M201', momentary;
     'M200!Alt'); lampA / lampB - the sensor on each; valve / feedback - CylinderValve / CylinderFeedback names; errA / errB -
     the error bits of each movement; pos - a position shown under it ('SD4500 32 /100 2'); arrows - 'DownUp' (A down, B up),
     'LeftRight' (the default); text - a one-button unit's caption."""
-    sa = L.side(a) if a else None
-    sb = L.side(b) if b else None
+    sa = _side(a) if a else None
+    sb = _side(b) if b else None
     return dict(kind='cyl', title=title, a=sa, b=sb, lampA=lampA, lampB=lampB, valve=valve, feedback=feedback, errA=errA, errB=errB,
                 pos=L.value(pos) if pos else None, arrows=arrows, text=text, span=span, note=note)
 
@@ -663,6 +674,9 @@ def actions(pg):
         if c['kind'] == 'cyl':
             for sd in (c['a'], c['b']):
                 seen = old.get(sd['cmd']) if sd else None
+                # an old toggle (Alternate) made two buttons - Set on one side, Reset on the other
+                if seen and sd['action'] in ('Set', 'Reset') and seen == {'Alternate'} and c['a'] and c['b'] and c['a']['cmd'] == c['b']['cmd']:
+                    continue
                 if seen and sd['action'] not in seen:
                     problems.append('%s: %s, the old page %s' % (sd['cmd'], sd['action'], sorted(seen)))
             continue

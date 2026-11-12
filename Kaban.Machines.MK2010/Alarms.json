@@ -1,1 +1,206 @@
-[]
+[
+  {
+    "PlcAddress": "M600",
+    "TagCode": "Supporting_strips_did_not_go_down",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M601",
+    "TagCode": "Side_tables_did_not_come_back",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M602",
+    "TagCode": "Supporting_strips_did_not_come_back",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M603",
+    "TagCode": "Heaters_did_not_go_forward",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M604",
+    "TagCode": "Heaters_did_not_come_back",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M605",
+    "TagCode": "CF_access_fault",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M607",
+    "TagCode": "X_minus_limit",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M608",
+    "TagCode": "Y1_minus_limit",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M609",
+    "TagCode": "Y2_minus_limit",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M610",
+    "TagCode": "X_plus_limit",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M611",
+    "TagCode": "Y1_plus_limit",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M612",
+    "TagCode": "Y2_plus_limit",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M613",
+    "TagCode": "No_empty_recipe",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M614",
+    "TagCode": "X_inverter_fault",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M615",
+    "TagCode": "Y1_inverter_fault",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M616",
+    "TagCode": "Y2_inverter_fault",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M617",
+    "TagCode": "Conveyors_fault",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M618",
+    "TagCode": "Air_pressure_fault",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M619",
+    "TagCode": "Lubrication_switch_fault",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M620",
+    "TagCode": "Oil_level_low",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M621",
+    "TagCode": "Heads_1_4_gasket_group_not_up",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M622",
+    "TagCode": "Heads_2_3_gasket_group_not_up",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M623",
+    "TagCode": "Heads_1_4_gasket_not_back",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M624",
+    "TagCode": "Heads_2_3_gasket_not_back",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M625",
+    "TagCode": "Heads_1_4_gasket_press_not_up",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M626",
+    "TagCode": "Heads_2_3_gasket_press_not_up",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M627",
+    "TagCode": "Cooling_inverter_fault",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M628",
+    "TagCode": "Conveyor_switch_fault",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M629",
+    "TagCode": "Data_transfer_sequence_error",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M631",
+    "TagCode": "X_axis_jammed",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M632",
+    "TagCode": "Y1_axis_jammed",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M633",
+    "TagCode": "Y2_axis_jammed",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M634",
+    "TagCode": "Sliding_sash_press_did_not_press",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M635",
+    "TagCode": "Sliding_sash_press_did_not_go_back",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  }
+]

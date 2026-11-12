@@ -27,15 +27,6 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             Kaban.Core.Models.BitAction bitAction1 = new Kaban.Core.Models.BitAction();
             Kaban.Core.Models.BitAction bitAction2 = new Kaban.Core.Models.BitAction();
             Kaban.Core.Models.BitAction bitAction3 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction4 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction5 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction6 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction7 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction8 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction9 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction10 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction11 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction12 = new Kaban.Core.Models.BitAction();
             this.hdName = new Kaban.UI.Controls.LabelHMI();
             this.hdBack = new Kaban.UI.Controls.LabelHMI();
             this.hdForward = new Kaban.UI.Controls.LabelHMI();
@@ -72,66 +63,65 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.btnAxes_Lubrication_Forward = new Kaban.UI.Controls.ButtonHMI();
             this.hdManual_Control = new Kaban.UI.Controls.LabelHMI();
             this.hdOn_Off = new Kaban.UI.Controls.LabelHMI();
+            this.capAutomatic_On_Off = new Kaban.UI.Controls.LabelHMI();
+            this.btnOthers_Automatic_On_Off_On_Off = new Kaban.UI.Controls.ButtonHMI();
+            this.capConveyor = new Kaban.UI.Controls.LabelHMI();
+            this.btnOthers_Conveyor_On_Off = new Kaban.UI.Controls.ButtonHMI();
+            this.lblCylinders = new Kaban.UI.Controls.LabelHMI();
+            this.hdUnit = new Kaban.UI.Controls.LabelHMI();
             this.hdHead_1 = new Kaban.UI.Controls.LabelHMI();
             this.hdHead_2 = new Kaban.UI.Controls.LabelHMI();
             this.hdHead_3 = new Kaban.UI.Controls.LabelHMI();
             this.hdHead_4 = new Kaban.UI.Controls.LabelHMI();
-            this.capSupporting_Plate = new Kaban.UI.Controls.LabelHMI();
-            this.btnUnits_Supporting_Plate_On_Off = new Kaban.UI.Controls.ButtonHMI();
-            this.lampUnits_Supporting_Plate_Head_1 = new Kaban.UI.Controls.LampHMI();
-            this.lampUnits_Supporting_Plate_Head_2 = new Kaban.UI.Controls.LampHMI();
-            this.lampUnits_Supporting_Plate_Head_3 = new Kaban.UI.Controls.LampHMI();
-            this.lampUnits_Supporting_Plate_Head_4 = new Kaban.UI.Controls.LampHMI();
-            this.lampUnits_Supporting_Plate_2_Head_1 = new Kaban.UI.Controls.LampHMI();
-            this.lampUnits_Supporting_Plate_2_Head_2 = new Kaban.UI.Controls.LampHMI();
-            this.lampUnits_Supporting_Plate_2_Head_3 = new Kaban.UI.Controls.LampHMI();
-            this.lampUnits_Supporting_Plate_2_Head_4 = new Kaban.UI.Controls.LampHMI();
-            this.capBack_Plate = new Kaban.UI.Controls.LabelHMI();
-            this.btnUnits_Back_Plate_On_Off = new Kaban.UI.Controls.ButtonHMI();
-            this.lampUnits_Back_Plate_Head_1 = new Kaban.UI.Controls.LampHMI();
-            this.lampUnits_Back_Plate_Head_2 = new Kaban.UI.Controls.LampHMI();
-            this.lampUnits_Back_Plate_Head_3 = new Kaban.UI.Controls.LampHMI();
-            this.lampUnits_Back_Plate_Head_4 = new Kaban.UI.Controls.LampHMI();
-            this.lampUnits_Back_Plate_2_Head_1 = new Kaban.UI.Controls.LampHMI();
-            this.lampUnits_Back_Plate_2_Head_2 = new Kaban.UI.Controls.LampHMI();
-            this.lampUnits_Back_Plate_2_Head_3 = new Kaban.UI.Controls.LampHMI();
-            this.lampUnits_Back_Plate_2_Head_4 = new Kaban.UI.Controls.LampHMI();
+            this.capSupporting_Strip = new Kaban.UI.Controls.LabelHMI();
+            this.unitUnits_Supporting_Strip_Head_1 = new Kaban.UI.Controls.CylinderUnitHMI();
+            this.unitUnits_Supporting_Strip_Head_2 = new Kaban.UI.Controls.CylinderUnitHMI();
+            this.unitUnits_Supporting_Strip_Head_3 = new Kaban.UI.Controls.CylinderUnitHMI();
+            this.unitUnits_Supporting_Strip_Head_4 = new Kaban.UI.Controls.CylinderUnitHMI();
+            this.capSide_Table_1 = new Kaban.UI.Controls.LabelHMI();
+            this.unitUnits_Side_Table_1_Head_1 = new Kaban.UI.Controls.CylinderUnitHMI();
+            this.unitUnits_Side_Table_1_Head_2 = new Kaban.UI.Controls.CylinderUnitHMI();
+            this.unitUnits_Side_Table_1_Head_3 = new Kaban.UI.Controls.CylinderUnitHMI();
+            this.unitUnits_Side_Table_1_Head_4 = new Kaban.UI.Controls.CylinderUnitHMI();
+            this.capSide_Table_2 = new Kaban.UI.Controls.LabelHMI();
+            this.unitUnits_Side_Table_2_Head_1 = new Kaban.UI.Controls.CylinderUnitHMI();
+            this.unitUnits_Side_Table_2_Head_2 = new Kaban.UI.Controls.CylinderUnitHMI();
+            this.unitUnits_Side_Table_2_Head_3 = new Kaban.UI.Controls.CylinderUnitHMI();
+            this.unitUnits_Side_Table_2_Head_4 = new Kaban.UI.Controls.CylinderUnitHMI();
+            this.capHeater_Plate = new Kaban.UI.Controls.LabelHMI();
+            this.unitUnits_Heater_Plate_Head_1 = new Kaban.UI.Controls.CylinderUnitHMI();
+            this.unitUnits_Heater_Plate_Head_2 = new Kaban.UI.Controls.CylinderUnitHMI();
+            this.unitUnits_Heater_Plate_Head_3 = new Kaban.UI.Controls.CylinderUnitHMI();
+            this.unitUnits_Heater_Plate_Head_4 = new Kaban.UI.Controls.CylinderUnitHMI();
             this.capTop_Press = new Kaban.UI.Controls.LabelHMI();
-            this.btnUnits_Top_Press_On_Off = new Kaban.UI.Controls.ButtonHMI();
-            this.capHeater_Plates = new Kaban.UI.Controls.LabelHMI();
-            this.btnUnits_Heater_Plates_On_Off = new Kaban.UI.Controls.ButtonHMI();
-            this.lampUnits_Heater_Plates_Head_1 = new Kaban.UI.Controls.LampHMI();
-            this.lampUnits_Heater_Plates_Head_2 = new Kaban.UI.Controls.LampHMI();
-            this.lampUnits_Heater_Plates_Head_3 = new Kaban.UI.Controls.LampHMI();
-            this.lampUnits_Heater_Plates_Head_4 = new Kaban.UI.Controls.LampHMI();
-            this.lampUnits_Heater_Plates_2_Head_1 = new Kaban.UI.Controls.LampHMI();
-            this.lampUnits_Heater_Plates_2_Head_2 = new Kaban.UI.Controls.LampHMI();
-            this.lampUnits_Heater_Plates_2_Head_3 = new Kaban.UI.Controls.LampHMI();
-            this.lampUnits_Heater_Plates_2_Head_4 = new Kaban.UI.Controls.LampHMI();
-            this.capSliding_Sash_Press = new Kaban.UI.Controls.LabelHMI();
-            this.btnUnits_Sliding_Sash_Press_On_Off = new Kaban.UI.Controls.ButtonHMI();
-            this.lampUnits_Sliding_Sash_Press_Head_1 = new Kaban.UI.Controls.LampHMI();
-            this.lampUnits_Sliding_Sash_Press_Head_2 = new Kaban.UI.Controls.LampHMI();
-            this.lampUnits_Sliding_Sash_Press_2_Head_1 = new Kaban.UI.Controls.LampHMI();
-            this.lampUnits_Sliding_Sash_Press_2_Head_2 = new Kaban.UI.Controls.LampHMI();
-            this.capAutomatic_On_Off = new Kaban.UI.Controls.LabelHMI();
-            this.btnUnits_Automatic_On_Off_On_Off = new Kaban.UI.Controls.ButtonHMI();
+            this.unitUnits_Top_Press_Head_1 = new Kaban.UI.Controls.CylinderUnitHMI();
+            this.unitUnits_Top_Press_Head_2 = new Kaban.UI.Controls.CylinderUnitHMI();
+            this.unitUnits_Top_Press_Head_3 = new Kaban.UI.Controls.CylinderUnitHMI();
+            this.unitUnits_Top_Press_Head_4 = new Kaban.UI.Controls.CylinderUnitHMI();
             this.capProfile_Lifting = new Kaban.UI.Controls.LabelHMI();
-            this.btnUnits_Profile_Lifting_On_Off = new Kaban.UI.Controls.ButtonHMI();
-            this.capProfile_Release = new Kaban.UI.Controls.LabelHMI();
-            this.btnUnits_Profile_Release_On_Off = new Kaban.UI.Controls.ButtonHMI();
-            this.capConveyor = new Kaban.UI.Controls.LabelHMI();
-            this.btnUnits_Conveyor_On_Off = new Kaban.UI.Controls.ButtonHMI();
-            this.capGasket_Pressing_G = new Kaban.UI.Controls.LabelHMI();
-            this.btnUnits_Gasket_Pressing_G_On_Off = new Kaban.UI.Controls.ButtonHMI();
-            this.lampUnits_Gasket_Pressing_G_Head_1 = new Kaban.UI.Controls.LampHMI();
-            this.lampUnits_Gasket_Pressing_G_Head_2 = new Kaban.UI.Controls.LampHMI();
-            this.capGasket_Pressing_Y_A = new Kaban.UI.Controls.LabelHMI();
-            this.btnUnits_Gasket_Pressing_Y_A_On_Off = new Kaban.UI.Controls.ButtonHMI();
-            this.lampUnits_Gasket_Pressing_Y_A_Head_1 = new Kaban.UI.Controls.LampHMI();
-            this.lampUnits_Gasket_Pressing_Y_A_Head_2 = new Kaban.UI.Controls.LampHMI();
-            this.lampUnits_Gasket_Pressing_Y_A_2_Head_1 = new Kaban.UI.Controls.LampHMI();
-            this.lampUnits_Gasket_Pressing_Y_A_2_Head_2 = new Kaban.UI.Controls.LampHMI();
+            this.unitUnits_Profile_Lifting_Head_1 = new Kaban.UI.Controls.CylinderUnitHMI();
+            this.unitUnits_Profile_Lifting_Head_2 = new Kaban.UI.Controls.CylinderUnitHMI();
+            this.unitUnits_Profile_Lifting_Head_3 = new Kaban.UI.Controls.CylinderUnitHMI();
+            this.unitUnits_Profile_Lifting_Head_4 = new Kaban.UI.Controls.CylinderUnitHMI();
+            this.capProfile_Emptying = new Kaban.UI.Controls.LabelHMI();
+            this.unitUnits_Profile_Emptying_Head_1 = new Kaban.UI.Controls.CylinderUnitHMI();
+            this.unitUnits_Profile_Emptying_Head_2 = new Kaban.UI.Controls.CylinderUnitHMI();
+            this.unitUnits_Profile_Emptying_Head_3 = new Kaban.UI.Controls.CylinderUnitHMI();
+            this.unitUnits_Profile_Emptying_Head_4 = new Kaban.UI.Controls.CylinderUnitHMI();
+            this.capSliding_Sash_Press = new Kaban.UI.Controls.LabelHMI();
+            this.unitUnits_Sliding_Sash_Press_Head_1 = new Kaban.UI.Controls.CylinderUnitHMI();
+            this.unitUnits_Sliding_Sash_Press_Head_2 = new Kaban.UI.Controls.CylinderUnitHMI();
+            this.unitUnits_Sliding_Sash_Press_Head_3 = new Kaban.UI.Controls.CylinderUnitHMI();
+            this.unitUnits_Sliding_Sash_Press_Head_4 = new Kaban.UI.Controls.CylinderUnitHMI();
+            this.capGasket_Forward_Back = new Kaban.UI.Controls.LabelHMI();
+            this.unitUnits_Gasket_Forward_Back_Head_1 = new Kaban.UI.Controls.CylinderUnitHMI();
+            this.unitUnits_Gasket_Forward_Back_Head_2 = new Kaban.UI.Controls.CylinderUnitHMI();
+            this.capGasket_Group = new Kaban.UI.Controls.LabelHMI();
+            this.unitUnits_Gasket_Group_Head_1 = new Kaban.UI.Controls.CylinderUnitHMI();
+            this.unitUnits_Gasket_Group_Head_2 = new Kaban.UI.Controls.CylinderUnitHMI();
+            this.capGasket_Press = new Kaban.UI.Controls.LabelHMI();
+            this.unitUnits_Gasket_Press_Head_1 = new Kaban.UI.Controls.CylinderUnitHMI();
+            this.unitUnits_Gasket_Press_Head_2 = new Kaban.UI.Controls.CylinderUnitHMI();
             this.SuspendLayout();
             // 
             // hdName
@@ -502,409 +492,6 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.hdOn_Off.Location = new System.Drawing.Point(804, 16);
             this.hdOn_Off.Size = new System.Drawing.Size(70, 26);
             // 
-            // hdHead_1
-            // 
-            this.hdHead_1.Name = "hdHead_1";
-            this.hdHead_1.TranslationKey = "Head 1";
-            this.hdHead_1.Text = "Head 1";
-            this.hdHead_1.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
-            this.hdHead_1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
-            this.hdHead_1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.hdHead_1.Location = new System.Drawing.Point(880, 16);
-            this.hdHead_1.Size = new System.Drawing.Size(38, 26);
-            // 
-            // hdHead_2
-            // 
-            this.hdHead_2.Name = "hdHead_2";
-            this.hdHead_2.TranslationKey = "Head 2";
-            this.hdHead_2.Text = "Head 2";
-            this.hdHead_2.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
-            this.hdHead_2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
-            this.hdHead_2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.hdHead_2.Location = new System.Drawing.Point(924, 16);
-            this.hdHead_2.Size = new System.Drawing.Size(38, 26);
-            // 
-            // hdHead_3
-            // 
-            this.hdHead_3.Name = "hdHead_3";
-            this.hdHead_3.TranslationKey = "Head 3";
-            this.hdHead_3.Text = "Head 3";
-            this.hdHead_3.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
-            this.hdHead_3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
-            this.hdHead_3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.hdHead_3.Location = new System.Drawing.Point(968, 16);
-            this.hdHead_3.Size = new System.Drawing.Size(38, 26);
-            // 
-            // hdHead_4
-            // 
-            this.hdHead_4.Name = "hdHead_4";
-            this.hdHead_4.TranslationKey = "Head 4";
-            this.hdHead_4.Text = "Head 4";
-            this.hdHead_4.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
-            this.hdHead_4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
-            this.hdHead_4.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.hdHead_4.Location = new System.Drawing.Point(1012, 16);
-            this.hdHead_4.Size = new System.Drawing.Size(38, 26);
-            // 
-            // capSupporting_Plate
-            // 
-            this.capSupporting_Plate.Name = "capSupporting_Plate";
-            this.capSupporting_Plate.TranslationKey = "Supporting Plate";
-            this.capSupporting_Plate.Text = "Supporting Plate";
-            this.capSupporting_Plate.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.capSupporting_Plate.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
-            this.capSupporting_Plate.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capSupporting_Plate.Location = new System.Drawing.Point(608, 50);
-            this.capSupporting_Plate.Size = new System.Drawing.Size(190, 40);
-            this.capSupporting_Plate.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            // 
-            // btnUnits_Supporting_Plate_On_Off
-            // 
-            this.btnUnits_Supporting_Plate_On_Off.Name = "btnUnits_Supporting_Plate_On_Off";
-            this.btnUnits_Supporting_Plate_On_Off.PlcNumber = 1;
-            this.btnUnits_Supporting_Plate_On_Off.TranslationKey = "On/Off";
-            this.btnUnits_Supporting_Plate_On_Off.FallbackText = "On/Off";
-            bitAction2.Address = "M101";
-            bitAction2.Action = Kaban.Core.Enums.BitActionType.Alternate;
-            this.btnUnits_Supporting_Plate_On_Off.BitActions.Add(bitAction2);
-            this.btnUnits_Supporting_Plate_On_Off.Lamp1Address = "M101";
-            this.btnUnits_Supporting_Plate_On_Off.Location = new System.Drawing.Point(804, 53);
-            this.btnUnits_Supporting_Plate_On_Off.Size = new System.Drawing.Size(70, 34);
-            this.btnUnits_Supporting_Plate_On_Off.LogAction = true;
-            this.btnUnits_Supporting_Plate_On_Off.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // lampUnits_Supporting_Plate_Head_1
-            // 
-            this.lampUnits_Supporting_Plate_Head_1.Name = "lampUnits_Supporting_Plate_Head_1";
-            this.lampUnits_Supporting_Plate_Head_1.PlcNumber = 1;
-            this.lampUnits_Supporting_Plate_Head_1.Address = "X0031";
-            this.lampUnits_Supporting_Plate_Head_1.Location = new System.Drawing.Point(884, 55);
-            this.lampUnits_Supporting_Plate_Head_1.Size = new System.Drawing.Size(30, 30);
-            // 
-            // lampUnits_Supporting_Plate_Head_2
-            // 
-            this.lampUnits_Supporting_Plate_Head_2.Name = "lampUnits_Supporting_Plate_Head_2";
-            this.lampUnits_Supporting_Plate_Head_2.PlcNumber = 1;
-            this.lampUnits_Supporting_Plate_Head_2.Address = "X0032";
-            this.lampUnits_Supporting_Plate_Head_2.Location = new System.Drawing.Point(928, 55);
-            this.lampUnits_Supporting_Plate_Head_2.Size = new System.Drawing.Size(30, 30);
-            // 
-            // lampUnits_Supporting_Plate_Head_3
-            // 
-            this.lampUnits_Supporting_Plate_Head_3.Name = "lampUnits_Supporting_Plate_Head_3";
-            this.lampUnits_Supporting_Plate_Head_3.PlcNumber = 1;
-            this.lampUnits_Supporting_Plate_Head_3.Address = "X0033";
-            this.lampUnits_Supporting_Plate_Head_3.Location = new System.Drawing.Point(972, 55);
-            this.lampUnits_Supporting_Plate_Head_3.Size = new System.Drawing.Size(30, 30);
-            // 
-            // lampUnits_Supporting_Plate_Head_4
-            // 
-            this.lampUnits_Supporting_Plate_Head_4.Name = "lampUnits_Supporting_Plate_Head_4";
-            this.lampUnits_Supporting_Plate_Head_4.PlcNumber = 1;
-            this.lampUnits_Supporting_Plate_Head_4.Address = "X0034";
-            this.lampUnits_Supporting_Plate_Head_4.Location = new System.Drawing.Point(1016, 55);
-            this.lampUnits_Supporting_Plate_Head_4.Size = new System.Drawing.Size(30, 30);
-            // 
-            // lampUnits_Supporting_Plate_2_Head_1
-            // 
-            this.lampUnits_Supporting_Plate_2_Head_1.Name = "lampUnits_Supporting_Plate_2_Head_1";
-            this.lampUnits_Supporting_Plate_2_Head_1.PlcNumber = 1;
-            this.lampUnits_Supporting_Plate_2_Head_1.Address = "X0011";
-            this.lampUnits_Supporting_Plate_2_Head_1.Location = new System.Drawing.Point(884, 95);
-            this.lampUnits_Supporting_Plate_2_Head_1.Size = new System.Drawing.Size(30, 30);
-            // 
-            // lampUnits_Supporting_Plate_2_Head_2
-            // 
-            this.lampUnits_Supporting_Plate_2_Head_2.Name = "lampUnits_Supporting_Plate_2_Head_2";
-            this.lampUnits_Supporting_Plate_2_Head_2.PlcNumber = 1;
-            this.lampUnits_Supporting_Plate_2_Head_2.Address = "X0012";
-            this.lampUnits_Supporting_Plate_2_Head_2.Location = new System.Drawing.Point(928, 95);
-            this.lampUnits_Supporting_Plate_2_Head_2.Size = new System.Drawing.Size(30, 30);
-            // 
-            // lampUnits_Supporting_Plate_2_Head_3
-            // 
-            this.lampUnits_Supporting_Plate_2_Head_3.Name = "lampUnits_Supporting_Plate_2_Head_3";
-            this.lampUnits_Supporting_Plate_2_Head_3.PlcNumber = 1;
-            this.lampUnits_Supporting_Plate_2_Head_3.Address = "X0013";
-            this.lampUnits_Supporting_Plate_2_Head_3.Location = new System.Drawing.Point(972, 95);
-            this.lampUnits_Supporting_Plate_2_Head_3.Size = new System.Drawing.Size(30, 30);
-            // 
-            // lampUnits_Supporting_Plate_2_Head_4
-            // 
-            this.lampUnits_Supporting_Plate_2_Head_4.Name = "lampUnits_Supporting_Plate_2_Head_4";
-            this.lampUnits_Supporting_Plate_2_Head_4.PlcNumber = 1;
-            this.lampUnits_Supporting_Plate_2_Head_4.Address = "X0014";
-            this.lampUnits_Supporting_Plate_2_Head_4.Location = new System.Drawing.Point(1016, 95);
-            this.lampUnits_Supporting_Plate_2_Head_4.Size = new System.Drawing.Size(30, 30);
-            // 
-            // capBack_Plate
-            // 
-            this.capBack_Plate.Name = "capBack_Plate";
-            this.capBack_Plate.TranslationKey = "Back Plate";
-            this.capBack_Plate.Text = "Back Plate";
-            this.capBack_Plate.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.capBack_Plate.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
-            this.capBack_Plate.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capBack_Plate.Location = new System.Drawing.Point(608, 130);
-            this.capBack_Plate.Size = new System.Drawing.Size(190, 40);
-            this.capBack_Plate.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            // 
-            // btnUnits_Back_Plate_On_Off
-            // 
-            this.btnUnits_Back_Plate_On_Off.Name = "btnUnits_Back_Plate_On_Off";
-            this.btnUnits_Back_Plate_On_Off.PlcNumber = 1;
-            this.btnUnits_Back_Plate_On_Off.TranslationKey = "On/Off";
-            this.btnUnits_Back_Plate_On_Off.FallbackText = "On/Off";
-            bitAction3.Address = "M102";
-            bitAction3.Action = Kaban.Core.Enums.BitActionType.Alternate;
-            this.btnUnits_Back_Plate_On_Off.BitActions.Add(bitAction3);
-            this.btnUnits_Back_Plate_On_Off.Lamp1Address = "M102";
-            this.btnUnits_Back_Plate_On_Off.Location = new System.Drawing.Point(804, 133);
-            this.btnUnits_Back_Plate_On_Off.Size = new System.Drawing.Size(70, 34);
-            this.btnUnits_Back_Plate_On_Off.LogAction = true;
-            this.btnUnits_Back_Plate_On_Off.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // lampUnits_Back_Plate_Head_1
-            // 
-            this.lampUnits_Back_Plate_Head_1.Name = "lampUnits_Back_Plate_Head_1";
-            this.lampUnits_Back_Plate_Head_1.PlcNumber = 1;
-            this.lampUnits_Back_Plate_Head_1.Address = "X0021";
-            this.lampUnits_Back_Plate_Head_1.Location = new System.Drawing.Point(884, 135);
-            this.lampUnits_Back_Plate_Head_1.Size = new System.Drawing.Size(30, 30);
-            // 
-            // lampUnits_Back_Plate_Head_2
-            // 
-            this.lampUnits_Back_Plate_Head_2.Name = "lampUnits_Back_Plate_Head_2";
-            this.lampUnits_Back_Plate_Head_2.PlcNumber = 1;
-            this.lampUnits_Back_Plate_Head_2.Address = "X0022";
-            this.lampUnits_Back_Plate_Head_2.Location = new System.Drawing.Point(928, 135);
-            this.lampUnits_Back_Plate_Head_2.Size = new System.Drawing.Size(30, 30);
-            // 
-            // lampUnits_Back_Plate_Head_3
-            // 
-            this.lampUnits_Back_Plate_Head_3.Name = "lampUnits_Back_Plate_Head_3";
-            this.lampUnits_Back_Plate_Head_3.PlcNumber = 1;
-            this.lampUnits_Back_Plate_Head_3.Address = "X0023";
-            this.lampUnits_Back_Plate_Head_3.Location = new System.Drawing.Point(972, 135);
-            this.lampUnits_Back_Plate_Head_3.Size = new System.Drawing.Size(30, 30);
-            // 
-            // lampUnits_Back_Plate_Head_4
-            // 
-            this.lampUnits_Back_Plate_Head_4.Name = "lampUnits_Back_Plate_Head_4";
-            this.lampUnits_Back_Plate_Head_4.PlcNumber = 1;
-            this.lampUnits_Back_Plate_Head_4.Address = "X0024";
-            this.lampUnits_Back_Plate_Head_4.Location = new System.Drawing.Point(1016, 135);
-            this.lampUnits_Back_Plate_Head_4.Size = new System.Drawing.Size(30, 30);
-            // 
-            // lampUnits_Back_Plate_2_Head_1
-            // 
-            this.lampUnits_Back_Plate_2_Head_1.Name = "lampUnits_Back_Plate_2_Head_1";
-            this.lampUnits_Back_Plate_2_Head_1.PlcNumber = 1;
-            this.lampUnits_Back_Plate_2_Head_1.Address = "X0015";
-            this.lampUnits_Back_Plate_2_Head_1.Location = new System.Drawing.Point(884, 175);
-            this.lampUnits_Back_Plate_2_Head_1.Size = new System.Drawing.Size(30, 30);
-            // 
-            // lampUnits_Back_Plate_2_Head_2
-            // 
-            this.lampUnits_Back_Plate_2_Head_2.Name = "lampUnits_Back_Plate_2_Head_2";
-            this.lampUnits_Back_Plate_2_Head_2.PlcNumber = 1;
-            this.lampUnits_Back_Plate_2_Head_2.Address = "X0016";
-            this.lampUnits_Back_Plate_2_Head_2.Location = new System.Drawing.Point(928, 175);
-            this.lampUnits_Back_Plate_2_Head_2.Size = new System.Drawing.Size(30, 30);
-            // 
-            // lampUnits_Back_Plate_2_Head_3
-            // 
-            this.lampUnits_Back_Plate_2_Head_3.Name = "lampUnits_Back_Plate_2_Head_3";
-            this.lampUnits_Back_Plate_2_Head_3.PlcNumber = 1;
-            this.lampUnits_Back_Plate_2_Head_3.Address = "X0017";
-            this.lampUnits_Back_Plate_2_Head_3.Location = new System.Drawing.Point(972, 175);
-            this.lampUnits_Back_Plate_2_Head_3.Size = new System.Drawing.Size(30, 30);
-            // 
-            // lampUnits_Back_Plate_2_Head_4
-            // 
-            this.lampUnits_Back_Plate_2_Head_4.Name = "lampUnits_Back_Plate_2_Head_4";
-            this.lampUnits_Back_Plate_2_Head_4.PlcNumber = 1;
-            this.lampUnits_Back_Plate_2_Head_4.Address = "X0020";
-            this.lampUnits_Back_Plate_2_Head_4.Location = new System.Drawing.Point(1016, 175);
-            this.lampUnits_Back_Plate_2_Head_4.Size = new System.Drawing.Size(30, 30);
-            // 
-            // capTop_Press
-            // 
-            this.capTop_Press.Name = "capTop_Press";
-            this.capTop_Press.TranslationKey = "Top Press";
-            this.capTop_Press.Text = "Top Press";
-            this.capTop_Press.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.capTop_Press.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
-            this.capTop_Press.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capTop_Press.Location = new System.Drawing.Point(608, 210);
-            this.capTop_Press.Size = new System.Drawing.Size(190, 40);
-            this.capTop_Press.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            // 
-            // btnUnits_Top_Press_On_Off
-            // 
-            this.btnUnits_Top_Press_On_Off.Name = "btnUnits_Top_Press_On_Off";
-            this.btnUnits_Top_Press_On_Off.PlcNumber = 1;
-            this.btnUnits_Top_Press_On_Off.TranslationKey = "On/Off";
-            this.btnUnits_Top_Press_On_Off.FallbackText = "On/Off";
-            bitAction4.Address = "M103";
-            bitAction4.Action = Kaban.Core.Enums.BitActionType.Alternate;
-            this.btnUnits_Top_Press_On_Off.BitActions.Add(bitAction4);
-            this.btnUnits_Top_Press_On_Off.Lamp1Address = "M103";
-            this.btnUnits_Top_Press_On_Off.Location = new System.Drawing.Point(804, 213);
-            this.btnUnits_Top_Press_On_Off.Size = new System.Drawing.Size(70, 34);
-            this.btnUnits_Top_Press_On_Off.LogAction = true;
-            this.btnUnits_Top_Press_On_Off.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // capHeater_Plates
-            // 
-            this.capHeater_Plates.Name = "capHeater_Plates";
-            this.capHeater_Plates.TranslationKey = "Heater Plates";
-            this.capHeater_Plates.Text = "Heater Plates";
-            this.capHeater_Plates.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.capHeater_Plates.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
-            this.capHeater_Plates.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capHeater_Plates.Location = new System.Drawing.Point(608, 250);
-            this.capHeater_Plates.Size = new System.Drawing.Size(190, 40);
-            this.capHeater_Plates.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            // 
-            // btnUnits_Heater_Plates_On_Off
-            // 
-            this.btnUnits_Heater_Plates_On_Off.Name = "btnUnits_Heater_Plates_On_Off";
-            this.btnUnits_Heater_Plates_On_Off.PlcNumber = 1;
-            this.btnUnits_Heater_Plates_On_Off.TranslationKey = "On/Off";
-            this.btnUnits_Heater_Plates_On_Off.FallbackText = "On/Off";
-            bitAction5.Address = "M104";
-            bitAction5.Action = Kaban.Core.Enums.BitActionType.Alternate;
-            this.btnUnits_Heater_Plates_On_Off.BitActions.Add(bitAction5);
-            this.btnUnits_Heater_Plates_On_Off.Lamp1Address = "M104";
-            this.btnUnits_Heater_Plates_On_Off.Location = new System.Drawing.Point(804, 253);
-            this.btnUnits_Heater_Plates_On_Off.Size = new System.Drawing.Size(70, 34);
-            this.btnUnits_Heater_Plates_On_Off.LogAction = true;
-            this.btnUnits_Heater_Plates_On_Off.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // lampUnits_Heater_Plates_Head_1
-            // 
-            this.lampUnits_Heater_Plates_Head_1.Name = "lampUnits_Heater_Plates_Head_1";
-            this.lampUnits_Heater_Plates_Head_1.PlcNumber = 1;
-            this.lampUnits_Heater_Plates_Head_1.Address = "X0035";
-            this.lampUnits_Heater_Plates_Head_1.Location = new System.Drawing.Point(884, 255);
-            this.lampUnits_Heater_Plates_Head_1.Size = new System.Drawing.Size(30, 30);
-            // 
-            // lampUnits_Heater_Plates_Head_2
-            // 
-            this.lampUnits_Heater_Plates_Head_2.Name = "lampUnits_Heater_Plates_Head_2";
-            this.lampUnits_Heater_Plates_Head_2.PlcNumber = 1;
-            this.lampUnits_Heater_Plates_Head_2.Address = "X0036";
-            this.lampUnits_Heater_Plates_Head_2.Location = new System.Drawing.Point(928, 255);
-            this.lampUnits_Heater_Plates_Head_2.Size = new System.Drawing.Size(30, 30);
-            // 
-            // lampUnits_Heater_Plates_Head_3
-            // 
-            this.lampUnits_Heater_Plates_Head_3.Name = "lampUnits_Heater_Plates_Head_3";
-            this.lampUnits_Heater_Plates_Head_3.PlcNumber = 1;
-            this.lampUnits_Heater_Plates_Head_3.Address = "X0037";
-            this.lampUnits_Heater_Plates_Head_3.Location = new System.Drawing.Point(972, 255);
-            this.lampUnits_Heater_Plates_Head_3.Size = new System.Drawing.Size(30, 30);
-            // 
-            // lampUnits_Heater_Plates_Head_4
-            // 
-            this.lampUnits_Heater_Plates_Head_4.Name = "lampUnits_Heater_Plates_Head_4";
-            this.lampUnits_Heater_Plates_Head_4.PlcNumber = 1;
-            this.lampUnits_Heater_Plates_Head_4.Address = "X0040";
-            this.lampUnits_Heater_Plates_Head_4.Location = new System.Drawing.Point(1016, 255);
-            this.lampUnits_Heater_Plates_Head_4.Size = new System.Drawing.Size(30, 30);
-            // 
-            // lampUnits_Heater_Plates_2_Head_1
-            // 
-            this.lampUnits_Heater_Plates_2_Head_1.Name = "lampUnits_Heater_Plates_2_Head_1";
-            this.lampUnits_Heater_Plates_2_Head_1.PlcNumber = 1;
-            this.lampUnits_Heater_Plates_2_Head_1.Address = "X0025";
-            this.lampUnits_Heater_Plates_2_Head_1.Location = new System.Drawing.Point(884, 295);
-            this.lampUnits_Heater_Plates_2_Head_1.Size = new System.Drawing.Size(30, 30);
-            // 
-            // lampUnits_Heater_Plates_2_Head_2
-            // 
-            this.lampUnits_Heater_Plates_2_Head_2.Name = "lampUnits_Heater_Plates_2_Head_2";
-            this.lampUnits_Heater_Plates_2_Head_2.PlcNumber = 1;
-            this.lampUnits_Heater_Plates_2_Head_2.Address = "X0026";
-            this.lampUnits_Heater_Plates_2_Head_2.Location = new System.Drawing.Point(928, 295);
-            this.lampUnits_Heater_Plates_2_Head_2.Size = new System.Drawing.Size(30, 30);
-            // 
-            // lampUnits_Heater_Plates_2_Head_3
-            // 
-            this.lampUnits_Heater_Plates_2_Head_3.Name = "lampUnits_Heater_Plates_2_Head_3";
-            this.lampUnits_Heater_Plates_2_Head_3.PlcNumber = 1;
-            this.lampUnits_Heater_Plates_2_Head_3.Address = "X0027";
-            this.lampUnits_Heater_Plates_2_Head_3.Location = new System.Drawing.Point(972, 295);
-            this.lampUnits_Heater_Plates_2_Head_3.Size = new System.Drawing.Size(30, 30);
-            // 
-            // lampUnits_Heater_Plates_2_Head_4
-            // 
-            this.lampUnits_Heater_Plates_2_Head_4.Name = "lampUnits_Heater_Plates_2_Head_4";
-            this.lampUnits_Heater_Plates_2_Head_4.PlcNumber = 1;
-            this.lampUnits_Heater_Plates_2_Head_4.Address = "X0030";
-            this.lampUnits_Heater_Plates_2_Head_4.Location = new System.Drawing.Point(1016, 295);
-            this.lampUnits_Heater_Plates_2_Head_4.Size = new System.Drawing.Size(30, 30);
-            // 
-            // capSliding_Sash_Press
-            // 
-            this.capSliding_Sash_Press.Name = "capSliding_Sash_Press";
-            this.capSliding_Sash_Press.TranslationKey = "Sliding Sash Press";
-            this.capSliding_Sash_Press.Text = "Sliding Sash Press";
-            this.capSliding_Sash_Press.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.capSliding_Sash_Press.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
-            this.capSliding_Sash_Press.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capSliding_Sash_Press.Location = new System.Drawing.Point(608, 330);
-            this.capSliding_Sash_Press.Size = new System.Drawing.Size(190, 40);
-            this.capSliding_Sash_Press.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            // 
-            // btnUnits_Sliding_Sash_Press_On_Off
-            // 
-            this.btnUnits_Sliding_Sash_Press_On_Off.Name = "btnUnits_Sliding_Sash_Press_On_Off";
-            this.btnUnits_Sliding_Sash_Press_On_Off.PlcNumber = 1;
-            this.btnUnits_Sliding_Sash_Press_On_Off.TranslationKey = "On/Off";
-            this.btnUnits_Sliding_Sash_Press_On_Off.FallbackText = "On/Off";
-            bitAction6.Address = "M196";
-            bitAction6.Action = Kaban.Core.Enums.BitActionType.Alternate;
-            this.btnUnits_Sliding_Sash_Press_On_Off.BitActions.Add(bitAction6);
-            this.btnUnits_Sliding_Sash_Press_On_Off.Lamp1Address = "M196";
-            this.btnUnits_Sliding_Sash_Press_On_Off.Location = new System.Drawing.Point(804, 333);
-            this.btnUnits_Sliding_Sash_Press_On_Off.Size = new System.Drawing.Size(70, 34);
-            this.btnUnits_Sliding_Sash_Press_On_Off.LogAction = true;
-            this.btnUnits_Sliding_Sash_Press_On_Off.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // lampUnits_Sliding_Sash_Press_Head_1
-            // 
-            this.lampUnits_Sliding_Sash_Press_Head_1.Name = "lampUnits_Sliding_Sash_Press_Head_1";
-            this.lampUnits_Sliding_Sash_Press_Head_1.PlcNumber = 1;
-            this.lampUnits_Sliding_Sash_Press_Head_1.Address = "X0054";
-            this.lampUnits_Sliding_Sash_Press_Head_1.Location = new System.Drawing.Point(884, 335);
-            this.lampUnits_Sliding_Sash_Press_Head_1.Size = new System.Drawing.Size(30, 30);
-            // 
-            // lampUnits_Sliding_Sash_Press_Head_2
-            // 
-            this.lampUnits_Sliding_Sash_Press_Head_2.Name = "lampUnits_Sliding_Sash_Press_Head_2";
-            this.lampUnits_Sliding_Sash_Press_Head_2.PlcNumber = 1;
-            this.lampUnits_Sliding_Sash_Press_Head_2.Address = "X0055";
-            this.lampUnits_Sliding_Sash_Press_Head_2.Location = new System.Drawing.Point(928, 335);
-            this.lampUnits_Sliding_Sash_Press_Head_2.Size = new System.Drawing.Size(30, 30);
-            // 
-            // lampUnits_Sliding_Sash_Press_2_Head_1
-            // 
-            this.lampUnits_Sliding_Sash_Press_2_Head_1.Name = "lampUnits_Sliding_Sash_Press_2_Head_1";
-            this.lampUnits_Sliding_Sash_Press_2_Head_1.PlcNumber = 1;
-            this.lampUnits_Sliding_Sash_Press_2_Head_1.Address = "X0056";
-            this.lampUnits_Sliding_Sash_Press_2_Head_1.Location = new System.Drawing.Point(884, 375);
-            this.lampUnits_Sliding_Sash_Press_2_Head_1.Size = new System.Drawing.Size(30, 30);
-            // 
-            // lampUnits_Sliding_Sash_Press_2_Head_2
-            // 
-            this.lampUnits_Sliding_Sash_Press_2_Head_2.Name = "lampUnits_Sliding_Sash_Press_2_Head_2";
-            this.lampUnits_Sliding_Sash_Press_2_Head_2.PlcNumber = 1;
-            this.lampUnits_Sliding_Sash_Press_2_Head_2.Address = "X0057";
-            this.lampUnits_Sliding_Sash_Press_2_Head_2.Location = new System.Drawing.Point(928, 375);
-            this.lampUnits_Sliding_Sash_Press_2_Head_2.Size = new System.Drawing.Size(30, 30);
-            // 
             // capAutomatic_On_Off
             // 
             this.capAutomatic_On_Off.Name = "capAutomatic_On_Off";
@@ -913,78 +500,24 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.capAutomatic_On_Off.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.capAutomatic_On_Off.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
             this.capAutomatic_On_Off.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capAutomatic_On_Off.Location = new System.Drawing.Point(608, 410);
+            this.capAutomatic_On_Off.Location = new System.Drawing.Point(608, 50);
             this.capAutomatic_On_Off.Size = new System.Drawing.Size(190, 40);
             this.capAutomatic_On_Off.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             // 
-            // btnUnits_Automatic_On_Off_On_Off
+            // btnOthers_Automatic_On_Off_On_Off
             // 
-            this.btnUnits_Automatic_On_Off_On_Off.Name = "btnUnits_Automatic_On_Off_On_Off";
-            this.btnUnits_Automatic_On_Off_On_Off.PlcNumber = 1;
-            this.btnUnits_Automatic_On_Off_On_Off.TranslationKey = "On/Off";
-            this.btnUnits_Automatic_On_Off_On_Off.FallbackText = "On/Off";
-            bitAction7.Address = "M34";
-            bitAction7.Action = Kaban.Core.Enums.BitActionType.Alternate;
-            this.btnUnits_Automatic_On_Off_On_Off.BitActions.Add(bitAction7);
-            this.btnUnits_Automatic_On_Off_On_Off.Lamp1Address = "M34";
-            this.btnUnits_Automatic_On_Off_On_Off.Location = new System.Drawing.Point(804, 413);
-            this.btnUnits_Automatic_On_Off_On_Off.Size = new System.Drawing.Size(70, 34);
-            this.btnUnits_Automatic_On_Off_On_Off.LogAction = true;
-            this.btnUnits_Automatic_On_Off_On_Off.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // capProfile_Lifting
-            // 
-            this.capProfile_Lifting.Name = "capProfile_Lifting";
-            this.capProfile_Lifting.TranslationKey = "Profile Lifting";
-            this.capProfile_Lifting.Text = "Profile Lifting";
-            this.capProfile_Lifting.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.capProfile_Lifting.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
-            this.capProfile_Lifting.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capProfile_Lifting.Location = new System.Drawing.Point(608, 450);
-            this.capProfile_Lifting.Size = new System.Drawing.Size(190, 40);
-            this.capProfile_Lifting.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            // 
-            // btnUnits_Profile_Lifting_On_Off
-            // 
-            this.btnUnits_Profile_Lifting_On_Off.Name = "btnUnits_Profile_Lifting_On_Off";
-            this.btnUnits_Profile_Lifting_On_Off.PlcNumber = 1;
-            this.btnUnits_Profile_Lifting_On_Off.TranslationKey = "On/Off";
-            this.btnUnits_Profile_Lifting_On_Off.FallbackText = "On/Off";
-            bitAction8.Address = "M105";
-            bitAction8.Action = Kaban.Core.Enums.BitActionType.Alternate;
-            this.btnUnits_Profile_Lifting_On_Off.BitActions.Add(bitAction8);
-            this.btnUnits_Profile_Lifting_On_Off.Lamp1Address = "M105";
-            this.btnUnits_Profile_Lifting_On_Off.Location = new System.Drawing.Point(804, 453);
-            this.btnUnits_Profile_Lifting_On_Off.Size = new System.Drawing.Size(70, 34);
-            this.btnUnits_Profile_Lifting_On_Off.LogAction = true;
-            this.btnUnits_Profile_Lifting_On_Off.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // capProfile_Release
-            // 
-            this.capProfile_Release.Name = "capProfile_Release";
-            this.capProfile_Release.TranslationKey = "Profile Release";
-            this.capProfile_Release.Text = "Profile Release";
-            this.capProfile_Release.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.capProfile_Release.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
-            this.capProfile_Release.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capProfile_Release.Location = new System.Drawing.Point(608, 490);
-            this.capProfile_Release.Size = new System.Drawing.Size(190, 40);
-            this.capProfile_Release.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            // 
-            // btnUnits_Profile_Release_On_Off
-            // 
-            this.btnUnits_Profile_Release_On_Off.Name = "btnUnits_Profile_Release_On_Off";
-            this.btnUnits_Profile_Release_On_Off.PlcNumber = 1;
-            this.btnUnits_Profile_Release_On_Off.TranslationKey = "On/Off";
-            this.btnUnits_Profile_Release_On_Off.FallbackText = "On/Off";
-            bitAction9.Address = "M100";
-            bitAction9.Action = Kaban.Core.Enums.BitActionType.Alternate;
-            this.btnUnits_Profile_Release_On_Off.BitActions.Add(bitAction9);
-            this.btnUnits_Profile_Release_On_Off.Lamp1Address = "M100";
-            this.btnUnits_Profile_Release_On_Off.Location = new System.Drawing.Point(804, 493);
-            this.btnUnits_Profile_Release_On_Off.Size = new System.Drawing.Size(70, 34);
-            this.btnUnits_Profile_Release_On_Off.LogAction = true;
-            this.btnUnits_Profile_Release_On_Off.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            this.btnOthers_Automatic_On_Off_On_Off.Name = "btnOthers_Automatic_On_Off_On_Off";
+            this.btnOthers_Automatic_On_Off_On_Off.PlcNumber = 1;
+            this.btnOthers_Automatic_On_Off_On_Off.TranslationKey = "On/Off";
+            this.btnOthers_Automatic_On_Off_On_Off.FallbackText = "On/Off";
+            bitAction2.Address = "M34";
+            bitAction2.Action = Kaban.Core.Enums.BitActionType.Alternate;
+            this.btnOthers_Automatic_On_Off_On_Off.BitActions.Add(bitAction2);
+            this.btnOthers_Automatic_On_Off_On_Off.Lamp1Address = "M34";
+            this.btnOthers_Automatic_On_Off_On_Off.Location = new System.Drawing.Point(804, 53);
+            this.btnOthers_Automatic_On_Off_On_Off.Size = new System.Drawing.Size(70, 34);
+            this.btnOthers_Automatic_On_Off_On_Off.LogAction = true;
+            this.btnOthers_Automatic_On_Off_On_Off.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
             // 
             // capConveyor
             // 
@@ -994,126 +527,946 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.capConveyor.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.capConveyor.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
             this.capConveyor.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capConveyor.Location = new System.Drawing.Point(608, 530);
+            this.capConveyor.Location = new System.Drawing.Point(608, 90);
             this.capConveyor.Size = new System.Drawing.Size(190, 40);
             this.capConveyor.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             // 
-            // btnUnits_Conveyor_On_Off
+            // btnOthers_Conveyor_On_Off
             // 
-            this.btnUnits_Conveyor_On_Off.Name = "btnUnits_Conveyor_On_Off";
-            this.btnUnits_Conveyor_On_Off.PlcNumber = 1;
-            this.btnUnits_Conveyor_On_Off.TranslationKey = "On/Off";
-            this.btnUnits_Conveyor_On_Off.FallbackText = "On/Off";
-            bitAction10.Address = "M106";
-            bitAction10.Action = Kaban.Core.Enums.BitActionType.Alternate;
-            this.btnUnits_Conveyor_On_Off.BitActions.Add(bitAction10);
-            this.btnUnits_Conveyor_On_Off.Lamp1Address = "M106";
-            this.btnUnits_Conveyor_On_Off.Location = new System.Drawing.Point(804, 533);
-            this.btnUnits_Conveyor_On_Off.Size = new System.Drawing.Size(70, 34);
-            this.btnUnits_Conveyor_On_Off.LogAction = true;
-            this.btnUnits_Conveyor_On_Off.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            this.btnOthers_Conveyor_On_Off.Name = "btnOthers_Conveyor_On_Off";
+            this.btnOthers_Conveyor_On_Off.PlcNumber = 1;
+            this.btnOthers_Conveyor_On_Off.TranslationKey = "On/Off";
+            this.btnOthers_Conveyor_On_Off.FallbackText = "On/Off";
+            bitAction3.Address = "M106";
+            bitAction3.Action = Kaban.Core.Enums.BitActionType.Alternate;
+            this.btnOthers_Conveyor_On_Off.BitActions.Add(bitAction3);
+            this.btnOthers_Conveyor_On_Off.Lamp1Address = "M106";
+            this.btnOthers_Conveyor_On_Off.Location = new System.Drawing.Point(804, 93);
+            this.btnOthers_Conveyor_On_Off.Size = new System.Drawing.Size(70, 34);
+            this.btnOthers_Conveyor_On_Off.LogAction = true;
+            this.btnOthers_Conveyor_On_Off.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
             // 
-            // capGasket_Pressing_G
+            // lblCylinders
             // 
-            this.capGasket_Pressing_G.Name = "capGasket_Pressing_G";
-            this.capGasket_Pressing_G.TranslationKey = "Gasket Pressing İ-G";
-            this.capGasket_Pressing_G.Text = "Gasket Pressing İ-G";
-            this.capGasket_Pressing_G.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.capGasket_Pressing_G.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
-            this.capGasket_Pressing_G.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capGasket_Pressing_G.Location = new System.Drawing.Point(608, 570);
-            this.capGasket_Pressing_G.Size = new System.Drawing.Size(190, 40);
-            this.capGasket_Pressing_G.Font = new System.Drawing.Font("Segoe UI", 9.5F);
+            this.lblCylinders.Name = "lblCylinders";
+            this.lblCylinders.TranslationKey = "Cylinders";
+            this.lblCylinders.Text = "Cylinders";
+            this.lblCylinders.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.lblCylinders.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
+            this.lblCylinders.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblCylinders.Location = new System.Drawing.Point(16, 570);
+            this.lblCylinders.Size = new System.Drawing.Size(1038, 26);
             // 
-            // btnUnits_Gasket_Pressing_G_On_Off
+            // hdUnit
             // 
-            this.btnUnits_Gasket_Pressing_G_On_Off.Name = "btnUnits_Gasket_Pressing_G_On_Off";
-            this.btnUnits_Gasket_Pressing_G_On_Off.PlcNumber = 1;
-            this.btnUnits_Gasket_Pressing_G_On_Off.TranslationKey = "On/Off";
-            this.btnUnits_Gasket_Pressing_G_On_Off.FallbackText = "On/Off";
-            bitAction11.Address = "M109";
-            bitAction11.Action = Kaban.Core.Enums.BitActionType.Alternate;
-            this.btnUnits_Gasket_Pressing_G_On_Off.BitActions.Add(bitAction11);
-            this.btnUnits_Gasket_Pressing_G_On_Off.Lamp1Address = "M109";
-            this.btnUnits_Gasket_Pressing_G_On_Off.Location = new System.Drawing.Point(804, 573);
-            this.btnUnits_Gasket_Pressing_G_On_Off.Size = new System.Drawing.Size(70, 34);
-            this.btnUnits_Gasket_Pressing_G_On_Off.LogAction = true;
-            this.btnUnits_Gasket_Pressing_G_On_Off.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            this.hdUnit.Name = "hdUnit";
+            this.hdUnit.TranslationKey = "Unit";
+            this.hdUnit.Text = "Unit";
+            this.hdUnit.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
+            this.hdUnit.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
+            this.hdUnit.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.hdUnit.Location = new System.Drawing.Point(16, 600);
+            this.hdUnit.Size = new System.Drawing.Size(150, 26);
             // 
-            // lampUnits_Gasket_Pressing_G_Head_1
+            // hdHead_1
             // 
-            this.lampUnits_Gasket_Pressing_G_Head_1.Name = "lampUnits_Gasket_Pressing_G_Head_1";
-            this.lampUnits_Gasket_Pressing_G_Head_1.PlcNumber = 1;
-            this.lampUnits_Gasket_Pressing_G_Head_1.Address = "X0060";
-            this.lampUnits_Gasket_Pressing_G_Head_1.Location = new System.Drawing.Point(884, 575);
-            this.lampUnits_Gasket_Pressing_G_Head_1.Size = new System.Drawing.Size(30, 30);
+            this.hdHead_1.Name = "hdHead_1";
+            this.hdHead_1.TranslationKey = "Head 1";
+            this.hdHead_1.Text = "Head 1";
+            this.hdHead_1.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
+            this.hdHead_1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
+            this.hdHead_1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.hdHead_1.Location = new System.Drawing.Point(172, 600);
+            this.hdHead_1.Size = new System.Drawing.Size(216, 26);
             // 
-            // lampUnits_Gasket_Pressing_G_Head_2
+            // hdHead_2
             // 
-            this.lampUnits_Gasket_Pressing_G_Head_2.Name = "lampUnits_Gasket_Pressing_G_Head_2";
-            this.lampUnits_Gasket_Pressing_G_Head_2.PlcNumber = 1;
-            this.lampUnits_Gasket_Pressing_G_Head_2.Address = "X0061";
-            this.lampUnits_Gasket_Pressing_G_Head_2.Location = new System.Drawing.Point(928, 575);
-            this.lampUnits_Gasket_Pressing_G_Head_2.Size = new System.Drawing.Size(30, 30);
+            this.hdHead_2.Name = "hdHead_2";
+            this.hdHead_2.TranslationKey = "Head 2";
+            this.hdHead_2.Text = "Head 2";
+            this.hdHead_2.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
+            this.hdHead_2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
+            this.hdHead_2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.hdHead_2.Location = new System.Drawing.Point(394, 600);
+            this.hdHead_2.Size = new System.Drawing.Size(216, 26);
             // 
-            // capGasket_Pressing_Y_A
+            // hdHead_3
             // 
-            this.capGasket_Pressing_Y_A.Name = "capGasket_Pressing_Y_A";
-            this.capGasket_Pressing_Y_A.TranslationKey = "Gasket Pressing Y-A";
-            this.capGasket_Pressing_Y_A.Text = "Gasket Pressing Y-A";
-            this.capGasket_Pressing_Y_A.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.capGasket_Pressing_Y_A.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
-            this.capGasket_Pressing_Y_A.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capGasket_Pressing_Y_A.Location = new System.Drawing.Point(608, 610);
-            this.capGasket_Pressing_Y_A.Size = new System.Drawing.Size(190, 40);
-            this.capGasket_Pressing_Y_A.Font = new System.Drawing.Font("Segoe UI", 9.5F);
+            this.hdHead_3.Name = "hdHead_3";
+            this.hdHead_3.TranslationKey = "Head 3";
+            this.hdHead_3.Text = "Head 3";
+            this.hdHead_3.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
+            this.hdHead_3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
+            this.hdHead_3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.hdHead_3.Location = new System.Drawing.Point(616, 600);
+            this.hdHead_3.Size = new System.Drawing.Size(216, 26);
             // 
-            // btnUnits_Gasket_Pressing_Y_A_On_Off
+            // hdHead_4
             // 
-            this.btnUnits_Gasket_Pressing_Y_A_On_Off.Name = "btnUnits_Gasket_Pressing_Y_A_On_Off";
-            this.btnUnits_Gasket_Pressing_Y_A_On_Off.PlcNumber = 1;
-            this.btnUnits_Gasket_Pressing_Y_A_On_Off.TranslationKey = "On/Off";
-            this.btnUnits_Gasket_Pressing_Y_A_On_Off.FallbackText = "On/Off";
-            bitAction12.Address = "M108";
-            bitAction12.Action = Kaban.Core.Enums.BitActionType.Alternate;
-            this.btnUnits_Gasket_Pressing_Y_A_On_Off.BitActions.Add(bitAction12);
-            this.btnUnits_Gasket_Pressing_Y_A_On_Off.Lamp1Address = "M108";
-            this.btnUnits_Gasket_Pressing_Y_A_On_Off.Location = new System.Drawing.Point(804, 613);
-            this.btnUnits_Gasket_Pressing_Y_A_On_Off.Size = new System.Drawing.Size(70, 34);
-            this.btnUnits_Gasket_Pressing_Y_A_On_Off.LogAction = true;
-            this.btnUnits_Gasket_Pressing_Y_A_On_Off.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            this.hdHead_4.Name = "hdHead_4";
+            this.hdHead_4.TranslationKey = "Head 4";
+            this.hdHead_4.Text = "Head 4";
+            this.hdHead_4.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
+            this.hdHead_4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
+            this.hdHead_4.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.hdHead_4.Location = new System.Drawing.Point(838, 600);
+            this.hdHead_4.Size = new System.Drawing.Size(216, 26);
             // 
-            // lampUnits_Gasket_Pressing_Y_A_Head_1
+            // capSupporting_Strip
             // 
-            this.lampUnits_Gasket_Pressing_Y_A_Head_1.Name = "lampUnits_Gasket_Pressing_Y_A_Head_1";
-            this.lampUnits_Gasket_Pressing_Y_A_Head_1.PlcNumber = 1;
-            this.lampUnits_Gasket_Pressing_Y_A_Head_1.Address = "X0064";
-            this.lampUnits_Gasket_Pressing_Y_A_Head_1.Location = new System.Drawing.Point(884, 615);
-            this.lampUnits_Gasket_Pressing_Y_A_Head_1.Size = new System.Drawing.Size(30, 30);
+            this.capSupporting_Strip.Name = "capSupporting_Strip";
+            this.capSupporting_Strip.TranslationKey = "Supporting Strip";
+            this.capSupporting_Strip.Text = "Supporting Strip";
+            this.capSupporting_Strip.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.capSupporting_Strip.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
+            this.capSupporting_Strip.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.capSupporting_Strip.Location = new System.Drawing.Point(16, 634);
+            this.capSupporting_Strip.Size = new System.Drawing.Size(150, 72);
+            this.capSupporting_Strip.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             // 
-            // lampUnits_Gasket_Pressing_Y_A_Head_2
+            // unitUnits_Supporting_Strip_Head_1
             // 
-            this.lampUnits_Gasket_Pressing_Y_A_Head_2.Name = "lampUnits_Gasket_Pressing_Y_A_Head_2";
-            this.lampUnits_Gasket_Pressing_Y_A_Head_2.PlcNumber = 1;
-            this.lampUnits_Gasket_Pressing_Y_A_Head_2.Address = "X0065";
-            this.lampUnits_Gasket_Pressing_Y_A_Head_2.Location = new System.Drawing.Point(928, 615);
-            this.lampUnits_Gasket_Pressing_Y_A_Head_2.Size = new System.Drawing.Size(30, 30);
+            // Y1.1 (5/2 spring): its coil takes it down - M101 set (the coil on), reset (off: the spring back) - back X0011, forward X0031; did not come back M602, did not go down M600 (the four heads' one bit each).
+            this.unitUnits_Supporting_Strip_Head_1.BackColor = System.Drawing.Color.White;
+            this.unitUnits_Supporting_Strip_Head_1.Name = "unitUnits_Supporting_Strip_Head_1";
+            this.unitUnits_Supporting_Strip_Head_1.PlcNumber = 1;
+            this.unitUnits_Supporting_Strip_Head_1.TitleTextKey = "Unit_MK2010_H1SupportingStrip";
+            this.unitUnits_Supporting_Strip_Head_1.Location = new System.Drawing.Point(172, 638);
+            this.unitUnits_Supporting_Strip_Head_1.Size = new System.Drawing.Size(216, 64);
+            this.unitUnits_Supporting_Strip_Head_1.LogAction = true;
+            this.unitUnits_Supporting_Strip_Head_1.Arrows = Kaban.Core.Enums.ButtonArrowStyle.UpDown;
+            this.unitUnits_Supporting_Strip_Head_1.CommandAAddress = "M101";
+            this.unitUnits_Supporting_Strip_Head_1.CommandAAction = Kaban.Core.Enums.BitActionType.RESET;
+            this.unitUnits_Supporting_Strip_Head_1.Lamp1AAddress = "X0011";
+            this.unitUnits_Supporting_Strip_Head_1.CommandBAddress = "M101";
+            this.unitUnits_Supporting_Strip_Head_1.CommandBAction = Kaban.Core.Enums.BitActionType.SET;
+            this.unitUnits_Supporting_Strip_Head_1.Lamp1BAddress = "X0031";
+            this.unitUnits_Supporting_Strip_Head_1.ValveType = Kaban.UI.Controls.CylinderValve.SingleSolenoid;
+            this.unitUnits_Supporting_Strip_Head_1.FeedbackType = Kaban.UI.Controls.CylinderFeedback.TwoEndMagnetic;
+            this.unitUnits_Supporting_Strip_Head_1.ErrorAAddress = "M602";
+            this.unitUnits_Supporting_Strip_Head_1.ErrorBAddress = "M600";
+            this.unitUnits_Supporting_Strip_Head_1.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
             // 
-            // lampUnits_Gasket_Pressing_Y_A_2_Head_1
+            // unitUnits_Supporting_Strip_Head_2
             // 
-            this.lampUnits_Gasket_Pressing_Y_A_2_Head_1.Name = "lampUnits_Gasket_Pressing_Y_A_2_Head_1";
-            this.lampUnits_Gasket_Pressing_Y_A_2_Head_1.PlcNumber = 1;
-            this.lampUnits_Gasket_Pressing_Y_A_2_Head_1.Address = "X0062";
-            this.lampUnits_Gasket_Pressing_Y_A_2_Head_1.Location = new System.Drawing.Point(884, 655);
-            this.lampUnits_Gasket_Pressing_Y_A_2_Head_1.Size = new System.Drawing.Size(30, 30);
+            // Y1.2 (5/2 spring): its coil takes it down - M101 set (the coil on), reset (off: the spring back) - back X0012, forward X0032; did not come back M602, did not go down M600 (the four heads' one bit each).
+            this.unitUnits_Supporting_Strip_Head_2.BackColor = System.Drawing.Color.White;
+            this.unitUnits_Supporting_Strip_Head_2.Name = "unitUnits_Supporting_Strip_Head_2";
+            this.unitUnits_Supporting_Strip_Head_2.PlcNumber = 1;
+            this.unitUnits_Supporting_Strip_Head_2.TitleTextKey = "Unit_MK2010_H2SupportingStrip";
+            this.unitUnits_Supporting_Strip_Head_2.Location = new System.Drawing.Point(394, 638);
+            this.unitUnits_Supporting_Strip_Head_2.Size = new System.Drawing.Size(216, 64);
+            this.unitUnits_Supporting_Strip_Head_2.LogAction = true;
+            this.unitUnits_Supporting_Strip_Head_2.Arrows = Kaban.Core.Enums.ButtonArrowStyle.UpDown;
+            this.unitUnits_Supporting_Strip_Head_2.CommandAAddress = "M101";
+            this.unitUnits_Supporting_Strip_Head_2.CommandAAction = Kaban.Core.Enums.BitActionType.RESET;
+            this.unitUnits_Supporting_Strip_Head_2.Lamp1AAddress = "X0012";
+            this.unitUnits_Supporting_Strip_Head_2.CommandBAddress = "M101";
+            this.unitUnits_Supporting_Strip_Head_2.CommandBAction = Kaban.Core.Enums.BitActionType.SET;
+            this.unitUnits_Supporting_Strip_Head_2.Lamp1BAddress = "X0032";
+            this.unitUnits_Supporting_Strip_Head_2.ValveType = Kaban.UI.Controls.CylinderValve.SingleSolenoid;
+            this.unitUnits_Supporting_Strip_Head_2.FeedbackType = Kaban.UI.Controls.CylinderFeedback.TwoEndMagnetic;
+            this.unitUnits_Supporting_Strip_Head_2.ErrorAAddress = "M602";
+            this.unitUnits_Supporting_Strip_Head_2.ErrorBAddress = "M600";
+            this.unitUnits_Supporting_Strip_Head_2.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
             // 
-            // lampUnits_Gasket_Pressing_Y_A_2_Head_2
+            // unitUnits_Supporting_Strip_Head_3
             // 
-            this.lampUnits_Gasket_Pressing_Y_A_2_Head_2.Name = "lampUnits_Gasket_Pressing_Y_A_2_Head_2";
-            this.lampUnits_Gasket_Pressing_Y_A_2_Head_2.PlcNumber = 1;
-            this.lampUnits_Gasket_Pressing_Y_A_2_Head_2.Address = "X0063";
-            this.lampUnits_Gasket_Pressing_Y_A_2_Head_2.Location = new System.Drawing.Point(928, 655);
-            this.lampUnits_Gasket_Pressing_Y_A_2_Head_2.Size = new System.Drawing.Size(30, 30);
+            // Y1.3 (5/2 spring): its coil takes it down - M101 set (the coil on), reset (off: the spring back) - back X0013, forward X0033; did not come back M602, did not go down M600 (the four heads' one bit each).
+            this.unitUnits_Supporting_Strip_Head_3.BackColor = System.Drawing.Color.White;
+            this.unitUnits_Supporting_Strip_Head_3.Name = "unitUnits_Supporting_Strip_Head_3";
+            this.unitUnits_Supporting_Strip_Head_3.PlcNumber = 1;
+            this.unitUnits_Supporting_Strip_Head_3.TitleTextKey = "Unit_MK2010_H3SupportingStrip";
+            this.unitUnits_Supporting_Strip_Head_3.Location = new System.Drawing.Point(616, 638);
+            this.unitUnits_Supporting_Strip_Head_3.Size = new System.Drawing.Size(216, 64);
+            this.unitUnits_Supporting_Strip_Head_3.LogAction = true;
+            this.unitUnits_Supporting_Strip_Head_3.Arrows = Kaban.Core.Enums.ButtonArrowStyle.UpDown;
+            this.unitUnits_Supporting_Strip_Head_3.CommandAAddress = "M101";
+            this.unitUnits_Supporting_Strip_Head_3.CommandAAction = Kaban.Core.Enums.BitActionType.RESET;
+            this.unitUnits_Supporting_Strip_Head_3.Lamp1AAddress = "X0013";
+            this.unitUnits_Supporting_Strip_Head_3.CommandBAddress = "M101";
+            this.unitUnits_Supporting_Strip_Head_3.CommandBAction = Kaban.Core.Enums.BitActionType.SET;
+            this.unitUnits_Supporting_Strip_Head_3.Lamp1BAddress = "X0033";
+            this.unitUnits_Supporting_Strip_Head_3.ValveType = Kaban.UI.Controls.CylinderValve.SingleSolenoid;
+            this.unitUnits_Supporting_Strip_Head_3.FeedbackType = Kaban.UI.Controls.CylinderFeedback.TwoEndMagnetic;
+            this.unitUnits_Supporting_Strip_Head_3.ErrorAAddress = "M602";
+            this.unitUnits_Supporting_Strip_Head_3.ErrorBAddress = "M600";
+            this.unitUnits_Supporting_Strip_Head_3.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            // 
+            // unitUnits_Supporting_Strip_Head_4
+            // 
+            // Y1.4 (5/2 spring): its coil takes it down - M101 set (the coil on), reset (off: the spring back) - back X0014, forward X0034; did not come back M602, did not go down M600 (the four heads' one bit each).
+            this.unitUnits_Supporting_Strip_Head_4.BackColor = System.Drawing.Color.White;
+            this.unitUnits_Supporting_Strip_Head_4.Name = "unitUnits_Supporting_Strip_Head_4";
+            this.unitUnits_Supporting_Strip_Head_4.PlcNumber = 1;
+            this.unitUnits_Supporting_Strip_Head_4.TitleTextKey = "Unit_MK2010_H4SupportingStrip";
+            this.unitUnits_Supporting_Strip_Head_4.Location = new System.Drawing.Point(838, 638);
+            this.unitUnits_Supporting_Strip_Head_4.Size = new System.Drawing.Size(216, 64);
+            this.unitUnits_Supporting_Strip_Head_4.LogAction = true;
+            this.unitUnits_Supporting_Strip_Head_4.Arrows = Kaban.Core.Enums.ButtonArrowStyle.UpDown;
+            this.unitUnits_Supporting_Strip_Head_4.CommandAAddress = "M101";
+            this.unitUnits_Supporting_Strip_Head_4.CommandAAction = Kaban.Core.Enums.BitActionType.RESET;
+            this.unitUnits_Supporting_Strip_Head_4.Lamp1AAddress = "X0014";
+            this.unitUnits_Supporting_Strip_Head_4.CommandBAddress = "M101";
+            this.unitUnits_Supporting_Strip_Head_4.CommandBAction = Kaban.Core.Enums.BitActionType.SET;
+            this.unitUnits_Supporting_Strip_Head_4.Lamp1BAddress = "X0034";
+            this.unitUnits_Supporting_Strip_Head_4.ValveType = Kaban.UI.Controls.CylinderValve.SingleSolenoid;
+            this.unitUnits_Supporting_Strip_Head_4.FeedbackType = Kaban.UI.Controls.CylinderFeedback.TwoEndMagnetic;
+            this.unitUnits_Supporting_Strip_Head_4.ErrorAAddress = "M602";
+            this.unitUnits_Supporting_Strip_Head_4.ErrorBAddress = "M600";
+            this.unitUnits_Supporting_Strip_Head_4.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            // 
+            // capSide_Table_1
+            // 
+            this.capSide_Table_1.Name = "capSide_Table_1";
+            this.capSide_Table_1.TranslationKey = "Side Table 1";
+            this.capSide_Table_1.Text = "Side Table 1";
+            this.capSide_Table_1.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.capSide_Table_1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
+            this.capSide_Table_1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.capSide_Table_1.Location = new System.Drawing.Point(16, 706);
+            this.capSide_Table_1.Size = new System.Drawing.Size(150, 72);
+            this.capSide_Table_1.Font = new System.Drawing.Font("Segoe UI", 9.5F);
+            // 
+            // unitUnits_Side_Table_1_Head_1
+            // 
+            // P52: Y2.1 / Y3.1 forward (3 / 6 bar), Y4.1 back - single valves, both off both sides open (as a 5/3 open centre); M102 set forward, reset back; back sensor X0015; did not come back M601.
+            this.unitUnits_Side_Table_1_Head_1.BackColor = System.Drawing.Color.White;
+            this.unitUnits_Side_Table_1_Head_1.Name = "unitUnits_Side_Table_1_Head_1";
+            this.unitUnits_Side_Table_1_Head_1.PlcNumber = 1;
+            this.unitUnits_Side_Table_1_Head_1.TitleTextKey = "Unit_MK2010_H1SideTable1";
+            this.unitUnits_Side_Table_1_Head_1.Location = new System.Drawing.Point(172, 710);
+            this.unitUnits_Side_Table_1_Head_1.Size = new System.Drawing.Size(216, 64);
+            this.unitUnits_Side_Table_1_Head_1.LogAction = true;
+            this.unitUnits_Side_Table_1_Head_1.CommandAAddress = "M102";
+            this.unitUnits_Side_Table_1_Head_1.CommandAAction = Kaban.Core.Enums.BitActionType.RESET;
+            this.unitUnits_Side_Table_1_Head_1.Lamp1AAddress = "X0015";
+            this.unitUnits_Side_Table_1_Head_1.CommandBAddress = "M102";
+            this.unitUnits_Side_Table_1_Head_1.CommandBAction = Kaban.Core.Enums.BitActionType.SET;
+            this.unitUnits_Side_Table_1_Head_1.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayOpenCenter;
+            this.unitUnits_Side_Table_1_Head_1.FeedbackType = Kaban.UI.Controls.CylinderFeedback.SingleMagnetic;
+            this.unitUnits_Side_Table_1_Head_1.ErrorAAddress = "M601";
+            this.unitUnits_Side_Table_1_Head_1.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            // 
+            // unitUnits_Side_Table_1_Head_2
+            // 
+            // P52: Y2.2 / Y3.2 forward (3 / 6 bar), Y4.2 back - single valves, both off both sides open (as a 5/3 open centre); M102 set forward, reset back; back sensor X0016; did not come back M601.
+            this.unitUnits_Side_Table_1_Head_2.BackColor = System.Drawing.Color.White;
+            this.unitUnits_Side_Table_1_Head_2.Name = "unitUnits_Side_Table_1_Head_2";
+            this.unitUnits_Side_Table_1_Head_2.PlcNumber = 1;
+            this.unitUnits_Side_Table_1_Head_2.TitleTextKey = "Unit_MK2010_H2SideTable1";
+            this.unitUnits_Side_Table_1_Head_2.Location = new System.Drawing.Point(394, 710);
+            this.unitUnits_Side_Table_1_Head_2.Size = new System.Drawing.Size(216, 64);
+            this.unitUnits_Side_Table_1_Head_2.LogAction = true;
+            this.unitUnits_Side_Table_1_Head_2.CommandAAddress = "M102";
+            this.unitUnits_Side_Table_1_Head_2.CommandAAction = Kaban.Core.Enums.BitActionType.RESET;
+            this.unitUnits_Side_Table_1_Head_2.Lamp1AAddress = "X0016";
+            this.unitUnits_Side_Table_1_Head_2.CommandBAddress = "M102";
+            this.unitUnits_Side_Table_1_Head_2.CommandBAction = Kaban.Core.Enums.BitActionType.SET;
+            this.unitUnits_Side_Table_1_Head_2.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayOpenCenter;
+            this.unitUnits_Side_Table_1_Head_2.FeedbackType = Kaban.UI.Controls.CylinderFeedback.SingleMagnetic;
+            this.unitUnits_Side_Table_1_Head_2.ErrorAAddress = "M601";
+            this.unitUnits_Side_Table_1_Head_2.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            // 
+            // unitUnits_Side_Table_1_Head_3
+            // 
+            // P52: Y2.3 / Y3.3 forward (3 / 6 bar), Y4.3 back - single valves, both off both sides open (as a 5/3 open centre); M102 set forward, reset back; back sensor X0017; did not come back M601.
+            this.unitUnits_Side_Table_1_Head_3.BackColor = System.Drawing.Color.White;
+            this.unitUnits_Side_Table_1_Head_3.Name = "unitUnits_Side_Table_1_Head_3";
+            this.unitUnits_Side_Table_1_Head_3.PlcNumber = 1;
+            this.unitUnits_Side_Table_1_Head_3.TitleTextKey = "Unit_MK2010_H3SideTable1";
+            this.unitUnits_Side_Table_1_Head_3.Location = new System.Drawing.Point(616, 710);
+            this.unitUnits_Side_Table_1_Head_3.Size = new System.Drawing.Size(216, 64);
+            this.unitUnits_Side_Table_1_Head_3.LogAction = true;
+            this.unitUnits_Side_Table_1_Head_3.CommandAAddress = "M102";
+            this.unitUnits_Side_Table_1_Head_3.CommandAAction = Kaban.Core.Enums.BitActionType.RESET;
+            this.unitUnits_Side_Table_1_Head_3.Lamp1AAddress = "X0017";
+            this.unitUnits_Side_Table_1_Head_3.CommandBAddress = "M102";
+            this.unitUnits_Side_Table_1_Head_3.CommandBAction = Kaban.Core.Enums.BitActionType.SET;
+            this.unitUnits_Side_Table_1_Head_3.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayOpenCenter;
+            this.unitUnits_Side_Table_1_Head_3.FeedbackType = Kaban.UI.Controls.CylinderFeedback.SingleMagnetic;
+            this.unitUnits_Side_Table_1_Head_3.ErrorAAddress = "M601";
+            this.unitUnits_Side_Table_1_Head_3.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            // 
+            // unitUnits_Side_Table_1_Head_4
+            // 
+            // P52: Y2.4 / Y3.4 forward (3 / 6 bar), Y4.4 back - single valves, both off both sides open (as a 5/3 open centre); M102 set forward, reset back; back sensor X0020; did not come back M601.
+            this.unitUnits_Side_Table_1_Head_4.BackColor = System.Drawing.Color.White;
+            this.unitUnits_Side_Table_1_Head_4.Name = "unitUnits_Side_Table_1_Head_4";
+            this.unitUnits_Side_Table_1_Head_4.PlcNumber = 1;
+            this.unitUnits_Side_Table_1_Head_4.TitleTextKey = "Unit_MK2010_H4SideTable1";
+            this.unitUnits_Side_Table_1_Head_4.Location = new System.Drawing.Point(838, 710);
+            this.unitUnits_Side_Table_1_Head_4.Size = new System.Drawing.Size(216, 64);
+            this.unitUnits_Side_Table_1_Head_4.LogAction = true;
+            this.unitUnits_Side_Table_1_Head_4.CommandAAddress = "M102";
+            this.unitUnits_Side_Table_1_Head_4.CommandAAction = Kaban.Core.Enums.BitActionType.RESET;
+            this.unitUnits_Side_Table_1_Head_4.Lamp1AAddress = "X0020";
+            this.unitUnits_Side_Table_1_Head_4.CommandBAddress = "M102";
+            this.unitUnits_Side_Table_1_Head_4.CommandBAction = Kaban.Core.Enums.BitActionType.SET;
+            this.unitUnits_Side_Table_1_Head_4.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayOpenCenter;
+            this.unitUnits_Side_Table_1_Head_4.FeedbackType = Kaban.UI.Controls.CylinderFeedback.SingleMagnetic;
+            this.unitUnits_Side_Table_1_Head_4.ErrorAAddress = "M601";
+            this.unitUnits_Side_Table_1_Head_4.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            // 
+            // capSide_Table_2
+            // 
+            this.capSide_Table_2.Name = "capSide_Table_2";
+            this.capSide_Table_2.TranslationKey = "Side Table 2";
+            this.capSide_Table_2.Text = "Side Table 2";
+            this.capSide_Table_2.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.capSide_Table_2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
+            this.capSide_Table_2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.capSide_Table_2.Location = new System.Drawing.Point(16, 778);
+            this.capSide_Table_2.Size = new System.Drawing.Size(150, 72);
+            this.capSide_Table_2.Font = new System.Drawing.Font("Segoe UI", 9.5F);
+            // 
+            // unitUnits_Side_Table_2_Head_1
+            // 
+            this.unitUnits_Side_Table_2_Head_1.BackColor = System.Drawing.Color.White;
+            this.unitUnits_Side_Table_2_Head_1.Name = "unitUnits_Side_Table_2_Head_1";
+            this.unitUnits_Side_Table_2_Head_1.PlcNumber = 1;
+            this.unitUnits_Side_Table_2_Head_1.TitleTextKey = "Unit_MK2010_H1SideTable2";
+            this.unitUnits_Side_Table_2_Head_1.Location = new System.Drawing.Point(172, 782);
+            this.unitUnits_Side_Table_2_Head_1.Size = new System.Drawing.Size(216, 64);
+            this.unitUnits_Side_Table_2_Head_1.LogAction = true;
+            this.unitUnits_Side_Table_2_Head_1.CommandAAddress = "M102";
+            this.unitUnits_Side_Table_2_Head_1.CommandAAction = Kaban.Core.Enums.BitActionType.RESET;
+            this.unitUnits_Side_Table_2_Head_1.Lamp1AAddress = "X0021";
+            this.unitUnits_Side_Table_2_Head_1.CommandBAddress = "M102";
+            this.unitUnits_Side_Table_2_Head_1.CommandBAction = Kaban.Core.Enums.BitActionType.SET;
+            this.unitUnits_Side_Table_2_Head_1.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayOpenCenter;
+            this.unitUnits_Side_Table_2_Head_1.FeedbackType = Kaban.UI.Controls.CylinderFeedback.SingleMagnetic;
+            this.unitUnits_Side_Table_2_Head_1.ErrorAAddress = "M601";
+            this.unitUnits_Side_Table_2_Head_1.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            // 
+            // unitUnits_Side_Table_2_Head_2
+            // 
+            this.unitUnits_Side_Table_2_Head_2.BackColor = System.Drawing.Color.White;
+            this.unitUnits_Side_Table_2_Head_2.Name = "unitUnits_Side_Table_2_Head_2";
+            this.unitUnits_Side_Table_2_Head_2.PlcNumber = 1;
+            this.unitUnits_Side_Table_2_Head_2.TitleTextKey = "Unit_MK2010_H2SideTable2";
+            this.unitUnits_Side_Table_2_Head_2.Location = new System.Drawing.Point(394, 782);
+            this.unitUnits_Side_Table_2_Head_2.Size = new System.Drawing.Size(216, 64);
+            this.unitUnits_Side_Table_2_Head_2.LogAction = true;
+            this.unitUnits_Side_Table_2_Head_2.CommandAAddress = "M102";
+            this.unitUnits_Side_Table_2_Head_2.CommandAAction = Kaban.Core.Enums.BitActionType.RESET;
+            this.unitUnits_Side_Table_2_Head_2.Lamp1AAddress = "X0022";
+            this.unitUnits_Side_Table_2_Head_2.CommandBAddress = "M102";
+            this.unitUnits_Side_Table_2_Head_2.CommandBAction = Kaban.Core.Enums.BitActionType.SET;
+            this.unitUnits_Side_Table_2_Head_2.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayOpenCenter;
+            this.unitUnits_Side_Table_2_Head_2.FeedbackType = Kaban.UI.Controls.CylinderFeedback.SingleMagnetic;
+            this.unitUnits_Side_Table_2_Head_2.ErrorAAddress = "M601";
+            this.unitUnits_Side_Table_2_Head_2.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            // 
+            // unitUnits_Side_Table_2_Head_3
+            // 
+            this.unitUnits_Side_Table_2_Head_3.BackColor = System.Drawing.Color.White;
+            this.unitUnits_Side_Table_2_Head_3.Name = "unitUnits_Side_Table_2_Head_3";
+            this.unitUnits_Side_Table_2_Head_3.PlcNumber = 1;
+            this.unitUnits_Side_Table_2_Head_3.TitleTextKey = "Unit_MK2010_H3SideTable2";
+            this.unitUnits_Side_Table_2_Head_3.Location = new System.Drawing.Point(616, 782);
+            this.unitUnits_Side_Table_2_Head_3.Size = new System.Drawing.Size(216, 64);
+            this.unitUnits_Side_Table_2_Head_3.LogAction = true;
+            this.unitUnits_Side_Table_2_Head_3.CommandAAddress = "M102";
+            this.unitUnits_Side_Table_2_Head_3.CommandAAction = Kaban.Core.Enums.BitActionType.RESET;
+            this.unitUnits_Side_Table_2_Head_3.Lamp1AAddress = "X0023";
+            this.unitUnits_Side_Table_2_Head_3.CommandBAddress = "M102";
+            this.unitUnits_Side_Table_2_Head_3.CommandBAction = Kaban.Core.Enums.BitActionType.SET;
+            this.unitUnits_Side_Table_2_Head_3.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayOpenCenter;
+            this.unitUnits_Side_Table_2_Head_3.FeedbackType = Kaban.UI.Controls.CylinderFeedback.SingleMagnetic;
+            this.unitUnits_Side_Table_2_Head_3.ErrorAAddress = "M601";
+            this.unitUnits_Side_Table_2_Head_3.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            // 
+            // unitUnits_Side_Table_2_Head_4
+            // 
+            this.unitUnits_Side_Table_2_Head_4.BackColor = System.Drawing.Color.White;
+            this.unitUnits_Side_Table_2_Head_4.Name = "unitUnits_Side_Table_2_Head_4";
+            this.unitUnits_Side_Table_2_Head_4.PlcNumber = 1;
+            this.unitUnits_Side_Table_2_Head_4.TitleTextKey = "Unit_MK2010_H4SideTable2";
+            this.unitUnits_Side_Table_2_Head_4.Location = new System.Drawing.Point(838, 782);
+            this.unitUnits_Side_Table_2_Head_4.Size = new System.Drawing.Size(216, 64);
+            this.unitUnits_Side_Table_2_Head_4.LogAction = true;
+            this.unitUnits_Side_Table_2_Head_4.CommandAAddress = "M102";
+            this.unitUnits_Side_Table_2_Head_4.CommandAAction = Kaban.Core.Enums.BitActionType.RESET;
+            this.unitUnits_Side_Table_2_Head_4.Lamp1AAddress = "X0024";
+            this.unitUnits_Side_Table_2_Head_4.CommandBAddress = "M102";
+            this.unitUnits_Side_Table_2_Head_4.CommandBAction = Kaban.Core.Enums.BitActionType.SET;
+            this.unitUnits_Side_Table_2_Head_4.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayOpenCenter;
+            this.unitUnits_Side_Table_2_Head_4.FeedbackType = Kaban.UI.Controls.CylinderFeedback.SingleMagnetic;
+            this.unitUnits_Side_Table_2_Head_4.ErrorAAddress = "M601";
+            this.unitUnits_Side_Table_2_Head_4.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            // 
+            // capHeater_Plate
+            // 
+            this.capHeater_Plate.Name = "capHeater_Plate";
+            this.capHeater_Plate.TranslationKey = "Heater Plate";
+            this.capHeater_Plate.Text = "Heater Plate";
+            this.capHeater_Plate.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.capHeater_Plate.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
+            this.capHeater_Plate.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.capHeater_Plate.Location = new System.Drawing.Point(16, 850);
+            this.capHeater_Plate.Size = new System.Drawing.Size(150, 72);
+            this.capHeater_Plate.Font = new System.Drawing.Font("Segoe UI", 9.5F);
+            // 
+            // unitUnits_Heater_Plate_Head_1
+            // 
+            // P3 (and the table stops P8 / P9): Y5.1 / Y6.1 double 5/2; back X0025, forward X0035; back failed M604, forward M603.
+            this.unitUnits_Heater_Plate_Head_1.BackColor = System.Drawing.Color.White;
+            this.unitUnits_Heater_Plate_Head_1.Name = "unitUnits_Heater_Plate_Head_1";
+            this.unitUnits_Heater_Plate_Head_1.PlcNumber = 1;
+            this.unitUnits_Heater_Plate_Head_1.TitleTextKey = "Unit_MK2010_H1HeaterPlate";
+            this.unitUnits_Heater_Plate_Head_1.Location = new System.Drawing.Point(172, 854);
+            this.unitUnits_Heater_Plate_Head_1.Size = new System.Drawing.Size(216, 64);
+            this.unitUnits_Heater_Plate_Head_1.LogAction = true;
+            this.unitUnits_Heater_Plate_Head_1.CommandAAddress = "M104";
+            this.unitUnits_Heater_Plate_Head_1.CommandAAction = Kaban.Core.Enums.BitActionType.RESET;
+            this.unitUnits_Heater_Plate_Head_1.Lamp1AAddress = "X0025";
+            this.unitUnits_Heater_Plate_Head_1.CommandBAddress = "M104";
+            this.unitUnits_Heater_Plate_Head_1.CommandBAction = Kaban.Core.Enums.BitActionType.SET;
+            this.unitUnits_Heater_Plate_Head_1.Lamp1BAddress = "X0035";
+            this.unitUnits_Heater_Plate_Head_1.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid;
+            this.unitUnits_Heater_Plate_Head_1.FeedbackType = Kaban.UI.Controls.CylinderFeedback.TwoEndMagnetic;
+            this.unitUnits_Heater_Plate_Head_1.ErrorAAddress = "M604";
+            this.unitUnits_Heater_Plate_Head_1.ErrorBAddress = "M603";
+            this.unitUnits_Heater_Plate_Head_1.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            // 
+            // unitUnits_Heater_Plate_Head_2
+            // 
+            // P3 (and the table stops P8 / P9): Y5.2 / Y6.2 double 5/2; back X0026, forward X0036; back failed M604, forward M603.
+            this.unitUnits_Heater_Plate_Head_2.BackColor = System.Drawing.Color.White;
+            this.unitUnits_Heater_Plate_Head_2.Name = "unitUnits_Heater_Plate_Head_2";
+            this.unitUnits_Heater_Plate_Head_2.PlcNumber = 1;
+            this.unitUnits_Heater_Plate_Head_2.TitleTextKey = "Unit_MK2010_H2HeaterPlate";
+            this.unitUnits_Heater_Plate_Head_2.Location = new System.Drawing.Point(394, 854);
+            this.unitUnits_Heater_Plate_Head_2.Size = new System.Drawing.Size(216, 64);
+            this.unitUnits_Heater_Plate_Head_2.LogAction = true;
+            this.unitUnits_Heater_Plate_Head_2.CommandAAddress = "M104";
+            this.unitUnits_Heater_Plate_Head_2.CommandAAction = Kaban.Core.Enums.BitActionType.RESET;
+            this.unitUnits_Heater_Plate_Head_2.Lamp1AAddress = "X0026";
+            this.unitUnits_Heater_Plate_Head_2.CommandBAddress = "M104";
+            this.unitUnits_Heater_Plate_Head_2.CommandBAction = Kaban.Core.Enums.BitActionType.SET;
+            this.unitUnits_Heater_Plate_Head_2.Lamp1BAddress = "X0036";
+            this.unitUnits_Heater_Plate_Head_2.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid;
+            this.unitUnits_Heater_Plate_Head_2.FeedbackType = Kaban.UI.Controls.CylinderFeedback.TwoEndMagnetic;
+            this.unitUnits_Heater_Plate_Head_2.ErrorAAddress = "M604";
+            this.unitUnits_Heater_Plate_Head_2.ErrorBAddress = "M603";
+            this.unitUnits_Heater_Plate_Head_2.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            // 
+            // unitUnits_Heater_Plate_Head_3
+            // 
+            // P3 (and the table stops P8 / P9): Y5.3 / Y6.3 double 5/2; back X0027, forward X0037; back failed M604, forward M603.
+            this.unitUnits_Heater_Plate_Head_3.BackColor = System.Drawing.Color.White;
+            this.unitUnits_Heater_Plate_Head_3.Name = "unitUnits_Heater_Plate_Head_3";
+            this.unitUnits_Heater_Plate_Head_3.PlcNumber = 1;
+            this.unitUnits_Heater_Plate_Head_3.TitleTextKey = "Unit_MK2010_H3HeaterPlate";
+            this.unitUnits_Heater_Plate_Head_3.Location = new System.Drawing.Point(616, 854);
+            this.unitUnits_Heater_Plate_Head_3.Size = new System.Drawing.Size(216, 64);
+            this.unitUnits_Heater_Plate_Head_3.LogAction = true;
+            this.unitUnits_Heater_Plate_Head_3.CommandAAddress = "M104";
+            this.unitUnits_Heater_Plate_Head_3.CommandAAction = Kaban.Core.Enums.BitActionType.RESET;
+            this.unitUnits_Heater_Plate_Head_3.Lamp1AAddress = "X0027";
+            this.unitUnits_Heater_Plate_Head_3.CommandBAddress = "M104";
+            this.unitUnits_Heater_Plate_Head_3.CommandBAction = Kaban.Core.Enums.BitActionType.SET;
+            this.unitUnits_Heater_Plate_Head_3.Lamp1BAddress = "X0037";
+            this.unitUnits_Heater_Plate_Head_3.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid;
+            this.unitUnits_Heater_Plate_Head_3.FeedbackType = Kaban.UI.Controls.CylinderFeedback.TwoEndMagnetic;
+            this.unitUnits_Heater_Plate_Head_3.ErrorAAddress = "M604";
+            this.unitUnits_Heater_Plate_Head_3.ErrorBAddress = "M603";
+            this.unitUnits_Heater_Plate_Head_3.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            // 
+            // unitUnits_Heater_Plate_Head_4
+            // 
+            // P3 (and the table stops P8 / P9): Y5.4 / Y6.4 double 5/2; back X0030, forward X0040; back failed M604, forward M603.
+            this.unitUnits_Heater_Plate_Head_4.BackColor = System.Drawing.Color.White;
+            this.unitUnits_Heater_Plate_Head_4.Name = "unitUnits_Heater_Plate_Head_4";
+            this.unitUnits_Heater_Plate_Head_4.PlcNumber = 1;
+            this.unitUnits_Heater_Plate_Head_4.TitleTextKey = "Unit_MK2010_H4HeaterPlate";
+            this.unitUnits_Heater_Plate_Head_4.Location = new System.Drawing.Point(838, 854);
+            this.unitUnits_Heater_Plate_Head_4.Size = new System.Drawing.Size(216, 64);
+            this.unitUnits_Heater_Plate_Head_4.LogAction = true;
+            this.unitUnits_Heater_Plate_Head_4.CommandAAddress = "M104";
+            this.unitUnits_Heater_Plate_Head_4.CommandAAction = Kaban.Core.Enums.BitActionType.RESET;
+            this.unitUnits_Heater_Plate_Head_4.Lamp1AAddress = "X0030";
+            this.unitUnits_Heater_Plate_Head_4.CommandBAddress = "M104";
+            this.unitUnits_Heater_Plate_Head_4.CommandBAction = Kaban.Core.Enums.BitActionType.SET;
+            this.unitUnits_Heater_Plate_Head_4.Lamp1BAddress = "X0040";
+            this.unitUnits_Heater_Plate_Head_4.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid;
+            this.unitUnits_Heater_Plate_Head_4.FeedbackType = Kaban.UI.Controls.CylinderFeedback.TwoEndMagnetic;
+            this.unitUnits_Heater_Plate_Head_4.ErrorAAddress = "M604";
+            this.unitUnits_Heater_Plate_Head_4.ErrorBAddress = "M603";
+            this.unitUnits_Heater_Plate_Head_4.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            // 
+            // capTop_Press
+            // 
+            this.capTop_Press.Name = "capTop_Press";
+            this.capTop_Press.TranslationKey = "Top Press";
+            this.capTop_Press.Text = "Top Press";
+            this.capTop_Press.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.capTop_Press.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
+            this.capTop_Press.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.capTop_Press.Location = new System.Drawing.Point(16, 922);
+            this.capTop_Press.Size = new System.Drawing.Size(150, 72);
+            this.capTop_Press.Font = new System.Drawing.Font("Segoe UI", 9.5F);
+            // 
+            // unitUnits_Top_Press_Head_1
+            // 
+            // P4 / P5: Y7.1 down, Y8.1 up - single valves (as a 5/3 open centre); no sensor among the PLC's inputs.
+            this.unitUnits_Top_Press_Head_1.BackColor = System.Drawing.Color.White;
+            this.unitUnits_Top_Press_Head_1.Name = "unitUnits_Top_Press_Head_1";
+            this.unitUnits_Top_Press_Head_1.PlcNumber = 1;
+            this.unitUnits_Top_Press_Head_1.TitleTextKey = "Unit_MK2010_H1TopPress";
+            this.unitUnits_Top_Press_Head_1.Location = new System.Drawing.Point(172, 926);
+            this.unitUnits_Top_Press_Head_1.Size = new System.Drawing.Size(216, 64);
+            this.unitUnits_Top_Press_Head_1.LogAction = true;
+            this.unitUnits_Top_Press_Head_1.Arrows = Kaban.Core.Enums.ButtonArrowStyle.UpDown;
+            this.unitUnits_Top_Press_Head_1.CommandAAddress = "M103";
+            this.unitUnits_Top_Press_Head_1.CommandAAction = Kaban.Core.Enums.BitActionType.RESET;
+            this.unitUnits_Top_Press_Head_1.CommandBAddress = "M103";
+            this.unitUnits_Top_Press_Head_1.CommandBAction = Kaban.Core.Enums.BitActionType.SET;
+            this.unitUnits_Top_Press_Head_1.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayOpenCenter;
+            this.unitUnits_Top_Press_Head_1.FeedbackType = Kaban.UI.Controls.CylinderFeedback.NoSensor;
+            this.unitUnits_Top_Press_Head_1.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            // 
+            // unitUnits_Top_Press_Head_2
+            // 
+            // P4 / P5: Y7.2 down, Y8.2 up - single valves (as a 5/3 open centre); no sensor among the PLC's inputs.
+            this.unitUnits_Top_Press_Head_2.BackColor = System.Drawing.Color.White;
+            this.unitUnits_Top_Press_Head_2.Name = "unitUnits_Top_Press_Head_2";
+            this.unitUnits_Top_Press_Head_2.PlcNumber = 1;
+            this.unitUnits_Top_Press_Head_2.TitleTextKey = "Unit_MK2010_H2TopPress";
+            this.unitUnits_Top_Press_Head_2.Location = new System.Drawing.Point(394, 926);
+            this.unitUnits_Top_Press_Head_2.Size = new System.Drawing.Size(216, 64);
+            this.unitUnits_Top_Press_Head_2.LogAction = true;
+            this.unitUnits_Top_Press_Head_2.Arrows = Kaban.Core.Enums.ButtonArrowStyle.UpDown;
+            this.unitUnits_Top_Press_Head_2.CommandAAddress = "M103";
+            this.unitUnits_Top_Press_Head_2.CommandAAction = Kaban.Core.Enums.BitActionType.RESET;
+            this.unitUnits_Top_Press_Head_2.CommandBAddress = "M103";
+            this.unitUnits_Top_Press_Head_2.CommandBAction = Kaban.Core.Enums.BitActionType.SET;
+            this.unitUnits_Top_Press_Head_2.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayOpenCenter;
+            this.unitUnits_Top_Press_Head_2.FeedbackType = Kaban.UI.Controls.CylinderFeedback.NoSensor;
+            this.unitUnits_Top_Press_Head_2.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            // 
+            // unitUnits_Top_Press_Head_3
+            // 
+            // P4 / P5: Y7.3 down, Y8.3 up - single valves (as a 5/3 open centre); no sensor among the PLC's inputs.
+            this.unitUnits_Top_Press_Head_3.BackColor = System.Drawing.Color.White;
+            this.unitUnits_Top_Press_Head_3.Name = "unitUnits_Top_Press_Head_3";
+            this.unitUnits_Top_Press_Head_3.PlcNumber = 1;
+            this.unitUnits_Top_Press_Head_3.TitleTextKey = "Unit_MK2010_H3TopPress";
+            this.unitUnits_Top_Press_Head_3.Location = new System.Drawing.Point(616, 926);
+            this.unitUnits_Top_Press_Head_3.Size = new System.Drawing.Size(216, 64);
+            this.unitUnits_Top_Press_Head_3.LogAction = true;
+            this.unitUnits_Top_Press_Head_3.Arrows = Kaban.Core.Enums.ButtonArrowStyle.UpDown;
+            this.unitUnits_Top_Press_Head_3.CommandAAddress = "M103";
+            this.unitUnits_Top_Press_Head_3.CommandAAction = Kaban.Core.Enums.BitActionType.RESET;
+            this.unitUnits_Top_Press_Head_3.CommandBAddress = "M103";
+            this.unitUnits_Top_Press_Head_3.CommandBAction = Kaban.Core.Enums.BitActionType.SET;
+            this.unitUnits_Top_Press_Head_3.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayOpenCenter;
+            this.unitUnits_Top_Press_Head_3.FeedbackType = Kaban.UI.Controls.CylinderFeedback.NoSensor;
+            this.unitUnits_Top_Press_Head_3.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            // 
+            // unitUnits_Top_Press_Head_4
+            // 
+            // P4 / P5: Y7.4 down, Y8.4 up - single valves (as a 5/3 open centre); no sensor among the PLC's inputs.
+            this.unitUnits_Top_Press_Head_4.BackColor = System.Drawing.Color.White;
+            this.unitUnits_Top_Press_Head_4.Name = "unitUnits_Top_Press_Head_4";
+            this.unitUnits_Top_Press_Head_4.PlcNumber = 1;
+            this.unitUnits_Top_Press_Head_4.TitleTextKey = "Unit_MK2010_H4TopPress";
+            this.unitUnits_Top_Press_Head_4.Location = new System.Drawing.Point(838, 926);
+            this.unitUnits_Top_Press_Head_4.Size = new System.Drawing.Size(216, 64);
+            this.unitUnits_Top_Press_Head_4.LogAction = true;
+            this.unitUnits_Top_Press_Head_4.Arrows = Kaban.Core.Enums.ButtonArrowStyle.UpDown;
+            this.unitUnits_Top_Press_Head_4.CommandAAddress = "M103";
+            this.unitUnits_Top_Press_Head_4.CommandAAction = Kaban.Core.Enums.BitActionType.RESET;
+            this.unitUnits_Top_Press_Head_4.CommandBAddress = "M103";
+            this.unitUnits_Top_Press_Head_4.CommandBAction = Kaban.Core.Enums.BitActionType.SET;
+            this.unitUnits_Top_Press_Head_4.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayOpenCenter;
+            this.unitUnits_Top_Press_Head_4.FeedbackType = Kaban.UI.Controls.CylinderFeedback.NoSensor;
+            this.unitUnits_Top_Press_Head_4.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            // 
+            // capProfile_Lifting
+            // 
+            this.capProfile_Lifting.Name = "capProfile_Lifting";
+            this.capProfile_Lifting.TranslationKey = "Profile Lifting";
+            this.capProfile_Lifting.Text = "Profile Lifting";
+            this.capProfile_Lifting.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.capProfile_Lifting.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
+            this.capProfile_Lifting.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.capProfile_Lifting.Location = new System.Drawing.Point(16, 994);
+            this.capProfile_Lifting.Size = new System.Drawing.Size(150, 72);
+            this.capProfile_Lifting.Font = new System.Drawing.Font("Segoe UI", 9.5F);
+            // 
+            // unitUnits_Profile_Lifting_Head_1
+            // 
+            // P6: Y10.1 / Y11.1 double 5/2 - the sheet draws two sensors, the PLC has none.
+            this.unitUnits_Profile_Lifting_Head_1.BackColor = System.Drawing.Color.White;
+            this.unitUnits_Profile_Lifting_Head_1.Name = "unitUnits_Profile_Lifting_Head_1";
+            this.unitUnits_Profile_Lifting_Head_1.PlcNumber = 1;
+            this.unitUnits_Profile_Lifting_Head_1.TitleTextKey = "Unit_MK2010_H1ProfileLifting";
+            this.unitUnits_Profile_Lifting_Head_1.Location = new System.Drawing.Point(172, 998);
+            this.unitUnits_Profile_Lifting_Head_1.Size = new System.Drawing.Size(216, 64);
+            this.unitUnits_Profile_Lifting_Head_1.LogAction = true;
+            this.unitUnits_Profile_Lifting_Head_1.Arrows = Kaban.Core.Enums.ButtonArrowStyle.DownUp;
+            this.unitUnits_Profile_Lifting_Head_1.CommandAAddress = "M105";
+            this.unitUnits_Profile_Lifting_Head_1.CommandAAction = Kaban.Core.Enums.BitActionType.RESET;
+            this.unitUnits_Profile_Lifting_Head_1.CommandBAddress = "M105";
+            this.unitUnits_Profile_Lifting_Head_1.CommandBAction = Kaban.Core.Enums.BitActionType.SET;
+            this.unitUnits_Profile_Lifting_Head_1.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid;
+            this.unitUnits_Profile_Lifting_Head_1.FeedbackType = Kaban.UI.Controls.CylinderFeedback.NoSensor;
+            this.unitUnits_Profile_Lifting_Head_1.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            // 
+            // unitUnits_Profile_Lifting_Head_2
+            // 
+            // P6: Y10.2 / Y11.2 double 5/2 - the sheet draws two sensors, the PLC has none.
+            this.unitUnits_Profile_Lifting_Head_2.BackColor = System.Drawing.Color.White;
+            this.unitUnits_Profile_Lifting_Head_2.Name = "unitUnits_Profile_Lifting_Head_2";
+            this.unitUnits_Profile_Lifting_Head_2.PlcNumber = 1;
+            this.unitUnits_Profile_Lifting_Head_2.TitleTextKey = "Unit_MK2010_H2ProfileLifting";
+            this.unitUnits_Profile_Lifting_Head_2.Location = new System.Drawing.Point(394, 998);
+            this.unitUnits_Profile_Lifting_Head_2.Size = new System.Drawing.Size(216, 64);
+            this.unitUnits_Profile_Lifting_Head_2.LogAction = true;
+            this.unitUnits_Profile_Lifting_Head_2.Arrows = Kaban.Core.Enums.ButtonArrowStyle.DownUp;
+            this.unitUnits_Profile_Lifting_Head_2.CommandAAddress = "M105";
+            this.unitUnits_Profile_Lifting_Head_2.CommandAAction = Kaban.Core.Enums.BitActionType.RESET;
+            this.unitUnits_Profile_Lifting_Head_2.CommandBAddress = "M105";
+            this.unitUnits_Profile_Lifting_Head_2.CommandBAction = Kaban.Core.Enums.BitActionType.SET;
+            this.unitUnits_Profile_Lifting_Head_2.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid;
+            this.unitUnits_Profile_Lifting_Head_2.FeedbackType = Kaban.UI.Controls.CylinderFeedback.NoSensor;
+            this.unitUnits_Profile_Lifting_Head_2.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            // 
+            // unitUnits_Profile_Lifting_Head_3
+            // 
+            // P6: Y10.3 / Y11.3 double 5/2 - the sheet draws two sensors, the PLC has none.
+            this.unitUnits_Profile_Lifting_Head_3.BackColor = System.Drawing.Color.White;
+            this.unitUnits_Profile_Lifting_Head_3.Name = "unitUnits_Profile_Lifting_Head_3";
+            this.unitUnits_Profile_Lifting_Head_3.PlcNumber = 1;
+            this.unitUnits_Profile_Lifting_Head_3.TitleTextKey = "Unit_MK2010_H3ProfileLifting";
+            this.unitUnits_Profile_Lifting_Head_3.Location = new System.Drawing.Point(616, 998);
+            this.unitUnits_Profile_Lifting_Head_3.Size = new System.Drawing.Size(216, 64);
+            this.unitUnits_Profile_Lifting_Head_3.LogAction = true;
+            this.unitUnits_Profile_Lifting_Head_3.Arrows = Kaban.Core.Enums.ButtonArrowStyle.DownUp;
+            this.unitUnits_Profile_Lifting_Head_3.CommandAAddress = "M105";
+            this.unitUnits_Profile_Lifting_Head_3.CommandAAction = Kaban.Core.Enums.BitActionType.RESET;
+            this.unitUnits_Profile_Lifting_Head_3.CommandBAddress = "M105";
+            this.unitUnits_Profile_Lifting_Head_3.CommandBAction = Kaban.Core.Enums.BitActionType.SET;
+            this.unitUnits_Profile_Lifting_Head_3.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid;
+            this.unitUnits_Profile_Lifting_Head_3.FeedbackType = Kaban.UI.Controls.CylinderFeedback.NoSensor;
+            this.unitUnits_Profile_Lifting_Head_3.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            // 
+            // unitUnits_Profile_Lifting_Head_4
+            // 
+            // P6: Y10.4 / Y11.4 double 5/2 - the sheet draws two sensors, the PLC has none.
+            this.unitUnits_Profile_Lifting_Head_4.BackColor = System.Drawing.Color.White;
+            this.unitUnits_Profile_Lifting_Head_4.Name = "unitUnits_Profile_Lifting_Head_4";
+            this.unitUnits_Profile_Lifting_Head_4.PlcNumber = 1;
+            this.unitUnits_Profile_Lifting_Head_4.TitleTextKey = "Unit_MK2010_H4ProfileLifting";
+            this.unitUnits_Profile_Lifting_Head_4.Location = new System.Drawing.Point(838, 998);
+            this.unitUnits_Profile_Lifting_Head_4.Size = new System.Drawing.Size(216, 64);
+            this.unitUnits_Profile_Lifting_Head_4.LogAction = true;
+            this.unitUnits_Profile_Lifting_Head_4.Arrows = Kaban.Core.Enums.ButtonArrowStyle.DownUp;
+            this.unitUnits_Profile_Lifting_Head_4.CommandAAddress = "M105";
+            this.unitUnits_Profile_Lifting_Head_4.CommandAAction = Kaban.Core.Enums.BitActionType.RESET;
+            this.unitUnits_Profile_Lifting_Head_4.CommandBAddress = "M105";
+            this.unitUnits_Profile_Lifting_Head_4.CommandBAction = Kaban.Core.Enums.BitActionType.SET;
+            this.unitUnits_Profile_Lifting_Head_4.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid;
+            this.unitUnits_Profile_Lifting_Head_4.FeedbackType = Kaban.UI.Controls.CylinderFeedback.NoSensor;
+            this.unitUnits_Profile_Lifting_Head_4.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            // 
+            // capProfile_Emptying
+            // 
+            this.capProfile_Emptying.Name = "capProfile_Emptying";
+            this.capProfile_Emptying.TranslationKey = "Profile Emptying";
+            this.capProfile_Emptying.Text = "Profile Emptying";
+            this.capProfile_Emptying.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.capProfile_Emptying.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
+            this.capProfile_Emptying.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.capProfile_Emptying.Location = new System.Drawing.Point(16, 1066);
+            this.capProfile_Emptying.Size = new System.Drawing.Size(150, 72);
+            this.capProfile_Emptying.Font = new System.Drawing.Font("Segoe UI", 9.5F);
+            // 
+            // unitUnits_Profile_Emptying_Head_1
+            // 
+            // P7: Y12.1 / Y13.1 double 5/2 - the old Profile Release (M100); no sensor in the PLC.
+            this.unitUnits_Profile_Emptying_Head_1.BackColor = System.Drawing.Color.White;
+            this.unitUnits_Profile_Emptying_Head_1.Name = "unitUnits_Profile_Emptying_Head_1";
+            this.unitUnits_Profile_Emptying_Head_1.PlcNumber = 1;
+            this.unitUnits_Profile_Emptying_Head_1.TitleTextKey = "Unit_MK2010_H1ProfileEmptying";
+            this.unitUnits_Profile_Emptying_Head_1.Location = new System.Drawing.Point(172, 1070);
+            this.unitUnits_Profile_Emptying_Head_1.Size = new System.Drawing.Size(216, 64);
+            this.unitUnits_Profile_Emptying_Head_1.LogAction = true;
+            this.unitUnits_Profile_Emptying_Head_1.CommandAAddress = "M100";
+            this.unitUnits_Profile_Emptying_Head_1.CommandAAction = Kaban.Core.Enums.BitActionType.RESET;
+            this.unitUnits_Profile_Emptying_Head_1.CommandBAddress = "M100";
+            this.unitUnits_Profile_Emptying_Head_1.CommandBAction = Kaban.Core.Enums.BitActionType.SET;
+            this.unitUnits_Profile_Emptying_Head_1.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid;
+            this.unitUnits_Profile_Emptying_Head_1.FeedbackType = Kaban.UI.Controls.CylinderFeedback.NoSensor;
+            this.unitUnits_Profile_Emptying_Head_1.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            // 
+            // unitUnits_Profile_Emptying_Head_2
+            // 
+            // P7: Y12.2 / Y13.2 double 5/2 - the old Profile Release (M100); no sensor in the PLC.
+            this.unitUnits_Profile_Emptying_Head_2.BackColor = System.Drawing.Color.White;
+            this.unitUnits_Profile_Emptying_Head_2.Name = "unitUnits_Profile_Emptying_Head_2";
+            this.unitUnits_Profile_Emptying_Head_2.PlcNumber = 1;
+            this.unitUnits_Profile_Emptying_Head_2.TitleTextKey = "Unit_MK2010_H2ProfileEmptying";
+            this.unitUnits_Profile_Emptying_Head_2.Location = new System.Drawing.Point(394, 1070);
+            this.unitUnits_Profile_Emptying_Head_2.Size = new System.Drawing.Size(216, 64);
+            this.unitUnits_Profile_Emptying_Head_2.LogAction = true;
+            this.unitUnits_Profile_Emptying_Head_2.CommandAAddress = "M100";
+            this.unitUnits_Profile_Emptying_Head_2.CommandAAction = Kaban.Core.Enums.BitActionType.RESET;
+            this.unitUnits_Profile_Emptying_Head_2.CommandBAddress = "M100";
+            this.unitUnits_Profile_Emptying_Head_2.CommandBAction = Kaban.Core.Enums.BitActionType.SET;
+            this.unitUnits_Profile_Emptying_Head_2.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid;
+            this.unitUnits_Profile_Emptying_Head_2.FeedbackType = Kaban.UI.Controls.CylinderFeedback.NoSensor;
+            this.unitUnits_Profile_Emptying_Head_2.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            // 
+            // unitUnits_Profile_Emptying_Head_3
+            // 
+            // P7: Y12.3 / Y13.3 double 5/2 - the old Profile Release (M100); no sensor in the PLC.
+            this.unitUnits_Profile_Emptying_Head_3.BackColor = System.Drawing.Color.White;
+            this.unitUnits_Profile_Emptying_Head_3.Name = "unitUnits_Profile_Emptying_Head_3";
+            this.unitUnits_Profile_Emptying_Head_3.PlcNumber = 1;
+            this.unitUnits_Profile_Emptying_Head_3.TitleTextKey = "Unit_MK2010_H3ProfileEmptying";
+            this.unitUnits_Profile_Emptying_Head_3.Location = new System.Drawing.Point(616, 1070);
+            this.unitUnits_Profile_Emptying_Head_3.Size = new System.Drawing.Size(216, 64);
+            this.unitUnits_Profile_Emptying_Head_3.LogAction = true;
+            this.unitUnits_Profile_Emptying_Head_3.CommandAAddress = "M100";
+            this.unitUnits_Profile_Emptying_Head_3.CommandAAction = Kaban.Core.Enums.BitActionType.RESET;
+            this.unitUnits_Profile_Emptying_Head_3.CommandBAddress = "M100";
+            this.unitUnits_Profile_Emptying_Head_3.CommandBAction = Kaban.Core.Enums.BitActionType.SET;
+            this.unitUnits_Profile_Emptying_Head_3.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid;
+            this.unitUnits_Profile_Emptying_Head_3.FeedbackType = Kaban.UI.Controls.CylinderFeedback.NoSensor;
+            this.unitUnits_Profile_Emptying_Head_3.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            // 
+            // unitUnits_Profile_Emptying_Head_4
+            // 
+            // P7: Y12.4 / Y13.4 double 5/2 - the old Profile Release (M100); no sensor in the PLC.
+            this.unitUnits_Profile_Emptying_Head_4.BackColor = System.Drawing.Color.White;
+            this.unitUnits_Profile_Emptying_Head_4.Name = "unitUnits_Profile_Emptying_Head_4";
+            this.unitUnits_Profile_Emptying_Head_4.PlcNumber = 1;
+            this.unitUnits_Profile_Emptying_Head_4.TitleTextKey = "Unit_MK2010_H4ProfileEmptying";
+            this.unitUnits_Profile_Emptying_Head_4.Location = new System.Drawing.Point(838, 1070);
+            this.unitUnits_Profile_Emptying_Head_4.Size = new System.Drawing.Size(216, 64);
+            this.unitUnits_Profile_Emptying_Head_4.LogAction = true;
+            this.unitUnits_Profile_Emptying_Head_4.CommandAAddress = "M100";
+            this.unitUnits_Profile_Emptying_Head_4.CommandAAction = Kaban.Core.Enums.BitActionType.RESET;
+            this.unitUnits_Profile_Emptying_Head_4.CommandBAddress = "M100";
+            this.unitUnits_Profile_Emptying_Head_4.CommandBAction = Kaban.Core.Enums.BitActionType.SET;
+            this.unitUnits_Profile_Emptying_Head_4.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid;
+            this.unitUnits_Profile_Emptying_Head_4.FeedbackType = Kaban.UI.Controls.CylinderFeedback.NoSensor;
+            this.unitUnits_Profile_Emptying_Head_4.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            // 
+            // capSliding_Sash_Press
+            // 
+            this.capSliding_Sash_Press.Name = "capSliding_Sash_Press";
+            this.capSliding_Sash_Press.TranslationKey = "Sliding Sash Press";
+            this.capSliding_Sash_Press.Text = "Sliding Sash Press";
+            this.capSliding_Sash_Press.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.capSliding_Sash_Press.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
+            this.capSliding_Sash_Press.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.capSliding_Sash_Press.Location = new System.Drawing.Point(16, 1138);
+            this.capSliding_Sash_Press.Size = new System.Drawing.Size(150, 72);
+            this.capSliding_Sash_Press.Font = new System.Drawing.Font("Segoe UI", 9.5F);
+            // 
+            // unitUnits_Sliding_Sash_Press_Head_1
+            // 
+            // Not on the 2015 pneumatic sheets (its valve and sensor type not set): M196 On / Off, back X0054; did not press M634, did not go back M635.
+            this.unitUnits_Sliding_Sash_Press_Head_1.BackColor = System.Drawing.Color.White;
+            this.unitUnits_Sliding_Sash_Press_Head_1.Name = "unitUnits_Sliding_Sash_Press_Head_1";
+            this.unitUnits_Sliding_Sash_Press_Head_1.PlcNumber = 1;
+            this.unitUnits_Sliding_Sash_Press_Head_1.TitleTextKey = "Unit_MK2010_H1SlidingSashPress";
+            this.unitUnits_Sliding_Sash_Press_Head_1.Location = new System.Drawing.Point(172, 1142);
+            this.unitUnits_Sliding_Sash_Press_Head_1.Size = new System.Drawing.Size(216, 64);
+            this.unitUnits_Sliding_Sash_Press_Head_1.LogAction = true;
+            this.unitUnits_Sliding_Sash_Press_Head_1.CommandAAddress = "M196";
+            this.unitUnits_Sliding_Sash_Press_Head_1.CommandAAction = Kaban.Core.Enums.BitActionType.Alternate;
+            this.unitUnits_Sliding_Sash_Press_Head_1.Lamp1AAddress = "X0054";
+            this.unitUnits_Sliding_Sash_Press_Head_1.ErrorAAddress = "M635";
+            this.unitUnits_Sliding_Sash_Press_Head_1.ErrorBAddress = "M634";
+            this.unitUnits_Sliding_Sash_Press_Head_1.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            // 
+            // unitUnits_Sliding_Sash_Press_Head_2
+            // 
+            // Not on the 2015 pneumatic sheets (its valve and sensor type not set): M196 On / Off, back X0055; did not press M634, did not go back M635.
+            this.unitUnits_Sliding_Sash_Press_Head_2.BackColor = System.Drawing.Color.White;
+            this.unitUnits_Sliding_Sash_Press_Head_2.Name = "unitUnits_Sliding_Sash_Press_Head_2";
+            this.unitUnits_Sliding_Sash_Press_Head_2.PlcNumber = 1;
+            this.unitUnits_Sliding_Sash_Press_Head_2.TitleTextKey = "Unit_MK2010_H2SlidingSashPress";
+            this.unitUnits_Sliding_Sash_Press_Head_2.Location = new System.Drawing.Point(394, 1142);
+            this.unitUnits_Sliding_Sash_Press_Head_2.Size = new System.Drawing.Size(216, 64);
+            this.unitUnits_Sliding_Sash_Press_Head_2.LogAction = true;
+            this.unitUnits_Sliding_Sash_Press_Head_2.CommandAAddress = "M196";
+            this.unitUnits_Sliding_Sash_Press_Head_2.CommandAAction = Kaban.Core.Enums.BitActionType.Alternate;
+            this.unitUnits_Sliding_Sash_Press_Head_2.Lamp1AAddress = "X0055";
+            this.unitUnits_Sliding_Sash_Press_Head_2.ErrorAAddress = "M635";
+            this.unitUnits_Sliding_Sash_Press_Head_2.ErrorBAddress = "M634";
+            this.unitUnits_Sliding_Sash_Press_Head_2.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            // 
+            // unitUnits_Sliding_Sash_Press_Head_3
+            // 
+            // Not on the 2015 pneumatic sheets (its valve and sensor type not set): M196 On / Off, back X0056; did not press M634, did not go back M635.
+            this.unitUnits_Sliding_Sash_Press_Head_3.BackColor = System.Drawing.Color.White;
+            this.unitUnits_Sliding_Sash_Press_Head_3.Name = "unitUnits_Sliding_Sash_Press_Head_3";
+            this.unitUnits_Sliding_Sash_Press_Head_3.PlcNumber = 1;
+            this.unitUnits_Sliding_Sash_Press_Head_3.TitleTextKey = "Unit_MK2010_H3SlidingSashPress";
+            this.unitUnits_Sliding_Sash_Press_Head_3.Location = new System.Drawing.Point(616, 1142);
+            this.unitUnits_Sliding_Sash_Press_Head_3.Size = new System.Drawing.Size(216, 64);
+            this.unitUnits_Sliding_Sash_Press_Head_3.LogAction = true;
+            this.unitUnits_Sliding_Sash_Press_Head_3.CommandAAddress = "M196";
+            this.unitUnits_Sliding_Sash_Press_Head_3.CommandAAction = Kaban.Core.Enums.BitActionType.Alternate;
+            this.unitUnits_Sliding_Sash_Press_Head_3.Lamp1AAddress = "X0056";
+            this.unitUnits_Sliding_Sash_Press_Head_3.ErrorAAddress = "M635";
+            this.unitUnits_Sliding_Sash_Press_Head_3.ErrorBAddress = "M634";
+            this.unitUnits_Sliding_Sash_Press_Head_3.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            // 
+            // unitUnits_Sliding_Sash_Press_Head_4
+            // 
+            // Not on the 2015 pneumatic sheets (its valve and sensor type not set): M196 On / Off, back X0057; did not press M634, did not go back M635.
+            this.unitUnits_Sliding_Sash_Press_Head_4.BackColor = System.Drawing.Color.White;
+            this.unitUnits_Sliding_Sash_Press_Head_4.Name = "unitUnits_Sliding_Sash_Press_Head_4";
+            this.unitUnits_Sliding_Sash_Press_Head_4.PlcNumber = 1;
+            this.unitUnits_Sliding_Sash_Press_Head_4.TitleTextKey = "Unit_MK2010_H4SlidingSashPress";
+            this.unitUnits_Sliding_Sash_Press_Head_4.Location = new System.Drawing.Point(838, 1142);
+            this.unitUnits_Sliding_Sash_Press_Head_4.Size = new System.Drawing.Size(216, 64);
+            this.unitUnits_Sliding_Sash_Press_Head_4.LogAction = true;
+            this.unitUnits_Sliding_Sash_Press_Head_4.CommandAAddress = "M196";
+            this.unitUnits_Sliding_Sash_Press_Head_4.CommandAAction = Kaban.Core.Enums.BitActionType.Alternate;
+            this.unitUnits_Sliding_Sash_Press_Head_4.Lamp1AAddress = "X0057";
+            this.unitUnits_Sliding_Sash_Press_Head_4.ErrorAAddress = "M635";
+            this.unitUnits_Sliding_Sash_Press_Head_4.ErrorBAddress = "M634";
+            this.unitUnits_Sliding_Sash_Press_Head_4.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            // 
+            // capGasket_Forward_Back
+            // 
+            this.capGasket_Forward_Back.Name = "capGasket_Forward_Back";
+            this.capGasket_Forward_Back.TranslationKey = "Gasket Forward/Back";
+            this.capGasket_Forward_Back.Text = "Gasket Forward/Back";
+            this.capGasket_Forward_Back.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.capGasket_Forward_Back.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
+            this.capGasket_Forward_Back.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.capGasket_Forward_Back.Location = new System.Drawing.Point(16, 1210);
+            this.capGasket_Forward_Back.Size = new System.Drawing.Size(150, 72);
+            this.capGasket_Forward_Back.Font = new System.Drawing.Font("Segoe UI", 9.5F);
+            // 
+            // unitUnits_Gasket_Forward_Back_Head_1
+            // 
+            // The forward / back pistons of heads 1-4: back X0060; not back M623.
+            this.unitUnits_Gasket_Forward_Back_Head_1.BackColor = System.Drawing.Color.White;
+            this.unitUnits_Gasket_Forward_Back_Head_1.Name = "unitUnits_Gasket_Forward_Back_Head_1";
+            this.unitUnits_Gasket_Forward_Back_Head_1.PlcNumber = 1;
+            this.unitUnits_Gasket_Forward_Back_Head_1.TitleTextKey = "Unit_MK2010_G14ForwardBack";
+            this.unitUnits_Gasket_Forward_Back_Head_1.Location = new System.Drawing.Point(172, 1214);
+            this.unitUnits_Gasket_Forward_Back_Head_1.Size = new System.Drawing.Size(216, 64);
+            this.unitUnits_Gasket_Forward_Back_Head_1.LogAction = true;
+            this.unitUnits_Gasket_Forward_Back_Head_1.CommandAAddress = "M109";
+            this.unitUnits_Gasket_Forward_Back_Head_1.CommandAAction = Kaban.Core.Enums.BitActionType.Alternate;
+            this.unitUnits_Gasket_Forward_Back_Head_1.Lamp1AAddress = "X0060";
+            this.unitUnits_Gasket_Forward_Back_Head_1.ErrorAAddress = "M623";
+            this.unitUnits_Gasket_Forward_Back_Head_1.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            // 
+            // unitUnits_Gasket_Forward_Back_Head_2
+            // 
+            // The forward / back pistons of heads 2-3: back X0061; not back M624.
+            this.unitUnits_Gasket_Forward_Back_Head_2.BackColor = System.Drawing.Color.White;
+            this.unitUnits_Gasket_Forward_Back_Head_2.Name = "unitUnits_Gasket_Forward_Back_Head_2";
+            this.unitUnits_Gasket_Forward_Back_Head_2.PlcNumber = 1;
+            this.unitUnits_Gasket_Forward_Back_Head_2.TitleTextKey = "Unit_MK2010_G23ForwardBack";
+            this.unitUnits_Gasket_Forward_Back_Head_2.Location = new System.Drawing.Point(394, 1214);
+            this.unitUnits_Gasket_Forward_Back_Head_2.Size = new System.Drawing.Size(216, 64);
+            this.unitUnits_Gasket_Forward_Back_Head_2.LogAction = true;
+            this.unitUnits_Gasket_Forward_Back_Head_2.CommandAAddress = "M109";
+            this.unitUnits_Gasket_Forward_Back_Head_2.CommandAAction = Kaban.Core.Enums.BitActionType.Alternate;
+            this.unitUnits_Gasket_Forward_Back_Head_2.Lamp1AAddress = "X0061";
+            this.unitUnits_Gasket_Forward_Back_Head_2.ErrorAAddress = "M624";
+            this.unitUnits_Gasket_Forward_Back_Head_2.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            // 
+            // capGasket_Group
+            // 
+            this.capGasket_Group.Name = "capGasket_Group";
+            this.capGasket_Group.TranslationKey = "Gasket Group";
+            this.capGasket_Group.Text = "Gasket Group";
+            this.capGasket_Group.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.capGasket_Group.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
+            this.capGasket_Group.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.capGasket_Group.Location = new System.Drawing.Point(16, 1282);
+            this.capGasket_Group.Size = new System.Drawing.Size(150, 72);
+            this.capGasket_Group.Font = new System.Drawing.Font("Segoe UI", 9.5F);
+            // 
+            // unitUnits_Gasket_Group_Head_1
+            // 
+            // The group pistons of heads 1-4: up X0064; not up M621.
+            this.unitUnits_Gasket_Group_Head_1.BackColor = System.Drawing.Color.White;
+            this.unitUnits_Gasket_Group_Head_1.Name = "unitUnits_Gasket_Group_Head_1";
+            this.unitUnits_Gasket_Group_Head_1.PlcNumber = 1;
+            this.unitUnits_Gasket_Group_Head_1.TitleTextKey = "Unit_MK2010_G14Group";
+            this.unitUnits_Gasket_Group_Head_1.Location = new System.Drawing.Point(172, 1286);
+            this.unitUnits_Gasket_Group_Head_1.Size = new System.Drawing.Size(216, 64);
+            this.unitUnits_Gasket_Group_Head_1.LogAction = true;
+            this.unitUnits_Gasket_Group_Head_1.CommandAAddress = "M108";
+            this.unitUnits_Gasket_Group_Head_1.CommandAAction = Kaban.Core.Enums.BitActionType.Alternate;
+            this.unitUnits_Gasket_Group_Head_1.Lamp1AAddress = "X0064";
+            this.unitUnits_Gasket_Group_Head_1.ErrorAAddress = "M621";
+            this.unitUnits_Gasket_Group_Head_1.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            // 
+            // unitUnits_Gasket_Group_Head_2
+            // 
+            // The group pistons of heads 2-3: up X0065; not up M622.
+            this.unitUnits_Gasket_Group_Head_2.BackColor = System.Drawing.Color.White;
+            this.unitUnits_Gasket_Group_Head_2.Name = "unitUnits_Gasket_Group_Head_2";
+            this.unitUnits_Gasket_Group_Head_2.PlcNumber = 1;
+            this.unitUnits_Gasket_Group_Head_2.TitleTextKey = "Unit_MK2010_G23Group";
+            this.unitUnits_Gasket_Group_Head_2.Location = new System.Drawing.Point(394, 1286);
+            this.unitUnits_Gasket_Group_Head_2.Size = new System.Drawing.Size(216, 64);
+            this.unitUnits_Gasket_Group_Head_2.LogAction = true;
+            this.unitUnits_Gasket_Group_Head_2.CommandAAddress = "M108";
+            this.unitUnits_Gasket_Group_Head_2.CommandAAction = Kaban.Core.Enums.BitActionType.Alternate;
+            this.unitUnits_Gasket_Group_Head_2.Lamp1AAddress = "X0065";
+            this.unitUnits_Gasket_Group_Head_2.ErrorAAddress = "M622";
+            this.unitUnits_Gasket_Group_Head_2.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            // 
+            // capGasket_Press
+            // 
+            this.capGasket_Press.Name = "capGasket_Press";
+            this.capGasket_Press.TranslationKey = "Gasket Press";
+            this.capGasket_Press.Text = "Gasket Press";
+            this.capGasket_Press.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.capGasket_Press.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
+            this.capGasket_Press.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.capGasket_Press.Location = new System.Drawing.Point(16, 1354);
+            this.capGasket_Press.Size = new System.Drawing.Size(150, 72);
+            this.capGasket_Press.Font = new System.Drawing.Font("Segoe UI", 9.5F);
+            // 
+            // unitUnits_Gasket_Press_Head_1
+            // 
+            // The press pistons of heads 1-4: up X0062; not up M625.
+            this.unitUnits_Gasket_Press_Head_1.BackColor = System.Drawing.Color.White;
+            this.unitUnits_Gasket_Press_Head_1.Name = "unitUnits_Gasket_Press_Head_1";
+            this.unitUnits_Gasket_Press_Head_1.PlcNumber = 1;
+            this.unitUnits_Gasket_Press_Head_1.TitleTextKey = "Unit_MK2010_G14Press";
+            this.unitUnits_Gasket_Press_Head_1.Location = new System.Drawing.Point(172, 1358);
+            this.unitUnits_Gasket_Press_Head_1.Size = new System.Drawing.Size(216, 64);
+            this.unitUnits_Gasket_Press_Head_1.LogAction = true;
+            this.unitUnits_Gasket_Press_Head_1.CommandAAddress = "M108";
+            this.unitUnits_Gasket_Press_Head_1.CommandAAction = Kaban.Core.Enums.BitActionType.Alternate;
+            this.unitUnits_Gasket_Press_Head_1.Lamp1AAddress = "X0062";
+            this.unitUnits_Gasket_Press_Head_1.ErrorAAddress = "M625";
+            this.unitUnits_Gasket_Press_Head_1.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            // 
+            // unitUnits_Gasket_Press_Head_2
+            // 
+            // The press pistons of heads 2-3: up X0063; not up M626.
+            this.unitUnits_Gasket_Press_Head_2.BackColor = System.Drawing.Color.White;
+            this.unitUnits_Gasket_Press_Head_2.Name = "unitUnits_Gasket_Press_Head_2";
+            this.unitUnits_Gasket_Press_Head_2.PlcNumber = 1;
+            this.unitUnits_Gasket_Press_Head_2.TitleTextKey = "Unit_MK2010_G23Press";
+            this.unitUnits_Gasket_Press_Head_2.Location = new System.Drawing.Point(394, 1358);
+            this.unitUnits_Gasket_Press_Head_2.Size = new System.Drawing.Size(216, 64);
+            this.unitUnits_Gasket_Press_Head_2.LogAction = true;
+            this.unitUnits_Gasket_Press_Head_2.CommandAAddress = "M108";
+            this.unitUnits_Gasket_Press_Head_2.CommandAAction = Kaban.Core.Enums.BitActionType.Alternate;
+            this.unitUnits_Gasket_Press_Head_2.Lamp1AAddress = "X0063";
+            this.unitUnits_Gasket_Press_Head_2.ErrorAAddress = "M626";
+            this.unitUnits_Gasket_Press_Head_2.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
             // 
             // ManualControl
             // 
@@ -1159,68 +1512,67 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.Controls.Add(this.btnAxes_Lubrication_Forward);
             this.Controls.Add(this.hdManual_Control);
             this.Controls.Add(this.hdOn_Off);
+            this.Controls.Add(this.capAutomatic_On_Off);
+            this.Controls.Add(this.btnOthers_Automatic_On_Off_On_Off);
+            this.Controls.Add(this.capConveyor);
+            this.Controls.Add(this.btnOthers_Conveyor_On_Off);
+            this.Controls.Add(this.lblCylinders);
+            this.Controls.Add(this.hdUnit);
             this.Controls.Add(this.hdHead_1);
             this.Controls.Add(this.hdHead_2);
             this.Controls.Add(this.hdHead_3);
             this.Controls.Add(this.hdHead_4);
-            this.Controls.Add(this.capSupporting_Plate);
-            this.Controls.Add(this.btnUnits_Supporting_Plate_On_Off);
-            this.Controls.Add(this.lampUnits_Supporting_Plate_Head_1);
-            this.Controls.Add(this.lampUnits_Supporting_Plate_Head_2);
-            this.Controls.Add(this.lampUnits_Supporting_Plate_Head_3);
-            this.Controls.Add(this.lampUnits_Supporting_Plate_Head_4);
-            this.Controls.Add(this.lampUnits_Supporting_Plate_2_Head_1);
-            this.Controls.Add(this.lampUnits_Supporting_Plate_2_Head_2);
-            this.Controls.Add(this.lampUnits_Supporting_Plate_2_Head_3);
-            this.Controls.Add(this.lampUnits_Supporting_Plate_2_Head_4);
-            this.Controls.Add(this.capBack_Plate);
-            this.Controls.Add(this.btnUnits_Back_Plate_On_Off);
-            this.Controls.Add(this.lampUnits_Back_Plate_Head_1);
-            this.Controls.Add(this.lampUnits_Back_Plate_Head_2);
-            this.Controls.Add(this.lampUnits_Back_Plate_Head_3);
-            this.Controls.Add(this.lampUnits_Back_Plate_Head_4);
-            this.Controls.Add(this.lampUnits_Back_Plate_2_Head_1);
-            this.Controls.Add(this.lampUnits_Back_Plate_2_Head_2);
-            this.Controls.Add(this.lampUnits_Back_Plate_2_Head_3);
-            this.Controls.Add(this.lampUnits_Back_Plate_2_Head_4);
+            this.Controls.Add(this.capSupporting_Strip);
+            this.Controls.Add(this.unitUnits_Supporting_Strip_Head_1);
+            this.Controls.Add(this.unitUnits_Supporting_Strip_Head_2);
+            this.Controls.Add(this.unitUnits_Supporting_Strip_Head_3);
+            this.Controls.Add(this.unitUnits_Supporting_Strip_Head_4);
+            this.Controls.Add(this.capSide_Table_1);
+            this.Controls.Add(this.unitUnits_Side_Table_1_Head_1);
+            this.Controls.Add(this.unitUnits_Side_Table_1_Head_2);
+            this.Controls.Add(this.unitUnits_Side_Table_1_Head_3);
+            this.Controls.Add(this.unitUnits_Side_Table_1_Head_4);
+            this.Controls.Add(this.capSide_Table_2);
+            this.Controls.Add(this.unitUnits_Side_Table_2_Head_1);
+            this.Controls.Add(this.unitUnits_Side_Table_2_Head_2);
+            this.Controls.Add(this.unitUnits_Side_Table_2_Head_3);
+            this.Controls.Add(this.unitUnits_Side_Table_2_Head_4);
+            this.Controls.Add(this.capHeater_Plate);
+            this.Controls.Add(this.unitUnits_Heater_Plate_Head_1);
+            this.Controls.Add(this.unitUnits_Heater_Plate_Head_2);
+            this.Controls.Add(this.unitUnits_Heater_Plate_Head_3);
+            this.Controls.Add(this.unitUnits_Heater_Plate_Head_4);
             this.Controls.Add(this.capTop_Press);
-            this.Controls.Add(this.btnUnits_Top_Press_On_Off);
-            this.Controls.Add(this.capHeater_Plates);
-            this.Controls.Add(this.btnUnits_Heater_Plates_On_Off);
-            this.Controls.Add(this.lampUnits_Heater_Plates_Head_1);
-            this.Controls.Add(this.lampUnits_Heater_Plates_Head_2);
-            this.Controls.Add(this.lampUnits_Heater_Plates_Head_3);
-            this.Controls.Add(this.lampUnits_Heater_Plates_Head_4);
-            this.Controls.Add(this.lampUnits_Heater_Plates_2_Head_1);
-            this.Controls.Add(this.lampUnits_Heater_Plates_2_Head_2);
-            this.Controls.Add(this.lampUnits_Heater_Plates_2_Head_3);
-            this.Controls.Add(this.lampUnits_Heater_Plates_2_Head_4);
-            this.Controls.Add(this.capSliding_Sash_Press);
-            this.Controls.Add(this.btnUnits_Sliding_Sash_Press_On_Off);
-            this.Controls.Add(this.lampUnits_Sliding_Sash_Press_Head_1);
-            this.Controls.Add(this.lampUnits_Sliding_Sash_Press_Head_2);
-            this.Controls.Add(this.lampUnits_Sliding_Sash_Press_2_Head_1);
-            this.Controls.Add(this.lampUnits_Sliding_Sash_Press_2_Head_2);
-            this.Controls.Add(this.capAutomatic_On_Off);
-            this.Controls.Add(this.btnUnits_Automatic_On_Off_On_Off);
+            this.Controls.Add(this.unitUnits_Top_Press_Head_1);
+            this.Controls.Add(this.unitUnits_Top_Press_Head_2);
+            this.Controls.Add(this.unitUnits_Top_Press_Head_3);
+            this.Controls.Add(this.unitUnits_Top_Press_Head_4);
             this.Controls.Add(this.capProfile_Lifting);
-            this.Controls.Add(this.btnUnits_Profile_Lifting_On_Off);
-            this.Controls.Add(this.capProfile_Release);
-            this.Controls.Add(this.btnUnits_Profile_Release_On_Off);
-            this.Controls.Add(this.capConveyor);
-            this.Controls.Add(this.btnUnits_Conveyor_On_Off);
-            this.Controls.Add(this.capGasket_Pressing_G);
-            this.Controls.Add(this.btnUnits_Gasket_Pressing_G_On_Off);
-            this.Controls.Add(this.lampUnits_Gasket_Pressing_G_Head_1);
-            this.Controls.Add(this.lampUnits_Gasket_Pressing_G_Head_2);
-            this.Controls.Add(this.capGasket_Pressing_Y_A);
-            this.Controls.Add(this.btnUnits_Gasket_Pressing_Y_A_On_Off);
-            this.Controls.Add(this.lampUnits_Gasket_Pressing_Y_A_Head_1);
-            this.Controls.Add(this.lampUnits_Gasket_Pressing_Y_A_Head_2);
-            this.Controls.Add(this.lampUnits_Gasket_Pressing_Y_A_2_Head_1);
-            this.Controls.Add(this.lampUnits_Gasket_Pressing_Y_A_2_Head_2);
+            this.Controls.Add(this.unitUnits_Profile_Lifting_Head_1);
+            this.Controls.Add(this.unitUnits_Profile_Lifting_Head_2);
+            this.Controls.Add(this.unitUnits_Profile_Lifting_Head_3);
+            this.Controls.Add(this.unitUnits_Profile_Lifting_Head_4);
+            this.Controls.Add(this.capProfile_Emptying);
+            this.Controls.Add(this.unitUnits_Profile_Emptying_Head_1);
+            this.Controls.Add(this.unitUnits_Profile_Emptying_Head_2);
+            this.Controls.Add(this.unitUnits_Profile_Emptying_Head_3);
+            this.Controls.Add(this.unitUnits_Profile_Emptying_Head_4);
+            this.Controls.Add(this.capSliding_Sash_Press);
+            this.Controls.Add(this.unitUnits_Sliding_Sash_Press_Head_1);
+            this.Controls.Add(this.unitUnits_Sliding_Sash_Press_Head_2);
+            this.Controls.Add(this.unitUnits_Sliding_Sash_Press_Head_3);
+            this.Controls.Add(this.unitUnits_Sliding_Sash_Press_Head_4);
+            this.Controls.Add(this.capGasket_Forward_Back);
+            this.Controls.Add(this.unitUnits_Gasket_Forward_Back_Head_1);
+            this.Controls.Add(this.unitUnits_Gasket_Forward_Back_Head_2);
+            this.Controls.Add(this.capGasket_Group);
+            this.Controls.Add(this.unitUnits_Gasket_Group_Head_1);
+            this.Controls.Add(this.unitUnits_Gasket_Group_Head_2);
+            this.Controls.Add(this.capGasket_Press);
+            this.Controls.Add(this.unitUnits_Gasket_Press_Head_1);
+            this.Controls.Add(this.unitUnits_Gasket_Press_Head_2);
             this.Name = "ManualControl";
-            this.Size = new System.Drawing.Size(1066, 714);
+            this.Size = new System.Drawing.Size(1070, 1450);
             this.ResumeLayout(false);
             this.PerformLayout();
         }
@@ -1263,65 +1615,64 @@ namespace Kaban.Machines.MK2010.Screens.Manual
         private Kaban.UI.Controls.ButtonHMI btnAxes_Lubrication_Forward;
         private Kaban.UI.Controls.LabelHMI hdManual_Control;
         private Kaban.UI.Controls.LabelHMI hdOn_Off;
+        private Kaban.UI.Controls.LabelHMI capAutomatic_On_Off;
+        private Kaban.UI.Controls.ButtonHMI btnOthers_Automatic_On_Off_On_Off;
+        private Kaban.UI.Controls.LabelHMI capConveyor;
+        private Kaban.UI.Controls.ButtonHMI btnOthers_Conveyor_On_Off;
+        private Kaban.UI.Controls.LabelHMI lblCylinders;
+        private Kaban.UI.Controls.LabelHMI hdUnit;
         private Kaban.UI.Controls.LabelHMI hdHead_1;
         private Kaban.UI.Controls.LabelHMI hdHead_2;
         private Kaban.UI.Controls.LabelHMI hdHead_3;
         private Kaban.UI.Controls.LabelHMI hdHead_4;
-        private Kaban.UI.Controls.LabelHMI capSupporting_Plate;
-        private Kaban.UI.Controls.ButtonHMI btnUnits_Supporting_Plate_On_Off;
-        private Kaban.UI.Controls.LampHMI lampUnits_Supporting_Plate_Head_1;
-        private Kaban.UI.Controls.LampHMI lampUnits_Supporting_Plate_Head_2;
-        private Kaban.UI.Controls.LampHMI lampUnits_Supporting_Plate_Head_3;
-        private Kaban.UI.Controls.LampHMI lampUnits_Supporting_Plate_Head_4;
-        private Kaban.UI.Controls.LampHMI lampUnits_Supporting_Plate_2_Head_1;
-        private Kaban.UI.Controls.LampHMI lampUnits_Supporting_Plate_2_Head_2;
-        private Kaban.UI.Controls.LampHMI lampUnits_Supporting_Plate_2_Head_3;
-        private Kaban.UI.Controls.LampHMI lampUnits_Supporting_Plate_2_Head_4;
-        private Kaban.UI.Controls.LabelHMI capBack_Plate;
-        private Kaban.UI.Controls.ButtonHMI btnUnits_Back_Plate_On_Off;
-        private Kaban.UI.Controls.LampHMI lampUnits_Back_Plate_Head_1;
-        private Kaban.UI.Controls.LampHMI lampUnits_Back_Plate_Head_2;
-        private Kaban.UI.Controls.LampHMI lampUnits_Back_Plate_Head_3;
-        private Kaban.UI.Controls.LampHMI lampUnits_Back_Plate_Head_4;
-        private Kaban.UI.Controls.LampHMI lampUnits_Back_Plate_2_Head_1;
-        private Kaban.UI.Controls.LampHMI lampUnits_Back_Plate_2_Head_2;
-        private Kaban.UI.Controls.LampHMI lampUnits_Back_Plate_2_Head_3;
-        private Kaban.UI.Controls.LampHMI lampUnits_Back_Plate_2_Head_4;
+        private Kaban.UI.Controls.LabelHMI capSupporting_Strip;
+        private Kaban.UI.Controls.CylinderUnitHMI unitUnits_Supporting_Strip_Head_1;
+        private Kaban.UI.Controls.CylinderUnitHMI unitUnits_Supporting_Strip_Head_2;
+        private Kaban.UI.Controls.CylinderUnitHMI unitUnits_Supporting_Strip_Head_3;
+        private Kaban.UI.Controls.CylinderUnitHMI unitUnits_Supporting_Strip_Head_4;
+        private Kaban.UI.Controls.LabelHMI capSide_Table_1;
+        private Kaban.UI.Controls.CylinderUnitHMI unitUnits_Side_Table_1_Head_1;
+        private Kaban.UI.Controls.CylinderUnitHMI unitUnits_Side_Table_1_Head_2;
+        private Kaban.UI.Controls.CylinderUnitHMI unitUnits_Side_Table_1_Head_3;
+        private Kaban.UI.Controls.CylinderUnitHMI unitUnits_Side_Table_1_Head_4;
+        private Kaban.UI.Controls.LabelHMI capSide_Table_2;
+        private Kaban.UI.Controls.CylinderUnitHMI unitUnits_Side_Table_2_Head_1;
+        private Kaban.UI.Controls.CylinderUnitHMI unitUnits_Side_Table_2_Head_2;
+        private Kaban.UI.Controls.CylinderUnitHMI unitUnits_Side_Table_2_Head_3;
+        private Kaban.UI.Controls.CylinderUnitHMI unitUnits_Side_Table_2_Head_4;
+        private Kaban.UI.Controls.LabelHMI capHeater_Plate;
+        private Kaban.UI.Controls.CylinderUnitHMI unitUnits_Heater_Plate_Head_1;
+        private Kaban.UI.Controls.CylinderUnitHMI unitUnits_Heater_Plate_Head_2;
+        private Kaban.UI.Controls.CylinderUnitHMI unitUnits_Heater_Plate_Head_3;
+        private Kaban.UI.Controls.CylinderUnitHMI unitUnits_Heater_Plate_Head_4;
         private Kaban.UI.Controls.LabelHMI capTop_Press;
-        private Kaban.UI.Controls.ButtonHMI btnUnits_Top_Press_On_Off;
-        private Kaban.UI.Controls.LabelHMI capHeater_Plates;
-        private Kaban.UI.Controls.ButtonHMI btnUnits_Heater_Plates_On_Off;
-        private Kaban.UI.Controls.LampHMI lampUnits_Heater_Plates_Head_1;
-        private Kaban.UI.Controls.LampHMI lampUnits_Heater_Plates_Head_2;
-        private Kaban.UI.Controls.LampHMI lampUnits_Heater_Plates_Head_3;
-        private Kaban.UI.Controls.LampHMI lampUnits_Heater_Plates_Head_4;
-        private Kaban.UI.Controls.LampHMI lampUnits_Heater_Plates_2_Head_1;
-        private Kaban.UI.Controls.LampHMI lampUnits_Heater_Plates_2_Head_2;
-        private Kaban.UI.Controls.LampHMI lampUnits_Heater_Plates_2_Head_3;
-        private Kaban.UI.Controls.LampHMI lampUnits_Heater_Plates_2_Head_4;
-        private Kaban.UI.Controls.LabelHMI capSliding_Sash_Press;
-        private Kaban.UI.Controls.ButtonHMI btnUnits_Sliding_Sash_Press_On_Off;
-        private Kaban.UI.Controls.LampHMI lampUnits_Sliding_Sash_Press_Head_1;
-        private Kaban.UI.Controls.LampHMI lampUnits_Sliding_Sash_Press_Head_2;
-        private Kaban.UI.Controls.LampHMI lampUnits_Sliding_Sash_Press_2_Head_1;
-        private Kaban.UI.Controls.LampHMI lampUnits_Sliding_Sash_Press_2_Head_2;
-        private Kaban.UI.Controls.LabelHMI capAutomatic_On_Off;
-        private Kaban.UI.Controls.ButtonHMI btnUnits_Automatic_On_Off_On_Off;
+        private Kaban.UI.Controls.CylinderUnitHMI unitUnits_Top_Press_Head_1;
+        private Kaban.UI.Controls.CylinderUnitHMI unitUnits_Top_Press_Head_2;
+        private Kaban.UI.Controls.CylinderUnitHMI unitUnits_Top_Press_Head_3;
+        private Kaban.UI.Controls.CylinderUnitHMI unitUnits_Top_Press_Head_4;
         private Kaban.UI.Controls.LabelHMI capProfile_Lifting;
-        private Kaban.UI.Controls.ButtonHMI btnUnits_Profile_Lifting_On_Off;
-        private Kaban.UI.Controls.LabelHMI capProfile_Release;
-        private Kaban.UI.Controls.ButtonHMI btnUnits_Profile_Release_On_Off;
-        private Kaban.UI.Controls.LabelHMI capConveyor;
-        private Kaban.UI.Controls.ButtonHMI btnUnits_Conveyor_On_Off;
-        private Kaban.UI.Controls.LabelHMI capGasket_Pressing_G;
-        private Kaban.UI.Controls.ButtonHMI btnUnits_Gasket_Pressing_G_On_Off;
-        private Kaban.UI.Controls.LampHMI lampUnits_Gasket_Pressing_G_Head_1;
-        private Kaban.UI.Controls.LampHMI lampUnits_Gasket_Pressing_G_Head_2;
-        private Kaban.UI.Controls.LabelHMI capGasket_Pressing_Y_A;
-        private Kaban.UI.Controls.ButtonHMI btnUnits_Gasket_Pressing_Y_A_On_Off;
-        private Kaban.UI.Controls.LampHMI lampUnits_Gasket_Pressing_Y_A_Head_1;
-        private Kaban.UI.Controls.LampHMI lampUnits_Gasket_Pressing_Y_A_Head_2;
-        private Kaban.UI.Controls.LampHMI lampUnits_Gasket_Pressing_Y_A_2_Head_1;
-        private Kaban.UI.Controls.LampHMI lampUnits_Gasket_Pressing_Y_A_2_Head_2;
+        private Kaban.UI.Controls.CylinderUnitHMI unitUnits_Profile_Lifting_Head_1;
+        private Kaban.UI.Controls.CylinderUnitHMI unitUnits_Profile_Lifting_Head_2;
+        private Kaban.UI.Controls.CylinderUnitHMI unitUnits_Profile_Lifting_Head_3;
+        private Kaban.UI.Controls.CylinderUnitHMI unitUnits_Profile_Lifting_Head_4;
+        private Kaban.UI.Controls.LabelHMI capProfile_Emptying;
+        private Kaban.UI.Controls.CylinderUnitHMI unitUnits_Profile_Emptying_Head_1;
+        private Kaban.UI.Controls.CylinderUnitHMI unitUnits_Profile_Emptying_Head_2;
+        private Kaban.UI.Controls.CylinderUnitHMI unitUnits_Profile_Emptying_Head_3;
+        private Kaban.UI.Controls.CylinderUnitHMI unitUnits_Profile_Emptying_Head_4;
+        private Kaban.UI.Controls.LabelHMI capSliding_Sash_Press;
+        private Kaban.UI.Controls.CylinderUnitHMI unitUnits_Sliding_Sash_Press_Head_1;
+        private Kaban.UI.Controls.CylinderUnitHMI unitUnits_Sliding_Sash_Press_Head_2;
+        private Kaban.UI.Controls.CylinderUnitHMI unitUnits_Sliding_Sash_Press_Head_3;
+        private Kaban.UI.Controls.CylinderUnitHMI unitUnits_Sliding_Sash_Press_Head_4;
+        private Kaban.UI.Controls.LabelHMI capGasket_Forward_Back;
+        private Kaban.UI.Controls.CylinderUnitHMI unitUnits_Gasket_Forward_Back_Head_1;
+        private Kaban.UI.Controls.CylinderUnitHMI unitUnits_Gasket_Forward_Back_Head_2;
+        private Kaban.UI.Controls.LabelHMI capGasket_Group;
+        private Kaban.UI.Controls.CylinderUnitHMI unitUnits_Gasket_Group_Head_1;
+        private Kaban.UI.Controls.CylinderUnitHMI unitUnits_Gasket_Group_Head_2;
+        private Kaban.UI.Controls.LabelHMI capGasket_Press;
+        private Kaban.UI.Controls.CylinderUnitHMI unitUnits_Gasket_Press_Head_1;
+        private Kaban.UI.Controls.CylinderUnitHMI unitUnits_Gasket_Press_Head_2;
     }
 }

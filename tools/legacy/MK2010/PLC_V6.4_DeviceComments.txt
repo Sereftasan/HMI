@@ -1,0 +1,3677 @@
+M0	COUNT PREMIT
+M1	*
+M2	*
+M3	*
+M4	PRESET  PREMIT
+M5	*
+M6	*
+M7	*
+M8	*
+M9	*
+M10	*
+M11	*
+M13	manual  disable
+M14	ATLA
+M15	X EKSENI Z PULSE
+M16	X SIFIRLAMA YAPIYOR
+M17	Y1 SIFIRLAMA YAPIYOR
+M18	Y2 SIFIRLAMA YAPIYOR
+M19	Enable
+M20	Y1 HOME OK
+M21	Y2 HOME OK
+M22	X HOME  OK
+M23	TOLERANS DISI
+M24	TOLERANS ONAY
+M25	IPTAL
+M26	OTOMATIK START
+M27	0.05 SN. PULSE
+M28	START PULSE
+M29	conta baskı ıptal
+M30	X EKSENI SIFIRLA
+M31	Y1 EKSENI SIFIRLA
+M32	Y2 EKSENI SIFIRLA
+M33	alarm var
+M34	otomatik on-off
+M35	OTO     TUNING
+M36	alarm reset
+M37	YAGLAMA SINYALI BEKLE
+M38	KORNA
+M39	PC SETLEAKTIF
+M40	X MAN ILERI
+M41	X MAN GERI
+M42	Y1 MAN ILERI
+M43	Y1 MAN GERI
+M44	Y2 MAN ILERI
+M45	Y2 MAN GERI
+M46	JUMP ENABLE
+M47	YAGlLAMA SW. ARIZA ***
+M48	YAG SEVIYE DUSUK**
+M49	OTO HAZIR
+M50	comta 1-4 is bitti
+M51	comta 2-3 is bitti
+M52	MANUEL
+M53	SIRAYLA/MUST.ADI
+M54	OPTIMIZASYON STAR STOP
+M55	SAATI AYARLA
+M56	ISLENMEMIS VAR
+M57	KAPLAMALI
+M58	ARABADAN START
+M60	X KUCUK
+M61	X ESIT
+M62	X BUYUK
+M63	Y1 KUCUK
+M64	Y1 ESIT
+M65	Y1 BUYUK
+M66	Y2 KUCUK
+M67	Y2 ESIT
+M68	Y2 BUYUK
+M69	GUVELIK BARIERI OK
+M70	PROG SEC IMLEC 1
+M71	PROG SEC IMLEC 2
+M72	PROG SEC IMLEC 3
+M73	PROG SEC IMLEC 4
+M74	PROG SEC IMLEC 5
+M75	PROG SEC IMLEC
+M76	PROG SEC IMLEC
+M77	PROG SEC IMLEC
+M78	Araba Goz Bilgi Goster
+M79	Araba Gozu Dolu
+M80	AC
+M81	KOPYALA
+M82	YENI
+M83	KAYIT(PROG.SORGULA)
+M84	KAYIT
+M85	SIL
+M86	SEC
+M87	X HAREKET ETTI
+M88	Y1 HAREKET ETTI
+M89	Y2 HAREKET ETTI
+M90	SICAKLIK OK
+M91	X KALIBRE ET
+M92	Y1 KALIBRE ET
+M93	Y2 KALIBRE ET,
+M94	WRITE TRIGER
+M95	READ TRIGER
+M96	Konveyor Suresi Display (Ekrana)
+M97	PARAMETRE KAYIT
+M98	FABRIKA AYARLARI
+M99	demo
+M100	man prof bosalt
+M101	man dayama citasi
+M102	man yan tabla
+M103	man ust baskilar
+M104	man isiticilar
+M105	man profil kaldirma
+M106	man konveyor
+M107	man kalip kaydirma
+M108	man conta bas y-a
+M109	man conta bas i-g
+M110	man prof bosalt  ENB
+M111	man dayama citasi ENB
+M112	man yan tabla ENB
+M113	man ust baskilar ENB
+M114	man isiticilar  ENB
+M115	man profil kaldirma ENB
+M116	man konveyor ENB
+M117	man kalip kaydirma ENC
+M118	man conta bas y-a ENB
+M119	man conta bas i-g ENB
+M120	MANUEL KONVERYOR ILERI
+M121	1.PID   ENABLE
+M122	2.PID   ENABLE
+M123	3.PID   ENABLE
+M124	4.PID   ENABLE
+M125	ADET SIFIRLA?
+M126	OLCU DISINDA ALARM
+M127	Yan Tabla & Surme Kanat Baski Geride
+M128	DROP    PULSE   RESET
+M129	Etritme Suresi Say
+M130	EKSENLER STOP KONTROL
+M134	RAPORLARI SIL
+M136	X Tork Limitle Yrd
+M137	X Tork Limitle Yrd
+M138	Y1 Tork Limitle Yrd
+M139	Y2 Tork Limitle Yrd
+M140	4AD-TC
+M141	FX3U-4AD
+M142	FX2N-4AD
+M143	FX5U-4AD
+M144	4AD-ADP
+M145	Profil Kaldirma 2
+M150	CF FIRMA OKU
+M151	CF TIP OKU
+M152	CF PROFIL1 OKU
+M153	CF PROFIL2 OKU
+M154	CF PROFIL3 OKU
+M155	CF PROFIL4 OKU
+M156	CF MUSTERI OKU
+M157	CF ARABA OKU
+M158	CF Alternative Code Oku
+M160	CF FIRMA YAZ
+M161	CF TIP YAZ
+M162	CF PROFIL1 YAZ
+M163	CF PROFIL2 YAZ
+M164	CF PROFIL3 YAZ
+M165	CF PROFIL4 YAZ
+M166	CF MUSTERI YAZ
+M167	CF ARABA YAZ
+M168	CF Alternative Code Yaz
+M170	SECILI  PROFIL  TIPI 1
+M186	X Ekseni STF
+M187	X Ekseni STR
+M188	Y1 Ekseni STF
+M189	Y1 Ekseni STR
+M190	Y2 Ekseni STF
+M191	Y2 Ekseni STR
+M192	Profil Bosaltma Geri
+M193	Profil Bosaltma Ileri (Cift Bobin)
+M194	Profil Bosaltma Ileri (Tek Bobin)
+M195	Surme Kanat Baski
+M196	MAN_Surme Kanat Baski
+M197	Araba Menu Ana Sayfaya
+M198	Osman Liman Barkod K1'le Basliyor
+M199	MURAT   YENI    BARKOD
+M200	KUTU GOZU 1
+M201	KUTU GOZU 2
+M202	KUTU GOZU 3
+M203	KUTU GOZU 4
+M204	KUTU GOZU 5
+M205	KUTU GOZU 6
+M206	KUTU GOZU 7
+M207	KUTU GOZU 8
+M208	KUTU GOZU 9
+M209	KUTU GOZU 10
+M210	KUTU GOZU 11
+M211	KUTU GOZU 12
+M212	KUTU GOZU 13
+M213	KUTU GOZU 14
+M214	KUTU GOZU 15
+M215	KUTU GOZU 16
+M216	KUTU GOZU 17
+M217	KUTU GOZU 18
+M218	KUTU GOZU 19
+M219	KUTU GOZU 20
+M220	KUTU GOZU 21
+M221	KUTU GOZU 22
+M222	KUTU GOZU 23
+M223	KUTU GOZU 24
+M224	KUTU GOZU 25
+M225	KUTU GOZU 26
+M226	KUTU GOZU 27
+M227	KUTU GOZU 28
+M228	KUTU GOZU 29
+M229	KUTU GOZU 30
+M230	KUTU GOZU 31
+M231	KUTU GOZU 32
+M232	KUTU GOZU 33
+M233	KUTU GOZU 34
+M234	KUTU GOZU 35
+M235	KUTU GOZU 36
+M236	KUTU GOZU 37
+M237	KUTU GOZU 38
+M238	KUTU GOZU 39
+M239	KUTU GOZU 40
+M240	KUTU GOZU 41
+M241	KUTU GOZU 42
+M242	KUTU GOZU 43
+M243	KUTU GOZU 44
+M244	KUTU GOZU 45
+M245	KUTU GOZU 46
+M246	KUTU GOZU 47
+M247	KUTU GOZU 48
+M248	KUTU GOZU 49
+M249	KUTU GOZU 50
+M250	KUTU GOZU 51
+M251	KUTU GOZU 52
+M252	KUTU GOZU 53
+M253	KUTU GOZU 54
+M254	KUTU GOZU 55
+M255	KUTU GOZU 56
+M256	KUTU GOZU 57
+M257	KUTU GOZU 58
+M258	KUTU GOZU 59
+M259	KUTU GOZU 60
+M260	KUTU GOZU 61
+M261	KUTU GOZU 62
+M262	KUTU GOZU 63
+M263	KUTU GOZU 64
+M264	KUTU GOZU 65
+M265	KUTU GOZU 66
+M266	KUTU GOZU 67
+M267	KUTU GOZU 68
+M268	KUTU GOZU 69
+M269	KUTU GOZU 70
+M270	KUTU GOZU 71
+M271	KUTU GOZU 72
+M272	KUTU GOZU 73
+M273	KUTU GOZU 74
+M274	KUTU GOZU 75
+M275	KUTU GOZU 76
+M276	KUTU GOZU 77
+M277	KUTU GOZU 78
+M278	KUTU GOZU 79
+M279	KUTU GOZU 80
+M600	DAYAMA CITALARI INMEDI
+M601	YAN TABLALAR GERI GELMEDI
+M602	DAYAMA CITALARI GERI GELMEDI
+M603	ISITICILAR ILERI GELMEDI
+M604	ISITICILAR GERI GELMEDI
+M605	CF      ERISIM  ARIZASI
+M607	X -     LIMIT
+M608	Y1 -    LIMIT
+M609	Y2 -    LIMIT
+M610	X+      LIMIT
+M611	Y1+     LIMIT
+M612	Y2+     LIMIT
+M613	BOS RECETE YOK
+M614	X Inverter Ariza
+M615	Y1 Inverter Ariza
+M616	Y2 Inverter Ariza
+M617	Konveyorler Ariza
+M618	BASINC ARIZA
+M619	YAGlLAMA SW. ARIZA
+M620	YAG SEVIYE DUSUK
+M621	1-4.Conta GRUP.Pis.  YUK.DEGIL
+M622	2-3.Conta GRUP.Pis.  YUK.DEGIL
+M623	1-4.Conta Baski Il-Ger. GER.DEGI
+M624	2-3.Conta Baski Il-Ger. GER.DEGI
+M625	1-4.Conta Baski.Pis.Yukarida DEG
+M626	2-3.Conta Baski.Pis.Yukarida DEG
+M627	Sogutma Inverter Ariza
+M628	KONVEYOR SW.ARIZA
+M629	Data transfer sequence error
+M631	X EKSENISIKISTI
+M632	Y1EKSENISIKISTI
+M633	Y2EKSENISIKISTI
+M634	Surme Kanat Baskı Basamadı
+M635	Surme Kanat Baski Geri Gidemedi
+M1000	CONTA BASKI APARATI VAR
+M1001	OLCU+ KAYNAK PAYI
+M1002	KONVEYOR SENSORLU
+M1003	OTOMATK KONVEYOR ILERI
+M1004	barcode on
+M1005	YAGLAMA BASLA
+M1006	OTO SIFIR/NORMAL
+M1007	KALIP KAYDIRMA VAR
+M1008	CONTA AKTIF
+M1009	TA 1030 HAT
+M1010	TERMOKUPL TEST AKTIF
+M1011	CONTA BASKI APARATI VAR**
+M1012	KONVEYOR SENSORLU**
+M1013	KALIP KAYDIRMA VAR**
+M1014	BARIYER KONTROL BYPASS**
+M1015	ANALOG KART IPTAL
+M1016	Surme Kanat Baski Opsiyonu
+M1017	Surme Kanat Baski Opsiyonu**
+M1018	Dayama Citasi Isiticiya Bagli
+M1019	Dayama Citasi Isiticiya Bagli**
+M1020	BARIYER KONTROL BYPASS
+M1021	RAPORLAR SIFIRLANDI
+M1022	MV Serisi Dik Kaynak
+M1023	MV Serisi Dik Kaynak**
+M1024	Tolerans Beklemesiz
+M1025	Tolerans Beklemesiz**
+M1026	X1 Y ile Yukleme
+M1027	X1 Y ile Yukleme **
+M1028	Y X'ten Buyuk Olabilir
+M1029	Y X'ten Buyuk Olabilir **
+M1030	Coklu Kalip Calisma
+M1031	Coklu Kalip Calisma **
+M1032	U Profilli Makina
+M1033	U Profilli Makina**
+M1034	U Profil Aktif
+M1035	Tek Profil Kaldirmali Cift Cerceve Aktif
+M1036	Murat Profil Kodu 6-12 Okuma Iptal
+M1038	U Profil Kaynatildi
+M1039	PCli_Calisma
+M1040	Osman Liman Barkod Aktif
+M1041	Ciftli Profil Kaldirma
+M1042	Ciftli Profil Kaldirma **
+M1348	YAGLAMA BASINC  SIVICLI
+M1453	INVERTER ANALOG
+M1455	X TORK DENEME
+M1456	Y1 TORK DENEME
+M1457	Y2 TORK DENEME
+M1458	TOLERANSGECTI
+M3004	Yesil Lamba
+M3005	Sari Lamba
+M3007	Korna
+SM0	Error Detection
+SM1	Error Detection Other Than Annunciator (F) ON
+SM50	Error Detection Reset Completion
+SM51	Low Battery Detection (Status Holding)
+SM52	Low Battery Detection
+SM53	AC/DC DOWN
+SM56	Instruction Execution Error Detection
+SM61	I/O Unit Verify Error Detection
+SM62	Annunciator (F) Detection
+SM80	Information 1 in Use
+SM112	Information 2 in Use
+SM203	STOP Contact ON
+SM204	PAUSE Contact ON
+SM210	Clock Data Set Request
+SM211	Clock Data Set Error Detection
+SM213	Clock Data Read Request
+SM400	Always ON
+SM401	Always OFF
+SM402	After RUN 1 Scan ON
+SM403	After RUN 1 Scan OFF
+SM409	10 ms Clock
+SM410	100 ms Clock
+SM411	200 ms Clock
+SM412	1 s Clock
+SM413	2 s Clock
+SM414	2n s Clock
+SM415	2n ms Clock
+SM420	User Timing Clock0
+SM421	User Timing Clock1
+SM422	User Timing Clock2
+SM423	User Timing Clock3
+SM424	User Timing Clock4
+SM600	Memory Card Usable (Drive2)
+SM601	Memory Card Protect (Drive2)
+SM603	Memory Card Insertion (Drive2)
+SM605	Memory Card Interchange Protect (Drive2)
+SM606	Memory Card Disable Request (Drive2)
+SM607	Memory Card Disable Status (Drive2)
+SM632	Data Memory Write Error Detection (Drive4)
+SM633	Data Memory Writing (Drive4)
+SM634	Data Memory Write Count Error Detection (Drive4)
+SM700	Carry Flag
+SM701	Output Characters Selection
+SM703	Sort Order Selection
+SM704	Block Comparison
+SM709	DT/TM Instruction Improper Data Detection
+SM4500	High-Speed Counter Operation (CH1)
+SM4501	High-Speed Counter Operation (CH2)
+SM4502	High-Speed Counter Operation (CH3)
+SM4503	High-Speed Counter Operation (CH4)
+SM4504	High-Speed Counter Operation (CH5)
+SM4505	High-Speed Counter Operation (CH6)
+SM4506	High-Speed Counter Operation (CH7)
+SM4507	High-Speed Counter Operation (CH8)
+SM4516	High-Speed Counter Pulse Density/Rotation Speed Measurement (CH1)
+SM4517	High-Speed Counter Pulse Density/Rotation Speed Measurement (CH2)
+SM4518	High-Speed Counter Pulse Density/Rotation Speed Measurement (CH3)
+SM4519	High-Speed Counter Pulse Density/Rotation Speed Measurement (CH4)
+SM4520	High-Speed Counter Pulse Density/Rotation Speed Measurement (CH5)
+SM4521	High-Speed Counter Pulse Density/Rotation Speed Measurement (CH6)
+SM4522	High-Speed Counter Pulse Density/Rotation Speed Measurement (CH7)
+SM4523	High-Speed Counter Pulse Density/Rotation Speed Measurement (CH8)
+SM4532	High-Speed Counter Overflow (CH1)
+SM4533	High-Speed Counter Overflow (CH2)
+SM4534	High-Speed Counter Overflow (CH3)
+SM4535	High-Speed Counter Overflow (CH4)
+SM4536	High-Speed Counter Overflow (CH5)
+SM4537	High-Speed Counter Overflow (CH6)
+SM4538	High-Speed Counter Overflow (CH7)
+SM4539	High-Speed Counter Overflow (CH8)
+SM4548	High-Speed Counter Underflow (CH1)
+SM4549	High-Speed Counter Underflow (CH2)
+SM4550	High-Speed Counter Underflow (CH3)
+SM4551	High-Speed Counter Underflow (CH4)
+SM4552	High-Speed Counter Underflow (CH5)
+SM4553	High-Speed Counter Underflow (CH6)
+SM4554	High-Speed Counter Underflow (CH7)
+SM4555	High-Speed Counter Underflow (CH8)
+SM4564	High-Speed Counter Count Direction Monitor (CH1)
+SM4565	High-Speed Counter Count Direction Monitor (CH2)
+SM4566	High-Speed Counter Count Direction Monitor (CH3)
+SM4567	High-Speed Counter Count Direction Monitor (CH4)
+SM4568	High-Speed Counter Count Direction Monitor (CH5)
+SM4569	High-Speed Counter Count Direction Monitor (CH6)
+SM4570	High-Speed Counter Count Direction Monitor (CH7)
+SM4571	High-Speed Counter Count Direction Monitor (CH8)
+SM4580	High-Speed Counter Count Switching (CH1)
+SM4581	High-Speed Counter Count Switching (CH2)
+SM4582	High-Speed Counter Count Switching (CH3)
+SM4583	High-Speed Counter Count Switching (CH4)
+SM4584	High-Speed Counter Count Switching (CH5)
+SM4585	High-Speed Counter Count Switching (CH6)
+SM4586	High-Speed Counter Count Switching (CH7)
+SM4587	High-Speed Counter Count Switching (CH8)
+SM4596	High-Speed Counter Preset Input Logic (CH1)
+SM4597	High-Speed Counter Preset Input Logic (CH2)
+SM4598	High-Speed Counter Preset Input Logic (CH3)
+SM4599	High-Speed Counter Preset Input Logic (CH4)
+SM4600	High-Speed Counter Preset Input Logic (CH5)
+SM4601	High-Speed Counter Preset Input Logic (CH6)
+SM4602	High-Speed Counter Preset Input Logic (CH7)
+SM4603	High-Speed Counter Preset Input Logic (CH8)
+SM4612	High-Speed Counter Preset Input Comparison Enabled (CH1)
+SM4613	High-Speed Counter Preset Input Comparison Enabled (CH2)
+SM4614	High-Speed Counter Preset Input Comparison Enabled (CH3)
+SM4615	High-Speed Counter Preset Input Comparison Enabled (CH4)
+SM4616	High-Speed Counter Preset Input Comparison Enabled (CH5)
+SM4617	High-Speed Counter Preset Input Comparison Enabled (CH6)
+SM4618	High-Speed Counter Preset Input Comparison Enabled (CH7)
+SM4619	High-Speed Counter Preset Input Comparison Enabled (CH8)
+SM4628	High-Speed Counter Enable Input Logic (CH1)
+SM4629	High-Speed Counter Enable Input Logic (CH2)
+SM4630	High-Speed Counter Enable Input Logic (CH3)
+SM4631	High-Speed Counter Enable Input Logic (CH4)
+SM4632	High-Speed Counter Enable Input Logic (CH5)
+SM4633	High-Speed Counter Enable Input Logic (CH6)
+SM4634	High-Speed Counter Enable Input Logic (CH7)
+SM4635	High-Speed Counter Enable Input Logic (CH8)
+SM4644	High-Speed Counter Ring Length (CH1)
+SM4645	High-Speed Counter Ring Length (CH2)
+SM4646	High-Speed Counter Ring Length (CH3)
+SM4647	High-Speed Counter Ring Length (CH4)
+SM4648	High-Speed Counter Ring Length (CH5)
+SM4649	High-Speed Counter Ring Length (CH6)
+SM4650	High-Speed Counter Ring Length (CH7)
+SM4651	High-Speed Counter Ring Length (CH8)
+SM4980	High-Speed Counter High-Speed Comparison Table Operation
+SM4982	High-Speed Counter High-Speed Comparison Table Error
+SM5000	High-Speed Counter Multi-point Output High-Speed Comparison Table Operation
+SM5001	High-Speed Counter Multi-point Output High-Speed Comparison Table Completion
+SM5002	High-Speed Counter Multi-point Output High-Speed Comparison Table Error
+SM5020	Pulse Width Measurement Operation (CH1)
+SM5021	Pulse Width Measurement Operation (CH2)
+SM5022	Pulse Width Measurement Operation (CH3)
+SM5023	Pulse Width Measurement Operation (CH4)
+SM5036	Pulse Width Measurement Rising (CH1)
+SM5037	Pulse Width Measurement Rising (CH2)
+SM5038	Pulse Width Measurement Rising (CH3)
+SM5039	Pulse Width Measurement Rising (CH4)
+SM5052	Pulse Width Measurement Falling (CH1)
+SM5053	Pulse Width Measurement Falling (CH2)
+SM5054	Pulse Width Measurement Falling (CH3)
+SM5055	Pulse Width Measurement Falling (CH4)
+SM5068	Pulse Width Measurement Mode (CH1)
+SM5069	Pulse Width Measurement Mode (CH2)
+SM5070	Pulse Width Measurement Mode (CH3)
+SM5071	Pulse Width Measurement Mode (CH4)
+SM5300	PWM Function Operation (CH1)
+SM5301	PWM Function Operation (CH2)
+SM5302	PWM Function Operation (CH3)
+SM5303	PWM Function Operation (CH4)
+SM5500	Positioning Instruction Activation (Axis 1)
+SM5501	Positioning Instruction Activation (Axis 2)
+SM5502	Positioning Instruction Activation (Axis 3)
+SM5503	Positioning Instruction Activation (Axis 4)
+SM5516	Positioning Pulse Output Monitor (Axis 1)
+SM5517	Positioning Pulse Output Monitor (Axis 2)
+SM5518	Positioning Pulse Output Monitor (Axis 3)
+SM5519	Positioning Pulse Output Monitor (Axis 4)
+SM5532	Positioning Error (Axis 1)
+SM5533	Positioning Error (Axis 2)
+SM5534	Positioning Error (Axis 3)
+SM5535	Positioning Error (Axis 4)
+SM5580	Positioning Table Shift Instructions (Axis 1)
+SM5581	Positioning Table Shift Instructions (Axis 2)
+SM5582	Positioning Table Shift Instructions (Axis 3)
+SM5583	Positioning Table Shift Instructions (Axis 4)
+SM5596	Positioning Remaining Distance Operation Enabled (Axis 1)
+SM5597	Positioning Remaining Distance Operation Enabled (Axis 2)
+SM5598	Positioning Remaining Distance Operation Enabled (Axis 3)
+SM5599	Positioning Remaining Distance Operation Enabled (Axis 4)
+SM5612	Positioning Remaining Distance Operation Command (Axis 1)
+SM5613	Positioning Remaining Distance Operation Command (Axis 2)
+SM5614	Positioning Remaining Distance Operation Command (Axis 3)
+SM5615	Positioning Remaining Distance Operation Command (Axis 4)
+SM5628	Positioning Pulse Output Stop Command (Axis 1)
+SM5629	Positioning Pulse Output Stop Command (Axis 2)
+SM5630	Positioning Pulse Output Stop Command (Axis 3)
+SM5631	Positioning Pulse Output Stop Command (Axis 4)
+SM5644	Positioning Pulse Decelerate Stop Command (Axis 1)
+SM5645	Positioning Pulse Decelerate Stop Command (Axis 2)
+SM5646	Positioning Pulse Decelerate Stop Command (Axis 3)
+SM5647	Positioning Pulse Decelerate Stop Command (Axis 4)
+SM5660	Positioning Forward Rotation Limit (Axis 1)
+SM5661	Positioning Forward Rotation Limit (Axis 2)
+SM5662	Positioning Forward Rotation Limit (Axis 3)
+SM5663	Positioning Forward Rotation Limit (Axis 4)
+SM5676	Positioning Reverse Rotation Limit (Axis 1)
+SM5677	Positioning Reverse Rotation Limit (Axis 2)
+SM5678	Positioning Reverse Rotation Limit (Axis 3)
+SM5679	Positioning Reverse Rotation Limit (Axis 4)
+SM5772	Positioning Rotational Direction (Axis 1)
+SM5773	Positioning Rotational Direction (Axis 2)
+SM5774	Positioning Rotational Direction (Axis 3)
+SM5775	Positioning Rotational Direction (Axis 4)
+SM5804	Positioning Zero Return Direction (Axis 1)
+SM5805	Positioning Zero Return Direction (Axis 2)
+SM5806	Positioning Zero Return Direction (Axis 3)
+SM5807	Positioning Zero Return Direction (Axis 4)
+SM5820	Positioning Clear Signal Output Enabled (Axis 1)
+SM5821	Positioning Clear Signal Output Enabled (Axis 2)
+SM5822	Positioning Clear Signal Output Enabled (Axis 3)
+SM5823	Positioning Clear Signal Output Enabled (Axis 4)
+SM5868	Positioning Zero-point Signal Count Start (Axis 1)
+SM5869	Positioning Zero-point Signal Count Start (Axis 2)
+SM5870	Positioning Zero-point Signal Count Start (Axis 3)
+SM5871	Positioning Zero-point Signal Count Start (Axis 4)
+SM6020	CH1 A/D Conversion Completed Flag
+SM6021	CH1 A/D Conversion Enable/Disable Setting
+SM6022	CH1 Scaling Over Upper Limit Value Detection Flag
+SM6023	CH1 Scaling Over Lower Limit Value Detection Flag
+SM6024	CH1 Scaling Over Detection
+SM6025	CH1 Max. Value/Min. Value Reset Completed Flag
+SM6026	CH1 Max. Value Reset Request
+SM6027	CH1 Min. Value Reset Request
+SM6028	CH1 Scaling Enable/Disable Setting
+SM6029	CH1 Digital Clipping Enable/Disable Setting
+SM6031	CH1 Warning Output Flag (Process Alarm Upper Limit)
+SM6032	CH1 Warning Output Flag (Process Alarm Lower Limit)
+SM6033	CH1 Warning Output Setting (Process Alarm)
+SM6057	CH1 A/D Alram Clear Request
+SM6058	CH1 A/D Alarm Flag
+SM6059	CH1 A/D Error Flag
+SM6060	CH2 A/D Conversion Completed Flag
+SM6061	CH2 A/D Conversion Enable/Disable Setting
+SM6062	CH2 Scaling Over Upper Limit Value Detection Flag
+SM6063	CH2 Scaling Over Lower Limit Value Detection Flag
+SM6064	CH2 Scaling Over Detection
+SM6065	CH2 Max. Value/Min. Value Reset Completed Flag
+SM6066	CH2 Max. Value Reset Request
+SM6067	CH2 Min. Value Reset Request
+SM6068	CH2 Scaling Enable/Disable Setting
+SM6069	CH2 Digital Clipping Enable/Disable Setting
+SM6071	CH2 Warning Output Flag (Process Alarm Upper Limit)
+SM6072	CH2 Warning Output Flag (Process Alarm Lower Limit)
+SM6073	CH2 Warning Output Setting (Process Alarm)
+SM6097	CH2 A/D Alram Clear Request
+SM6098	CH2 A/D Alarm Flag
+SM6099	CH2 A/D Error Flag
+SM6180	D/A Conversion Enable/Disable Setting
+SM6181	D/A Output Enable/Disable Setting
+SM6188	Scaling Enable/Disable Setting
+SM6191	Warning Output Upper Limit Value Flag
+SM6192	Warning Output Lower Limit Value Flag
+SM6193	Warning Output Setting
+SM6217	D/A Alram Clear Request
+SM6218	D/A Alarm Flag
+SM6219	D/A Error Flag
+SM8000	Always ON
+SM8001	Always OFF
+SM8002	After RUN 1 Scan ON
+SM8003	After RUN 1 Scan OFF
+SM8004	Error Detection
+SM8005	Low Battery Detection
+SM8006	Low Battery Detection (Status Holding)
+SM8007	Momentary Power Failure
+SM8008	Power Failure Detected
+SM8011	10 ms Clock
+SM8012	100 ms Clock
+SM8013	1 s Clock
+SM8014	1 min Clock
+SM8015	RTC Clocking Stop and Preset
+SM8016	RTC Time Read Display Stop
+SM8017	RTC ±30-sec Compensation
+SM8018	Installation detection (Always ON) For real time clock
+SM8019	RTC Read Data Error
+SM8020	Zero Flag
+SM8021	Borrow Flag
+SM8022	Carry Flag
+SM8023	RTC Access Error
+SM8026	RAMP Instruction Operation Stop Mode
+SM8029	Instruction Execution Complete
+SM8031	Non-Latch Memory All Clear
+SM8032	Latch Memory All Clear
+SM8033	Memory Hold Command at Stop
+SM8034	All Output Disable
+SM8038	N:N     PARAMET.SETTING
+SM8039	Constant Scan Mode
+SM8048	Annunciator ON
+SM8049	Enable Annunciator Monitoring
+SM8050	I0 Interrupt Disable
+SM8051	I1 Interrupt Disable
+SM8052	I2 Interrupt Disable
+SM8053	I3 Interrupt Disable
+SM8054	I4 Interrupt Disable
+SM8055	I5 Interrupt Disable
+SM8056	I6 Interrupt Disable
+SM8057	I7 Interrupt Disable
+SM8058	I30 Interrupt Disable
+SM8059	I16-I23 Interrupt Disable
+SM8063	Serial Communication Error (CH1)
+SM8067	Operation Error
+SM8068	Operation Error Latch
+SM8069	I/O bus check
+SM8090	BKCMP Instruction Block Comparison Signal
+SM8099	High-Speed Ring Counter Operaiton
+SM8151	Inverter Communication (CH1)
+SM8152	Inverter Communication Error (CH1)
+SM8153	Inverter Communication Error Latch (CH1)
+SM8154	IVBWR Instruction Error (CH1)
+SM8156	Inverter Communication (CH2)
+SM8157	Inverter Communication Error (CH2)
+SM8158	Inverter Communication Error Latch (CH2)
+SM8159	IVBWR Instruction Error (CH2)
+SM8161	ASCI/HEX/CRC Instruction 8-bit Operation Mode
+SM8168	SMOV Instruction Hexadecimal Operation Command
+SM8170	X000 Pulse Catch
+SM8171	X001 Pulse Catch
+SM8172	X002 Pulse Catch
+SM8173	X003 Pulse Catch
+SM8174	X004 Pulse Catch
+SM8175	X005 Pulse Catch
+SM8176	X006 Pulse Catch
+SM8177	X007 Pulse Catch
+SM8183	Data communication error (Master station)
+SM8184	Data communication error (Slave station No.1)
+SM8185	Data communication error (Slave station No.2)
+SM8186	Data communication error (Slave station No.3)
+SM8187	Data communication error (Slave station No.4)
+SM8188	Data communication error (Slave station No.5)
+SM8189	Data communication error (Slave station No.6)
+SM8190	Data communication error (Slave station No.7)
+SM8191	Data communication in execution
+SM8198	C251    4 KAT
+SM8199	C253    4KAT
+SM8246	LC46 counting direction monitoring
+SM8247	LC47 counting direction monitoring
+SM8248	LC48 counting direction monitoring
+SM8249	LC49 counting direction monitoring
+SM8250	LC50 counting direction monitoring
+SM8251	LC51 counting direction monitoring
+SM8252	LC52 counting direction monitoring
+SM8253	LC53 counting direction monitoring
+SM8254	LC54 counting direction monitoring
+SM8255	LC55 counting direction monitoring
+SM8304	MUL/DIV Instruction Zero Flag
+SM8306	MUL/DIV Instruction Carry Flag
+SM8312	RTC Oscillation Stop Detection
+SM8329	Instruction Abnormally Executed
+SM8330	DUTY Instruction Output 1
+SM8331	DUTY Instruction Output 2
+SM8332	DUTY Instruction Output 3
+SM8333	DUTY Instruction Output 4
+SM8334	DUTY Instruction Output 5
+SM8340	Positioning Pulse Output Monitor (Axis 1)
+SM8348	Positioning Instruction Activation (Axis 1)
+SM8350	Positioning Pulse Output Monitor (Axis 2)
+SM8358	Positioning Instruction Activation (Axis 2)
+SM8360	Positioning Pulse Output Monitor (Axis 3)
+SM8368	Positioning Instruction Activation (Axis 3)
+SM8370	Positioning Pulse Output Monitor (Axis 4)
+SM8378	Positioning Instruction Activation (Axis 4)
+SM8380	HIZILI  SAYICI  AYAR
+SM8388	HIZILI  SAYICI  AYAR
+SM8392	HIZILI  SAYICI  AYAR
+SM8401	RS2 Instruction Send Wait/MODBUS Request in Process (CH1)
+SM8402	MODBUS Communication Error (CH1)
+SM8403	MODBUS Communication Error Latch (CH1)
+SM8404	RS2 Instruction Carrier Detection/MODBUS Communication Mode (CH1)
+SM8405	RS2 Instruction DSR Detection (CH1)
+SM8408	MODBUS Communication Retry (CH1)
+SM8409	RS2 Instruction Timeout Check/MODBUS Communication Timeout (CH1)
+SM8421	RS2 Instruction Send Wait/MODUBS Request in Process (CH2)
+SM8422	MODBUS Communication Error (CH2)
+SM8423	MODBUS Communication Error Latch (CH2)
+SM8424	RS2 Instruction Carrier Detection/MODBUS Communication Mode (CH2)
+SM8425	RS2 Instruction DSR Detection (CH2)
+SM8428	MODBUS Communication Retry (CH2)
+SM8429	RS2 Instruction Timeout Check/MODBUS Communication Timeout (CH2)
+SM8438	Serial Communication Error (CH2)
+SM8492	IP address storage area write request
+SM8493	IP address storage area write completed
+SM8494	IP address storage area write error
+SM8495	IP address storage area clear request
+SM8496	IP address storage area clear completed
+SM8497	IP address storage area clear error
+SM8498	IP address change function enable flag
+SM8500	Serial Communication Error (CH1)
+SM8510	Serial Communication Error (CH2)
+SM8520	Serial Communication Error (CH3)
+SM8530	Serial Communication Error (CH4)
+SM8560	Data Transfer Delayed (CH1)
+SM8561	Data Transfer Flag (CH1)
+SM8562	Receive Completion Flag (CH1)
+SM8563	Carrier Detection Flag (CH1)
+SM8564	Data Set Ready Flag (CH1)
+SM8565	Time-out Check Flag (CH1)
+SM8570	Data Transfer Delayed (CH2)
+SM8571	Data Transfer Flag (CH2)
+SM8572	Receive Completion Flag (CH2)
+SM8573	Carrier Detection Flag (CH2)
+SM8574	Data Set Ready Flag (CH2)
+SM8575	Time-out Check Flag (CH2)
+SM8580	Data Transfer Delayed (CH3)
+SM8581	Data Transfer Flag (CH3)
+SM8582	Receive Completion Flag (CH3)
+SM8583	Carrier Detection Flag (CH3)
+SM8584	Data Set Ready Flag (CH3)
+SM8585	Time-out Check Flag (CH3)
+SM8590	Data Transfer Delayed (CH4)
+SM8591	Data Transfer Flag (CH4)
+SM8592	Receive Completion Flag (CH4)
+SM8593	Carrier Detection Flag (CH4)
+SM8594	Data Set Ready Flag (CH4)
+SM8595	Time-out Check Flag (CH4)
+SM8800	MODBUS RTU Communication (CH1)
+SM8801	Retry (CH1)
+SM8802	Timeout (CH1)
+SM8810	MODBUS RTU Communication (CH2)
+SM8811	Retry (CH2)
+SM8812	Timeout (CH2)
+SM8820	MODBUS RTU Communication (CH3)
+SM8821	Retry (CH3)
+SM8822	Timeout (CH3)
+SM8830	MODBUS RTU Communication (CH4)
+SM8831	Retry (CH4)
+SM8832	Timeout (CH4)
+SM8861	Host Station Number Latch Setting Enabled (CH1)
+SM8871	Host Station Number Latch Setting Enabled (CH2)
+SM8881	Host Station Number Latch Setting Enabled (CH3)
+SM8891	Host Station Number Latch Setting Enabled (CH4)
+SM8920	Inverter Communication (CH1)
+SM8921	IVBWR Instruction Error (CH1)
+SM8930	Inverter Communication (CH2)
+SM8931	IVBWR Instruction Error (CH2)
+SM8940	Inverter Communication (CH3)
+SM8941	IVBWR Instruction Error (CH3)
+SM8950	Inverter Communication (CH4)
+SM8951	IVBWR Instruction Error (CH4)
+SM9040	Data communication error (Master station)
+SM9041	Data communication error (Slave station No.1)
+SM9042	Data communication error (Slave station No.2)
+SM9043	Data communication error (Slave station No.3)
+SM9044	Data communication error (Slave station No.4)
+SM9045	Data communication error (Slave station No.5)
+SM9046	Data communication error (Slave station No.6)
+SM9047	Data communication error (Slave station No.7)
+SM9056	Data communication in execution
+SM9080	Station No. setting SD latch enabled
+SM9081	Slave station total number setting SD latch enabled
+B?0	X       SIFIRLA
+B?1	Y1      SIFIRLA
+B?2	Y2      SIFIRLA
+B?3	KAYNAK ISLEMI BASLA
+B?4	ELEMENLAR YERINE
+B?13	X TLRNS KALAN POZISYONLA
+B?15	Y1 TLRNS KALAN POZISYONLA
+B?17	Y2 TLRNS KALAN POZISYONLA
+B?41	YAN TABLA 3 BAR ILERI
+B?71	Profil Bosaltma Geri
+B?72	Konveyor Ileri
+B?502	OTO PROF  KODU   ALAMA
+X0	X Ekseni Encoder A
+X1	X Ekseni Encoder B
+X2	Y1 Ekseni Encoder A
+X3	Y1 Ekseni Encoder B
+X4	Y2 Ekseni Encoder A
+X5	Y2 Ekseni Encoder B
+X6	X Ekseni referans sw.
+X7	Y1 Ekseni referans sw.
+X10	Y2 Ekseni referans sw.
+X11	1.Kafa Dayama Citasi Geride
+X12	2.Kafa Dayama Citasi Geride
+X13	3.Kafa Dayama Citasi Geride
+X14	4.Kafa Dayama Citasi Geride
+X15	1.Kafa Yan Tab.Geride
+X16	2.Kafa Yan Tab.Geride
+X17	3.Kafa Yan Tab.Geride
+X20	4.Kafa Yan Tab.Geride
+X21	1.Kafa Yan Tab.Geride2
+X22	2.Kafa Yan Tab.Geride2
+X23	3.Kafa Yan Tab.Geride2
+X24	4.Kafa Yan Tab.Geride2
+X25	1.Kafa Isitici Geride
+X26	2.Kafa Isitici Geride
+X27	3.Kafa Isitici Geride
+X30	4.Kafa Isitici Geride
+X31	1.Kafa Dayama Citasi ileride
+X32	2.Kafa Dayama Citasi ileride
+X33	3.Kafa Dayama Citasi ileride
+X34	4.Kafa Dayama Citasi ileride
+X35	1.Kafa Isitici ileride
+X36	2.Kafa Isitici ileride
+X37	3.Kafa Isitici ileride
+X40	4.Kafa Isitici ileride
+X41	X Inverter Ariza
+X42	Y1 Inverter Ariza
+X43	Y2 Inverter Ariza
+X44	Basinc Sw.
+X45	Emniyet Fotoseli
+X46	Start Butonu
+X47	Kismi Stop
+X50	Konveyorler Ariza
+X51	ISITICI DEVREDE
+X52	Konveyorler Stop
+X53	Sogutma Inverter Ariza
+X54	Surme Kanat Baski 1 Geride
+X55	Surme Kanat Baski 2 Geride
+X56	Surme Kanat Baski 3 Geride
+X57	Surme Kanat Baski 4 Geride
+X60	1-4.Conta Baski Il-Ger.Pis.Gerid
+X61	2-3.Conta Baski Il-Ger.Pis.Gerid
+X62	1-4.Conta Baski.Pis.Yukarida
+X63	2-3.Conta Baski.Pis.Yukarida
+X64	1-4.Conta GRUP.Pis.     YUKARIDA
+X65	2-3.Conta GRUP.Pis.YUKARIDA
+X71	1-2 KAFA KONV.GERIDE
+X72	3-4 KAFA KONV.GERIDE
+X73	1-2 KAFA KONV.ILERIDE
+X74	3-4 KAFA KONV.ILERIDE
+Y0	X HIZ PULSE
+Y1	Y1 HIZ PULSE
+Y2	Y2 HIZ PULSE
+Y3	1.Kafa Isitma Tetikleme
+Y4	2.Kafa Isitma Tetikleme
+Y5	3.Kafa Isitma Tetikleme
+Y6	4.Kafa Isitma Tetikleme
+Y7	X STF
+Y10	Y1 STF
+Y11	Y2 STF
+Y12	KONVEYOR
+Y13	Yesil Lamba
+Y14	Sari Lamba
+Y15	Kirmizi Lamba
+Y16	Korna
+Y17	RESET
+Y20	Dayama Citasi
+Y21	Yan Tabla (3 bar) İLERI
+Y22	Yan Tabla (6 bar)
+Y23	YAN TABLA GERI
+Y24	Isitici Piston iler
+Y25	Isitici Piston geri
+Y26	Ust Baskilar Asagi
+Y27	Ust Baskilar Yukari
+Y30	Yaglama Valfi
+Y31	Profil Kaldirma GERI
+Y32	Profil Kaldirma ILERI
+Y33	Profil Bosaltma GERI / Surme Kanat Baski
+Y34	Profil Bosaltma ILERI
+Y35	X TORK LIMITLE
+Y36	Y1 TORK LIMITLE
+Y37	Y2 TORK LIMITLE
+Y40	Conta Baski 1-4 GRUP YUKARI
+Y41	Conta Baski 2-3 GRUP YUKARI
+Y42	Conta Baski GERI 1-4 valfi
+Y43	Conta Baski GERI 2-3 valfi
+Y44	Conta Baski 1-4 asagi valfi
+Y45	Conta Baski 2-3 asagi valfi
+Y46	Profil Kaldirma 2 Asagi
+Y47	Profil Kaldirma 2 Yukari
+Y60	ALT TIP BIT 0
+Y61	ALT TIP BIT 1
+Y62	ALT TIP BIT 2
+Y75	ARKA TABLA DAYAMA GERI
+Y76	ARKA TABLA DAYAMA ILERI
+Y77	KONVEYOR ILERI
+Y100	KONVEYOR GERI
+D0	PROGRAM NO      CNC'YE
+D0.1	PROGRAM NO      CNC'YE
+D2	GENISLIK CNC'YE
+D4	PROGRAM NO      ISLENEN
+D6	PRF.GENISLIK    ISLENEN
+D10	Hesap Yardimci
+D12	Hesap Yardimci
+D18	Yuklemede X Yaklas
+D20	X INP -
+D22	X INP +
+D24	Y1 INP-
+D26	Y1 INP+
+D28	Y2 INP-
+D30	Y2 INP+
+D32	X SET   MM
+D34	Y1 SET  MM
+D36	Y2 SET  MM
+D40	X SET   POZISYON PULSE
+D42	Y1 SET POZISYON PULSE
+D44	Y2 SET POZISYON PULSE
+D46	set pulse sayici
+D47	PULSE SAYICI
+D48	ARABA NO INDEX BASLANGIC
+D50	X ekseni Pozisyon MM
+D52	Y1ekseni Pozisyon MM
+D54	Y2ekseni Pozisyon MM
+D56	ISLENEN INDEX
+D58	BARKOD  KARAKTERSAYISI
+D60	SAYFA NO
+D61	"
+D62	OVERLAP WINDOW
+D63	BAKIM   ONAY    SAYAC
+D64	"
+D65	"
+D66	SYSTEM  SIGNAL 1
+D67	"
+D68	GOT SCREN NO
+D69	act.win screen
+D70	"
+D71	"
+D72	"
+D73	"
+D74	"
+D75	"
+D76	"
+D77	Y MAX DUSUK HIZ
+D78	"
+D79	"
+D80	"
+D81	"
+D82	SYSTEM  SIGNAL 2
+D83	"
+D84	"
+D85	"
+D86	"
+D87	"
+D88	"
+D89	"
+D90	DIL SECIMI
+D91	"
+D92	"
+D93	"
+D94	"
+D95	"
+D96	"
+D97	"
+D98	"
+D99	"
+D100	Y1 SET  POZISYON NIHAI
+D102	Y1 YAVAS POZ
+D104	Y2 SET  POZISYON PULSE   NIHAI
+D106	Y2 YAVAS POZ
+D110	X  SET  NIHAI   PULSE
+D112	X YAVAS POZ
+D115	IMLEC YERI
+D120	PROGRAM NO
+D121	PROGRAM NO INDEX
+D123	PROGRAM NO**
+D124	SECILEN PROG.NO
+D125	SECILEN PROGRAM NO INDEX
+D127	**
+D128	PROFIL  TIP NO  EKRANA
+D129	PROFIL  TIP NO  * 10    EKRANA
+D130	KAYNATMA SET-5SN
+D132	X eksenipozisyon MM     ONCEKI
+D134	Y1 eksenipozisyon MM    ONCEKI
+D136	Y2 ekseni PozisyonONCEKI
+D140	SICAKLIK SET -3
+D141	SICAKLIK SET +3
+D144	X MIN   OLCU
+D146	X MAX   OLCU
+D148	Y MIN   OLCU
+D150	Y MAX   OLCU
+D152	REF--ACT POZ.PLS
+D154	X DUZELT
+D156	Y1 DUZELT
+D158	Y2 DUZELT
+D162	TOPLAM KAYNAK SAYISI
+D164	TOPLAM  ISLENEN
+D166	TOPLAM CALISMA SURESI
+D168	ENERJILI SURE
+D171	GENISLIK BARKOD BASLANGIC
+D172	DERINLIK BARKOD BASLANGIC
+D173	KAL.FARKI BARKOD BASLANGIC
+D174	PROF.GEN. BARKOD BASLANGIC
+D175	TIP BARKOD BASLANGIC
+D176	ALT TIP BARKOD BASLANGIC
+D177	IL.ERIT BARKOD BASLANGIC
+D178	ISITMA BARKOD BASLANGIC
+D179	KAYNATMA BARKOD BASLANGIC
+D180	SICAKLIK BARKOD BASLANGIC
+D181	GENISLIK KARAKTER SAYISI
+D182	DERINLIK KARAKTER SAYISI
+D183	KAL.FARK KARAKTER SAYISI
+D184	PROF.GEN. KARAKTER SAYISI
+D185	TIP KARAKTER SAYISI
+D186	ALT TIP KARAKTER SAYISI
+D187	IL.ERIT KARAKTER SAYISI
+D188	ISITMA KARAKTER SAYISI
+D189	KAYNATMA KARAKTER SAYISI
+D190	SICAKLIK KARAKTER SAYISI
+D192	x fark
+D194	Y1 fark
+D196	Y2 fark
+D198	FARK
+D200	YAGLAMA START
+D202	YAGLAMA SYAC
+D204	YAGLAMA PULSE   SAYISI
+D206	SICAKLIK tolerans
+D208	CONTA BASKI GECIKME
+D211	1.KAFA  ILAVE   SICAKLIK
+D212	2.KAFA  ILAVE   SICAKLIK
+D213	3.KAFA  ILAVE   SICAKLIK
+D214	4.KAFA  ILAVE   SICAKLIK
+D215	1.KAFA  SICAKLIK SET
+D216	2.KAFA  SICAKLIK SET
+D217	3.KAFA  SICAKLIK SET
+D218	4.KAFA  SICAKLIK SET
+D220	ROBOT   MIN
+D222	ROBOT Y MIN
+D224	ROBOT   MAX
+D226	ENERJILI SURE    DAKIKA
+D230	seçilen firma
+D231	liste   1.firma index
+D232	liste   2.firma index
+D233	liste   3.firma index
+D234	liste   4.firma index
+D235	liste   5.firma index
+D236	liste   1.seri  index
+D237	liste   2.seri  index
+D238	liste   3.seri  index
+D239	liste   4.seri  index
+D240	liste   5.seri  index
+D241	liste   1.Tip   index
+D242	liste   2.Tip   index
+D243	liste   3.Tip   index
+D244	liste   4.Tip   index
+D245	liste   5.Tip   index
+D246	liste   1.A.tip index
+D247	liste   2.A.tip index
+D248	liste   3.A.tip index
+D249	liste   4.A.tip index
+D250	liste   5.A.tip index
+D252	X ENC.  DEGERI
+D254	**
+D256	HESAP GECICI
+D260	plc     program versiyon
+D261	seçilen seri
+D262	seçilen tip
+D263	seçilen alt tip
+D264	U Profil Genislik Ofseti
+D270	seçilen firma*
+D271	seçilen seri*
+D272	seçilen tip*
+D273	seçilen alt tip*
+D274	X ekseni Hedef+Tolerans+2mm
+D276	Y1 ekseni Hedef+Tolerans+2mm
+D278	Y2 ekseni Hedef+Tolerans+2mm
+D280	GIDILECEK YOL y
+D286	EKSTRA  ISITMA
+D290	20mA de SICAKLIK DEGERI
+D292	4mA de SICAKLIK DEGERI
+D294	SICAKLIK OLCUM ARALIGI
+D296	TOPLAM  CALISMA SAATI
+D300	X REFERANS DEGERI
+D302	Y1 REFERANS DEGERI
+D304	Y2 REFERANS DEGERI
+D306	X CARPAN
+D308	X BOLEN
+D310	Y1 CARPAN
+D312	Y1 BOLEN
+D314	Y2 CARPAN
+D316	Y2 BOLEN
+D318	X BOSALTMA ILERLEME
+D320	X Bosaltmada Ilerleme (U Profil)
+D322	X Bosaltmada Ilerleme (U Profil)**
+D324	YUKLEME
+D326	BANT CALISMA GECIKME
+D327	BANT CALISMA SURE
+D328	adet set
+D329	TABLA SIKMA ZAMANI
+D330	PROGRAM NO
+D331	"
+D332	GOZ 10LAR
+D333	GOZ 1LER
+D334	GOT DISPLAY
+D335	GOT DISPLAY
+D336	GENEL   BAKIM   PERIYODU
+D338	KONTROL PERIYODU
+D340	GENEL   BAKIM   SAYACI
+D342	KONTROL SAYACI
+D345	KAPLAMA
+D346	PRF.GENISLIK
+D347	KALIP FARKI
+D348	Profil  Flags
+D348.1	Profil  Flags
+D349	ERITME SURESI
+D350	KAYNATMA SET
+D351	SICAKLIK SET
+D353	ILAVE ISITMA ZAMANI
+D354	TOPLAM ISITMA ZAMANI
+D355	TANK    BASMA   KAPASITE**
+D356	TANK    BASMA   KAPASITE
+D357	YAGLAMA SAYACI
+D358	adet say
+D359	YAN     TABLA   DENEME
+D360	X - SW. LIMIT MM
+D362	Y1 - SW.LIMIT MM
+D364	Y2 - SW.LIMIT MM
+D366	X + SW. LIMIT MM
+D368	Y1 + SW.LIMIT MM
+D370	Y2 + SW.LIMIT MM
+D372	conta bas min
+D374	HAFTALIKBAKIM   SAYACI
+D376	KONVEYOR ACILMA MINIMUM BOY
+D378	Konveyor Durdurma Sivici Filtre
+D379	Konveyor Durdurma Sivici Filtre **
+D380	FX2N    4AD-TC  ERROR   REGISTER
+D381	1.KAFA  OKUNAN  SICAKLIK
+D382	2.KAFA  OKUNAN  SICAKLIK
+D383	3.KAFA  OKUNAN  SICAKLIK
+D384	4.KAFA  OKUNAN  SICAKLIK
+D385	PLC VERSION
+D386	MUS.ADI INDEX
+D387	ISLENEN INDEX
+D388	X ekseni ONCEKI pozisyon
+D390	CARPMA  BOLME   YARDIMCI
+D392	GIDILECEK YOL
+D397	ISLENEN INDEX
+D398	RAPOR INDEX
+D399	ARABA NO
+D400	YIL
+D401	AY
+D402	GUN
+D403	SAAT
+D404	DAK
+D405	SAAT 3
+D406	HAFTANIN GUNU
+D408	con.bas tek tek calıs
+D410	BARKOD  GELEN   VERI
+D419	kalıp farkı
+D421	Murat Barkod Boy
+D450	,
+D458	YUKLEME**
+D460	X BOSALTMA ILERLEME**
+D462	TOLERANS**
+D464	TABLA SIKMA ZAMANI**
+D465	SICAKLIK tolerans**
+D466	ILAVE ISITMA ZAMANI**
+D467	YAGLAMA START**
+D469	YAGLAMA SURESI**
+D470	BANT CALISMA GECIKME**
+D471	BANT CALISMA SURE**
+D472	ROBOT   MIN**
+D474	ROBOT   MAX**
+D476	CONTA BASKI GECIKME**
+D478	X Bosaltmada Ilerleme Hizi Yuzdesi
+D479	X Bosaltmada Ilerleme Hizi Yuzdesi **
+D482	BAKIM   PERIYODU**
+D490	FX3U-4DA-CH1
+D491	FX3U-4DA-CH2
+D492	FX3U-4DA-CH3
+D493	FX3U-4DA-CH4
+D500	ORNEKLEME
+D501	CALISSETING
+D502	FILITRE
+D503	1.KP
+D504	1.TI
+D505	KD
+D506	TD
+D507	R1
+D508	R2
+D509	R3
+D510	R4
+D511	R5
+D512	R6
+D513	R7
+D514	R8
+D515	R9
+D516	R10
+D517	R11
+D518	R12
+D519	R13
+D520	OLCULEN D. POZETIF DEGIS
+D521	OLCULEN D. NEGATIF DEGIS
+D522	CIKIS UST LIMIT
+D523	CIKIS ALT LIMIT
+D524	ALARMFLAG
+D530	1.KAFA  PID     CIKISI
+D550	ORNEKLEME
+D551	CALISSETING
+D552	FILITRE
+D553	KP
+D554	2.TI
+D555	KD
+D556	TD
+D557	R1
+D558	R2
+D559	R3
+D560	R4
+D561	R5
+D562	R6
+D563	R7
+D564	R8
+D565	R9
+D566	R10
+D567	R11
+D568	R12
+D569	R13
+D570	OLCULEN D. POZETIF DEGIS
+D571	OLCULEN D. NEGATIF DEGIS
+D572	CIKIS UST LIMIT
+D573	CIKIS ALT LIMIT
+D574	ALARMFLAG
+D580	2.KAFA  PID     CIKISI
+D600	ORNEKLEME
+D601	CALISSETING
+D602	FILITRE
+D603	KP
+D604	3.TI
+D605	KD
+D606	TD
+D607	R1
+D608	R2
+D609	R3
+D610	R4
+D611	R5
+D612	R6
+D613	R7
+D614	R8
+D615	R9
+D616	R10
+D617	R11
+D618	R12
+D619	R13
+D620	OLCULEN D. POZETIF DEGIS
+D621	OLCULEN D. NEGATIF DEGIS
+D622	CIKIS UST LIMIT
+D623	CIKIS ALT LIMIT
+D624	ALARMFLAG
+D630	3.KAFA  PID     CIKISI
+D650	ORNEKLEME
+D651	CALISSETING
+D652	FILITRE
+D653	KP
+D654	4.TI
+D655	KD
+D656	TD
+D657	R1
+D658	R2
+D659	R3
+D660	R4
+D661	R5
+D662	R6
+D663	R7
+D664	R8
+D665	R9
+D666	R10
+D667	R11
+D668	R12
+D669	R13
+D670	OLCULEN D. POZETIF DEGIS
+D671	OLCULEN D. NEGATIF DEGIS
+D672	CIKIS UST LIMIT
+D673	CIKIS ALT LIMIT
+D674	ALARMFLAG
+D680	4.KAFA  PID     CIKISI
+D700	X CARPAN**
+D712	X - SW. LIMIT MM**
+D726	20mA de SICAKLIK DEGERI**
+D730	con.bas tek tek calıs**
+D732	HESAP   GECICI
+D740	X EKSENI REFERANS HIZI 1
+D741	X EKSENI MAKSIMUM MAN.HIZI
+D742	X EKSENI MAN.HIZ YUZDESI
+D743	Y EKSENI REFERANS HIZI 1
+D744	Y1 EKSENI MAKSIMUM MAN.HIZI
+D745	Y EKSENI MAN.HIZ YUZDESI
+D746	Y2 EKSENI REFERANS HIZI 1
+D747	Y2 EKSENI MAKSIMUM MAN.HIZI
+D748	Y2 EKSENI MAN.HIZ YUZDESI
+D749	X EKSENI REFERANS HIZI 2
+D750	Y EKSENI REFERANS HIZI 2
+D751	Y2 EKSENI REFERANS HIZI 2
+D752	X OTOMATIK HIZ YUZDESI
+D754	Y OTOMATIK HIZ YUZDESI
+D756	Toleransa Baslama Gecikme
+D757	Tolerans Pozisyonlama Hizi
+D758	Toleransa Baslama Gecikme**
+D760	X EKSENI REFERANS HIZI
+D761	X EKSENI MAKSIMUM MAN.HIZI
+D762	X EKSENI MAN.HIZ YUZDESI
+D763	Y1 EKSENI REFERANS HIZI
+D764	Y1 EKSENI MAKSIMUM MAN.HIZI
+D765	Y1 EKSENI MAN.HIZ YUZDESI
+D766	Y2 EKSENI REFERANS HIZI
+D767	Y2 EKSENI MAKSIMUM MAN.HIZI
+D768	Y2 EKSENI MAN.HIZ YUZDESI
+D769	X EKSENI REFERANS HIZI 2
+D770	Y1 EKSENI REFERANS HIZI 2
+D771	Y2 EKSENI REFERANS HIZI 2
+D772	X MIN DUSUK HIZ
+D774	X MAX DUSUK HIZ
+D776	Y MIN DUSUK HIZ
+D778	Y MAX DUSUK HIZ
+D780	Alternatif Profil Kodu *
+D788	Araba Goz No *5
+D789	Araba Gozu Ofseti (Ekrana)
+D790	Araba Gozu Dolu/Bos
+D791	Okunan Barkod
+D1010	X DUZELT PULSE
+D1012	Y1 DUZELTME PULSE
+D1014	Y2 DUZEL PULSE
+D1016	X YOL
+D1018	Y1 YOL
+D1020	Y2 YOL
+D1104	Ekrana Seri No 1
+D1105	Ekrana Seri No 2
+D1106	Ekrana Seri No 3
+D1107	Ekrana Seri No 4
+D1108	Ekrana Seri No 5
+D1109	Ekrana Seri No 6
+D1110	Ekrana Seri No 7
+D1111	Ekrana Seri No 8
+D1112	Ekrana Seri No 9
+D1113	Ekrana Seri No 10
+D1114	Ekrana Seri No 11
+D1115	Ekrana Seri No 12
+D1116	Ekrana Seri No 13
+D1117	Ekrana Seri No 14
+D1118	Ekrana Seri No 15
+D1119	Ekrana Seri No 16
+D1120	Ekrana Seri No 17
+D1121	Ekrana Seri No 18
+D1122	Ekrana Seri No 19
+D1123	Ekrana Seri No 20
+D1200	EN(X)
+D1202	BOY(Y)
+D1204	PRF.GENISLIK DW
+D1206	TOLERANS
+D1208	KALIP FARKI
+D1210	EN**(X)
+D1212	BOY**(Y)
+D1214	KALINLIK**
+D1216	TOLERANS**
+D1218	KALIP FARKI**
+D1300	TABLA SIKMA ZAMANI
+D1301	ILAVE ERITME SURESI
+D1302	ISITMA  ZAMANI
+D1303	KAYNATMA ZAMANI
+D2000	x
+D2002	y
+D2004	kalip farki
+D2006	PRF.GENISLIK BARCODE
+D2008	TIP
+D2009	ALT TIP
+D2010	ILAVE ERITME
+D2011	ISITMA SURE
+D2012	KAYNATMA SURE
+D2013	SICAKLIK
+D2020	BARKDDANGELEN   PR.KODU
+D4000	SICAKLIK KAYIT BASLANGIC
+D5000	firma   kodu
+D5004	seri    kodu
+D5008	tip kodu
+D5010	al tip  kodu
+D5020	seri***
+D5030	olusan  profil  kodu
+D6000	PRF.GENISLIK
+D6001	KALIP FARKI
+D6002	ILAVE ERITME
+D6003	ISITMA SET
+D6004	KAYNATMA SET
+D6005	SICAKLIK
+D6006	Alternatif Profil Kodu 1
+SD0	Latest Error Code
+SD1	Latest Error Time (Year)
+SD2	Latest Error Time (Month)
+SD3	Latest Error Time (Day)
+SD4	Latest Error Time (Hour)
+SD5	Latest Error Time (Minute)
+SD6	Latest Error Time (Second)
+SD7	Latest Error Time (Day of the Week)
+SD10	Error Code [0]
+SD11	Error Code [1]
+SD12	Error Code [2]
+SD13	Error Code [3]
+SD14	Error Code [4]
+SD15	Error Code [5]
+SD16	Error Code [6]
+SD17	Error Code [7]
+SD18	Error Code [8]
+SD19	Error Code [9]
+SD20	Error Code [10]
+SD21	Error Code [11]
+SD22	Error Code [12]
+SD23	Error Code [13]
+SD24	Error Code [14]
+SD25	Error Code [15]
+SD53	AC/DC DOWN Detection
+SD61	I/O Module Verify Error Module No.
+SD62	Annunciator (F) Detection No.
+SD63	Annunciator (F) Detection Number
+SD64	Annunciator (F) Detection No. [0]
+SD65	Annunciator (F) Detection No. [1]
+SD66	Annunciator (F) Detection No. [2]
+SD67	Annunciator (F) Detection No. [3]
+SD68	Annunciator (F) Detection No. [4]
+SD69	Annunciator (F) Detection No. [5]
+SD70	Annunciator (F) Detection No. [6]
+SD71	Annunciator (F) Detection No. [7]
+SD72	Annunciator (F) Detection No. [8]
+SD73	Annunciator (F) Detection No. [9]
+SD74	Annunciator (F) Detection No. [10]
+SD75	Annunciator (F) Detection No. [11]
+SD76	Annunciator (F) Detection No. [12]
+SD77	Annunciator (F) Detection No. [13]
+SD78	Annunciator (F) Detection No. [14]
+SD79	Annunciator (F) Detection No. [15]
+SD80	Information[0] Classification Code
+SD81	Information[0] Error Information [0]
+SD82	Information[0] Error Information [1]
+SD83	Information[0] Error Information [2]
+SD84	Information[0] Error Information [3]
+SD85	Information[0] Error Information [4]
+SD86	Information[0] Error Information [5]
+SD87	Information[0] Error Information [6]
+SD88	Information[0] Error Information [7]
+SD89	Information[0] Error Information [8]
+SD90	Information[0] Error Information [9]
+SD91	Information[0] Error Information [10]
+SD92	Information[0] Error Information [11]
+SD93	Information[0] Error Information [12]
+SD94	Information[0] Error Information [13]
+SD95	Information[0] Error Information [14]
+SD96	Information[0] Error Information [15]
+SD97	Information[0] Error Information [16]
+SD98	Information[0] Error Information [17]
+SD99	Information[0] Error Information [18]
+SD100	Information[0] Error Information [19]
+SD101	Information[0] Error Information [20]
+SD102	Information[0] Error Information [21]
+SD103	Information[0] Error Information [22]
+SD104	Information[0] Error Information [23]
+SD105	Information[0] Error Information [24]
+SD106	Information[0] Error Information [25]
+SD107	Information[0] Error Information [26]
+SD108	Information[0] Error Information [27]
+SD109	Information[0] Error Information [28]
+SD110	Information[0] Error Information [29]
+SD111	Information[0] Error Information [30]
+SD112	Information[1] Classificiation Code
+SD113	Information[1] Error Information [0]
+SD114	Information[1] Error Information [1]
+SD115	Information[1] Error Information [2]
+SD116	Information[1] Error Information [3]
+SD117	Information[1] Error Information [4]
+SD118	Information[1] Error Information [5]
+SD119	Information[1] Error Information [6]
+SD120	Information[1] Error Information [7]
+SD121	Information[1] Error Information [8]
+SD122	Information[1] Error Information [9]
+SD123	Information[1] Error Information [10]
+SD124	Information[1] Error Information [11]
+SD125	Information[1] Error Information [12]
+SD126	Information[1] Error Information [13]
+SD127	Information[1] Error Information [14]
+SD128	Information[1] Error Information [15]
+SD129	Information[1] Error Information [16]
+SD130	Information[1] Error Information [17]
+SD131	Information[1] Error Information [18]
+SD132	Information[1] Error Information [19]
+SD133	Information[1] Error Information [20]
+SD134	Information[1] Error Information [21]
+SD135	Information[1] Error Information [22]
+SD136	Information[1] Error Information [23]
+SD137	Information[1] Error Information [24]
+SD138	Information[1] Error Information [25]
+SD139	Information[1] Error Information [26]
+SD140	Information[1] Error Information [27]
+SD141	Information[1] Error Information [28]
+SD142	Information[1] Error Information [29]
+SD143	Information[1] Error Information [30]
+SD200	Switch Status
+SD201	LED Status
+SD203	CPU Status
+SD210	Clock Data (Year)
+SD211	Clock Data (Month)
+SD212	Clock Data (Day)
+SD213	Clock Data (Hour)
+SD214	Clock Data (Minute)
+SD215	Clock Data (Second)
+SD216	Clock Data (Day of the Week)
+SD218	Time Zone Setting
+SD250	Loaded Max I/O
+SD260	X Device Size
+SD261	X Device Size
+SD262	Y Device Size
+SD263	Y Device Size
+SD264	M Device Size
+SD265	M Device Size
+SD266	B Device Size
+SD267	B Device Size
+SD268	SB Device Size
+SD269	SB Device Size
+SD270	F Device Size
+SD271	F Device Size
+SD274	L Device Size
+SD275	L Device Size
+SD280	D Device Size
+SD281	D Device Size
+SD282	W Device Size
+SD283	W Device Size
+SD284	SW Device Size
+SD285	SW Device Size
+SD288	T Device Size
+SD289	T Device Size
+SD290	ST Device Size
+SD291	ST Device Size
+SD292	C Device Size
+SD293	C Device Size
+SD298	LC Device Size
+SD299	LC Device Size
+SD300	Z Device Size
+SD302	LZ Device Size
+SD304	R Device Size
+SD305	R Device Size
+SD412	1 s Counter
+SD414	2n s Clock Setting
+SD415	2n ms Clock Setting
+SD420	Scan Counter
+SD500	Execution Program No.
+SD518	Initial Scan Time (ms)
+SD519	Initial Scan Time (μs)
+SD520	Current Scan Time (ms)
+SD521	Current Scan Time (μs)
+SD522	Min. Scan Time (ms)
+SD523	Min. Scan Time (μs)
+SD524	Max. Scan Time (ms)
+SD525	Max. Scan Time (μs)
+SD526	END Processing Time (ms)
+SD527	END Processing Time (μs)
+SD528	Constant Scan Wait Time (ms)
+SD529	Constant Scan Wait Time (μs)
+SD530	Scan Program Execution Time (ms)
+SD531	Scan Program Execution Time (μs)
+SD600	Memory Card Installation (Drive2)
+SD604	SD memory card usage status
+SD606	Memory Card Capacity (Drive2)
+SD607	Memory Card Capacity (Drive2)
+SD608	Memory Card Capacity (Drive2)
+SD609	Memory Card Capacity (Drive2)
+SD610	Memory Card Free Space Capacity (Drive2)
+SD611	Memory Card Free Space Capacity (Drive2)
+SD612	Memory Card Free Space Capacity (Drive2)
+SD613	Memory Card Free Space Capacity (Drive2)
+SD634	Data Memory Write Count Index (Drive4)
+SD635	Data Memory Write Count Index (Drive4)
+SD757	Interrupt Priority
+SD758	Disable Interrupt Priority
+SD1400	Mask Pattern I0 to I15
+SD1400.1	Mask Pattern I0
+SD1400.2	Mask Pattern I1
+SD1400.3	Mask Pattern I2
+SD1400.4	Mask Pattern I3
+SD1400.5	Mask Pattern I4
+SD1400.6	Mask Pattern I5
+SD1400.7	Mask Pattern I6
+SD1400.8	Mask Pattern I7
+SD1400.9	Mask Pattern I8
+SD1400.10	Mask Pattern I9
+SD1400.11	Mask Pattern I10
+SD1400.12	Mask Pattern I11
+SD1400.13	Mask Pattern I12
+SD1400.14	Mask Pattern I13
+SD1400.15	Mask Pattern I14
+SD1400.16	Mask Pattern I15
+SD1401	Mask Pattern I16 to I31
+SD1401.1	Mask Pattern I16
+SD1401.2	Mask Pattern I17
+SD1401.3	Mask Pattern I18
+SD1401.4	Mask Pattern I19
+SD1401.5	Mask Pattern I20
+SD1401.6	Mask Pattern I21
+SD1401.7	Mask Pattern I22
+SD1401.8	Mask Pattern I23
+SD1401.9	Mask Pattern I24
+SD1401.10	Mask Pattern I25
+SD1401.11	Mask Pattern I26
+SD1401.12	Mask Pattern I27
+SD1401.13	Mask Pattern I28
+SD1401.14	Mask Pattern I29
+SD1401.15	Mask Pattern I30
+SD1401.16	Mask Pattern I31
+SD4110	Error Code 0 Details
+SD4111	Error Code 1 Details
+SD4112	Error Code 2 Details
+SD4113	Error Code 3 Details
+SD4114	Error Code 4 Details
+SD4115	Error Code 5 Details
+SD4116	Error Code 6 Details
+SD4117	Error Code 7 Details
+SD4118	Error Code 8 Details
+SD4119	Error Code 9 Details
+SD4120	Error Code 10 Details
+SD4121	Error Code 11 Details
+SD4122	Error Code 12 Details
+SD4123	Error Code 13 Details
+SD4124	Error Code 14 Details
+SD4125	Error Code 15 Details
+SD4131	Module 1 Version Upgrade Status
+SD4132	Module 2 Version Upgrade Status
+SD4133	Module 3 Version Upgrade Status
+SD4134	Module 4 Version Upgrade Status
+SD4135	Module 5 Version Upgrade Status
+SD4136	Module 6 Version Upgrade Status
+SD4137	Module 7 Version Upgrade Status
+SD4138	Module 8 Version Upgrade Status
+SD4139	Module 9 Version Upgrade Status
+SD4140	Module 10 Version Upgrade Status
+SD4141	Module 11 Version Upgrade Status
+SD4142	Module 12 Version Upgrade Status
+SD4143	Module 13 Version Upgrade Status
+SD4144	Module 14 Version Upgrade Status
+SD4145	Module 15 Version Upgrade Status
+SD4146	Module 16 Version Upgrade Status
+SD4150	Module 1 Status Information
+SD4151	Module 1 Error Information
+SD4152	Module 2 Status Information
+SD4153	Module 2 Error Information
+SD4154	Module 3 Status Information
+SD4155	Module 3 Error Information
+SD4156	Module 4 Status Information
+SD4157	Module 4 Error Information
+SD4158	Module 5 Status Information
+SD4159	Module 5 Error Information
+SD4160	Module 6 Status Information
+SD4161	Module 6 Error Information
+SD4162	Module 7 Status Information
+SD4163	Module 7 Error Information
+SD4164	Module 8 Status Information
+SD4165	Module 8 Error Information
+SD4166	Module 9 Status Information
+SD4167	Module 9 Error Information
+SD4168	Module 10 Status Information
+SD4169	Module 10 Error Information
+SD4170	Module 11 Status Information
+SD4171	Module 11 Error Information
+SD4172	Module 12 Status Information
+SD4173	Module 12 Error Information
+SD4174	Module 13 Status Information
+SD4175	Module 13 Error Information
+SD4176	Module 14 Status Information
+SD4177	Module 14 Error Information
+SD4178	Module 15 Status Information
+SD4179	Module 15 Error Information
+SD4180	Module 16 Status Information
+SD4181	Module 16 Error Information
+SD4500	High-Speed Counter Current Value [Low-order] (CH1)
+SD4501	High-Speed Counter Current Value [High-order] (CH1)
+SD4502	High-Speed Counter Max. Value [Low-order] (CH1)
+SD4503	High-Speed Counter Max. Value [High-order] (CH1)
+SD4504	High-Speed Counter Min. Value [Low-order] (CH1)
+SD4505	High-Speed Counter Min. Value [High-order] (CH1)
+SD4506	High-Speed Counter Pulse Density [Low-order] (CH1)
+SD4507	High-Speed Counter Pulse Density [High-order] (CH1)
+SD4508	High-Speed Counter Rotation Speed [Low-order] (CH1)
+SD4509	High-Speed Counter Rotation Speed [High-order] (CH1)
+SD4510	High-Speed Counter Preset Control Mode (CH1)
+SD4512	High-Speed Counter Preset Value [Low-order] (CH1)
+SD4513	High-Speed Counter Preset Value [High-order] (CH1)
+SD4514	High-Speed Counter Ring Length [Low-order] (CH1)
+SD4515	High-Speed Counter Ring Length [High-order] (CH1)
+SD4516	High-Speed Counter Measurement-unit Time [Low-order] (CH1)
+SD4517	High-Speed Counter Measurement-unit Time [High-order] (CH1)
+SD4518	High-Speed Counter Number of Pulses per Rotation [Low-order] (CH1)
+SD4519	High-Speed Counter Number of Pulses per Rotation [High-order] (CH1)
+SD4530	High-Speed Counter Current Value [Low-order] (CH2)
+SD4531	High-Speed Counter Current Value [High-order] (CH2)
+SD4532	High-Speed Counter Max. Value [Low-order] (CH2)
+SD4533	High-Speed Counter Max. Value [High-order] (CH2)
+SD4534	High-Speed Counter Min. Value [Low-order] (CH2)
+SD4535	High-Speed Counter Min. Value [High-order] (CH2)
+SD4536	High-Speed Counter Pulse Density [Low-order] (CH2)
+SD4537	High-Speed Counter Pulse Density [High-order] (CH2)
+SD4538	High-Speed Counter Rotation Speed [Low-order] (CH2)
+SD4539	High-Speed Counter Rotation Speed [High-order] (CH2)
+SD4540	High-Speed Counter Preset Control Mode (CH2)
+SD4542	High-Speed Counter Preset Value [Low-order] (CH2)
+SD4543	High-Speed Counter Preset Value [High-order] (CH2)
+SD4544	High-Speed Counter Ring Length [Low-order] (CH2)
+SD4545	High-Speed Counter Ring Length [High-order] (CH2)
+SD4546	High-Speed Counter Measurement-unit Time [Low-order] (CH2)
+SD4547	High-Speed Counter Measurement-unit Time [High-order] (CH2)
+SD4548	High-Speed Counter Number of Pulses per Rotation [Low-order] (CH2)
+SD4549	High-Speed Counter Number of Pulses per Rotation [High-order] (CH2)
+SD4560	High-Speed Counter Current Value [Low-order] (CH3)
+SD4561	High-Speed Counter Current Value [High-order] (CH3)
+SD4562	High-Speed Counter Max. Value [Low-order] (CH3)
+SD4563	High-Speed Counter Max. Value [High-order] (CH3)
+SD4564	High-Speed Counter Min. Value [Low-order] (CH3)
+SD4565	High-Speed Counter Min. Value [High-order] (CH3)
+SD4566	High-Speed Counter Pulse Density [Low-order] (CH3)
+SD4567	High-Speed Counter Pulse Density [High-order] (CH3)
+SD4568	High-Speed Counter Rotation Speed [Low-order] (CH3)
+SD4569	High-Speed Counter Rotation Speed [High-order] (CH3)
+SD4570	High-Speed Counter Preset Control Mode (CH3)
+SD4572	High-Speed Counter Preset Value [Low-order] (CH3)
+SD4573	High-Speed Counter Preset Value [High-order] (CH3)
+SD4574	High-Speed Counter Ring Length [Low-order] (CH3)
+SD4575	High-Speed Counter Ring Length [High-order] (CH3)
+SD4576	High-Speed Counter Measurement-unit Time [Low-order] (CH3)
+SD4577	High-Speed Counter Measurement-unit Time [High-order] (CH3)
+SD4578	High-Speed Counter Number of Pulses per Rotation [Low-order] (CH3)
+SD4579	High-Speed Counter Number of Pulses per Rotation [High-order] (CH3)
+SD4590	High-Speed Counter Current Value [Low-order] (CH4)
+SD4591	High-Speed Counter Current Value [High-order] (CH4)
+SD4592	High-Speed Counter Max. Value [Low-order] (CH4)
+SD4593	High-Speed Counter Max. Value [High-order] (CH4)
+SD4594	High-Speed Counter Min. Value [Low-order] (CH4)
+SD4595	High-Speed Counter Min. Value [High-order] (CH4)
+SD4596	High-Speed Counter Pulse Density [Low-order] (CH4)
+SD4597	High-Speed Counter Pulse Density [High-order] (CH4)
+SD4598	High-Speed Counter Rotation Speed [Low-order] (CH4)
+SD4599	High-Speed Counter Rotation Speed [High-order] (CH4)
+SD4600	High-Speed Counter Preset Control Mode (CH4)
+SD4602	High-Speed Counter Preset Value [Low-order] (CH4)
+SD4603	High-Speed Counter Preset Value [High-order] (CH4)
+SD4604	High-Speed Counter Ring Length [Low-order] (CH4)
+SD4605	High-Speed Counter Ring Length [High-order] (CH4)
+SD4606	High-Speed Counter Measurement-unit Time [Low-order] (CH4)
+SD4607	High-Speed Counter Measurement-unit Time [High-order] (CH4)
+SD4608	High-Speed Counter Number of Pulses per Rotation [Low-order] (CH4)
+SD4609	High-Speed Counter Number of Pulses per Rotation [High-order] (CH4)
+SD4620	High-Speed Counter Current Value [Low-order] (CH5)
+SD4621	High-Speed Counter Current Value [High-order] (CH5)
+SD4622	High-Speed Counter Max. Value [Low-order] (CH5)
+SD4623	High-Speed Counter Max. Value [High-order] (CH5)
+SD4624	High-Speed Counter Min. Value [Low-order] (CH5)
+SD4625	High-Speed Counter Min. Value [High-order] (CH5)
+SD4626	High-Speed Counter Pulse Density [Low-order] (CH5)
+SD4627	High-Speed Counter Pulse Density [High-order] (CH5)
+SD4628	High-Speed Counter Rotation Speed [Low-order] (CH5)
+SD4629	High-Speed Counter Rotation Speed [High-order] (CH5)
+SD4630	High-Speed Counter Preset Control Mode (CH5)
+SD4632	High-Speed Counter Preset Value [Low-order] (CH5)
+SD4633	High-Speed Counter Preset Value [High-order] (CH5)
+SD4634	High-Speed Counter Ring Length [Low-order] (CH5)
+SD4635	High-Speed Counter Ring Length [High-order] (CH5)
+SD4636	High-Speed Counter Measurement-unit Time [Low-order] (CH5)
+SD4637	High-Speed Counter Measurement-unit Time [High-order] (CH5)
+SD4638	High-Speed Counter Number of Pulses per Rotation [Low-order] (CH5)
+SD4639	High-Speed Counter Number of Pulses per Rotation [High-order] (CH5)
+SD4650	High-Speed Counter Current Value [Low-order] (CH6)
+SD4651	High-Speed Counter Current Value [High-order] (CH6)
+SD4652	High-Speed Counter Max. Value [Low-order] (CH6)
+SD4653	High-Speed Counter Max. Value [High-order] (CH6)
+SD4654	High-Speed Counter Min. Value [Low-order] (CH6)
+SD4655	High-Speed Counter Min. Value [High-order] (CH6)
+SD4656	High-Speed Counter Pulse Density [Low-order] (CH6)
+SD4657	High-Speed Counter Pulse Density [High-order] (CH6)
+SD4658	High-Speed Counter Rotation Speed [Low-order] (CH6)
+SD4659	High-Speed Counter Rotation Speed [High-order] (CH6)
+SD4660	High-Speed Counter Preset Control Mode (CH6)
+SD4662	High-Speed Counter Preset Value [Low-order] (CH6)
+SD4663	High-Speed Counter Preset Value [High-order] (CH6)
+SD4664	High-Speed Counter Ring Length [Low-order] (CH6)
+SD4665	High-Speed Counter Ring Length [High-order] (CH6)
+SD4666	High-Speed Counter Measurement-unit Time [Low-order] (CH6)
+SD4667	High-Speed Counter Measurement-unit Time [High-order] (CH6)
+SD4668	High-Speed Counter Number of Pulses per Rotation [Low-order] (CH6)
+SD4669	High-Speed Counter Number of Pulses per Rotation [High-order] (CH6)
+SD4680	High-Speed Counter Current Value [Low-order] (CH7)
+SD4681	High-Speed Counter Current Value [High-order] (CH7)
+SD4682	High-Speed Counter Max. Value [Low-order] (CH7)
+SD4683	High-Speed Counter Max. Value [High-order] (CH7)
+SD4684	High-Speed Counter Min. Value [Low-order] (CH7)
+SD4685	High-Speed Counter Min. Value [High-order] (CH7)
+SD4686	High-Speed Counter Pulse Density [Low-order] (CH7)
+SD4687	High-Speed Counter Pulse Density [High-order] (CH7)
+SD4688	High-Speed Counter Rotation Speed [Low-order] (CH7)
+SD4689	High-Speed Counter Rotation Speed [High-order] (CH7)
+SD4690	High-Speed Counter Preset Control Mode (CH7)
+SD4692	High-Speed Counter Preset Value [Low-order] (CH7)
+SD4693	High-Speed Counter Preset Value [High-order] (CH7)
+SD4694	High-Speed Counter Ring Length [Low-order] (CH7)
+SD4695	High-Speed Counter Ring Length [High-order] (CH7)
+SD4696	High-Speed Counter Measurement-unit Time [Low-order] (CH7)
+SD4697	High-Speed Counter Measurement-unit Time [High-order] (CH7)
+SD4698	High-Speed Counter Number of Pulses per Rotation [Low-order] (CH7)
+SD4699	High-Speed Counter Number of Pulses per Rotation [High-order] (CH7)
+SD4710	High-Speed Counter Current Value [Low-order] (CH8)
+SD4711	High-Speed Counter Current Value [High-order] (CH8)
+SD4712	High-Speed Counter Max. Value [Low-order] (CH8)
+SD4713	High-Speed Counter Max. Value [High-order] (CH8)
+SD4714	High-Speed Counter Min. Value [Low-order] (CH8)
+SD4715	High-Speed Counter Min. Value [High-order] (CH8)
+SD4716	High-Speed Counter Pulse Density [Low-order] (CH8)
+SD4717	High-Speed Counter Pulse Density [High-order] (CH8)
+SD4718	High-Speed Counter Rotation Speed [Low-order] (CH8)
+SD4719	High-Speed Counter Rotation Speed [High-order] (CH8)
+SD4720	High-Speed Counter Preset Control Mode (CH8)
+SD4722	High-Speed Counter Preset Value [Low-order] (CH8)
+SD4723	High-Speed Counter Preset Value [High-order] (CH8)
+SD4724	High-Speed Counter Ring Length [Low-order] (CH8)
+SD4725	High-Speed Counter Ring Length [High-order] (CH8)
+SD4726	High-Speed Counter Measurement-unit Time [Low-order] (CH8)
+SD4727	High-Speed Counter Measurement-unit Time [High-order] (CH8)
+SD4728	High-Speed Counter Number of Pulses per Rotation [Low-order] (CH8)
+SD4729	High-Speed Counter Number of Pulses per Rotation [High-order] (CH8)
+SD4982	High-Speed Counter High-Speed Comparison Table Error Code
+SD5000	High-Speed Counter Multi-point Output High-Speed Comparison Table Number
+SD5002	High-Speed Counter Multi-point Output High-Speed Comparison Table Error Code
+SD5020	Pulse Width Measurement Rising Ring Counter [Low-order] (CH1)
+SD5021	Pulse Width Measurement Rising Ring Counter [High-order] (CH1)
+SD5022	Pulse Width Measurement Falling Ring Counter [Low-order] (CH1)
+SD5023	Pulse Width Measurement Falling Ring Counter [High-order] (CH1)
+SD5024	Pulse Width Measurement Pulse Width Latest Value [Low-order] (CH1)
+SD5025	Pulse Width Measurement Pulse Width Latest Value [High-order] (CH1)
+SD5026	Pulse Width Measurement Pulse Width Max. Value [Low-order] (CH1)
+SD5027	Pulse Width Measurement Pulse Width Max. Value [High-order] (CH1)
+SD5028	Pulse Width Measurement Pulse Width Min. Value [Low-order] (CH1)
+SD5029	Pulse Width Measurement Pulse Width Min. Value [High-order] (CH1)
+SD5030	Pulse Width Measurement Cycle Latest Value [Low-order] (CH1)
+SD5031	Pulse Width Measurement Cycle Latest Value [High-order] (CH1)
+SD5032	Pulse Width Measurement Cycle Max. Value [Low-order] (CH1)
+SD5033	Pulse Width Measurement Cycle Max. Value [High-order] (CH1)
+SD5034	Pulse Width Measurement Cycle Min. Value [Low-order] (CH1)
+SD5035	Pulse Width Measurement Cycle Min. Value [High-order] (CH1)
+SD5040	Pulse Width Measurement Rising Ring Counter [Low-order] (CH2)
+SD5041	Pulse Width Measurement Rising Ring Counter [High-order] (CH2)
+SD5042	Pulse Width Measurement Falling Ring Counter [Low-order] (CH2)
+SD5043	Pulse Width Measurement Falling Ring Counter [High-order] (CH2)
+SD5044	Pulse Width Measurement Pulse Width Latest Value [Low-order] (CH2)
+SD5045	Pulse Width Measurement Pulse Width Latest Value [High-order] (CH2)
+SD5046	Pulse Width Measurement Pulse Width Max. Value [Low-order] (CH2)
+SD5047	Pulse Width Measurement Pulse Width Max. Value [High-order] (CH2)
+SD5048	Pulse Width Measurement Pulse Width Min. Value [Low-order] (CH2)
+SD5049	Pulse Width Measurement Pulse Width Min. Value [High-order] (CH2)
+SD5050	Pulse Width Measurement Cycle Latest Value [Low-order] (CH2)
+SD5051	Pulse Width Measurement Cycle Latest Value [High-order] (CH2)
+SD5052	Pulse Width Measurement Cycle Max. Value [Low-order] (CH2)
+SD5053	Pulse Width Measurement Cycle Max. Value [High-order] (CH2)
+SD5054	Pulse Width Measurement Cycle Min. Value [Low-order] (CH2)
+SD5055	Pulse Width Measurement Cycle Min. Value [High-order] (CH2)
+SD5060	Pulse Width Measurement Rising Ring Counter [Low-order] (CH3)
+SD5061	Pulse Width Measurement Rising Ring Counter [High-order] (CH3)
+SD5062	Pulse Width Measurement Falling Ring Counter [Low-order] (CH3)
+SD5063	Pulse Width Measurement Falling Ring Counter [High-order] (CH3)
+SD5064	Pulse Width Measurement Pulse Width Latest Value [Low-order] (CH3)
+SD5065	Pulse Width Measurement Pulse Width Latest Value [High-order] (CH3)
+SD5066	Pulse Width Measurement Pulse Width Max. Value [Low-order] (CH3)
+SD5067	Pulse Width Measurement Pulse Width Max. Value [High-order] (CH3)
+SD5068	Pulse Width Measurement Pulse Width Min. Value [Low-order] (CH3)
+SD5069	Pulse Width Measurement Pulse Width Min. Value [High-order] (CH3)
+SD5070	Pulse Width Measurement Cycle Latest Value [Low-order] (CH3)
+SD5071	Pulse Width Measurement Cycle Latest Value [High-order] (CH3)
+SD5072	Pulse Width Measurement Cycle Max. Value [Low-order] (CH3)
+SD5073	Pulse Width Measurement Cycle Max. Value [High-order] (CH3)
+SD5074	Pulse Width Measurement Cycle Min. Value [Low-order] (CH3)
+SD5075	Pulse Width Measurement Cycle Min. Value [High-order] (CH3)
+SD5080	Pulse Width Measurement Rising Ring Counter [Low-order] (CH4)
+SD5081	Pulse Width Measurement Rising Ring Counter [High-order] (CH4)
+SD5082	Pulse Width Measurement Falling Ring Counter [Low-order] (CH4)
+SD5083	Pulse Width Measurement Falling Ring Counter [High-order] (CH4)
+SD5084	Pulse Width Measurement Pulse Width Latest Value [Low-order] (CH4)
+SD5085	Pulse Width Measurement Pulse Width Latest Value [High-order] (CH4)
+SD5086	Pulse Width Measurement Pulse Width Max. Value [Low-order] (CH4)
+SD5087	Pulse Width Measurement Pulse Width Max. Value [High-order] (CH4)
+SD5088	Pulse Width Measurement Pulse Width Min. Value [Low-order] (CH4)
+SD5089	Pulse Width Measurement Pulse Width Min. Value [High-order] (CH4)
+SD5090	Pulse Width Measurement Cycle Latest Value [Low-order] (CH4)
+SD5091	Pulse Width Measurement Cycle Latest Value [High-order] (CH4)
+SD5092	Pulse Width Measurement Cycle Max. Value [Low-order] (CH4)
+SD5093	Pulse Width Measurement Cycle Max. Value [High-order] (CH4)
+SD5094	Pulse Width Measurement Cycle Min. Value [Low-order] (CH4)
+SD5095	Pulse Width Measurement Cycle Min. Value [High-order] (CH4)
+SD5300	PWM Pulse Output Number [Low-order] (CH1)
+SD5301	PWM Pulse Output Number [High-order] (CH1)
+SD5302	PWM Pulse Width [Low-order] (CH1)
+SD5303	PWM Pulse Width [High-order] (CH1)
+SD5304	PWM Pulse Cycle [Low-order] (CH1)
+SD5305	PWM Pulse Cycle [High-order] (CH1)
+SD5306	PWM Pulse Output Number Latest Value [Low-order] (CH1)
+SD5307	PWM Pulse Output Number Latest Value [High-order] (CH1)
+SD5316	PWM Pulse Output Number [Low-order] (CH2)
+SD5317	PWM Pulse Output Number [High-order] (CH2)
+SD5318	PWM Pulse Width [Low-order] (CH2)
+SD5319	PWM Pulse Width [High-order] (CH2)
+SD5320	PWM Pulse Cycle [Low-order] (CH2)
+SD5321	PWM Pulse Cycle [High-order] (CH2)
+SD5322	PWM Pulse Output Number Latest Value [Low-order] (CH2)
+SD5323	PWM Pulse Output Number Latest Value [High-order] (CH2)
+SD5332	PWM Pulse Output Number [Low-order] (CH3)
+SD5333	PWM Pulse Output Number [High-order] (CH3)
+SD5334	PWM Pulse Width [Low-order] (CH3)
+SD5335	PWM Pulse Width [High-order] (CH3)
+SD5336	PWM Pulse Cycle [Low-order] (CH3)
+SD5337	PWM Pulse Cycle [High-order] (CH3)
+SD5338	PWM Pulse Output Number Latest Value [Low-order] (CH3)
+SD5339	PWM Pulse Output Number Latest Value [High-order] (CH3)
+SD5348	PWM Pulse Output Number [Low-order] (CH4)
+SD5349	PWM Pulse Output Number [High-order] (CH4)
+SD5350	PWM Pulse Width [Low-order] (CH4)
+SD5351	PWM Pulse Width [High-order] (CH4)
+SD5352	PWM Pulse Cycle [Low-order] (CH4)
+SD5353	PWM Pulse Cycle [High-order] (CH4)
+SD5354	PWM Pulse Output Number Latest Value [Low-order] (CH4)
+SD5355	PWM Pulse Output Number Latest Value [High-order] (CH4)
+SD5500	Positioning Current Address (User Unit) [Low-order] (Axis 1)
+SD5501	Positioning Current Address (User Unit) [High-order] (Axis 1)
+SD5502	Positioning Current Address (Pulse Unit) [Low-order] (Axis 1)
+SD5503	Positioning Current Address (Pulse Unit) [High-order] (Axis 1)
+SD5504	Positioning Current Speed (User Unit) [Low-order] (Axis 1)
+SD5505	Positioning Current Speed (User Unit) [High-order] (Axis 1)
+SD5506	Positioning Execution Table Number (Axis 1)
+SD5510	Positioning Error Code (Axis 1)
+SD5511	Positioning Error Table Number (Axis 1)
+SD5516	Positioning Max. Speed [Low-order] (Axis 1)
+SD5517	Positioning Max. Speed [High-order] (Axis 1)
+SD5518	Positioning Bias Speed [Low-order] (Axis 1)
+SD5519	Positioning Bias Speed [High-order] (Axis 1)
+SD5520	Positioning Acceleration Time (Axis 1)
+SD5521	Positioning Deceleration Time (Axis 1)
+SD5526	Positioning Zero-return Speed [Low-order] (Axis 1)
+SD5527	Positioning Zero-return Speed [High-order] (Axis 1)
+SD5528	Positioning Creep Speed [Low-order] (Axis 1)
+SD5529	Positioning Creep Speed [High-order] (Axis 1)
+SD5530	Positioning Zero-point Address [Low-order] (Axis 1)
+SD5531	Positioning Zero-point Address [High-order] (Axis 1)
+SD5532	Positioning Number of Zero-point Signals for Zero Return (Axis 1)
+SD5533	Positioning Zero-return Dwell Time (Axis 1)
+SD5540	Positioning Current Address (User Unit) [Low-order] (Axis 2)
+SD5541	Positioning Current Address (User Unit) [High-order] (Axis 2)
+SD5542	Positioning Current Address (Pulse Unit) [Low-order] (Axis 2)
+SD5543	Positioning Current Address (Pulse Unit) [High-order] (Axis 2)
+SD5544	Positioning Current Speed (User Unit) [Low-order] (Axis 2)
+SD5545	Positioning Current Speed (User Unit) [High-order] (Axis 2)
+SD5546	Positioning Execution Table Number (Axis 2)
+SD5550	Positioning Error Code (Axis 2)
+SD5551	Positioning Error Table Number (Axis 2)
+SD5556	Positioning Max. Speed [Low-order] (Axis 2)
+SD5557	Positioning Max. Speed [High-order] (Axis 2)
+SD5558	Positioning Bias Speed [Low-order] (Axis 2)
+SD5559	Positioning Bias Speed [High-order] (Axis 2)
+SD5560	Positioning Acceleration Time (Axis 2)
+SD5561	Positioning Deceleration Time (Axis 2)
+SD5566	Positioning Zero-return Speed [Low-order] (Axis 2)
+SD5567	Positioning Zero-return Speed [High-order] (Axis 2)
+SD5568	Positioning Creep Speed [Low-order] (Axis 2)
+SD5569	Positioning Creep Speed [High-order] (Axis 2)
+SD5570	Positioning Zero-point Address [Low-order] (Axis 2)
+SD5571	Positioning Zero-point Address [High-order] (Axis 2)
+SD5572	Positioning Number of Zero-point Signals for Zero Return (Axis 2)
+SD5573	Positioning Zero-return Dwell Time (Axis 2)
+SD5580	Positioning Current Address (User Unit) [Low-order] (Axis 3)
+SD5581	Positioning Current Address (User Unit) [High-order] (Axis 3)
+SD5582	Positioning Current Address (Pulse Unit) [Low-order] (Axis 3)
+SD5583	Positioning Current Address (Pulse Unit) [High-order] (Axis 3)
+SD5584	Positioning Current Speed (User Unit) [Low-order] (Axis 3)
+SD5585	Positioning Current Speed (User Unit) [High-order] (Axis 3)
+SD5586	Positioning Execution Table Number (Axis 3)
+SD5590	Positioning Error Code (Axis 3)
+SD5591	Positioning Error Table Number (Axis 3)
+SD5596	Positioning Max. Speed [Low-order] (Axis 3)
+SD5597	Positioning Max. Speed [High-order] (Axis 3)
+SD5598	Positioning Bias Speed [Low-order] (Axis 3)
+SD5599	Positioning Bias Speed [High-order] (Axis 3)
+SD5600	Positioning Acceleration Time (Axis 3)
+SD5601	Positioning Deceleration Time (Axis 3)
+SD5606	Positioning Zero-return Speed [Low-order] (Axis 3)
+SD5607	Positioning Zero-return Speed [High-order] (Axis 3)
+SD5608	Positioning Creep Speed [Low-order] (Axis 3)
+SD5609	Positioning Creep Speed [High-order] (Axis 3)
+SD5610	Positioning Zero-point Address [Low-order] (Axis 3)
+SD5611	Positioning Zero-point Address [High-order] (Axis 3)
+SD5612	Positioning Number of Zero-point Signals for Zero Return (Axis 3)
+SD5613	Positioning Zero-return Dwell Time (Axis 3)
+SD5620	Positioning Current Address (User Unit) [Low-order] (Axis 4)
+SD5621	Positioning Current Address (User Unit) [High-order] (Axis 4)
+SD5622	Positioning Current Address (Pulse Unit) [Low-order] (Axis 4)
+SD5623	Positioning Current Address (Pulse Unit) [High-order] (Axis 4)
+SD5624	Positioning Current Speed (User Unit) [Low-order] (Axis 4)
+SD5625	Positioning Current Speed (User Unit) [High-order] (Axis 4)
+SD5626	Positioning Execution Table Number (Axis 4)
+SD5630	Positioning Error Code (Axis 4)
+SD5631	Positioning Error Table Number (Axis 4)
+SD5636	Positioning Max. Speed [Low-order] (Axis 4)
+SD5637	Positioning Max. Speed [High-order] (Axis 4)
+SD5638	Positioning Bias Speed [Low-order] (Axis 4)
+SD5639	Positioning Bias Speed [High-order] (Axis 4)
+SD5640	Positioning Acceleration Time (Axis 4)
+SD5641	Positioning Deceleration Time (Axis 4)
+SD5646	Positioning Zero-return Speed [Low-order] (Axis 4)
+SD5647	Positioning Zero-return Speed [High-order] (Axis 4)
+SD5648	Positioning Creep Speed [Low-order] (Axis 4)
+SD5649	Positioning Creep Speed [High-order] (Axis 4)
+SD5650	Positioning Zero-point Address [Low-order] (Axis 4)
+SD5651	Positioning Zero-point Address [High-order] (Axis 4)
+SD5652	Positioning Number of Zero-point Signals for Zero Return (Axis 4)
+SD5653	Positioning Zero-return Dwell Time (Axis 4)
+SD6020	CH1 Digital Output Value
+SD6021	CH1 Digital Operation Time
+SD6022	CH1 Analog Input Voltage Monitor
+SD6023	CH1 Averaging Process Setting
+SD6024	CH1 Time Average/Count Average/Moving Average
+SD6026	CH1 Maximum Value
+SD6027	CH1 Minimum Value
+SD6028	CH1 Scaling Upper Limit Value
+SD6029	CH1 Scaling Lower Limit Value
+SD6030	CH1 Shifting Amount to Conversion Value
+SD6031	CH1 Process Alarm Upper Upper-Limit Value
+SD6032	CH1 Process Alarm Lower Upper-Limit Value
+SD6033	CH1 Process Alarm Upper Lower-Limit Value
+SD6034	CH1 Process Alarm Lower Lower-Limit Value
+SD6058	CH1 A/D Latest Alarm Code
+SD6059	CH1 A/D Latest Error Code
+SD6060	CH2 Digital Output Value
+SD6061	CH2 Digital Operation Time
+SD6062	CH2 Analog Input Voltage Monitor
+SD6063	CH2 Averaging Process Setting
+SD6064	CH2 Time Average/Count Average/Moving Average
+SD6066	CH2 Maximum Value
+SD6067	CH2 Minimum Value
+SD6068	CH2 Scaling Upper Limit Value
+SD6069	CH2 Scaling Lower Limit Value
+SD6070	CH2 Shifting Amount to Conversion Value
+SD6071	CH2 Process Alarm Upper Upper-Limit Value
+SD6072	CH2 Process Alarm Lower Upper-Limit Value
+SD6073	CH2 Process Alarm Upper Lower-Limit Value
+SD6074	CH2 Process Alarm Lower Lower-Limit Value
+SD6098	CH2 A/D Latest Alarm Code
+SD6099	CH2 A/D Latest Error Code
+SD6180	Digital Value (Input)
+SD6181	Digital Operation Value
+SD6182	Analog Output Voltage Monitor
+SD6183	HOLD/CLEAR Function Setting
+SD6184	Hold Output Setting
+SD6188	Scaling Upper Limit Value
+SD6189	Scaling Lower Limit Value
+SD6190	Shifting Amount to Input Value
+SD6191	Warning Output Upper Limit Value
+SD6192	Warning Output Lower Limit Value
+SD6218	D/A Latest Error Code
+SD6219	D/A Latest Error Code
+SD6301	KAFA1_OKUNAN_ANALOG
+SD8000	Watchdog Timer
+SD8001	CPU Version
+SD8005	Battery Voltage
+SD8006	Low Battery Voltage
+SD8007	Power Failure Count
+SD8010	Current Scan Time (100 μs)
+SD8011	Min. Scan Time (100 μs)
+SD8012	Max. Scan Time (100 μs)
+SD8013	Clock Data (Second)
+SD8014	Clock Data (Minute)
+SD8015	Clock Data (Hour)
+SD8016	Clock Data (Day)
+SD8017	Clock Data (Month)
+SD8018	Clock Data (Year)
+SD8019	Clock Data (Day of the Week)
+SD8039	Constant Scan Duration
+SD8049	Lowest Active Annunciator
+SD8063	Serial Communication Error Code (CH1)
+SD8067	Operation Error Code
+SD8099	High-Speed Ring Counter
+SD8152	Inverter Communication Error Code (CH1)
+SD8154	IVBWR Instruction Error Parameter Number (CH1)
+SD8157	Inverter Communication Error Code (CH2)
+SD8159	IVBWR Instruction Error Parameter Number (CH2)
+SD8173	Station number
+SD8174	Total number of slave stations
+SD8175	Refresh range
+SD8176	SET     MASTER  STATION
+SD8177	Slave station quantity
+SD8178	Refresh range setting
+SD8179	Number of retries
+SD8180	Monitoring time:
+SD8201	Current link scan time
+SD8202	Maximum link scan time
+SD8203	Number of communication error at master station
+SD8204	Number of communication error at slave station No.1
+SD8205	Number of communication error at slave station No.2
+SD8206	Number of communication error at slave station No.3
+SD8207	Number of communication error at slave station No.4
+SD8208	Number of communication error at slave station No.5
+SD8209	Number of communication error at slave station No.6
+SD8210	Number of communication error at slave station No.7
+SD8211	Code of communication error at master station
+SD8212	Code of communication error at slave station No.1
+SD8213	Code of communication error at slave station No.2
+SD8214	Code of communication error at slave station No.3
+SD8215	Code of communication error at slave station No.4
+SD8216	Code of communication error at slave station No.5
+SD8217	Code of communication error at slave station No.6
+SD8218	Code of communication error at slave station No.7
+SD8230	Number of communication error at master station
+SD8231	Number of communication error at slave station No.1
+SD8232	Number of communication error at slave station No.2
+SD8233	Number of communication error at slave station No.3
+SD8234	Number of communication error at slave station No.4
+SD8235	Number of communication error at slave station No.5
+SD8236	Number of communication error at slave station No.6
+SD8237	Number of communication error at slave station No.7
+SD8260	4AD-PT  1.KANAL
+SD8261	4AD-PT  2.KANAL
+SD8262	4AD-PT  3.KANAL
+SD8310	RND Instruction Random Number Generation [Low-order]
+SD8311	RND Instruction Random Number Generation [High-order]
+SD8330	DUTY Instruction Scan Count Timing Clock Output 1
+SD8331	DUTY Instruction Scan Count Timing Clock Output 2
+SD8332	DUTY Instruction Scan Count Timing Clock Output 3
+SD8333	DUTY Instruction Scan Count Timing Clock Output 4
+SD8334	DUTY Instruction Scan Count Timing Clock Output 5
+SD8340	Positioning Current Address (Pulse Unit) [Low-order] (Axis 1)
+SD8341	Positioning Current Address (Pulse Unit) [High-order] (Axis 1)
+SD8350	Positioning Current Address (Pulse Unit) [Low-order] (Axis 2)
+SD8351	Positioning Current Address (Pulse Unit) [High-order] (Axis 2)
+SD8360	Positioning Current Address (Pulse Unit) [Low-order] (Axis 3)
+SD8361	Positioning Current Address (Pulse Unit) [High-order] (Axis 3)
+SD8370	Positioning Current Address (Pulse Unit) [Low-order] (Axis 4)
+SD8371	Positioning Current Address (Pulse Unit) [High-order] (Axis 4)
+SD8398	1 ms Ring Counter [Low-order]
+SD8399	1 ms Ring Counter [High-order]
+SD8402	RS2 Amount of Remaining Data/MODBUS Communication Error Code (CH1)
+SD8403	RS2 Receive Data Points/MODBUS Communication Error Details (CH1)
+SD8405	RS2 Communication Parameter Display/MODBUS Communication Format Display (CH1)
+SD8408	MODBUS Communication Retry Times (CH1)
+SD8414	RS2 Received Data Receive Sum (CH1)
+SD8415	RS2 Calculated Result Receive Sum (CH1)
+SD8416	RS2 Send Sum (CH1)
+SD8419	Operation Mode (CH1)
+SD8422	RS2 Amount of Remaining Data/MODBUS Communication Error Code (CH2)
+SD8423	RS2 Receive Data Points/MODBUS Communication Error Details (CH2)
+SD8425	RS2 Communication Parameter Display/MODBUS Communication Format Display (CH2)
+SD8428	MODBUS Communication Retry Times (CH2)
+SD8434	RS2 Received Data Receive Sum (CH2)
+SD8435	RS2 Calculated Result Receive Sum (CH2)
+SD8436	RS2 Send Sum (CH2)
+SD8438	Serial Communication Error Code (CH2)
+SD8439	Operation Mode (CH2)
+SD8492	IP address setting [Low-order]
+SD8493	IP address setting [High-order]
+SD8494	Subnet mask setting [Low-order]
+SD8495	Subnet mask setting [High-order]
+SD8496	Default gateway IP address setting [Low-order]
+SD8497	Default gateway IP address setting [High-order]
+SD8498	IP address storage area write error code
+SD8499	IP address storage area clear error code
+SD8500	Serial Communication Error Code (CH1)
+SD8501	Serial Communication Error Details (CH1)
+SD8502	Serial Communication Setting (CH1)
+SD8503	Serial Communication Operation Mode (CH1)
+SD8510	Serial Communication Error Code (CH2)
+SD8511	Serial Communication Error Details (CH2)
+SD8512	Serial Communication Setting (CH2)
+SD8513	Serial Communication Operation Mode (CH2)
+SD8520	Serial Communication Error Code (CH3)
+SD8521	Serial Communication Error Details (CH3)
+SD8522	Serial Communication Setting (CH3)
+SD8523	Serial Communication Operation Mode (CH3)
+SD8530	Serial Communication Error Code (CH4)
+SD8531	Serial Communication Error Details (CH4)
+SD8532	Serial Communication Setting (CH4)
+SD8533	Serial Communication Operation Mode (CH4)
+SD8560	Remaining Points of Send Data (CH1)
+SD8561	Receive Data Points Monitor (CH1)
+SD8563	Received Data Sum (CH1)
+SD8564	Received Result Sum (CH1)
+SD8565	Send Sum (CH1)
+SD8570	Remaining Points of Send Data (CH2)
+SD8571	Receive Data Points Monitor (CH2)
+SD8573	Received Data Sum (CH2)
+SD8574	Received Result Sum (CH2)
+SD8575	Send Sum (CH2)
+SD8580	Remaining Points of Send Data (CH3)
+SD8581	Receive Data Points Monitor (CH3)
+SD8583	Received Data Sum (CH3)
+SD8584	Received Result Sum (CH3)
+SD8585	Send Sum (CH3)
+SD8590	Remaining Points of Send Data (CH4)
+SD8591	Receive Data Points Monitor (CH4)
+SD8593	Received Data Sum (CH4)
+SD8594	Received Result Sum (CH4)
+SD8595	Send Sum (CH4)
+SD8621	Timeout Time (CH1)
+SD8622	8-bit Processing Mode (CH1)
+SD8623	Header 1 and 2 (CH1)
+SD8624	Header 3 and 4 (CH1)
+SD8625	Terminator 1 and 2 (CH1)
+SD8626	Terminator 3 and 4 (CH1)
+SD8631	Timeout Time (CH2)
+SD8632	8-bit Processing Mode (CH2)
+SD8633	Header 1 and 2 (CH2)
+SD8634	Header 3 and 4 (CH2)
+SD8635	Terminator 1 and 2 (CH2)
+SD8636	Terminator 3 and 4 (CH2)
+SD8641	Timeout Time (CH3)
+SD8642	8-bit Processing Mode (CH3)
+SD8643	Header 1 and 2 (CH3)
+SD8644	Header 3 and 4 (CH3)
+SD8645	Terminator 1 and 2 (CH3)
+SD8646	Terminator 3 and 4 (CH3)
+SD8651	Timeout Time (CH4)
+SD8652	8-bit Processing Mode (CH4)
+SD8653	Header 1 and 2 (CH4)
+SD8654	Header 3 and 4 (CH4)
+SD8655	Terminator 1 and 2 (CH4)
+SD8656	Terminator 3 and 4 (CH4)
+SD8800	Current Retry Value (CH1)
+SD8810	Current Retry Value (CH2)
+SD8820	Current Retry Value (CH3)
+SD8830	Current Retry Value (CH4)
+SD8861	Slave Node Address (CH1)
+SD8862	Slave Response Timeout (CH1)
+SD8863	Turn Around Delay (CH1)
+SD8864	Message to Message Delay (CH1)
+SD8865	Number of Retries (CH1)
+SD8871	Slave Node Address (CH2)
+SD8872	Slave Response Timeout (CH2)
+SD8873	Turn Around Delay (CH2)
+SD8874	Message to Message Delay (CH2)
+SD8875	Number of Retries (CH2)
+SD8881	Slave Node Address (CH3)
+SD8882	Slave Response Timeout (CH3)
+SD8883	Turn Around Delay (CH3)
+SD8884	Message to Message Delay (CH3)
+SD8885	Number of Retries (CH3)
+SD8891	Slave Node Address (CH4)
+SD8892	Slave Response Timeout (CH4)
+SD8893	Turn Around Delay (CH4)
+SD8894	Message to Message Delay (CH4)
+SD8895	Number of Retries (CH4)
+SD8921	IVBWR Instruction Error Parameter Number (CH1)
+SD8931	IVBWR Instruction Error Parameter Number (CH2)
+SD8941	IVBWR Instruction Error Parameter Number (CH3)
+SD8951	IVBWR Instruction Error Parameter Number (CH4)
+SD8981	Response Wait Time (CH1)
+SD8991	Response Wait Time (CH2)
+SD9001	Response Wait Time (CH3)
+SD9011	Response Wait Time (CH4)
+SD9040	Station number
+SD9041	Total number of slave stations
+SD9043	Current link scan time
+SD9044	Maximum link scan time
+SD9045	Number of communication error at master station
+SD9046	Number of communication error at slave station No.1
+SD9047	Number of communication error at slave station No.2
+SD9048	Number of communication error at slave station No.3
+SD9049	Number of communication error at slave station No.4
+SD9050	Number of communication error at slave station No.5
+SD9051	Number of communication error at slave station No.6
+SD9052	Number of communication error at slave station No.7
+SD9061	Code of communication error at master station
+SD9062	Code of communication error at slave station No.1
+SD9063	Code of communication error at slave station No.2
+SD9064	Code of communication error at slave station No.3
+SD9065	Code of communication error at slave station No.4
+SD9066	Code of communication error at slave station No.5
+SD9067	Code of communication error at slave station No.6
+SD9068	Code of communication error at slave station No.7
+SD9080	Station number setting
+SD9081	Total slave station number setting
+SD9082	Refresh range setting
+SD9083	Retry count setting
+SD9084	Communication time-out setting
+SD9102	Predefined protocol ready
+SD9120	Predefined protocol setting data error information: Protocol No.
+SD9121	Predefined protocol setting data error information: Setting type
+SD9122	Predefined protocol setting data error information: Packet No.
+SD9123	Predefined protocol setting data error information: Element No.
+SD9124	Number of registered predefined protocols
+SD9132	Predefined protocol: Protocol registration (0~15)
+SD9133	Predefined protocol: Protocol registration (16~31)
+SD9134	Predefined protocol: Protocol registration (32~47)
+SD9135	Predefined protocol: Protocol registration (48~63)
+SD9150	Protocol execution status (CH1)
+SD9168	Protocol execution count (CH1)
+SD9169	Protocol cancel specification (CH1)
+SD9170	Protocol execution status (CH2)
+SD9188	Protocol execution count (CH2)
+SD9189	Protocol cancel specification (CH2)
+SD9190	Protocol execution status (CH3)
+SD9208	Protocol execution count (CH3)
+SD9209	Protocol cancel specification (CH3)
+SD9210	Protocol execution status (CH4)
+SD9228	Protocol execution count (CH4)
+SD9229	Protocol cancel specification (CH4)
+SD9230	Send/receive data monitoring function setting (CH1)
+SD9231	Send/receive data monitoring function option setting (CH1)
+SD9232	Monitoring data device specification (CH1)
+SD9233	Monitoring data start device No. specification (CH1)
+SD9234	Monitoring data size specification (CH1)
+SD9240	Send/receive data monitoring function setting (CH2)
+SD9241	Send/receive data monitoring function option setting (CH2)
+SD9242	Monitoring data device specification (CH2)
+SD9243	Monitoring data start device No. specification (CH2)
+SD9244	Monitoring data size specification (CH2)
+SD9250	Send/receive data monitoring function setting (CH3)
+SD9251	Send/receive data monitoring function option setting (CH3)
+SD9252	Monitoring data device specification (CH3)
+SD9253	Monitoring data start device No. specification (CH3)
+SD9254	Monitoring data size specification (CH3)
+SD9260	Send/receive data monitoring function setting (CH4)
+SD9261	Send/receive data monitoring function option setting (CH4)
+SD9262	Monitoring data device specification (CH4)
+SD9263	Monitoring data start device No. specification (CH4)
+SD9264	Monitoring data size specification (CH4)
+SD10050	IP Address Setting
+SD10051	IP Address Setting
+SD10060	Subnet Mask Setting
+SD10061	Subnet Mask Setting
+SD10064	Default Router IP Address Setting
+SD10065	Default Router IP Address Setting
+SD10074	MAC Address Setting
+SD10075	MAC Address Setting
+SD10076	MAC Address Setting
+SD10082	Transfer Rate Setting
+SD10084	MELSOFT Connection TCP Port Number Setting
+SD10086	MELSOFT Direct Connection Port Number
+SD10130	Connection No. 1 Latest Error Code
+SD10131	Connection No. 2 Latest Error Code
+SD10132	Connection No. 3 Latest Error Code
+SD10133	Connection No. 4 Latest Error Code
+SD10134	Connection No. 5 Latest Error Code
+SD10135	Connection No. 6 Latest Error Code
+SD10136	Connection No. 7 Latest Error Code
+SD10137	Connection No. 8 Latest Error Code
+SD10147	Latest MELSOFT direct connection error Code
+SD10270	Connection Remote Password Lock Status
+SD10271	Remote Password Lock Status
+SD10320	Connection 1 Continuous Unlock Failure Count
+SD10321	Connection 2 Continuous Unlock Failure Count
+SD10322	Connection 3 Continuous Unlock Failure Count
+SD10323	Connection 4 Continuous Unlock Failure Count
+SD10324	Connection 5 Continuous Unlock Failure Count
+SD10325	Connection 6 Continuous Unlock Failure Count
+SD10326	Connection 7 Continuous Unlock Failure Count
+SD10327	Connection 8 Continuous Unlock Failure Count
+SD10338	MELSOFT Transmission Port (TCP) Continuous Unlock Failure Count
+SD10340	FTP Transmission Port Continuous Unlock Failure Count
+SD10680	Connection Open Completion Status
+SD10681	Open Request Status
+SD10682	Socket Buffer Receive Status
+SD10692	Predefined protocol ready
+SD10710	Predefined protocol setting data error information protocolnumber
+SD10711	Predefined protocol setting data error information settingtype
+SD10712	Predefined protocol setting data error information packetnumber
+SD10713	Predefined protocol setting data error information Elementnumber
+SD10714	Number of registered predefined protocols
+SD10722	Predefined protocol registration (0 to 15)
+SD10723	Predefined protocol registration (16 to 31)
+SD10724	Predefined protocol registration (32 to 47)
+SD10725	Predefined protocol registration (48 to 63)
+SD10740	Connection No.1 protocol execution status
+SD10742	Connection No.1 received data verification result (receivepacket No.1)
+SD10743	Connection No.1 received data verification result (receivepacket No.2)
+SD10744	Connection No.1 received data verification result (receivepacket No.3)
+SD10745	Connection No.1 received data verification result (receivepacket No.4)
+SD10746	Connection No.1 received data verification result (receivepacket No.5)
+SD10747	Connection No.1 received data verification result (receivepacket No.6)
+SD10748	Connection No.1 received data verification result (receivepacket No.7)
+SD10749	Connection No.1 received data verification result (receivepacket No.8)
+SD10750	Connection No.1 received data verification result (receivepacket No.9)
+SD10751	Connection No.1 received data verification result (receivepacket No.10)
+SD10752	Connection No.1 received data verification result (receivepacket No.11)
+SD10753	Connection No.1 received data verification result (receivepacket No.12)
+SD10754	Connection No.1 received data verification result (receivepacket No.13)
+SD10755	Connection No.1 received data verification result (receivepacket No.14)
+SD10756	Connection No.1 received data verification result (receivepacket No.15)
+SD10757	Connection No.1 received data verification result (receivepacket No.16)
+SD10758	Connection No.1 protocol execution count
+SD10759	Connection No.1 protocol cancellation specification
+SD10760	Connection No.2 protocol execution status
+SD10762	Connection No.2 received data verification result (receivepacket No.1)
+SD10763	Connection No.2 received data verification result (receivepacket No.2)
+SD10764	Connection No.2 received data verification result (receivepacket No.3)
+SD10765	Connection No.2 received data verification result (receivepacket No.4)
+SD10766	Connection No.2 received data verification result (receivepacket No.5)
+SD10767	Connection No.2 received data verification result (receivepacket No.6)
+SD10768	Connection No.2 received data verification result (receivepacket No.7)
+SD10769	Connection No.2 received data verification result (receivepacket No.8)
+SD10770	Connection No.2 received data verification result (receivepacket No.9)
+SD10771	Connection No.2 received data verification result (receivepacket No.10)
+SD10772	Connection No.2 received data verification result (receivepacket No.11)
+SD10773	Connection No.2 received data verification result (receivepacket No.12)
+SD10774	Connection No.2 received data verification result (receivepacket No.13)
+SD10775	Connection No.2 received data verification result (receivepacket No.14)
+SD10776	Connection No.2 received data verification result (receivepacket No.15)
+SD10777	Connection No.2 received data verification result (receivepacket No.16)
+SD10778	Connection No.2 protocol execution count
+SD10779	Connection No.2 protocol cancellation specification
+SD10780	Connection No.3 protocol execution status
+SD10782	Connection No.3 received data verification result (receivepacket No.1)
+SD10783	Connection No.3 received data verification result (receivepacket No.2)
+SD10784	Connection No.3 received data verification result (receivepacket No.3)
+SD10785	Connection No.3 received data verification result (receivepacket No.4)
+SD10786	Connection No.3 received data verification result (receivepacket No.5)
+SD10787	Connection No.3 received data verification result (receivepacket No.6)
+SD10788	Connection No.3 received data verification result (receivepacket No.7)
+SD10789	Connection No.3 received data verification result (receivepacket No.8)
+SD10790	Connection No.3 received data verification result (receivepacket No.9)
+SD10791	Connection No.3 received data verification result (receivepacket No.10)
+SD10792	Connection No.3 received data verification result (receivepacket No.11)
+SD10793	Connection No.3 received data verification result (receivepacket No.12)
+SD10794	Connection No.3 received data verification result (receivepacket No.13)
+SD10795	Connection No.3 received data verification result (receivepacket No.14)
+SD10796	Connection No.3 received data verification result (receivepacket No.15)
+SD10797	Connection No.3 received data verification result (receivepacket No.16)
+SD10798	Connection No.3 protocol execution count
+SD10799	Connection No.3 protocol cancellation specification
+SD10800	Connection No.4 protocol execution status
+SD10802	Connection No.4 received data verification result (receivepacket No.1)
+SD10803	Connection No.4 received data verification result (receivepacket No.2)
+SD10804	Connection No.4 received data verification result (receivepacket No.3)
+SD10805	Connection No.4 received data verification result (receivepacket No.4)
+SD10806	Connection No.4 received data verification result (receivepacket No.5)
+SD10807	Connection No.4 received data verification result (receivepacket No.6)
+SD10808	Connection No.4 received data verification result (receivepacket No.7)
+SD10809	Connection No.4 received data verification result (receivepacket No.8)
+SD10810	Connection No.4 received data verification result (receivepacket No.9)
+SD10811	Connection No.4 received data verification result (receivepacket No.10)
+SD10812	Connection No.4 received data verification result (receivepacket No.11)
+SD10813	Connection No.4 received data verification result (receivepacket No.12)
+SD10814	Connection No.4 received data verification result (receivepacket No.13)
+SD10815	Connection No.4 received data verification result (receivepacket No.14)
+SD10816	Connection No.4 received data verification result (receivepacket No.15)
+SD10817	Connection No.4 received data verification result (receivepacket No.16)
+SD10818	Connection No.4 protocol execution count
+SD10819	Connection No.4 protocol cancellation specification
+SD10820	Connection No.5 protocol execution status
+SD10822	Connection No.5 received data verification result (receivepacket No.1)
+SD10823	Connection No.5 received data verification result (receivepacket No.2)
+SD10824	Connection No.5 received data verification result (receivepacket No.3)
+SD10825	Connection No.5 received data verification result (receivepacket No.4)
+SD10826	Connection No.5 received data verification result (receivepacket No.5)
+SD10827	Connection No.5 received data verification result (receivepacket No.6)
+SD10828	Connection No.5 received data verification result (receivepacket No.7)
+SD10829	Connection No.5 received data verification result (receivepacket No.8)
+SD10830	Connection No.5 received data verification result (receivepacket No.9)
+SD10831	Connection No.5 received data verification result (receivepacket No.10)
+SD10832	Connection No.5 received data verification result (receivepacket No.11)
+SD10833	Connection No.5 received data verification result (receivepacket No.12)
+SD10834	Connection No.5 received data verification result (receivepacket No.13)
+SD10835	Connection No.5 received data verification result (receivepacket No.14)
+SD10836	Connection No.5 received data verification result (receivepacket No.15)
+SD10837	Connection No.5 received data verification result (receivepacket No.16)
+SD10838	Connection No.5 protocol execution count
+SD10839	Connection No.5 protocol cancellation specification
+SD10840	Connection No.6 protocol execution status
+SD10842	Connection No.6 received data verification result (receivepacket No.1)
+SD10843	Connection No.6 received data verification result (receivepacket No.2)
+SD10844	Connection No.6 received data verification result (receivepacket No.3)
+SD10845	Connection No.6 received data verification result (receivepacket No.4)
+SD10846	Connection No.6 received data verification result (receivepacket No.5)
+SD10847	Connection No.6 received data verification result (receivepacket No.6)
+SD10848	Connection No.6 received data verification result (receivepacket No.7)
+SD10849	Connection No.6 received data verification result (receivepacket No.8)
+SD10850	Connection No.6 received data verification result (receivepacket No.9)
+SD10851	Connection No.6 received data verification result (receivepacket No.10)
+SD10852	Connection No.6 received data verification result (receivepacket No.11)
+SD10853	Connection No.6 received data verification result (receivepacket No.12)
+SD10854	Connection No.6 received data verification result (receivepacket No.13)
+SD10855	Connection No.6 received data verification result (receivepacket No.14)
+SD10856	Connection No.6 received data verification result (receivepacket No.15)
+SD10857	Connection No.6 received data verification result (receivepacket No.16)
+SD10858	Connection No.6 protocol execution count
+SD10859	Connection No.6 protocol cancellation specification
+SD10860	Connection No.7 protocol execution status
+SD10862	Connection No.7 received data verification result (receivepacket No.1)
+SD10863	Connection No.7 received data verification result (receivepacket No.2)
+SD10864	Connection No.7 received data verification result (receivepacket No.3)
+SD10865	Connection No.7 received data verification result (receivepacket No.4)
+SD10866	Connection No.7 received data verification result (receivepacket No.5)
+SD10867	Connection No.7 received data verification result (receivepacket No.6)
+SD10868	Connection No.7 received data verification result (receivepacket No.7)
+SD10869	Connection No.7 received data verification result (receivepacket No.8)
+SD10870	Connection No.7 received data verification result (receivepacket No.9)
+SD10871	Connection No.7 received data verification result (receivepacket No.10)
+SD10872	Connection No.7 received data verification result (receivepacket No.11)
+SD10873	Connection No.7 received data verification result (receivepacket No.12)
+SD10874	Connection No.7 received data verification result (receivepacket No.13)
+SD10875	Connection No.7 received data verification result (receivepacket No.14)
+SD10876	Connection No.7 received data verification result (receivepacket No.15)
+SD10877	Connection No.7 received data verification result (receivepacket No.16)
+SD10878	Connection No.7 protocol execution count
+SD10879	Connection No.7 protocol cancellation specification
+SD10880	Connection No.8 protocol execution status
+SD10882	Connection No.8 received data verification result (receivepacket No.1)
+SD10883	Connection No.8 received data verification result (receivepacket No.2)
+SD10884	Connection No.8 received data verification result (receivepacket No.3)
+SD10885	Connection No.8 received data verification result (receivepacket No.4)
+SD10886	Connection No.8 received data verification result (receivepacket No.5)
+SD10887	Connection No.8 received data verification result (receivepacket No.6)
+SD10888	Connection No.8 received data verification result (receivepacket No.7)
+SD10889	Connection No.8 received data verification result (receivepacket No.8)
+SD10890	Connection No.8 received data verification result (receivepacket No.9)
+SD10891	Connection No.8 received data verification result (receivepacket No.10)
+SD10892	Connection No.8 received data verification result (receivepacket No.11)
+SD10893	Connection No.8 received data verification result (receivepacket No.12)
+SD10894	Connection No.8 received data verification result (receivepacket No.13)
+SD10895	Connection No.8 received data verification result (receivepacket No.14)
+SD10896	Connection No.8 received data verification result (receivepacket No.15)
+SD10897	Connection No.8 received data verification result (receivepacket No.16)
+SD10898	Connection No.8 protocol execution count
+SD10899	Connection No.8 protocol cancellation specification
+R0	CH TYPE 0-10V:0-32000
+R0	Latest error code
+R1	FX3U-4DA-CH1
+R1	Latest address of error history
+R2	Latest alarm code
+R3	Latest address of alarm history
+R30	Module information
+R31	F/W version
+R36	Warning output flag (Process alarm upper limit)
+R36.1	CH1 Warning output flag (Process alarm upper limit)
+R36.2	CH2 Warning output flag (Process alarm upper limit)
+R36.3	CH3 Warning output flag (Process alarm upper limit)
+R36.4	CH4 Warning output flag (Process alarm upper limit)
+R36.5	CH5 Warning output flag (Process alarm upper limit)
+R36.6	CH6 Warning output flag (Process alarm upper limit)
+R36.7	CH7 Warning output flag (Process alarm upper limit)
+R36.8	CH8 Warning output flag (Process alarm upper limit)
+R37	Warning output flag (Process alarm lower limit)
+R37.1	CH1 Warning output flag (Process alarm lower limit)
+R37.2	CH2 Warning output flag (Process alarm lower limit)
+R37.3	CH3 Warning output flag (Process alarm lower limit)
+R37.4	CH4 Warning output flag (Process alarm lower limit)
+R37.5	CH5 Warning output flag (Process alarm lower limit)
+R37.6	CH6 Warning output flag (Process alarm lower limit)
+R37.7	CH7 Warning output flag (Process alarm lower limit)
+R37.8	CH8 Warning output flag (Process alarm lower limit)
+R38	Warning output flag (Rate alarm upper limit)
+R38.1	CH1 Warning output flag (Rate alarm upper limit)
+R38.2	CH2 Warning output flag (Rate alarm upper limit)
+R38.3	CH3 Warning output flag (Rate alarm upper limit)
+R38.4	CH4 Warning output flag (Rate alarm upper limit)
+R38.5	CH5 Warning output flag (Rate alarm upper limit)
+R38.6	CH6 Warning output flag (Rate alarm upper limit)
+R38.7	CH7 Warning output flag (Rate alarm upper limit)
+R38.8	CH8 Warning output flag (Rate alarm upper limit)
+R39	Warning output flag (Rate alarm lower limit)
+R39.1	CH1 Warning output flag (Rate alarm lower limit)
+R39.2	CH2 Warning output flag (Rate alarm lower limit)
+R39.3	CH3 Warning output flag (Rate alarm lower limit)
+R39.4	CH4 Warning output flag (Rate alarm lower limit)
+R39.5	CH5 Warning output flag (Rate alarm lower limit)
+R39.6	CH6 Warning output flag (Rate alarm lower limit)
+R39.7	CH7 Warning output flag (Rate alarm lower limit)
+R39.8	CH8 Warning output flag (Rate alarm lower limit)
+R40	Input signal error detection flag
+R40.1	CH1 Input signal error detection flag
+R40.2	CH2 Input signal error detection flag
+R40.3	CH3 Input signal error detection flag
+R40.4	CH4 Input signal error detection flag
+R40.5	CH5 Input signal error detection flag
+R40.6	CH6 Input signal error detection flag
+R40.7	CH7 Input signal error detection flag
+R40.8	CH8 Input signal error detection flag
+R41	Disconnection detection flag
+R41.1	CH1 disconnection detection flag
+R41.2	CH2 disconnection detection flag
+R41.3	CH3 disconnection detection flag
+R41.4	CH4 disconnection detection flag
+R41.5	CH5 disconnection detection flag
+R41.6	CH6 disconnection detection flag
+R41.7	CH7 disconnection detection flag
+R41.8	CH8 disconnection detection flag
+R42	Conversion completed flag
+R42.1	CH1 Conversion completed flag
+R42.2	CH2 Conversion completed flag
+R42.3	CH3 Conversion completed flag
+R42.4	CH4 Conversion completed flag
+R42.5	CH5 Conversion completed flag
+R42.6	CH6 Conversion completed flag
+R42.7	CH7 Conversion completed flag
+R42.8	CH8 Conversion completed flag
+R60	Operation mode monitor
+R69	Input signals
+R69.1	Module READY
+R69.6	Offset/gain initialization completed flag
+R69.7	Disconnection detection signal
+R69.9	Warning output signal
+R69.10	Operating condition setting completed flag
+R69.11	Offset/gein setting mode flag
+R69.12	Channel change completed flag
+R69.13	Input signal error detection signal
+R69.15	Conversion completed flag
+R69.16	Error flag
+R70	Output signals
+R70.6	Offset/gain initialization request
+R70.10	Operating condition setting request
+R70.11	User range write request
+R70.12	Channel change request
+R70.16	Error clear request
+R90	Level data 0
+R91	Level data 1
+R92	Level data 2
+R93	Level data 3
+R94	Level data 4
+R95	Level data 5
+R96	Level data 6
+R97	Level data 7
+R98	Level data 8
+R99	Level data 9
+R296	Mode switching setting(Low)
+R297	Mode switching setting(High)
+R299	Rate alarm change rate selection
+R304	Input signal error/Disconnection detection　Automatic clear enable/disable setting
+R305	Offset/gain writing enable code
+R400	CH1 Digital output value
+R402	CH1 Digital operation value
+R404	CH1 Maximum value
+R406	CH1 Minimum value
+R409	CH1 Logging hold flag
+R420	CH1 Conversion status
+R422	CH1 Maximum value reset completed flag
+R423	CH1 Minimum value reset completed flag
+R430	CH1 InputType/Range monitor
+R431	CH1 InputType/Range monitor(Offset/gain setting)
+R434	CH1 Head pointer
+R435	CH1 Latest pointer
+R436	CH1 Logging data points
+R437	CH1 Trigger pointer
+R441	CH1 Logging cycle Monitor value(Second)
+R442	CH1 Logging cycle Monitor value(Milli second)
+R444	CH1 Trigger time (First two digits of the year/Last two digits of the year)
+R445	CH1 Trigger time(Month/Day)
+R446	CH1 Trigger time(Hour/Minute)
+R447	CH1 Trigger time(Second/Day of the week)
+R448	CH1 Trigger time(Milli second)
+R452	CH1 Centigradelsius/Fahrenheit display monitor
+R453	CH1 NowSetting user range base input type monitor
+R454	CH1 NowSetting user range base input range monitor
+R471	CH1 Logging hold request
+R472	CH1 Conversion value shift amount
+R473	CH1 Maximum value reset completed flag
+R474	CH1 Minimum value reset completed flag
+R501	CH1 Average processing setting
+R502	CH1 Time Average/ Count Average/ Moving Average
+R504	CH1 Scaling enable/disable setting
+R506	CH1 Scaling upper limit value
+R508	CH1 Scaling lower limit value
+R510	CH1 Digitalclip enable/disable setting
+R512	CH1 Warning output setting (Process alarm)
+R513	CH1 Warning output setting (Rate alarm)
+R514	CH1 Process alarm upper upper limit value
+R516	CH1 Process alarm upper lower limit value
+R518	CH1 Process alarm lower upper limit value
+R520	CH1 Process alarm lower lower limit value
+R522	CH1 Rate alarm detection cycle setting
+R524	CH1 Rate alarm upper limit value
+R526	CH1 Rate alarm lower limit value
+R528	CH1 Input signal error detection setting
+R529	CH1 Input signal error detection lower limit setting value
+R530	CH1 Input signal error detection upper limit setting value
+R531	CH1 disconnection detection function　enable/disable setting
+R532	CH1 Conversion setting value for disconnection detection
+R534	CH1 Conversion setting for disconnection detection
+R535	CH1 Logging enable/disable setting
+R536	CH1 Logging data setting
+R537	CH1 Logging cycle setting value
+R538	CH1 Logging cycle unit setting
+R539	CH1 Logging points after trigger
+R540	CH1 Hold trigger condition setting
+R541	CH1 Trigger data
+R542	CH1 Trigger setting value(Low)
+R547	CH1 Centigradelsius/Fahrenheit display setting
+R562	CH1 Offset setting value
+R564	CH1 Gain setting value
+R598	CH1 Input type/range setting
+R599	CH1 Input type/range setting (Offset/gain setting)
+R600	CH2 Digital output value
+R602	CH2 Digital operation value
+R604	CH2 Maximum value
+R606	CH2 Minimum value
+R609	CH2 Logging hold flag
+R620	CH2 Conversion status
+R622	CH2 Maximum value reset completed flag
+R623	CH2 Minimum value reset completed flag
+R630	CH2 InputType/Range monitor
+R631	CH2 InputType/Range monitor(Offset/gain setting)
+R634	CH2 Head pointer
+R635	CH2 Latest pointer
+R636	CH2 Logging data points
+R637	CH2 Trigger pointer
+R641	CH2 Logging cycle Monitor value(Second)
+R642	CH2 Logging cycle Monitor value(Milli second)
+R644	CH2 Trigger time (First two digits of the year/Last two digits of the year)
+R645	CH2 Trigger time(Month/Day)
+R646	CH2 Trigger time(Hour/Minute)
+R647	CH2 Trigger time(Second/Day of the week)
+R648	CH2 Trigger time(Milli second)
+R652	CH2 Centigradelsius/Fahrenheit display monitor
+R653	CH2 NowSetting user range base input type monitor
+R654	CH2 NowSetting user range base input range monitor
+R671	CH2 Logging hold request
+R672	CH2 Conversion value shift amount
+R673	CH2 Maximum value reset completed flag
+R674	CH2 Minimum value reset completed flag
+R701	CH2 Average processing setting
+R702	CH2 Time Average/ Count Average/ Moving Average
+R704	CH2 Scaling enable/disable setting
+R706	CH2 Scaling upper limit value
+R708	CH2 Scaling lower limit value
+R710	CH2 Digitalclip enable/disable setting
+R712	CH2 Warning output setting (Process alarm)
+R713	CH2 Warning output setting (Rate alarm)
+R714	CH2 Process alarm upper upper limit value
+R716	CH2 Process alarm upper lower limit value
+R718	CH2 Process alarm lower upper limit value
+R720	CH2 Process alarm lower lower limit value
+R722	CH2 Rate alarm detection cycle setting
+R724	CH2 Rate alarm upper limit value
+R726	CH2 Rate alarm lower limit value
+R728	CH2 Input signal error detection setting
+R729	CH2 Input signal error detection lower limit setting value
+R730	CH2 Input signal error detection upper limit setting value
+R731	CH2 disconnection detection function　enable/disable setting
+R732	CH2 Conversion setting value for disconnection detection
+R734	CH2 Conversion setting for disconnection detection
+R735	CH2 Logging enable/disable setting
+R736	CH2 Logging data setting
+R737	CH2 Logging cycle setting value
+R738	CH2 Logging cycle unit setting
+R739	CH2 Logging points after trigger
+R740	CH2 Hold trigger condition setting
+R741	CH2 Trigger data
+R742	CH2 Trigger setting value(Low)
+R747	CH2 Centigradelsius/Fahrenheit display setting
+R762	CH2 Offset setting value
+R764	CH2 Gain setting value
+R798	CH2 Input type/range setting
+R799	CH2 Input type/range setting (Offset/gain setting)
+R800	CH3 Digital output value
+R802	CH3 Digital operation value
+R804	CH3 Maximum value
+R806	CH3 Minimum value
+R809	CH3 Logging hold flag
+R820	CH3 Conversion status
+R822	CH3 Maximum value reset completed flag
+R823	CH3 Minimum value reset completed flag
+R830	CH3 InputType/Range monitor
+R831	CH3 InputType/Range monitor(Offset/gain setting)
+R834	CH3 Head pointer
+R835	CH3 Latest pointer
+R836	CH3 Logging data points
+R837	CH3 Trigger pointer
+R841	CH3 Logging cycle Monitor value(Second)
+R842	CH3 Logging cycle Monitor value(Milli second)
+R844	CH3 Trigger time (First two digits of the year/Last two digits of the year)
+R845	CH3 Trigger time(Month/Day)
+R846	CH3 Trigger time(Hour/Minute)
+R847	CH3 Trigger time(Second/Day of the week)
+R848	CH3 Trigger time(Milli second)
+R852	CH3 Centigradelsius/Fahrenheit display monitor
+R853	CH3 NowSetting user range base input type monitor
+R854	CH3 NowSetting user range base input range monitor
+R871	CH3 Logging hold request
+R872	CH3 Conversion value shift amount
+R873	CH3 Maximum value reset completed flag
+R874	CH3 Minimum value reset completed flag
+R901	CH3 Average processing setting
+R902	CH3 Time Average/ Count Average/ Moving Average
+R904	CH3 Scaling enable/disable setting
+R906	CH3 Scaling upper limit value
+R908	CH3 Scaling lower limit value
+R910	CH3 Digitalclip enable/disable setting
+R912	CH3 Warning output setting (Process alarm)
+R913	CH3 Warning output setting (Rate alarm)
+R914	CH3 Process alarm upper upper limit value
+R916	CH3 Process alarm upper lower limit value
+R918	CH3 Process alarm lower upper limit value
+R920	CH3 Process alarm lower lower limit value
+R922	CH3 Rate alarm detection cycle setting
+R924	CH3 Rate alarm upper limit value
+R926	CH3 Rate alarm lower limit value
+R928	CH3 Input signal error detection setting
+R929	CH3 Input signal error detection lower limit setting value
+R930	CH3 Input signal error detection upper limit setting value
+R931	CH3 disconnection detection function　enable/disable setting
+R932	CH3 Conversion setting value for disconnection detection
+R934	CH3 Conversion setting for disconnection detection
+R935	CH3 Logging enable/disable setting
+R936	CH3 Logging data setting
+R937	CH3 Logging cycle setting value
+R938	CH3 Logging cycle unit setting
+R939	CH3 Logging points after trigger
+R940	CH3 Hold trigger condition setting
+R941	CH3 Trigger data
+R942	CH3 Trigger setting value(Low)
+R947	CH3 Centigradelsius/Fahrenheit display setting
+R962	CH3 Offset setting value
+R964	CH3 Gain setting value
+R998	CH3 Input type/range setting
+R999	CH3 Input type/range setting (Offset/gain setting)
+R1000	CH4 Digital output value
+R1002	CH4 Digital operation value
+R1004	CH4 Maximum value
+R1006	CH4 Minimum value
+R1009	CH4 Logging hold flag
+R1020	CH4 Conversion status
+R1022	CH4 Maximum value reset completed flag
+R1023	CH4 Minimum value reset completed flag
+R1030	CH4 InputType/Range monitor
+R1031	CH4 InputType/Range monitor(Offset/gain setting)
+R1034	CH4 Head pointer
+R1035	CH4 Latest pointer
+R1036	CH4 Logging data points
+R1037	CH4 Trigger pointer
+R1041	CH4 Logging cycle Monitor value(Second)
+R1042	CH4 Logging cycle Monitor value(Milli second)
+R1044	CH4 Trigger time (First two digits of the year/Last two digits of the year)
+R1045	CH4 Trigger time(Month/Day)
+R1046	CH4 Trigger time(Hour/Minute)
+R1047	CH4 Trigger time(Second/Day of the week)
+R1048	CH4 Trigger time(Milli second)
+R1052	CH4 Centigradelsius/Fahrenheit display monitor
+R1053	CH4 NowSetting user range base input type monitor
+R1054	CH4 NowSetting user range base input range monitor
+R1071	CH4 Logging hold request
+R1072	CH4 Conversion value shift amount
+R1073	CH4 Maximum value reset completed flag
+R1074	CH4 Minimum value reset completed flag
+R1101	CH4 Average processing setting
+R1102	CH4 Time Average/ Count Average/ Moving Average
+R1104	CH4 Scaling enable/disable setting
+R1106	CH4 Scaling upper limit value
+R1108	CH4 Scaling lower limit value
+R1110	CH4 Digitalclip enable/disable setting
+R1112	CH4 Warning output setting (Process alarm)
+R1113	CH4 Warning output setting (Rate alarm)
+R1114	CH4 Process alarm upper upper limit value
+R1116	CH4 Process alarm upper lower limit value
+R1118	CH4 Process alarm lower upper limit value
+R1120	CH4 Process alarm lower lower limit value
+R1122	CH4 Rate alarm detection cycle setting
+R1124	CH4 Rate alarm upper limit value
+R1126	CH4 Rate alarm lower limit value
+R1128	CH4 Input signal error detection setting
+R1129	CH4 Input signal error detection lower limit setting value
+R1130	CH4 Input signal error detection upper limit setting value
+R1131	CH4 disconnection detection function　enable/disable setting
+R1132	CH4 Conversion setting value for disconnection detection
+R1134	CH4 Conversion setting for disconnection detection
+R1135	CH4 Logging enable/disable setting
+R1136	CH4 Logging data setting
+R1137	CH4 Logging cycle setting value
+R1138	CH4 Logging cycle unit setting
+R1139	CH4 Logging points after trigger
+R1140	CH4 Hold trigger condition setting
+R1141	CH4 Trigger data
+R1142	CH4 Trigger setting value(Low)
+R1147	CH4 Centigradelsius/Fahrenheit display setting
+R1162	CH4 Offset setting value
+R1164	CH4 Gain setting value
+R1198	CH4 Input type/range setting
+R1199	CH4 Input type/range setting (Offset/gain setting)
+R1200	CH5 Digital output value
+R1202	CH5 Digital operation value
+R1204	CH5 Maximum value
+R1206	CH5 Minimum value
+R1209	CH5 Logging hold flag
+R1220	CH5 Conversion status
+R1222	CH5 Maximum value reset completed flag
+R1223	CH5 Minimum value reset completed flag
+R1230	CH5 InputType/Range monitor
+R1231	CH5 InputType/Range monitor(Offset/gain setting)
+R1234	CH5 Head pointer
+R1235	CH5 Latest pointer
+R1236	CH5 Logging data points
+R1237	CH5 Trigger pointer
+R1241	CH5 Logging cycle Monitor value(Second)
+R1242	CH5 Logging cycle Monitor value(Milli second)
+R1244	CH5 Trigger time (First two digits of the year/Last two digits of the year)
+R1245	CH5 Trigger time(Month/Day)
+R1246	CH5 Trigger time(Hour/Minute)
+R1247	CH5 Trigger time(Second/Day of the week)
+R1248	CH5 Trigger time(Milli second)
+R1252	CH5 Centigradelsius/Fahrenheit display monitor
+R1253	CH5 NowSetting user range base input type monitor
+R1254	CH5 NowSetting user range base input range monitor
+R1271	CH5 Logging hold request
+R1272	CH5 Conversion value shift amount
+R1273	CH5 Maximum value reset completed flag
+R1274	CH5 Minimum value reset completed flag
+R1301	CH5 Average processing setting
+R1302	CH5 Time Average/ Count Average/ Moving Average
+R1304	CH5 Scaling enable/disable setting
+R1306	CH5 Scaling upper limit value
+R1308	CH5 Scaling lower limit value
+R1310	CH5 Digitalclip enable/disable setting
+R1312	CH5 Warning output setting (Process alarm)
+R1313	CH5 Warning output setting (Rate alarm)
+R1314	CH5 Process alarm upper upper limit value
+R1316	CH5 Process alarm upper lower limit value
+R1318	CH5 Process alarm lower upper limit value
+R1320	CH5 Process alarm lower lower limit value
+R1322	CH5 Rate alarm detection cycle setting
+R1324	CH5 Rate alarm upper limit value
+R1326	CH5 Rate alarm lower limit value
+R1328	CH5 Input signal error detection setting
+R1329	CH5 Input signal error detection lower limit setting value
+R1330	CH5 Input signal error detection upper limit setting value
+R1331	CH5 disconnection detection function　enable/disable setting
+R1332	CH5 Conversion setting value for disconnection detection
+R1334	CH5 Conversion setting for disconnection detection
+R1335	CH5 Logging enable/disable setting
+R1336	CH5 Logging data setting
+R1337	CH5 Logging cycle setting value
+R1338	CH5 Logging cycle unit setting
+R1339	CH5 Logging points after trigger
+R1340	CH5 Hold trigger condition setting
+R1341	CH5 Trigger data
+R1342	CH5 Trigger setting value(Low)
+R1347	CH5 Centigradelsius/Fahrenheit display setting
+R1362	CH5 Offset setting value
+R1364	CH5 Gain setting value
+R1398	CH5 Input type/range setting
+R1399	CH5 Input type/range setting (Offset/gain setting)
+R1400	CH6 Digital output value
+R1402	CH6 Digital operation value
+R1404	CH6 Maximum value
+R1406	CH6 Minimum value
+R1409	CH6 Logging hold flag
+R1420	CH6 Conversion status
+R1422	CH6 Maximum value reset completed flag
+R1423	CH6 Minimum value reset completed flag
+R1430	CH6 InputType/Range monitor
+R1431	CH6 InputType/Range monitor(Offset/gain setting)
+R1434	CH6 Head pointer
+R1435	CH6 Latest pointer
+R1436	CH6 Logging data points
+R1437	CH6 Trigger pointer
+R1441	CH6 Logging cycle Monitor value(Second)
+R1442	CH6 Logging cycle Monitor value(Milli second)
+R1444	CH6 Trigger time (First two digits of the year/Last two digits of the year)
+R1445	CH6 Trigger time(Month/Day)
+R1446	CH6 Trigger time(Hour/Minute)
+R1447	CH6 Trigger time(Second/Day of the week)
+R1448	CH6 Trigger time(Milli second)
+R1452	CH6 Centigradelsius/Fahrenheit display monitor
+R1453	CH6 NowSetting user range base input type monitor
+R1454	CH6 NowSetting user range base input range monitor
+R1471	CH6 Logging hold request
+R1472	CH6 Conversion value shift amount
+R1473	CH6 Maximum value reset completed flag
+R1474	CH6 Minimum value reset completed flag
+R1501	CH6 Average processing setting
+R1502	CH6 Time Average/ Count Average/ Moving Average
+R1504	CH6 Scaling enable/disable setting
+R1506	CH6 Scaling upper limit value
+R1508	CH6 Scaling lower limit value
+R1510	CH6 Digitalclip enable/disable setting
+R1512	CH6 Warning output setting (Process alarm)
+R1513	CH6 Warning output setting (Rate alarm)
+R1514	CH6 Process alarm upper upper limit value
+R1516	CH6 Process alarm upper lower limit value
+R1518	CH6 Process alarm lower upper limit value
+R1520	CH6 Process alarm lower lower limit value
+R1522	CH6 Rate alarm detection cycle setting
+R1524	CH6 Rate alarm upper limit value
+R1526	CH6 Rate alarm lower limit value
+R1528	CH6 Input signal error detection setting
+R1529	CH6 Input signal error detection lower limit setting value
+R1530	CH6 Input signal error detection upper limit setting value
+R1531	CH6 disconnection detection function　enable/disable setting
+R1532	CH6 Conversion setting value for disconnection detection
+R1534	CH6 Conversion setting for disconnection detection
+R1535	CH6 Logging enable/disable setting
+R1536	CH6 Logging data setting
+R1537	CH6 Logging cycle setting value
+R1538	CH6 Logging cycle unit setting
+R1539	CH6 Logging points after trigger
+R1540	CH6 Hold trigger condition setting
+R1541	CH6 Trigger data
+R1542	CH6 Trigger setting value(Low)
+R1547	CH6 Centigradelsius/Fahrenheit display setting
+R1562	CH6 Offset setting value
+R1564	CH6 Gain setting value
+R1598	CH6 Input type/range setting
+R1599	CH6 Input type/range setting (Offset/gain setting)
+R1600	CH7 Digital output value
+R1602	CH7 Digital operation value
+R1604	CH7 Maximum value
+R1606	CH7 Minimum value
+R1609	CH7 Logging hold flag
+R1620	CH7 Conversion status
+R1622	CH7 Maximum value reset completed flag
+R1623	CH7 Minimum value reset completed flag
+R1630	CH7 InputType/Range monitor
+R1631	CH7 InputType/Range monitor(Offset/gain setting)
+R1634	CH7 Head pointer
+R1635	CH7 Latest pointer
+R1636	CH7 Logging data points
+R1637	CH7 Trigger pointer
+R1641	CH7 Logging cycle Monitor value(Second)
+R1642	CH7 Logging cycle Monitor value(Milli second)
+R1644	CH7 Trigger time (First two digits of the year/Last two digits of the year)
+R1645	CH7 Trigger time(Month/Day)
+R1646	CH7 Trigger time(Hour/Minute)
+R1647	CH7 Trigger time(Second/Day of the week)
+R1648	CH7 Trigger time(Milli second)
+R1652	CH7 Centigradelsius/Fahrenheit display monitor
+R1653	CH7 NowSetting user range base input type monitor
+R1654	CH7 NowSetting user range base input range monitor
+R1671	CH7 Logging hold request
+R1672	CH7 Conversion value shift amount
+R1673	CH7 Maximum value reset completed flag
+R1674	CH7 Minimum value reset completed flag
+R1701	CH7 Average processing setting
+R1702	CH7 Time Average/ Count Average/ Moving Average
+R1704	CH7 Scaling enable/disable setting
+R1706	CH7 Scaling upper limit value
+R1708	CH7 Scaling lower limit value
+R1710	CH7 Digitalclip enable/disable setting
+R1712	CH7 Warning output setting (Process alarm)
+R1713	CH7 Warning output setting (Rate alarm)
+R1714	CH7 Process alarm upper upper limit value
+R1716	CH7 Process alarm upper lower limit value
+R1718	CH7 Process alarm lower upper limit value
+R1720	CH7 Process alarm lower lower limit value
+R1722	CH7 Rate alarm detection cycle setting
+R1724	CH7 Rate alarm upper limit value
+R1726	CH7 Rate alarm lower limit value
+R1728	CH7 Input signal error detection setting
+R1729	CH7 Input signal error detection lower limit setting value
+R1730	CH7 Input signal error detection upper limit setting value
+R1731	CH7 disconnection detection function　enable/disable setting
+R1732	CH7 Conversion setting value for disconnection detection
+R1734	CH7 Conversion setting for disconnection detection
+R1735	CH7 Logging enable/disable setting
+R1736	CH7 Logging data setting
+R1737	CH7 Logging cycle setting value
+R1738	CH7 Logging cycle unit setting
+R1739	CH7 Logging points after trigger
+R1740	CH7 Hold trigger condition setting
+R1741	CH7 Trigger data
+R1742	CH7 Trigger setting value(Low)
+R1747	CH7 Centigradelsius/Fahrenheit display setting
+R1762	CH7 Offset setting value
+R1764	CH7 Gain setting value
+R1798	CH7 Input type/range setting
+R1799	CH7 Input type/range setting (Offset/gain setting)
+R1800	CH8 Digital output value
+R1802	CH8 Digital operation value
+R1804	CH8 Maximum value
+R1806	CH8 Minimum value
+R1809	CH8 Logging hold flag
+R1820	CH8 Conversion status
+R1822	CH8 Maximum value reset completed flag
+R1823	CH8 Minimum value reset completed flag
+R1830	CH8 InputType/Range monitor
+R1831	CH8 InputType/Range monitor(Offset/gain setting)
+R1834	CH8 Head pointer
+R1835	CH8 Latest pointer
+R1836	CH8 Logging data points
+R1837	CH8 Trigger pointer
+R1841	CH8 Logging cycle Monitor value(Second)
+R1842	CH8 Logging cycle Monitor value(Milli second)
+R1844	CH8 Trigger time (First two digits of the year/Last two digits of the year)
+R1845	CH8 Trigger time(Month/Day)
+R1846	CH8 Trigger time(Hour/Minute)
+R1847	CH8 Trigger time(Second/Day of the week)
+R1848	CH8 Trigger time(Milli second)
+R1852	CH8 Centigradelsius/Fahrenheit display monitor
+R1853	CH8 NowSetting user range base input type monitor
+R1854	CH8 NowSetting user range base input range monitor
+R1871	CH8 Logging hold request
+R1872	CH8 Conversion value shift amount
+R1873	CH8 Maximum value reset completed flag
+R1874	CH8 Minimum value reset completed flag
+R1901	CH8 Average processing setting
+R1902	CH8 Time Average/ Count Average/ Moving Average
+R1904	CH8 Scaling enable/disable setting
+R1906	CH8 Scaling upper limit value
+R1908	CH8 Scaling lower limit value
+R1910	CH8 Digitalclip enable/disable setting
+R1912	CH8 Warning output setting (Process alarm)
+R1913	CH8 Warning output setting (Rate alarm)
+R1914	CH8 Process alarm upper upper limit value
+R1916	CH8 Process alarm upper lower limit value
+R1918	CH8 Process alarm lower upper limit value
+R1920	CH8 Process alarm lower lower limit value
+R1922	CH8 Rate alarm detection cycle setting
+R1924	CH8 Rate alarm upper limit value
+R1926	CH8 Rate alarm lower limit value
+R1928	CH8 Input signal error detection setting
+R1929	CH8 Input signal error detection lower limit setting value
+R1930	CH8 Input signal error detection upper limit setting value
+R1931	CH8 disconnection detection function　enable/disable setting
+R1932	CH8 Conversion setting value for disconnection detection
+R1934	CH8 Conversion setting for disconnection detection
+R1935	CH8 Logging enable/disable setting
+R1936	CH8 Logging data setting
+R1937	CH8 Logging cycle setting value
+R1938	CH8 Logging cycle unit setting
+R1939	CH8 Logging points after trigger
+R1940	CH8 Hold trigger condition setting
+R1941	CH8 Trigger data
+R1942	CH8 Trigger setting value(Low)
+R1947	CH8 Centigradelsius/Fahrenheit display setting
+R1962	CH8 Offset setting value
+R1964	CH8 Gain setting value
+R1998	CH8 Input type/range setting
+R1999	CH8 Input type/range setting (Offset/gain setting)
+R3600	Error history 1_Error code
+R3601	Error history 1_Error time (Year)
+R3602	Error history 1_Error time (Month/Day)
+R3603	Error history 1_Error time (Hour/Minute)
+R3604	Error history 1_Error time (Second/Day of the week)
+R3605	Error history 1_Error time (Millisecond)
+R3610	Error history 2_Error code
+R3611	Error history 2_Error time (Year)
+R3612	Error history 2_Error time (Month/Day)
+R3613	Error history 2_Error time (Hour/Minute)
+R3614	Error history 2_Error time (Second/Day of the week)
+R3615	Error history 2_Error time (Millisecond)
+R3620	Error history 3_Error code
+R3621	Error history 3_Error time (Year)
+R3622	Error history 3_Error time (Month/Day)
+R3623	Error history 3_Error time (Hour/Minute)
+R3624	Error history 3_Error time (Second/Day of the week)
+R3625	Error history 3_Error time (Millisecond)
+R3630	Error history 4_Error code
+R3631	Error history 4_Error time (Year)
+R3632	Error history 4_Error time (Month/Day)
+R3633	Error history 4_Error time (Hour/Minute)
+R3634	Error history 4_Error time (Second/Day of the week)
+R3635	Error history 4_Error time (Millisecond)
+R3640	Error history 5_Error code
+R3641	Error history 5_Error time (Year)
+R3642	Error history 5_Error time (Month/Day)
+R3643	Error history 5_Error time (Hour/Minute)
+R3644	Error history 5_Error time (Second/Day of the week)
+R3645	Error history 5_Error time (Millisecond)
+R3650	Error history 6_Error code
+R3651	Error history 6_Error time (Year)
+R3652	Error history 6_Error time (Month/Day)
+R3653	Error history 6_Error time (Hour/Minute)
+R3654	Error history 6_Error time (Second/Day of the week)
+R3655	Error history 6_Error time (Millisecond)
+R3660	Error history 7_Error code
+R3661	Error history 7_Error time (Year)
+R3662	Error history 7_Error time (Month/Day)
+R3663	Error history 7_Error time (Hour/Minute)
+R3664	Error history 7_Error time (Second/Day of the week)
+R3665	Error history 7_Error time (Millisecond)
+R3670	Error history 8_Error code
+R3671	Error history 8_Error time (Year)
+R3672	Error history 8_Error time (Month/Day)
+R3673	Error history 8_Error time (Hour/Minute)
+R3674	Error history 8_Error time (Second/Day of the week)
+R3675	Error history 8_Error time (Millisecond)
+R3680	Error history 9_Error code
+R3681	Error history 9_Error time (Year)
+R3682	Error history 9_Error time (Month/Day)
+R3683	Error history 9_Error time (Hour/Minute)
+R3684	Error history 9_Error time (Second/Day of the week)
+R3685	Error history 9_Error time (Millisecond)
+R3690	Error history 10_Error code
+R3691	Error history 10_Error time (Year)
+R3692	Error history 10_Error time (Month/Day)
+R3693	Error history 10_Error time (Hour/Minute)
+R3694	Error history 10_Error time (Second/Day of the week)
+R3695	Error history 10_Error time (Millisecond)
+R3700	Error history 11_Error code
+R3701	Error history 11_Error time (Year)
+R3702	Error history 11_Error time (Month/Day)
+R3703	Error history 11_Error time (Hour/Minute)
+R3704	Error history 11_Error time (Second/Day of the week)
+R3705	Error history 11_Error time (Millisecond)
+R3710	Error history 12_Error code
+R3711	Error history 12_Error time (Year)
+R3712	Error history 12_Error time (Month/Day)
+R3713	Error history 12_Error time (Hour/Minute)
+R3714	Error history 12_Error time (Second/Day of the week)
+R3715	Error history 12_Error time (Millisecond)
+R3720	Error history 13_Error code
+R3721	Error history 13_Error time (Year)
+R3722	Error history 13_Error time (Month/Day)
+R3723	Error history 13_Error time (Hour/Minute)
+R3724	Error history 13_Error time (Second/Day of the week)
+R3725	Error history 13_Error time (Millisecond)
+R3730	Error history 14_Error code
+R3731	Error history 14_Error time (Year)
+R3732	Error history 14_Error time (Month/Day)
+R3733	Error history 14_Error time (Hour/Minute)
+R3734	Error history 14_Error time (Second/Day of the week)
+R3735	Error history 14_Error time (Millisecond)
+R3740	Error history 15_Error code
+R3741	Error history 15_Error time (Year)
+R3742	Error history 15_Error time (Month/Day)
+R3743	Error history 15_Error time (Hour/Minute)
+R3744	Error history 15_Error time (Second/Day of the week)
+R3745	Error history 15_Error time (Millisecond)
+R3750	Error history 16_Error code
+R3751	Error history 16_Error time (Year)
+R3752	Error history 16_Error time (Month/Day)
+R3753	Error history 16_Error time (Hour/Minute)
+R3754	Error history 16_Error time (Second/Day of the week)
+R3755	Error history 16_Error time (Millisecond)
+R3760	Alarm history 1_Alarm code
+R3761	Alarm history 1_Alarm time (Year)
+R3762	Alarm history 1_Alarm time (Month/Day)
+R3763	Alarm history 1_Alarm time (Hour/Minute)
+R3764	Alarm history 1_Alarm time (Second/Day of the week)
+R3765	Alarm history 1_Alarm time (Millisecond)
+R3770	Alarm history 2_Alarm code
+R3771	Alarm history 2_Alarm time (Year)
+R3772	Alarm history 2_Alarm time (Month/Day)
+R3773	Alarm history 2_Alarm time (Hour/Minute)
+R3774	Alarm history 2_Alarm time (Second/Day of the week)
+R3775	Alarm history 2_Alarm time (Millisecond)
+R3780	Alarm history 3_Alarm code
+R3781	Alarm history 3_Alarm time (Year)
+R3782	Alarm history 3_Alarm time (Month/Day)
+R3783	Alarm history 3_Alarm time (Hour/Minute)
+R3784	Alarm history 3_Alarm time (Second/Day of the week)
+R3785	Alarm history 3_Alarm time (Millisecond)
+R3790	Alarm history 4_Alarm code
+R3791	Alarm history 4_Alarm time (Year)
+R3792	Alarm history 4_Alarm time (Month/Day)
+R3793	Alarm history 4_Alarm time (Hour/Minute)
+R3794	Alarm history 4_Alarm time (Second/Day of the week)
+R3795	Alarm history 4_Alarm time (Millisecond)
+R3800	Alarm history 5_Alarm code
+R3801	Alarm history 5_Alarm time (Year)
+R3802	Alarm history 5_Alarm time (Month/Day)
+R3803	Alarm history 5_Alarm time (Hour/Minute)
+R3804	Alarm history 5_Alarm time (Second/Day of the week)
+R3805	Alarm history 5_Alarm time (Millisecond)
+R3810	Alarm history 6_Alarm code
+R3811	Alarm history 6_Alarm time (Year)
+R3812	Alarm history 6_Alarm time (Month/Day)
+R3813	Alarm history 6_Alarm time (Hour/Minute)
+R3814	Alarm history 6_Alarm time (Second/Day of the week)
+R3815	Alarm history 6_Alarm time (Millisecond)
+R3820	Alarm history 7_Alarm code
+R3821	Alarm history 7_Alarm time (Year)
+R3822	Alarm history 7_Alarm time (Month/Day)
+R3823	Alarm history 7_Alarm time (Hour/Minute)
+R3824	Alarm history 7_Alarm time (Second/Day of the week)
+R3825	Alarm history 7_Alarm time (Millisecond)
+R3830	Alarm history 8_Alarm code
+R3831	Alarm history 8_Alarm time (Year)
+R3832	Alarm history 8_Alarm time (Month/Day)
+R3833	Alarm history 8_Alarm time (Hour/Minute)
+R3834	Alarm history 8_Alarm time (Second/Day of the week)
+R3835	Alarm history 8_Alarm time (Millisecond)
+R3840	Alarm history 9_Alarm code
+R3841	Alarm history 9_Alarm time (Year)
+R3842	Alarm history 9_Alarm time (Month/Day)
+R3843	Alarm history 9_Alarm time (Hour/Minute)
+R3844	Alarm history 9_Alarm time (Second/Day of the week)
+R3845	Alarm history 9_Alarm time (Millisecond)
+R3850	Alarm history 10_Alarm code
+R3851	Alarm history 10_Alarm time (Year)
+R3852	Alarm history 10_Alarm time (Month/Day)
+R3853	Alarm history 10_Alarm time (Hour/Minute)
+R3854	Alarm history 10_Alarm time (Second/Day of the week)
+R3855	Alarm history 10_Alarm time (Millisecond)
+R3860	Alarm history 11_Alarm code
+R3861	Alarm history 11_Alarm time (Year)
+R3862	Alarm history 11_Alarm time (Month/Day)
+R3863	Alarm history 11_Alarm time (Hour/Minute)
+R3864	Alarm history 11_Alarm time (Second/Day of the week)
+R3865	Alarm history 11_Alarm time (Millisecond)
+R3870	Alarm history 12_Alarm code
+R3871	Alarm history 12_Alarm time (Year)
+R3872	Alarm history 12_Alarm time (Month/Day)
+R3873	Alarm history 12_Alarm time (Hour/Minute)
+R3874	Alarm history 12_Alarm time (Second/Day of the week)
+R3875	Alarm history 12_Alarm time (Millisecond)
+R3880	Alarm history 13_Alarm code
+R3881	Alarm history 13_Alarm time (Year)
+R3882	Alarm history 13_Alarm time (Month/Day)
+R3883	Alarm history 13_Alarm time (Hour/Minute)
+R3884	Alarm history 13_Alarm time (Second/Day of the week)
+R3885	Alarm history 13_Alarm time (Millisecond)
+R3890	Alarm history 14_Alarm code
+R3891	Alarm history 14_Alarm time (Year)
+R3892	Alarm history 14_Alarm time (Month/Day)
+R3893	Alarm history 14_Alarm time (Hour/Minute)
+R3894	Alarm history 14_Alarm time (Second/Day of the week)
+R3895	Alarm history 14_Alarm time (Millisecond)
+R3900	Alarm history 15_Alarm code
+R3901	Alarm history 15_Alarm time (Year)
+R3902	Alarm history 15_Alarm time (Month/Day)
+R3903	Alarm history 15_Alarm time (Hour/Minute)
+R3904	Alarm history 15_Alarm time (Second/Day of the week)
+R3905	Alarm history 15_Alarm time (Millisecond)
+R3910	Alarm history 16_Alarm code
+R3911	Alarm history 16_Alarm time (Year)
+R3912	Alarm history 16_Alarm time (Month/Day)
+R3913	Alarm history 16_Alarm time (Hour/Minute)
+R3914	Alarm history 16_Alarm time (Second/Day of the week)
+R3915	Alarm history 16_Alarm time (Millisecond)
+R4132	CH1 Offset/gain setting mode (Offset specification)
+R4133	CH1 Offset/gain setting mode (Gain specification)
+R4134	CH2 Offset/gain setting mode (Offset specification)
+R4135	CH2 Offset/gain setting mode (Gain specification)
+R4136	CH3 Offset/gain setting mode (Offset specification)
+R4137	CH3 Offset/gain setting mode (Gain specification)
+R4138	CH4 Offset/gain setting mode (Offset specification)
+R4139	CH4 Offset/gain setting mode (Gain specification)
+R4140	CH5 Offset/gain setting mode (Offset specification)
+R4141	CH5 Offset/gain setting mode (Gain specification)
+R4142	CH6 Offset/gain setting mode (Offset specification)
+R4143	CH6 Offset/gain setting mode (Gain specification)
+R4144	CH7 Offset/gain setting mode (Offset specification)
+R4145	CH7 Offset/gain setting mode (Gain specification)
+R4146	CH8 Offset/gain setting mode (Offset specification)
+R4147	CH8 Offset/gain setting mode (Gain specification)
+R10000	CH1 Logging data
+R20000	CH2 Logging data
+R30000	CH3 Logging data
+R40000	CH4 Logging data
+R50000	CH5 Logging data
+R60000	CH6 Logging data
+R70000	CH7 Logging data
+R80000	CH8 Logging data
+U?390	1.firma kodu
+U?391	1.Firma
+U?392	"
+U?393	"
+U?394	"
+U?395	"
+U?396	1.Firam Seri 1
+U?397	"
+U?398	"
+U?399	"
+U?3910	"
+U?3911	1.Firam Seri 2
+U?3912	"
+U?3913	"
+U?3914	"
+U?3915	"
+U?3916	1.Firam Seri 3
+U?3917	"
+U?3918	"
+U?3919	"
+U?3920	"
+U?3921	1.Firam Seri 4
+U?3922	"
+U?3923	"
+U?3924	"
+U?3925	"
+U?3926	1.Firam Seri 5
+U?3927	"
+U?3928	"
+U?3929	"
+U?3930	"
+U?3931	1.Firam Seri 6
+U?3932	"
+U?3933	"
+U?3934	"
+U?3935	"
+U?3936	1.Firam Seri 7
+U?3937	"
+U?3938	"
+U?3939	"
+U?3940	"
+U?3941	1.Firam Seri 8
+U?3942	"
+U?3943	"
+U?3944	"
+U?3945	"
+U?3946	1.Firam Seri 9
+U?3947	"
+U?3948	"
+U?3949	"
+U?3950	"
+U?3951	1.Firam Seri 10
+U?3952	"
+U?3953	"
+U?3954	"
+U?3955	"
+U?3956	1.Firam Seri 11
+U?3957	"
+U?3958	"
+U?3959	"
+U?3960	"
+U?3961	1.Firam Seri 12
+U?3962	"
+U?3963	"
+U?3964	"
+U?3965	"
+U?3966	1.Firam Seri 13
+U?3967	"
+U?3968	"
+U?3969	"
+U?3970	"
+U?3971	1.Firam Seri 14
+U?3972	"
+U?3973	"
+U?3974	"
+U?3975	"
+U?3976	1.Firam Seri 15
+U?3977	"
+U?3978	"
+U?3979	"
+U?3980	"
+U?3981	1.Firam Seri 16
+U?3982	"
+U?3983	"
+U?3984	"
+U?3985	"
+U?3986	1.Firam Seri 17
+U?3987	"
+U?3988	"
+U?3989	"
+U?3990	"
+U?3991	1.Firam Seri 18
+U?3992	"
+U?3993	"
+U?3994	"
+U?3995	"
+U?3996	1.Firam Seri 19
+U?3997	"
+U?3998	"
+U?3999	"
+U?39100	"
+U?39101	1.Firam Seri 20
+U?39102	"
+U?39103	"
+U?39104	"
+U?39105	"
+U?39106	2.firma kodu
+U?39107	2.Firma
+U?39212	3.firma kodu
+U?39318	4.firma kodu
+U?39424	5.firma kodu
+U?39530	6.firma kodu
+U?39636	7.firma kodu
+U?39742	8.firma kodu
+U?39848	9.firma kodu
+U?39954	10.firma kodu
+U?391500	1.pofil kodu
+U?391501	"
+U?391502	1.PRF.GENISLIK
+U?391503	1.KALIP FARKI
+U?391504	1.ERITME SURE
+U?391505	1.ISITMA SET
+U?391506	1.KAYNATMA SET
+U?391507	1.SICAKLIK SET
+U?396999	KUTU NO:
+U?3917500	MUSTERI 1
+U?3917501	"
+U?3917502	"
+U?3917503	"
+U?3917504	"
+U?3917505	MUSTERI 2
+U?3917506	"
+U?3917507	"
+U?3917508	"
+U?3917509	"
+U?3917510	MUSTERI 3
+U?3917511	"
+U?3917512	"
+U?3917513	"
+U?3917514	"
+U?3917515	MUSTERI 4
+U?3917516	"
+U?3917517	"
+U?3917518	"
+U?3917519	"
+U?3917520	MUSTERI 5
+U?3917521	"
+U?3917522	"
+U?3917523	"
+U?3917524	"
+U?3917525	MUSTERI 6
+U?3917526	"
+U?3917527	"
+U?3917528	"
+U?3917529	"
+U?3917530	MUSTERI 7
+U?3917531	"
+U?3917532	"
+U?3917533	"
+U?3917534	"
+U?3917535	MUSTERI 8
+U?3917536	"
+U?3917537	"
+U?3917538	"
+U?3917539	"
+U?3917540	MUSTERI 9
+U?3917541	"
+U?3917542	"
+U?3917543	"
+U?3917544	"
+U?3917545	MUSTERI 10
+U?3917546	"
+U?3917547	"
+U?3917548	"
+U?3917549	"
+U?3917550	MUSTERI 11
+U?3917551	"
+U?3917552	"
+U?3917553	"
+U?3917554	"
+U?3917555	MUSTERI 12
+U?3917556	"
+U?3917557	"
+U?3917558	"
+U?3917559	"
+U?3917560	MUSTERI 13
+U?3917561	"
+U?3917562	"
+U?3917563	"
+U?3917564	"
+U?3917565	MUSTERI 14
+U?3917566	"
+U?3917567	"
+U?3917568	"
+U?3917569	"
+U?3917570	MUSTERI 15
+U?3917571	"
+U?3917572	"
+U?3917573	"
+U?3917574	"
+U?3917575	MUSTERI 16
+U?3917576	"
+U?3917577	"
+U?3917578	"
+U?3917579	"
+U?3917580	MUSTERI 17
+U?3917581	"
+U?3917582	"
+U?3917583	"
+U?3917584	"
+U?3917585	MUSTERI 18
+U?3917586	"
+U?3917587	"
+U?3917588	"
+U?3917589	"
+U?3917590	MUSTERI 19
+U?3917591	"
+U?3917592	"
+U?3917593	"
+U?3917594	"
+U?3917595	MUSTERI 20
+U?3917596	"
+U?3917597	"
+U?3917598	"
+U?3917599	"
+U?3917600	EN 1
+U?3917601	BOY 1
+U?3917602	PROF_INDEX 1
+U?3917603	MUSTERI INDEX 1
+U?3917604	Araba Gozu Dolu/Bos 1
+U?3922000	Alternatif Profil Kodu 1
+T0	KORNA CALMA SURESI
+T1	DAYAMA CITALRI INDI KONTROL
+T2	Yan Tabla (6 bar) TIMER
+T3	TABLA SIKMA ZAMANI
+T4	ILAVE ERITME SURESI
+T5	ISITMA  ZAMANI
+T6	KAYNATMA ZAMANI
+T7	UST BSKI HAVA TAHLIYE OK
+T8	YAN TABLA GERI KONTROL
+T9	DAYAM CITALARI GERI KONTROL
+T10	DAYAMA CITASI KONTROL
+T11	ISITICI ILERI KONTROL
+T12	ISITICI GERI KONTROL
+T13	CONTA BASKI1-4 I-G GECIKME
+T14	CONTA BASKI 1-4 GR.Y-A GECIKME
+T15	KONVEYOR STOP SW KONTROL
+T16	CONTA BASKI GERI KONTROL
+T18	RESET TIMER
+T19	MANUEL  IPTAL
+T20	EKRAN HAZIR
+T21	X SIFIRLAMA YAPIYOR
+T22	Y1 SIFIRLAMA YAPIYOR
+T23	Y2 SIFIRLAMA YAPIYOR
+T24	BANT CALISMA GECIKME
+T25	BANT CALISMA SURE
+T26	SAAT AYAR 1
+T27	SAAT AYAR 2
+T28	SAAT AYAR 3
+T29	X STOP  KONTROL
+T30	Y1 STOP KONTROL
+T31	Y2 STOP KONTROL
+T32	YAGLAMA SURESI SAYAC
+T34	piston basma suresi
+T35	pıston bekleme suresi
+T36	on off  timer
+T37	on-off  timer
+T38	k.kaydirma geride
+T39	p.kaldirma ok
+T40	CONTA BASKI 1-4GERI GECIKME*2
+T41	CONTA BASKI1-4 ASADA BEKLE
+T42	CONTA BASKI 2-3 I-G GECIKME
+T43	CONTA BASKI 2-3 GR.Y-A GECIKME
+T44	CONTA BASKI 2-3 GERI GECIKME*2-2
+T45	CONTA BASKI 2-3 ASADA BEKLE
+T46	EKSTRA  ISITMA
+T54	X SIFIRLAMA YAPMIYOR
+T55	Y1 SIFIRLAMA YAPMIYOR
+T56	Y2 SIFIRLAMA YAPMIYOR
+T58	Ekran Eritme Sure Sayaci
+T59	KonvStop Sensoru Gomuyor Gecikme
+T60	1-4.Conta GRUP.Pis.  YUK.DEGIL
+T61	2-3.Conta GRUP.Pis.  YUK.DEGIL
+T62	1-4.Conta Baski Il-Ger. GER.DEGI
+T63	2-3.Conta Baski Il-Ger. GER.DEGI
+T64	1-4.Conta Baski.Pis.Yukarida DEG
+T65	2-3.Conta Baski.Pis.Yukarida DEG
+T66	EMNIYET OK GECIKME
+T68	Demo Pozisyonlama Gecikme
+T74	X Dik Kaynak Durmada Tork Limitle
+T75	Y1 Dik Kaynak Durmada Tork Limitle
+T76	Y2 Dik Kaynak Durmada Tork Limitle
+T80	X FREN  ACMA    GECIKME
+T81	Y1 FREN  ACMA    GECIKME
+T82	Y2 FREN  ACMA    GECIKME
+T83	X FREN  KAPAM   GECIKME
+T84	Y1 FREN KAPAM   GECIKME
+T85	Y2 FREN KAPAM   GECIKME
+T256	5 sn tim
+T257	1.kafa isitma sure
+T258	2.kafa isitma sure
+T259	3.kafa isitma sure
+T260	4.kafa isitma sure
+C0	X  KONT.
+C1	Y1 KONT.
+C2	Y2 KONT.
+C3	X HAREKET KONTROL
+C4	Y1 HAREKET KONTROL
+C5	Y2 HAREKET KONTROL
+C6	DONGU SAYICI
+C251	Y1 ENC  POZ
+C253	Y2 ENC  POZ
+?1010	X EKSENI POZISYONLA
+?1011	Y1 POZISYONLA
+?1012	Y2 POZISYONLA
+?1015	ILK TARAMADA
+?10110	MAN BITIS
+?10111	BOS PROGRAM BUL
+?10112	BOS PROGRAM BULUNDU
+?10113	PROGRAM NO SORGULA
+?10114	PROGRAM NO AYNI
+?10115	SECILEN ORIGRAMI AC/SIL
+?10116	KAYIT
+?10117	Seriyi 20 Artir
+?10118	Firmayi Cift Yap
+?10121	X POZ.  DUZELT
+?10122	Y1 POZ. DUZELT
+?10123	Y2 POZ. DUZELT
+?10124	Seril No Atama Bypass
+?10129	UNIVERSAL BARKOD OKUMA
+?10130	BARCOD  OKUMA
+?10131	KABAN   BARCOD  OKUMA
+?10133	Murat / Artikon BARKOD  OKUMA
+?10140	KUTUDA ARA
+?10142	2.KUTUDA ARA
+?10144	K1 MUSTERI ADI
+?10146	K2 MUSTERI ADI
+?10150	PROFIL  LISTESI DOLDUR
+?10151	SECILEN PROFIL  BILGILER
+?10160	Araba Goz Bilgileri

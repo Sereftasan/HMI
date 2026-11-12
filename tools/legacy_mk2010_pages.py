@@ -24,7 +24,7 @@ import os, sys
 sys.dont_write_bytecode = True
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import legacy_grid_pages as G
-from legacy_grid_pages import B, V, N, Lp, P, S, Row, Sec, Panel, page, Ax
+from legacy_grid_pages import B, V, N, Lp, P, S, Row, Sec, Panel, page, Ax, Cy
 
 G.setup('Kaban.Machines.MK2010', 'MK2010', 'tools/legacy_mk2010_pages.py', '11 November')
 
@@ -68,9 +68,94 @@ for number, cap, en, tr, back, fwd, pos, cal, calibrate in (
 
 # ---------------------------------------------------------------- MANUAL ----
 
-# a unit's sensors, a lamp a head (the old page's four small lamps: its hidden rows name them Head 1 ... 4)
-def heads(*addrs):
-    return [Lp(a) for a in addrs]
+# ------------------------------------------------------------ THE CYLINDERS ----
+#
+# 12 November - MK2010's pneumatic drawing (MK 2010, 29.06.2015: a sheet per head, the gasket presses on sheets 5 - 6),
+# its electrical drawing (V3, 13.03.2018) and its PLC program (MK2010 V6.4, 30.07.2026 - the device comments read
+# from the project: the sensors' and outputs' names, the alarm list M600 ... M635). Every valve is a valve of its own
+# (1/8 5/2 24 VDC, no valve island). A head's cylinders, a unit each - the old page's On / Off and its four heads'
+# lamps; the machine's commands are common to the heads, as the old page's, and so are its alarms (one bit for the
+# four heads' strips): every head's unit carries the bit, the alarm's help offers each one's page.
+#   supporting strip (Dayama Çıtası) P1  Y1.n single 5/2 (spring)       back X11 ... X14, forward (down) X31 ... X34
+#   side table (Yan Tabla) P52 / P2      Y2.n / Y3.n forward (3 / 6 bar), Y4.n back - single valves, both off: both
+#                                        sides open (as a 5/3 open centre); each cylinder's back sensor X15 ... / X21 ...
+#   heater plate (Isıtıcı Plaka) P3      Y5.n / Y6.n double 5/2 (the table stops P8 / P9 on it too); back X25 ...,
+#                                        forward X35 ...
+#   top presses (Üst Baskı) P4 / P5      Y7.n down, Y8.n up - single valves (as a 5/3 open centre); no sensor in the PLC
+#   profile lifting P6, emptying P7      Y10.n / Y11.n, Y12.n / Y13.n double 5/2; no sensor in the PLC
+#   sliding sash press (Sürme Kanat)     not on the 2015 pneumatic sheets - back X54 ... X57
+#   gasket presses                       heads 1 - 4 and 2 - 3 in pairs (the PLC's outputs Y40 ... Y45): forward / back
+#                                        back X60 / X61, the group pistons up X64 / X65, the press pistons up X62 / X63;
+#                                        the sheets' single valves per head do not match the PLC's pairs - not set
+# A toggle is two buttons - its Reset back, its Set forward (the coil on; a single coil's spring off); a unit not on the
+# drawings keeps the old On / Off beside its sensor.
+HEADX = {  # per head 1 - 4 (octal, as the old page writes them)
+    'strip_back': ['X0011', 'X0012', 'X0013', 'X0014'], 'strip_fwd': ['X0031', 'X0032', 'X0033', 'X0034'],
+    'table1_back': ['X0015', 'X0016', 'X0017', 'X0020'], 'table2_back': ['X0021', 'X0022', 'X0023', 'X0024'],
+    'heater_back': ['X0025', 'X0026', 'X0027', 'X0030'], 'heater_fwd': ['X0035', 'X0036', 'X0037', 'X0040'],
+    'sash_back': ['X0054', 'X0055', 'X0056', 'X0057']}
+
+def _t(key, en, tr):
+    G.TRANSLATIONS[key] = (en, tr)
+    return key
+
+def head_units(n):
+    i = n - 1
+    def key(part, en, tr): return _t('Unit_MK2010_H%d%s' % (n, part), 'Head %d %s' % (n, en), '%d. Kafa %s' % (n, tr))
+    return [
+        ('Supporting Strip', Cy(key('SupportingStrip', 'Supporting Strip', 'Dayama Çıtası'), a='M101!Rst', b='M101!Set', lampA=HEADX['strip_back'][i],
+            lampB=HEADX['strip_fwd'][i], valve='SingleSolenoid', feedback='TwoEndMagnetic', errA='M602', errB='M600', arrows='UpDown',
+            note='Y1.%d (5/2 spring): its coil takes it down - M101 set (the coil on), reset (off: the spring back) - back %s, forward %s; did not come back M602, '
+                 'did not go down M600 (the four heads\' one bit each).' % (n, HEADX['strip_back'][i], HEADX['strip_fwd'][i]))),
+        ('Side Table 1', Cy(key('SideTable1', 'Side Table 1', 'Yan Tabla 1'), a='M102!Rst', b='M102!Set', lampA=HEADX['table1_back'][i],
+            valve='ThreeWayOpenCenter', feedback='SingleMagnetic', errA='M601',
+            note='P52: Y2.%d / Y3.%d forward (3 / 6 bar), Y4.%d back - single valves, both off both sides open (as a 5/3 open centre); '
+                 'M102 set forward, reset back; back sensor %s; did not come back M601.' % (n, n, n, HEADX['table1_back'][i]))),
+        ('Side Table 2', Cy(key('SideTable2', 'Side Table 2', 'Yan Tabla 2'), a='M102!Rst', b='M102!Set', lampA=HEADX['table2_back'][i],
+            valve='ThreeWayOpenCenter', feedback='SingleMagnetic', errA='M601')),
+        ('Heater Plate', Cy(key('HeaterPlate', 'Heater Plate', 'Isıtıcı Plaka'), a='M104!Rst', b='M104!Set', lampA=HEADX['heater_back'][i],
+            lampB=HEADX['heater_fwd'][i], valve='DoubleSolenoid', feedback='TwoEndMagnetic', errA='M604', errB='M603',
+            note='P3 (and the table stops P8 / P9): Y5.%d / Y6.%d double 5/2; back %s, forward %s; back failed M604, forward M603.'
+                 % (n, n, HEADX['heater_back'][i], HEADX['heater_fwd'][i]))),
+        ('Top Press', Cy(key('TopPress', 'Top Press', 'Üst Baskı'), a='M103!Rst', b='M103!Set', valve='ThreeWayOpenCenter',
+            feedback='NoSensor', arrows='UpDown',
+            note='P4 / P5: Y7.%d down, Y8.%d up - single valves (as a 5/3 open centre); no sensor among the PLC\'s inputs.' % (n, n))),
+        ('Profile Lifting', Cy(key('ProfileLifting', 'Profile Lifting', 'Profil Kaldırma'), a='M105!Rst', b='M105!Set', valve='DoubleSolenoid',
+            feedback='NoSensor', arrows='DownUp',
+            note='P6: Y10.%d / Y11.%d double 5/2 - the sheet draws two sensors, the PLC has none.' % (n, n))),
+        ('Profile Emptying', Cy(key('ProfileEmptying', 'Profile Emptying', 'Profil Boşaltma'), a='M100!Rst', b='M100!Set',
+            valve='DoubleSolenoid', feedback='NoSensor',
+            note='P7: Y12.%d / Y13.%d double 5/2 - the old Profile Release (M100); no sensor in the PLC.' % (n, n))),
+        ('Sliding Sash Press', Cy(key('SlidingSashPress', 'Sliding Sash Press', 'Sürme Kanat Baskı'), a='M196!Alt', lampA=HEADX['sash_back'][i],
+            errA='M635', errB='M634',
+            note='Not on the 2015 pneumatic sheets (its valve and sensor type not set): M196 On / Off, back %s; did not press M634, '
+                 'did not go back M635.' % HEADX['sash_back'][i]))]
+
+def gasket_units(pair, idx):
+    k = pair.replace('-', '')
+    def key(part, en, tr): return _t('Unit_MK2010_G%s%s' % (k, part), 'Heads %s %s' % (pair, en), '%s. Kafa %s' % (pair, tr))
+    return [
+        ('Gasket Forward/Back', Cy(key('ForwardBack', 'Gasket Forward/Back', 'Conta İleri-Geri'), a='M109!Alt', lampA=['X0060', 'X0061'][idx],
+            errA=['M623', 'M624'][idx], note='The forward / back pistons of heads %s: back %s; not back %s.' % (pair, ['X0060', 'X0061'][idx], ['M623', 'M624'][idx]))),
+        ('Gasket Group', Cy(key('Group', 'Gasket Group', 'Conta Grubu'), a='M108!Alt', lampA=['X0064', 'X0065'][idx], errA=['M621', 'M622'][idx],
+            note='The group pistons of heads %s: up %s; not up %s.' % (pair, ['X0064', 'X0065'][idx], ['M621', 'M622'][idx]))),
+        ('Gasket Press', Cy(key('Press', 'Gasket Press', 'Conta Baskı'), a='M108!Alt', lampA=['X0062', 'X0063'][idx], errA=['M625', 'M626'][idx],
+            note='The press pistons of heads %s: up %s; not up %s.' % (pair, ['X0062', 'X0063'][idx], ['M625', 'M626'][idx])))]
+
+UNIT_W = 216
+def units_rows():
+    heads = [head_units(n) for n in (1, 2, 3, 4)]
+    rows = [Row(heads[0][r][0], *[heads[n][r][1] for n in range(4)], h=G.UNIT_ROW_H) for r in range(len(heads[0]))]
+    g14, g23 = gasket_units('1-4', 0), gasket_units('2-3', 1)
+    rows += [Row(g14[r][0], g14[r][1], g23[r][1], h=G.UNIT_ROW_H) for r in range(len(g14))]
+    return rows
+
+G.TRANSLATIONS.update({
+    'Supporting Strip': ('Supporting Strip', 'Dayama Çıtası'), 'Side Table 1': ('Side Table 1', 'Yan Tabla 1'),
+    'Side Table 2': ('Side Table 2', 'Yan Tabla 2'), 'Heater Plate': ('Heater Plate', 'Isıtıcı Plaka'),
+    'Profile Emptying': ('Profile Emptying', 'Profil Boşaltma'), 'Gasket Forward/Back': ('Gasket Forward/Back', 'Conta İleri-Geri'),
+    'Gasket Group': ('Gasket Group', 'Conta Grubu'), 'Gasket Press': ('Gasket Press', 'Conta Baskı'),
+    'Cylinders': ('Cylinders', 'Silindirler'), 'Unit': ('Unit', 'Ünite'), 'Heads 1-4 / 2-3': ('Heads 1-4 / 2-3', 'Kafa 1-4 / 2-3')})
 
 page('ManualControl', 'Manual', 'ucManuelControl', 'Manual Control',
     [Panel('Axes', [('Name', CAP), ('Back', ARW), ('Forward', ARW), ('Positions', POS), ('Limit', 70)], [
@@ -85,23 +170,51 @@ page('ManualControl', 'Manual', 'ucManuelControl', 'Manual Control',
         Row('Head Up', Lp('X0062'), Lp('X0063')),
         Row('Unit Back', Lp('X0060'), Lp('X0061')),
         Row('Lubrication', None, B('M1005/M1005', 'Lubrication'))]),
-     Panel('Units', [('Manual Control', 190), ('On/Off', 70)] + [('Head %d' % h, LMP + 8) for h in (1, 2, 3, 4)], [
-        Row('Supporting Plate', B('M101/M101!Alt', 'On/Off'), *heads('X0031', 'X0032', 'X0033', 'X0034')),
-        Row('', None, *heads('X0011', 'X0012', 'X0013', 'X0014'), key='Supporting Plate 2'),
-        Row('Back Plate', B('M102/M102!Alt', 'On/Off'), *heads('X0021', 'X0022', 'X0023', 'X0024')),
-        Row('', None, *heads('X0015', 'X0016', 'X0017', 'X0020'), key='Back Plate 2'),
-        Row('Top Press', B('M103/M103!Alt', 'On/Off')),
-        Row('Heater Plates', B('M104/M104!Alt', 'On/Off'), *heads('X0035', 'X0036', 'X0037', 'X0040')),
-        Row('', None, *heads('X0025', 'X0026', 'X0027', 'X0030'), key='Heater Plates 2'),
-        Row('Sliding Sash Press', B('M196/M196!Alt', 'On/Off'), *heads('X0054', 'X0055')),
-        Row('', None, *heads('X0056', 'X0057'), key='Sliding Sash Press 2'),
+     Panel('Others', [('Manual Control', 190), ('On/Off', 70)], [
         Row('Automatic On/Off', B('M34/M34!Alt', 'On/Off')),
-        Row('Profile Lifting', B('M105/M105!Alt', 'On/Off')),
-        Row('Profile Release', B('M100/M100!Alt', 'On/Off')),
-        Row('Conveyor', B('M106/M106!Alt', 'On/Off')),
-        Row('Gasket Pressing İ-G', B('M109/M109!Alt', 'On/Off'), *heads('X0060', 'X0061')),
-        Row('Gasket Pressing Y-A', B('M108/M108!Alt', 'On/Off'), *heads('X0064', 'X0065')),
-        Row('', None, *heads('X0062', 'X0063'), key='Gasket Pressing Y-A 2')])])
+        Row('Conveyor', B('M106/M106!Alt', 'On/Off'))])],
+    [Panel('Units', [('Unit', 150)] + [('Head %d' % h, UNIT_W) for h in (1, 2, 3, 4)], units_rows(), title='Cylinders')])
+
+# the old page's lamps of the cylinders are the units' now; their On / Off the units' buttons
+G.EXPECTED['ManualControl'] = {'missing': set(), 'extra': set()}
+
+# ------------------------------------------------------------ THE ALARMS ----
+# The PLC program's alarm bits (M600 ... M635, their comments in the program, Turkish as written there).
+G.ALARMS[:] = [(a, tag, en, tr) for a, tag, en, tr in [
+    ('M600', 'Supporting_strips_did_not_go_down', 'Supporting strips did not go down', 'Dayama çıtaları inmedi'),
+    ('M601', 'Side_tables_did_not_come_back', 'Side tables did not come back', 'Yan tablalar geri gelmedi'),
+    ('M602', 'Supporting_strips_did_not_come_back', 'Supporting strips did not come back', 'Dayama çıtaları geri gelmedi'),
+    ('M603', 'Heaters_did_not_go_forward', 'Heaters did not go forward', 'Isıtıcılar ileri gelmedi'),
+    ('M604', 'Heaters_did_not_come_back', 'Heaters did not come back', 'Isıtıcılar geri gelmedi'),
+    ('M605', 'CF_access_fault', 'CF card access fault', 'CF erişim arızası'),
+    ('M607', 'X_minus_limit', 'X - limit', 'X - limit'),
+    ('M608', 'Y1_minus_limit', 'Y1 - limit', 'Y1 - limit'),
+    ('M609', 'Y2_minus_limit', 'Y2 - limit', 'Y2 - limit'),
+    ('M610', 'X_plus_limit', 'X + limit', 'X + limit'),
+    ('M611', 'Y1_plus_limit', 'Y1 + limit', 'Y1 + limit'),
+    ('M612', 'Y2_plus_limit', 'Y2 + limit', 'Y2 + limit'),
+    ('M613', 'No_empty_recipe', 'No empty recipe', 'Boş reçete yok'),
+    ('M614', 'X_inverter_fault', 'X inverter fault', 'X inverter arızası'),
+    ('M615', 'Y1_inverter_fault', 'Y1 inverter fault', 'Y1 inverter arızası'),
+    ('M616', 'Y2_inverter_fault', 'Y2 inverter fault', 'Y2 inverter arızası'),
+    ('M617', 'Conveyors_fault', 'Conveyors fault', 'Konveyörler arızası'),
+    ('M618', 'Air_pressure_fault', 'Air pressure fault', 'Basınç arızası'),
+    ('M619', 'Lubrication_switch_fault', 'Lubrication switch fault', 'Yağlama switch arızası'),
+    ('M620', 'Oil_level_low', 'Oil level low', 'Yağ seviyesi düşük'),
+    ('M621', 'Heads_1_4_gasket_group_not_up', 'Heads 1-4 gasket group piston not up', '1-4. conta grup pistonu yukarıda değil'),
+    ('M622', 'Heads_2_3_gasket_group_not_up', 'Heads 2-3 gasket group piston not up', '2-3. conta grup pistonu yukarıda değil'),
+    ('M623', 'Heads_1_4_gasket_not_back', 'Heads 1-4 gasket forward-back piston not back', '1-4. conta baskı ileri-geri pistonu geride değil'),
+    ('M624', 'Heads_2_3_gasket_not_back', 'Heads 2-3 gasket forward-back piston not back', '2-3. conta baskı ileri-geri pistonu geride değil'),
+    ('M625', 'Heads_1_4_gasket_press_not_up', 'Heads 1-4 gasket press piston not up', '1-4. conta baskı pistonu yukarıda değil'),
+    ('M626', 'Heads_2_3_gasket_press_not_up', 'Heads 2-3 gasket press piston not up', '2-3. conta baskı pistonu yukarıda değil'),
+    ('M627', 'Cooling_inverter_fault', 'Cooling inverter fault', 'Soğutma inverter arızası'),
+    ('M628', 'Conveyor_switch_fault', 'Conveyor switch fault', 'Konveyör switch arızası'),
+    ('M629', 'Data_transfer_sequence_error', 'Data transfer sequence error', 'Veri aktarım sırası hatası'),
+    ('M631', 'X_axis_jammed', 'X axis jammed', 'X ekseni sıkıştı'),
+    ('M632', 'Y1_axis_jammed', 'Y1 axis jammed', 'Y1 ekseni sıkıştı'),
+    ('M633', 'Y2_axis_jammed', 'Y2 axis jammed', 'Y2 ekseni sıkıştı'),
+    ('M634', 'Sliding_sash_press_did_not_press', 'Sliding sash press did not press', 'Sürme kanat baskı basamadı'),
+    ('M635', 'Sliding_sash_press_did_not_go_back', 'Sliding sash press did not go back', 'Sürme kanat baskı geri gidemedi')]]
 
 page('ManualReference', 'Manual', 'ucReferance', 'References',
     [Panel('References', [('Name', CAP), ('Forward', ARW), ('Positions', POS), ('Limit', 70), ('Reference OK', 110)], [

@@ -84,11 +84,45 @@ class MKP {
               axes.Count + " " + string.Join(",", axes.Select(u => u.Unit.TitleTextKey)));
         var lim = Tree(man).OfType<LampHMI>().FirstOrDefault(l => l.Address == "X0006");
         Check("  its limit X0006 lit while the input is OFF (the old negative lamp)", lim != null && lim.OffColor.G > lim.OffColor.R && lim.OnColor.R == lim.OnColor.G);
-        Check("the units: Supporting Plate M101, Heater Plates M104, Conveyor M106 ... alternate", new[] { "M101", "M102", "M103", "M104", "M196", "M34", "M105", "M100", "M106", "M109", "M108" }
-              .All(a => Btn(man, a) != null && Bits(Btn(man, a)) == a + ":Alternate"));
-        var lamps = Tree(man).OfType<LampHMI>().Select(l => l.Address).ToList();
-        Check("  their sensors, head by head (X0031 ... X0034, X0011 ... X0014, X0035 ... X0040 ...)",
-              new[] { "X0031", "X0034", "X0011", "X0014", "X0035", "X0040", "X0025", "X0030", "X0054", "X0057", "X0064", "X0062" }.All(lamps.Contains));
+        // 12 November: MK2010's drawings and PLC program (its device comments) - a cylinder unit per head and cylinder
+        Console.WriteLine("--- Manual Control: the cylinders, head by head ---");
+        var cu = Tree(man).OfType<CylinderUnitHMI>().Where(u => u.Kind == UnitKind.Cylinder).ToList();
+        Func<string, CylinderUnitHMI> unit = k => cu.FirstOrDefault(u => u.TitleTextKey == k);
+        Check("38 units: per head the supporting strip, side tables 1 / 2, heater plate, top press, profile lifting and emptying, sliding sash press; "
+              + "the gasket presses of heads 1-4 and 2-3", cu.Count == 38 && new[] { 1, 2, 3, 4 }.All(h => cu.Count(u => u.TitleTextKey.StartsWith("Unit_MK2010_H" + h)) == 8),
+              cu.Count.ToString());
+        var ss = unit("Unit_MK2010_H3SupportingStrip");
+        Check("Head 3 Supporting Strip: Y1.3 single 5/2 - its coil down: M101 set, reset back (the spring); back X0013 / forward X0033; M602 / M600",
+              ss != null && ss.ValveType == CylinderValve.SingleSolenoid && ss.FeedbackType == CylinderFeedback.TwoEndMagnetic &&
+              ss.CommandAAddress == "M101" && ss.CommandAAction == BitActionType.RESET && ss.CommandBAddress == "M101" && ss.CommandBAction == BitActionType.SET &&
+              ss.Lamp1AAddress == "X0013" && ss.Lamp1BAddress == "X0033" && ss.ErrorAAddress == "M602" && ss.ErrorBAddress == "M600" && ss.TypeCheck == "OK",
+              ss == null ? "-" : ss.TypeCheck);
+        var hp = unit("Unit_MK2010_H4HeaterPlate");
+        Check("Head 4 Heater Plate: Y5.4 / Y6.4 double 5/2 - M104 reset back, set forward; back X0030, forward X0040; M604 / M603",
+              hp != null && hp.ValveType == CylinderValve.DoubleSolenoid && hp.CommandAAddress == "M104" && hp.CommandAAction == BitActionType.RESET &&
+              hp.CommandBAddress == "M104" && hp.CommandBAction == BitActionType.SET && hp.Lamp1AAddress == "X0030" && hp.Lamp1BAddress == "X0040" &&
+              hp.ErrorAAddress == "M604" && hp.ErrorBAddress == "M603" && hp.TypeCheck == "OK", hp == null ? "-" : hp.TypeCheck);
+        var t2 = unit("Unit_MK2010_H2SideTable2");
+        Check("Head 2 Side Table 2: single valves forward / back (as a 5/3 open centre), its back sensor X0022 (the old Back Plate's), M601",
+              t2 != null && t2.ValveType == CylinderValve.ThreeWayOpenCenter && t2.FeedbackType == CylinderFeedback.SingleMagnetic &&
+              t2.Lamp1AAddress == "X0022" && t2.ErrorAAddress == "M601" && t2.TypeCheck == "OK", t2 == null ? "-" : t2.TypeCheck);
+        var bad = cu.Where(u => u.TypeCheck != "OK").Select(u => u.TitleTextKey + ": " + u.TypeCheck).ToList();
+        Check("  every unit as its valve and feedback ask (the sliding sash press and the gasket presses: not on the drawings, not set)",
+              bad.Count == 0 && cu.Count(u => u.ValveType == CylinderValve.Unspecified) == 10, string.Join(" | ", bad.Take(3)));
+        var lamps = cu.SelectMany(u => new[] { u.Lamp1AAddress, u.Lamp1BAddress }).Where(a => !string.IsNullOrEmpty(a)).ToList();
+        Check("  the old page's sensors on them (X0011 ... X0040, X0054 ... X0057, X0060 ... X0065)",
+              new[] { "X0011", "X0034", "X0015", "X0020", "X0021", "X0024", "X0025", "X0040", "X0054", "X0057", "X0060", "X0061", "X0062", "X0065" }.All(lamps.Contains));
+        Check("  Automatic On/Off M34 and Conveyor M106 stay buttons (no cylinders)",
+              Bits(Btn(man, "M34")) == "M34:Alternate" && Bits(Btn(man, "M106")) == "M106:Alternate");
+        // one alarm bit, the four heads' units: the alarm's help offers each one's page
+        Kaban.UI.Helpers.AlarmHelpLinks.Harvest(man);
+        var docs = Kaban.UI.Helpers.AlarmHelpLinks.DocumentsFor(1, "M600", null).Where(d => d.StepByStep).ToList();
+        Check("the alarm M600 (the strips did not go down - one bit): its help a page for each head's strip",
+              docs.Count == 4 && docs.Select(d => d.Movement.Unit).Distinct().Count() == 4, string.Join(" | ", docs.Select(d => d.Title)));
+        var alarms = File.Exists("Alarms.json") ? File.ReadAllText("Alarms.json") : File.ReadAllText(Path.Combine("MK2010", "Alarms.json"));
+        var noAlarm = cu.SelectMany(u => new[] { u.ErrorAAddress, u.ErrorBAddress }).Where(a => !string.IsNullOrEmpty(a) && !alarms.Contains("\"" + a + "\"")).ToList();
+        Check("the alarm list from the PLC program (M600 ... M635, 34): every unit's bit on it", noAlarm.Count == 0 &&
+              System.Text.RegularExpressions.Regex.Matches(alarms, "PlcAddress").Count == 34, string.Join(",", noAlarm));
         var refs = new ManualReference();
         var all = Tree(refs).OfType<ButtonHMI>().FirstOrDefault(b => b.FallbackText == "Reference All");
         Check("References: X / Y1 / Y2 M30 / M31 / M32, Reference All SETs the three, OK lamps M22 / M20 / M21",

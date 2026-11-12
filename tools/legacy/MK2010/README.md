@@ -42,3 +42,40 @@ What the old pages show that looks wrong (kept as they are - to ask):
 * References: the Limit lamps M100 / M102 / M104 are Manual Control's Profile
   Release, Back Plate and Heater Plates.
 * Reports: the processed corners D162 / D164 were shown / 10.
+
+## 12 November: the drawings and the PLC program
+
+Sent by the user: the pneumatic drawing (MK 2010, 29.06.2015, 6 sheets), the
+electrical drawing (V3, 13.03.2018), the GOT's screen project
+(MK2010_V4.2_26.06.16_CiftliProfilKaldirma.GTX) and the PLC project
+(MK2010_V6.4_26.07.30_AgaogluBarkod.gx3).
+
+* The PLC project (.gx3) is a zip of SQLite files: its device comments (every
+  X / Y / M / D's name, written in the program) are in
+  PLC_V6.4_DeviceComments.txt here; its program is there as an instruction list
+  (read in part - enough to see the manual toggles M100 ... M109 drive the outputs).
+* The GOT's project (.GTX) is encrypted - it could not be read.
+
+From them: the alarm list (M600 ... M635, as the program names them) in
+Alarms.json; Manual Control's cylinders a unit per head (Supporting Strip, Side
+Table 1 / 2, Heater Plate, Top Press, Profile Lifting, Profile Emptying, Sliding
+Sash Press) and the gasket presses per pair of heads (1-4, 2-3) - see
+tools/legacy_mk2010_pages.py for each one's valve, sensors and alarm bits. An
+alarm bit is common to the four heads (the PLC has one per movement): every head's
+unit carries it and the alarm's help offers each one's page.
+
+To check:
+
+* The toggles' direction: M10x on = forward / down (the strips down, the side
+  tables and heaters forward, the top presses down, the profile lifted).
+* The side tables (old "Back Plate"): Y2 / Y3 forward at 3 / 6 bar, Y4 back -
+  single valves, taken as a 5/3 open centre; the top presses (Y7 down, Y8 up) too.
+* Not on the 2015 pneumatic sheets, so their valve and sensor types are not set:
+  the sliding sash press (back X54 ... X57) and the gasket presses (the sheets show
+  single valves per head, the program drives heads 1-4 and 2-3 in pairs).
+* The profile lifting and emptying cylinders: the sheets draw sensors, the PLC has
+  none among its inputs - taken as no sensor.
+* The axes are inverter-driven (X / Y1 / Y2 inverter faults X41 ... X43, M614 ...
+  M616): no servo help is given to their rows; their reference switches X6 / X7 /
+  X10 are the old page's Limit lamps.
+
