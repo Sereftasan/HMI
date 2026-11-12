@@ -6,6 +6,11 @@ Claude reads this file at the start of every batch, does the items, and moves ea
 ## To do
 
 ## Done
+- 12 November (MK2010's drawings, GOT and PLC projects):
+  - b21db44 - cylinder units: one alarm bit for several units (the help offers each one's page); a single coil's toggle as two buttons.
+  - 90f55ca - MK2010: the PLC project's device comments read (tools/legacy/MK2010/PLC_V6.4_DeviceComments.txt; the GOT project is
+    encrypted); Alarms.json M600 ... M635; Manual Control's cylinders a unit per head with their valves, sensors and alarm bits.
+    To check: tools/legacy/MK2010/README.md.
 - 12 November (MD3030's drawings, motion modules and alarm list: axis settings, axis units, cylinder units, valve islands):
   - b977b55 - Valve islands: CylinderValve IslandDoubleSolenoid / IslandSingleSolenoid / Island3WayClosedCenter / Island3WayOpenCenter
     (5 - 8), each acting as the valve it is; their step-by-step help follows the island (its network and supply, the coil's LED at its
