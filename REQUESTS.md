@@ -6,6 +6,15 @@ Claude reads this file at the start of every batch, does the items, and moves ea
 ## To do
 
 ## Done
+- 12 November (MD3030's drawings, motion modules and alarm list: axis settings, axis units, cylinder units, valve islands):
+  - b977b55 - Valve islands: CylinderValve IslandDoubleSolenoid / IslandSingleSolenoid / Island3WayClosedCenter / Island3WayOpenCenter
+    (5 - 8), each acting as the valve it is; their step-by-step help follows the island (its network and supply, the coil's LED at its
+    slot, its one air supply and silencers), EN / TR. c7665f9 - its test.
+  - 72e5299 - MD3020: Axis Calibration an axis settings row per servo (24, on their motion modules and axes as the image, reference
+    sensors, servo alarms); Manual Movement and General axis units; Manual > Cylinders (new) a cylinder unit per cylinder, head by head,
+    valve and feedback as the drawings, error bits as the alarm list; Alarms.json (108). To check: tools/legacy/MD3030/README.md.
+  - 008f5ec - MK2010: Calibration's X / Y1 / Y2 axis settings rows, Manual Control's axis units. Its motion modules, servo alarms and
+    cylinders wait for its drawings and alarm list.
 - 11 November (MK2010 from the old program's _MK2010; MD3020's main page):
   - feb32ac - tools: the old table pages' machinery shared (tools/legacy_grid_pages.py) for MD3020 and MK2010.
   - 6228df9 - MK2010, the old program's MK2010 pages kept as the specification (tools/legacy/MK2010, its README).
