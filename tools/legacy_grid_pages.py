@@ -18,6 +18,14 @@ program's own controls:
   P  a servo's load or torque (MeterHMI, %)
   S  an option bit (CheckBoxHMI)
   Spd a speed in % on a slider (SpeedOverrideHMI)
+  Ax  an axis on a manual page (AxisUnitHMI): its number on the axis settings page -
+      its buttons, position, reference sensor and error come from that row
+  Cy  a cylinder (CylinderUnitHMI): its two commands and lamps, its valve and feedback
+      as the drawings show them, its error bits from the alarm list (12 November: "change
+      ButtonHMI controls (and the related LampHMI controls as the feedback and LabelHMI
+      controls as the description text ...) to cylinder unit HMI controls ... so we can
+      create the alarm helpers accordingly")
+  AxisRows  the axis settings page's rows (AxisSettingHMI), one AR per axis, in sections
 
 A machine's tool (tools/legacy_md3030_pages.py, tools/legacy_mk2010_pages.py) calls
 setup() with its project and its old pages' folder, writes its PAGES with these
@@ -40,10 +48,13 @@ from legacy_fa2010_pages import cs, dnum, ident
 
 SCREENS = None          # the machine's Screens folder (setup)
 
+MACHINE = None          # the machine's project folder (setup)
+
 def setup(project, old, tool, made):
     """project: 'Kaban.Machines.MD3020'; old: the old pages' folder under tools/legacy ('MD3030')."""
-    global SCREENS
+    global SCREENS, MACHINE
     machine = os.path.join(L.ROOT, project)
+    MACHINE = machine
     SCREENS = os.path.join(machine, 'Screens')
     L.MANUAL = os.path.join(SCREENS, 'Manual')
     L.PARAMS = os.path.join(SCREENS, 'Parameters')
@@ -64,6 +75,14 @@ L.OWNED['ButtonHMI'] = L.OWNED['ButtonHMI'] | {'ConfirmationNeeded'}
 L.TYPES['SpeedOverrideHMI'] = 'Kaban.UI.Controls.SpeedOverrideHMI'
 L.OWNED['SpeedOverrideHMI'] = {'Name', 'PlcNumber', 'Address', 'BackColor', 'FallbackText', 'TranslationKey', 'Location', 'Size', 'LogAction', 'TabIndex'}
 L.OWNED['LabelHMI'] = {'Name', 'TranslationKey', 'Text', 'Font', 'ForeColor', 'TextAlign', 'Location', 'Size', 'BackColor'}
+L.OWNED['CylinderUnitHMI'] = L.OWNED['CylinderUnitHMI'] | {'Arrows', 'ButtonATextKey', 'ValveType', 'FeedbackType', 'ErrorAAddress', 'ErrorBAddress',
+                                                           'RequiredSecurity'}
+L.TYPES['AxisSettingHMI'] = 'Kaban.UI.Controls.AxisSettingHMI'
+L.OWNED['AxisSettingHMI'] = {'Name', 'PlcNumber', 'AxisNameKey', 'HMIAxisIndex', 'MotionNumber', 'MotionAxisIndex', 'CommandBackAddress',
+                             'CommandForwardAddress', 'PositionAddress', 'PositionDataType', 'MinLimitAddress', 'MaxLimitAddress',
+                             'CalibrationAddress', 'CalibrateAddress', 'ZDistanceAddress', 'ZDistanceDivisor', 'ZDistanceFullScale',
+                             'ReferenceSensorAddress', 'ReferenceSensorSide', 'ErrorAddress', 'Divisor', 'DecimalPlaces', 'Digits',
+                             'SettingDataType', 'Suffix', 'BackColor', 'Location', 'Size', 'TabIndex', 'RequiredSecurity'}
 
 # ============================================================================
 #  THE SPECIFICATION'S PIECES
@@ -98,9 +117,34 @@ def Spd(addr, span=1, note=None):
 def S(addr, span=1, note=None):
     return dict(kind='opt', addr=addr, span=span, note=note)
 
+def Ax(number, span=1, note=None):
+    """An axis on a manual page (AxisUnitHMI): its number (HMIAxisIndex) on the axis settings page, whose row gives it the rest."""
+    return dict(kind='axis', number=number, span=span, note=note)
+
+def Cy(title, a=None, b=None, lampA=None, lampB=None, valve=None, feedback=None, errA=None, errB=None, pos=None, arrows=None,
+       text=None, span=1, note=None):
+    """A cylinder (CylinderUnitHMI): title - its name's key; a / b - the left and right buttons' commands ('M201', momentary;
+    'M200!Alt'); lampA / lampB - the sensor on each; valve / feedback - CylinderValve / CylinderFeedback names; errA / errB -
+    the error bits of each movement; pos - a position shown under it ('SD4500 32 /100 2'); arrows - 'DownUp' (A down, B up),
+    'LeftRight' (the default); text - a one-button unit's caption."""
+    sa = L.side(a) if a else None
+    sb = L.side(b) if b else None
+    return dict(kind='cyl', title=title, a=sa, b=sb, lampA=lampA, lampB=lampB, valve=valve, feedback=feedback, errA=errA, errB=errB,
+                pos=L.value(pos) if pos else None, arrows=arrows, text=text, span=span, note=note)
+
 def Row(caption, *cells, **kw):
-    """A row: its caption, its cells (None: an empty one); key: the names' part when the caption is empty."""
-    return dict(kind='row', caption=caption, cells=list(cells), key=kw.get('key'))
+    """A row: its caption, its cells (None: an empty one); key: the names' part when the caption is empty; h: its height
+    (a unit's row: UNIT_ROW_H)."""
+    return dict(kind='row', caption=caption, cells=list(cells), key=kw.get('key'), h=kw.get('h'))
+
+def AR(axis):
+    """An axis settings row (AxisSettingHMI) - axis: a dict of its number, name key, motion module and axis, devices (AXIS_FIELDS)."""
+    return dict(kind='axrow', axis=axis)
+
+def AxisRows(key, rows, title=None):
+    """The axis settings page's rows: AR(...) and Sec(...) - the headings over them (AxisSettingHMI.AlignHeaders puts each
+    over its column), a row an axis."""
+    return dict(key=key, rows=rows, title=title, axisrows=True, cols=[('Axis', AXIS_ROW_W)])
 
 def Sec(title):
     return dict(kind='sec', title=title)
@@ -121,6 +165,23 @@ def page(cls, folder, old, caption, *bands, **kw):
 
 
 
+# THE MACHINE'S AXES (its tool fills it): HMI axis number -> dict(caption, key (its name's translation key), back, fwd, pos,
+# ref / side (its reference sensor and the button it is lit on), min, max, cal (the calibration value), calibrate, zdist,
+# err (its servo's error bit), motion (module, axis on it)). An Ax cell and an AR row are made from it.
+AXES = {}
+AXIS_FIELDS = [('CommandBackAddress', 'back'), ('CommandForwardAddress', 'fwd'), ('PositionAddress', 'pos'),
+               ('MinLimitAddress', 'min'), ('MaxLimitAddress', 'max'), ('CalibrationAddress', 'cal'), ('CalibrateAddress', 'calibrate'),
+               ('ZDistanceAddress', 'zdist'), ('ReferenceSensorAddress', 'ref'), ('ErrorAddress', 'err')]
+# the axis settings page's headings (AxisSettingHMI.Headings' keys and the old page's words)
+# (key, text, x, width - where the designer shows them; AlignHeaders moves each over its column)
+AXIS_HEADINGS = [('Axis', 'Axis', 0, 132), ('Position', 'Position', 208, 120), ('Min', 'Min', 484, 86), ('Max', 'Max', 574, 86),
+                 ('Calibration', 'Calibration', 664, 86), ('Cal', 'Cal', 754, 44), ('ZDistance', 'Z distance', 802, 76)]
+
+# THE MACHINE'S OWN TEXTS (its tool fills them): key -> (EN, TR), added to its Translations.csv when missing
+TRANSLATIONS = {}
+# ITS ALARM LIST (its tool fills it): [(address, tag, EN, TR)] -> Alarms.json and its texts (Alarm_<machine>.<tag>)
+ALARMS = []
+
 # What --check accepts as deliberate differences from the old designers: page class -> {'missing': .., 'extra': ..}
 EXPECTED = {}
 # devices an old page's code reads and writes (toggle switches): old page -> set
@@ -133,13 +194,21 @@ CODE_DEVICES = {}
 X0, Y0 = 16, 16
 ROW_H, CELL_H, SEC_H, COLHEAD_H, GAP_X, PANEL_GAP, BAND_GAP, TITLE_H = 40, 34, 30, 30, 6, 32, 24, 30
 
+UNIT_ROW_H, UNIT_H = 72, 64          # a row of units (AxisUnitHMI, CylinderUnitHMI) and the unit in it
+AXIS_ROW_W, AXIS_ROW_GAP = 1000, 4   # an axis settings row (it lays its columns out itself) and the space under it
+
+def row_h(r):
+    if r['kind'] == 'sec': return SEC_H
+    if r['kind'] == 'axrow': return 40 + AXIS_ROW_GAP
+    return r.get('h') or ROW_H
+
 def panel_width(p):
     return sum(w for _, w in p['cols']) + GAP_X * (len(p['cols']) - 1)
 
 def panel_height(p):
     h = (TITLE_H if p.get('title') else 0) + COLHEAD_H + 4 + (COLHEAD_H - 6 if grouped(p) else 0)
     for r in p['rows']:
-        h += SEC_H if r['kind'] == 'sec' else ROW_H
+        h += row_h(r)
     return h
 
 def grouped(p):
@@ -153,7 +222,8 @@ def col_x(p, x):
     return xs
 
 def cell_name(pg, p, sec, row, ci, kind):
-    pre = {'btn': 'btn', 'disp': 'disp', 'entry': 'num', 'lamp': 'lamp', 'meter': 'load', 'opt': 'opt', 'speed': 'spd'}[kind]
+    pre = {'btn': 'btn', 'disp': 'disp', 'entry': 'num', 'lamp': 'lamp', 'meter': 'load', 'opt': 'opt', 'speed': 'spd', 'axis': 'ax',
+           'cyl': 'unit'}[kind]
     parts = [p['key']] + ([sec] if sec else []) + [row, p['cols'][ci][0].replace('|', ' ')]
     return pre + '_'.join(ident(x) for x in parts if x)
 
@@ -178,11 +248,11 @@ class Grid:
             self.em.body.append('            this.%s.Font = new System.Drawing.Font("Segoe UI", 9.5F);' % n)
         return n
 
-    def cell(self, name, c, x, y, w, caption):
+    def cell(self, name, c, x, y, w, caption, h=ROW_H):
         em, k = self.em, c['kind']
         name = em.unique(name)
         old = self.old(name)
-        cy = y + (ROW_H - CELL_H) // 2
+        cy = y + (h - CELL_H) // 2
         if k == 'btn':
             em.decl(name, 'ButtonHMI')
             em.header(name, c.get('note'))
@@ -266,7 +336,7 @@ class Grid:
                 # lit while the bit is off: off grey when on, green when off
                 em.p(name, 'OnColor', 'System.Drawing.Color.FromArgb(((int)(((byte)(225)))), ((int)(((byte)(225)))), ((int)(((byte)(225)))))')
                 em.p(name, 'OffColor', 'System.Drawing.Color.FromArgb(((int)(((byte)(76)))), ((int)(((byte)(175)))), ((int)(((byte)(80)))))')
-            em.p(name, 'Location', 'new System.Drawing.Point(%d, %d)' % (x + (w - 30) // 2, y + (ROW_H - 30) // 2))
+            em.p(name, 'Location', 'new System.Drawing.Point(%d, %d)' % (x + (w - 30) // 2, y + (h - 30) // 2))
             em.p(name, 'Size', 'new System.Drawing.Size(30, 30)')
             em.kept(name, 'LampHMI', old)
             em.add(name)
@@ -282,7 +352,7 @@ class Grid:
             em.p(name, 'ScaleMinimum', '0D')
             em.p(name, 'ScaleMaximum', '100D')
             em.p(name, 'Signed', 'true')
-            em.p(name, 'Location', 'new System.Drawing.Point(%d, %d)' % (x, y + (ROW_H - 26) // 2))
+            em.p(name, 'Location', 'new System.Drawing.Point(%d, %d)' % (x, y + (h - 26) // 2))
             em.p(name, 'Size', 'new System.Drawing.Size(%d, 26)' % w)
             em.kept(name, 'MeterHMI', old)
             em.add(name)
@@ -301,13 +371,63 @@ class Grid:
             em.kept(name, 'SpeedOverrideHMI', old)
             em.security(name, 'SpeedOverrideHMI', old, self.level())
             em.add(name)
+        elif k == 'axis':
+            a = AXES.get(c['number'], {})
+            em.decl(name, 'AxisUnitHMI')
+            em.header(name, c.get('note') or '%s: axis %d of the axis settings page (its buttons, position, reference sensor and error come from there).'
+                      % (a.get('caption', caption), c['number']))
+            em.p(name, 'BackColor', 'System.Drawing.Color.White')
+            em.p(name, 'Name', cs(name))
+            em.p(name, 'AxisNumber', str(c['number']))
+            em.p(name, 'PlcNumber', '1')
+            em.p(name, 'Location', 'new System.Drawing.Point(%d, %d)' % (x, y + (h - UNIT_H) // 2))
+            em.p(name, 'Size', 'new System.Drawing.Size(%d, %d)' % (w, UNIT_H))
+            em.kept(name, 'AxisUnitHMI', old)
+            em.add(name)
+        elif k == 'cyl':
+            em.decl(name, 'CylinderUnitHMI')
+            em.header(name, c.get('note'))
+            em.p(name, 'BackColor', 'System.Drawing.Color.White')
+            em.p(name, 'Name', cs(name))
+            em.p(name, 'PlcNumber', '1')
+            em.p(name, 'TitleTextKey', cs(c['title']))
+            em.p(name, 'Location', 'new System.Drawing.Point(%d, %d)' % (x, y + (h - UNIT_H) // 2))
+            em.p(name, 'Size', 'new System.Drawing.Size(%d, %d)' % (w, UNIT_H))
+            em.p(name, 'LogAction', 'true')
+            if c.get('text'):
+                em.p(name, 'Arrows', 'Kaban.Core.Enums.ButtonArrowStyle.Custom')
+                em.p(name, 'ButtonATextKey', cs(c['text']))
+            elif c.get('arrows'):
+                em.p(name, 'Arrows', 'Kaban.Core.Enums.ButtonArrowStyle.' + c['arrows'])
+            for sd, k2, lamp in ((c['a'], 'A', c.get('lampA')), (c['b'], 'B', c.get('lampB'))):
+                if sd:
+                    em.p(name, 'Command%sAddress' % k2, cs(sd['cmd']))
+                    em.p(name, 'Command%sAction' % k2, 'Kaban.Core.Enums.BitActionType.' + L.ACTION[sd['action']])
+                if lamp:
+                    em.p(name, 'Lamp1%sAddress' % k2, cs(lamp))
+            v = c.get('pos')
+            if v:
+                em.p(name, 'PositionAddress', cs(v['addr']))
+                em.p(name, 'PositionDataType', 'Kaban.Core.Enums.DataTypeEnum.Bin_%d' % v['bits'])
+                em.p(name, 'PositionDivisor', dnum(v['div']))
+                em.p(name, 'PositionDecimalPlaces', str(v['dec']))
+                em.p(name, 'PositionDigits', '7')
+                em.p(name, 'PositionSuffix', '"mm"')
+                em.p(name, 'PositionUnitType', 'Kaban.Core.Enums.UnitType.Length')
+            if c.get('valve'): em.p(name, 'ValveType', 'Kaban.UI.Controls.CylinderValve.' + c['valve'])
+            if c.get('feedback'): em.p(name, 'FeedbackType', 'Kaban.UI.Controls.CylinderFeedback.' + c['feedback'])
+            if c.get('errA'): em.p(name, 'ErrorAAddress', cs(c['errA']))
+            if c.get('errB'): em.p(name, 'ErrorBAddress', cs(c['errB']))
+            em.kept(name, 'CylinderUnitHMI', old)
+            em.p(name, 'RequiredSecurity', 'Kaban.Core.Enums.SecurityLevel.' + self.level())
+            em.add(name)
         elif k == 'opt':
             em.decl(name, 'CheckBoxHMI')
             em.header(name + '  (%s)' % c['addr'], c.get('note'))
             em.p(name, 'Name', cs(name))
             em.p(name, 'PlcNumber', '1')
             em.p(name, 'Address', cs(c['addr']))
-            em.p(name, 'Location', 'new System.Drawing.Point(%d, %d)' % (x + (w - 44) // 2, y + (ROW_H - 32) // 2))
+            em.p(name, 'Location', 'new System.Drawing.Point(%d, %d)' % (x + (w - 44) // 2, y + (h - 32) // 2))
             em.p(name, 'Size', 'new System.Drawing.Size(44, 32)')
             em.p(name, 'LogAction', 'true')
             em.kept(name, 'CheckBoxHMI', old)
@@ -315,8 +435,69 @@ class Grid:
             em.add(name)
         return name
 
+    def axis_rows(self, p, x, y):
+        """The axis settings rows: the headings (Tag AxisHeading:<column> - AlignHeaders puts each over its column), the sections, the rows."""
+        em = self.em
+        if p.get('title'):
+            self.label(p['title'], x, y, AXIS_ROW_W, TITLE_H - 4)
+            y += TITLE_H
+        for key, text, hx, hw in AXIS_HEADINGS:
+            # plain labels, as every axis settings page's: AlignHeaders moves, names and translates them (Col_...)
+            n = em.unique('lblHead' + key)
+            em.decl(n, 'Label')
+            em.header(n)
+            em.p(n, 'Font', 'new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold)')
+            em.p(n, 'ForeColor', 'System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))))')
+            em.p(n, 'Location', 'new System.Drawing.Point(%d, %d)' % (x + hx, y))
+            em.p(n, 'Name', cs(n))
+            em.p(n, 'Size', 'new System.Drawing.Size(%d, 18)' % hw)
+            em.p(n, 'Tag', cs('AxisHeading:' + key))
+            em.p(n, 'Text', cs(text))
+            em.p(n, 'TextAlign', 'System.Drawing.ContentAlignment.MiddleCenter')
+            em.add(n)
+        y += COLHEAD_H + 4
+        for r in p['rows']:
+            if r['kind'] == 'sec':
+                self.label(r['title'], x, y + 2, AXIS_ROW_W, SEC_H - 4)
+                y += SEC_H
+                continue
+            a = r['axis']
+            name = em.unique('ax' + ident(a['caption']))
+            old = self.old(name)
+            em.decl(name, 'AxisSettingHMI')
+            em.header(name, a.get('note'))
+            em.p(name, 'AxisNameKey', cs(a['key']))
+            em.p(name, 'BackColor', 'System.Drawing.Color.White')
+            for prop, f in AXIS_FIELDS:
+                if a.get(f): em.p(name, prop, cs(a[f]))
+            if a.get('side'): em.p(name, 'ReferenceSensorSide', 'Kaban.UI.Controls.AxisReferenceSide.' + a['side'])
+            em.p(name, 'DecimalPlaces', '2')
+            em.p(name, 'Digits', '8')
+            em.p(name, 'Divisor', '10000D')
+            em.p(name, 'HMIAxisIndex', str(a['number']))
+            em.p(name, 'Location', 'new System.Drawing.Point(%d, %d)' % (x, y))
+            if a.get('motion'):
+                em.p(name, 'MotionAxisIndex', str(a['motion'][1]))
+                em.p(name, 'MotionNumber', str(a['motion'][0]))
+            em.p(name, 'Name', cs(name))
+            em.p(name, 'PlcNumber', '1')
+            em.p(name, 'PositionDataType', 'Kaban.Core.Enums.DataTypeEnum.Bin_32')
+            em.p(name, 'SettingDataType', 'Kaban.Core.Enums.DataTypeEnum.Bin_32')
+            em.p(name, 'Size', 'new System.Drawing.Size(%d, 40)' % AXIS_ROW_W)
+            em.p(name, 'Suffix', '"mm"')
+            if a.get('zdist'):
+                em.p(name, 'ZDistanceDivisor', '1D')
+                em.p(name, 'ZDistanceFullScale', '100D')
+            em.kept(name, 'AxisSettingHMI', old)
+            em.p(name, 'RequiredSecurity', 'Kaban.Core.Enums.SecurityLevel.' + self.level())
+            em.add(name)
+            y += 40 + AXIS_ROW_GAP
+        return y
+
     def panel(self, p, x, y):
         pg = self.pg
+        if p.get('axisrows'):
+            return self.axis_rows(p, x, y)
         if p.get('title'):
             self.label(p['title'], x, y, panel_width(p), TITLE_H - 4)
             y += TITLE_H
@@ -343,8 +524,9 @@ class Grid:
                 self.label(sec, x, y + 2, panel_width(p), SEC_H - 4)
                 y += SEC_H
                 continue
+            rh = row_h(r)
             if r['caption']:
-                self.label(r['caption'], xs[0], y, p['cols'][0][1], ROW_H, bold=False, prefix='cap')
+                self.label(r['caption'], xs[0], y, p['cols'][0][1], rh, bold=False, prefix='cap')
             ci = 1
             for c in r['cells']:
                 if c is None:
@@ -353,10 +535,10 @@ class Grid:
                 span = c.get('span', 1)
                 w = sum(p['cols'][j][1] for j in range(ci, ci + span)) + GAP_X * (span - 1)
                 caption = ' '.join(t for t in (p.get('title'), sec, r['caption'], p['cols'][ci][0].replace('|', ' ')) if t)
-                self.cell(cell_name(pg, p, sec, r.get('key') or r['caption'], ci, c['kind']), c, xs[ci], y, w, caption)
+                self.cell(cell_name(pg, p, sec, r.get('key') or r['caption'], ci, c['kind']), c, xs[ci], y, w, caption, rh)
                 ci += span
             assert ci <= len(p['cols']), (pg['cls'], p['key'], r['caption'])
-            y += ROW_H
+            y += rh
         return y
 
     def write(self):
@@ -408,6 +590,12 @@ def cells(pg):
                 if r['kind'] == 'row':
                     for c in r['cells']:
                         if c: yield c
+                elif r['kind'] == 'axrow':
+                    yield dict(kind='axrow', axis=r['axis'])
+
+# an axis's devices an old page showed: its jog buttons, position, limits, calibration, reference sensor and its distance
+# (its error bit and motion module come from the alarm list and the drawings, not from an old page)
+AXIS_SHOWN = ('back', 'fwd', 'pos', 'min', 'max', 'cal', 'calibrate', 'zdist', 'ref')
 
 def spec_devices(pg):
     out = set()
@@ -418,6 +606,15 @@ def spec_devices(pg):
             out |= {cmd for cmd, _ in c.get('more', ())}
             if c['lamp']: out.add(c['lamp'])
         elif k in ('disp', 'entry'): out.add(c['val']['addr'])
+        elif k == 'axis':
+            a = AXES[c['number']]
+            out |= {a[f] for f in ('back', 'fwd', 'pos', 'ref') if a.get(f)}
+        elif k == 'axrow':
+            out |= {c['axis'][f] for f in AXIS_SHOWN if c['axis'].get(f)}
+        elif k == 'cyl':
+            out |= {sd['cmd'] for sd in (c['a'], c['b']) if sd}
+            out |= {l for l in (c.get('lampA'), c.get('lampB')) if l}
+            if c.get('pos'): out.add(c['pos']['addr'])
         else: out.add(c['addr'])
     return out
 
@@ -462,6 +659,12 @@ def actions(pg):
             if c['t'] in ('KabanButton', 'KabanLambButton') and c.get('Device'):
                 old.setdefault(c['Device'], set()).add(OLD_ACTION.get(c.get('ButtonType', 'Momentary').split('.')[-1], '?'))
     for c in cells(pg):
+        if c['kind'] == 'cyl':
+            for sd in (c['a'], c['b']):
+                seen = old.get(sd['cmd']) if sd else None
+                if seen and sd['action'] not in seen:
+                    problems.append('%s: %s, the old page %s' % (sd['cmd'], sd['action'], sorted(seen)))
+            continue
         if c['kind'] != 'btn': continue
         # (a button of several commands - Reference All, Calibrate All - was the old page's code: its first one only)
         seen = old.get(c['cmd'])
@@ -474,6 +677,9 @@ def check():
     for pg in PAGES:
         o = set().union(*[old_devices(x) for x in pg['old']])
         s = spec_devices(pg)
+        # pages made from one old page (12 November: Manual Movement's cylinders on a page of their own) - together
+        for other in PAGES:
+            if other is not pg and set(other['old']) == set(pg['old']): s |= spec_devices(other)
         exp = EXPECTED.get(pg['cls'], {})
         missing = o - s - exp.get('missing', set())
         extra = s - o - exp.get('extra', set())
@@ -486,9 +692,41 @@ def check():
 # ============================================================================
 #  MAIN
 # ============================================================================
+def write_texts():
+    """The machine's own texts and its alarm list's: rows added to its Translations.csv when the key is not there yet (the
+    rows there are kept as they are - a text changed by hand stays); ALARMS written to its Alarms.json."""
+    import json
+    path = os.path.join(MACHINE, 'Translations.csv')
+    raw = open(path, 'rb').read()
+    nl = '\r\n' if b'\r\n' in raw else '\n'
+    text = raw.decode('utf-8-sig')
+    have = {l.split(';', 1)[0] for l in text.splitlines()}
+    name = os.path.basename(MACHINE).split('.')[-1]
+    rows = dict(TRANSLATIONS)
+    for addr, tag, en, tr in ALARMS:
+        rows['Alarm_%s.%s' % (name, tag)] = (en, tr)
+    add = [k for k in rows if k not in have]
+    for k in add:
+        en, tr = rows[k]
+        assert ';' not in en + tr, k
+    if add:
+        if not text.endswith(('\n', '\r')): text += nl
+        text += ''.join('%s;%s;%s;;;;%s' % (k, rows[k][0], rows[k][1], nl) for k in add)
+        open(path, 'wb').write(b'\xef\xbb\xbf' + text.encode('utf-8'))
+        print('Translations.csv: %d rows added' % len(add))
+    if ALARMS:
+        items = [dict(PlcAddress=addr, TagCode=tag, Severity='Fault', PlcNumber=1) for addr, tag, en, tr in ALARMS]
+        data = json.dumps(items, ensure_ascii=False, indent=2).replace('\n', nl) + nl
+        apath = os.path.join(MACHINE, 'Alarms.json')
+        araw = open(apath, 'rb').read()
+        bom = araw.startswith(b'\xef\xbb\xbf')
+        open(apath, 'wb').write((b'\xef\xbb\xbf' if bom else b'') + data.encode('utf-8'))
+        print('Alarms.json: %d alarms' % len(items))
+
 def main():
     if '--check' in sys.argv:
         sys.exit(1 if check() else 0)
+    write_texts()
     for pg in PAGES:
         folder = os.path.join(SCREENS, pg['folder'])
         os.makedirs(folder, exist_ok=True)

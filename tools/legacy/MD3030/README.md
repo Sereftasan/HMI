@@ -49,3 +49,40 @@ What the old pages show that looks wrong (kept as they are - to ask):
 * Offset: Head 4's actual encoders SD4680 / SD4710 were read as 16-bit, the
   other heads' as 32-bit - all 32-bit here. Axis Calibration's Encoder Channel
   (D2816 ...) had two decimals of a whole number - shown whole.
+
+## 12 November: axis settings, axis units, cylinder units
+
+From the drawings the user sent (electrical MD 3030 24.07.2024, pneumatic 30.06.2025),
+the motion modules' image and the alarm list (M600 ... M762):
+
+* Axis Calibration is an axis settings row per servo (24: the body's X1 X2 Y1 Y2,
+  each head's X Y1 Y2 Z RZ), each on its motion module and axis as the image shows
+  them, its reference sensor (the head's island input W0.0 ...) and its servo alarm
+  (Z / X / Y1 / Y2 M605 ... M620, the body M621 M622 M623 M752, RZ M757 ... M760).
+  The old page's Encoder column, the body's Encoder Channel / Offset and the heads'
+  X2 rows are kept under them as they were.
+* Manual Movement and General: an axis unit per servo (each takes its row).
+* Manual > Cylinders (new): the old Manual Movement's units and piston sensors as a
+  cylinder unit per cylinder, head by head - valve island valves (Y1 ... Y14), the
+  sensors of sheets 16 - 18, the alarm list's bits. The old head "X2" is the
+  stripping knife (Y13, back W1.6 / forward W1.7); the old "Z1 / Z2" are Z and the
+  resistance Z.
+* Alarms.json: the 108 alarms the units and axes own (servo, cylinder movements,
+  conveyor, oil tank) - texts written from the list, EN / TR.
+
+To check (tools/legacy_md3030_pages.py, one table each):
+
+* The alarm list's order for a pair of cylinders (front clamps, small presses, top
+  presses) is read as left, right, head after head (M660 Head 1 left, M661 Head 1
+  right ...); each pair's first block is read as the first movement named in the
+  list (top press down M660..., up M668...; front clamp clamp M717..., open
+  M725...; small vertical up M733..., down M741...; small horizontal forward
+  M676..., back M684...; support plate down M636..., up M640...; stripping knife
+  forward M628..., back M632...).
+* Y7 / Y8 are taken as the small VERTICAL presses and Y9 / Y10 as the horizontal
+  ones (sheet 28's island slots); the pneumatic sheet names both pairs "Dikey".
+* Profile emptying: no sensor on the drawings (the old page's W1.A ... W7.A lamps
+  are left out). The conveyor's lift is not on the drawings: its buttons stay.
+* The single-coil cylinders (support plate, stripping knife, profile emptying) keep
+  the old page's two buttons each: their type check says one coil drives one
+  movement - which button is the coil's?

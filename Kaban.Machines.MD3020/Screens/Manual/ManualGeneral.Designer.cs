@@ -27,58 +27,39 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             Kaban.Core.Models.BitAction bitAction1 = new Kaban.Core.Models.BitAction();
             Kaban.Core.Models.BitAction bitAction2 = new Kaban.Core.Models.BitAction();
             Kaban.Core.Models.BitAction bitAction3 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction4 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction5 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction6 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction7 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction8 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction9 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction10 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction11 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction12 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction13 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction14 = new Kaban.Core.Models.BitAction();
             this.hdName = new Kaban.UI.Controls.LabelHMI();
             this.hdAxis = new Kaban.UI.Controls.LabelHMI();
-            this.hdBack = new Kaban.UI.Controls.LabelHMI();
             this.hdOverload = new Kaban.UI.Controls.LabelHMI();
-            this.hdForward = new Kaban.UI.Controls.LabelHMI();
-            this.hdActual_Position = new Kaban.UI.Controls.LabelHMI();
             this.lblServo_Engine_X = new Kaban.UI.Controls.LabelHMI();
             this.capX1 = new Kaban.UI.Controls.LabelHMI();
-            this.btnGeneral_Servo_Engine_X_X1_Back = new Kaban.UI.Controls.ButtonHMI();
+            this.axGeneral_Servo_Engine_X_X1_Axis = new Kaban.UI.Controls.AxisUnitHMI();
             this.loadGeneral_Servo_Engine_X_X1_Overload = new Kaban.UI.Controls.MeterHMI();
-            this.btnGeneral_Servo_Engine_X_X1_Forward = new Kaban.UI.Controls.ButtonHMI();
-            this.dispGeneral_Servo_Engine_X_X1_Actual_Position = new Kaban.UI.Controls.NumericDisplayHMI();
             this.capX2 = new Kaban.UI.Controls.LabelHMI();
-            this.btnGeneral_Servo_Engine_X_X2_Back = new Kaban.UI.Controls.ButtonHMI();
+            this.axGeneral_Servo_Engine_X_X2_Axis = new Kaban.UI.Controls.AxisUnitHMI();
             this.loadGeneral_Servo_Engine_X_X2_Overload = new Kaban.UI.Controls.MeterHMI();
-            this.btnGeneral_Servo_Engine_X_X2_Forward = new Kaban.UI.Controls.ButtonHMI();
-            this.dispGeneral_Servo_Engine_X_X2_Actual_Position = new Kaban.UI.Controls.NumericDisplayHMI();
             this.capBrake_Cylinder = new Kaban.UI.Controls.LabelHMI();
-            this.btnGeneral_Servo_Engine_X_Brake_Cylinder_Back = new Kaban.UI.Controls.ButtonHMI();
+            this.unitGeneral_Servo_Engine_X_Brake_Cylinder_Axis = new Kaban.UI.Controls.CylinderUnitHMI();
             this.lblServo_Engine_Y1 = new Kaban.UI.Controls.LabelHMI();
             this.capY1 = new Kaban.UI.Controls.LabelHMI();
-            this.btnGeneral_Servo_Engine_Y1_Y1_Back = new Kaban.UI.Controls.ButtonHMI();
+            this.axGeneral_Servo_Engine_Y1_Y1_Axis = new Kaban.UI.Controls.AxisUnitHMI();
             this.loadGeneral_Servo_Engine_Y1_Y1_Overload = new Kaban.UI.Controls.MeterHMI();
-            this.btnGeneral_Servo_Engine_Y1_Y1_Forward = new Kaban.UI.Controls.ButtonHMI();
-            this.dispGeneral_Servo_Engine_Y1_Y1_Actual_Position = new Kaban.UI.Controls.NumericDisplayHMI();
             this.capBrake_Cylinder_2 = new Kaban.UI.Controls.LabelHMI();
-            this.btnGeneral_Servo_Engine_Y1_Brake_Cylinder_Back = new Kaban.UI.Controls.ButtonHMI();
+            this.unitGeneral_Servo_Engine_Y1_Brake_Cylinder_Axis = new Kaban.UI.Controls.CylinderUnitHMI();
             this.lblServo_Engine_Y2 = new Kaban.UI.Controls.LabelHMI();
             this.capY2 = new Kaban.UI.Controls.LabelHMI();
-            this.btnGeneral_Servo_Engine_Y2_Y2_Back = new Kaban.UI.Controls.ButtonHMI();
+            this.axGeneral_Servo_Engine_Y2_Y2_Axis = new Kaban.UI.Controls.AxisUnitHMI();
             this.loadGeneral_Servo_Engine_Y2_Y2_Overload = new Kaban.UI.Controls.MeterHMI();
-            this.btnGeneral_Servo_Engine_Y2_Y2_Forward = new Kaban.UI.Controls.ButtonHMI();
-            this.dispGeneral_Servo_Engine_Y2_Y2_Actual_Position = new Kaban.UI.Controls.NumericDisplayHMI();
             this.capBrake_Cylinder_3 = new Kaban.UI.Controls.LabelHMI();
-            this.btnGeneral_Servo_Engine_Y2_Brake_Cylinder_Back = new Kaban.UI.Controls.ButtonHMI();
+            this.unitGeneral_Servo_Engine_Y2_Brake_Cylinder_Axis = new Kaban.UI.Controls.CylinderUnitHMI();
             this.lblConveyor = new Kaban.UI.Controls.LabelHMI();
+            this.hdName_2 = new Kaban.UI.Controls.LabelHMI();
+            this.hdBack = new Kaban.UI.Controls.LabelHMI();
+            this.hdForward = new Kaban.UI.Controls.LabelHMI();
             this.capConveyor_Up_Down = new Kaban.UI.Controls.LabelHMI();
-            this.btnGeneral_Conveyor_Conveyor_Up_Down_Back = new Kaban.UI.Controls.ButtonHMI();
-            this.btnGeneral_Conveyor_Conveyor_Up_Down_Forward = new Kaban.UI.Controls.ButtonHMI();
+            this.btnConveyor_Conveyor_Up_Down_Back = new Kaban.UI.Controls.ButtonHMI();
+            this.btnConveyor_Conveyor_Up_Down_Forward = new Kaban.UI.Controls.ButtonHMI();
             this.capConveyor_Run = new Kaban.UI.Controls.LabelHMI();
-            this.btnGeneral_Conveyor_Conveyor_Run_Back = new Kaban.UI.Controls.ButtonHMI();
+            this.btnConveyor_Conveyor_Run_Back = new Kaban.UI.Controls.ButtonHMI();
             this.SuspendLayout();
             // 
             // hdName
@@ -101,18 +82,7 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.hdAxis.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
             this.hdAxis.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.hdAxis.Location = new System.Drawing.Point(172, 16);
-            this.hdAxis.Size = new System.Drawing.Size(46, 26);
-            // 
-            // hdBack
-            // 
-            this.hdBack.Name = "hdBack";
-            this.hdBack.TranslationKey = "Back";
-            this.hdBack.Text = "Back";
-            this.hdBack.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
-            this.hdBack.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
-            this.hdBack.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.hdBack.Location = new System.Drawing.Point(224, 16);
-            this.hdBack.Size = new System.Drawing.Size(72, 26);
+            this.hdAxis.Size = new System.Drawing.Size(300, 26);
             // 
             // hdOverload
             // 
@@ -122,30 +92,8 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.hdOverload.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
             this.hdOverload.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
             this.hdOverload.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.hdOverload.Location = new System.Drawing.Point(302, 16);
+            this.hdOverload.Location = new System.Drawing.Point(478, 16);
             this.hdOverload.Size = new System.Drawing.Size(120, 26);
-            // 
-            // hdForward
-            // 
-            this.hdForward.Name = "hdForward";
-            this.hdForward.TranslationKey = "Forward";
-            this.hdForward.Text = "Forward";
-            this.hdForward.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
-            this.hdForward.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
-            this.hdForward.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.hdForward.Location = new System.Drawing.Point(428, 16);
-            this.hdForward.Size = new System.Drawing.Size(72, 26);
-            // 
-            // hdActual_Position
-            // 
-            this.hdActual_Position.Name = "hdActual_Position";
-            this.hdActual_Position.TranslationKey = "Actual Position";
-            this.hdActual_Position.Text = "Actual Position";
-            this.hdActual_Position.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
-            this.hdActual_Position.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
-            this.hdActual_Position.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.hdActual_Position.Location = new System.Drawing.Point(506, 16);
-            this.hdActual_Position.Size = new System.Drawing.Size(104, 26);
             // 
             // lblServo_Engine_X
             // 
@@ -156,7 +104,7 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.lblServo_Engine_X.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
             this.lblServo_Engine_X.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.lblServo_Engine_X.Location = new System.Drawing.Point(16, 52);
-            this.lblServo_Engine_X.Size = new System.Drawing.Size(594, 26);
+            this.lblServo_Engine_X.Size = new System.Drawing.Size(582, 26);
             // 
             // capX1
             // 
@@ -167,21 +115,18 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.capX1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
             this.capX1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.capX1.Location = new System.Drawing.Point(16, 80);
-            this.capX1.Size = new System.Drawing.Size(150, 40);
+            this.capX1.Size = new System.Drawing.Size(150, 72);
             this.capX1.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             // 
-            // btnGeneral_Servo_Engine_X_X1_Back
+            // axGeneral_Servo_Engine_X_X1_Axis
             // 
-            this.btnGeneral_Servo_Engine_X_X1_Back.Name = "btnGeneral_Servo_Engine_X_X1_Back";
-            this.btnGeneral_Servo_Engine_X_X1_Back.PlcNumber = 1;
-            this.btnGeneral_Servo_Engine_X_X1_Back.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.Left;
-            bitAction1.Address = "M41";
-            bitAction1.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnGeneral_Servo_Engine_X_X1_Back.BitActions.Add(bitAction1);
-            this.btnGeneral_Servo_Engine_X_X1_Back.Location = new System.Drawing.Point(224, 83);
-            this.btnGeneral_Servo_Engine_X_X1_Back.Size = new System.Drawing.Size(72, 34);
-            this.btnGeneral_Servo_Engine_X_X1_Back.LogAction = true;
-            this.btnGeneral_Servo_Engine_X_X1_Back.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            // Body X1: axis 1 of the axis settings page (its buttons, position, reference sensor and error come from there).
+            this.axGeneral_Servo_Engine_X_X1_Axis.BackColor = System.Drawing.Color.White;
+            this.axGeneral_Servo_Engine_X_X1_Axis.Name = "axGeneral_Servo_Engine_X_X1_Axis";
+            this.axGeneral_Servo_Engine_X_X1_Axis.AxisNumber = 1;
+            this.axGeneral_Servo_Engine_X_X1_Axis.PlcNumber = 1;
+            this.axGeneral_Servo_Engine_X_X1_Axis.Location = new System.Drawing.Point(172, 84);
+            this.axGeneral_Servo_Engine_X_X1_Axis.Size = new System.Drawing.Size(300, 64);
             // 
             // loadGeneral_Servo_Engine_X_X1_Overload
             // 
@@ -195,35 +140,8 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.loadGeneral_Servo_Engine_X_X1_Overload.ScaleMinimum = 0D;
             this.loadGeneral_Servo_Engine_X_X1_Overload.ScaleMaximum = 100D;
             this.loadGeneral_Servo_Engine_X_X1_Overload.Signed = true;
-            this.loadGeneral_Servo_Engine_X_X1_Overload.Location = new System.Drawing.Point(302, 87);
+            this.loadGeneral_Servo_Engine_X_X1_Overload.Location = new System.Drawing.Point(478, 103);
             this.loadGeneral_Servo_Engine_X_X1_Overload.Size = new System.Drawing.Size(120, 26);
-            // 
-            // btnGeneral_Servo_Engine_X_X1_Forward
-            // 
-            this.btnGeneral_Servo_Engine_X_X1_Forward.Name = "btnGeneral_Servo_Engine_X_X1_Forward";
-            this.btnGeneral_Servo_Engine_X_X1_Forward.PlcNumber = 1;
-            this.btnGeneral_Servo_Engine_X_X1_Forward.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.Right;
-            bitAction2.Address = "M22";
-            bitAction2.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnGeneral_Servo_Engine_X_X1_Forward.BitActions.Add(bitAction2);
-            this.btnGeneral_Servo_Engine_X_X1_Forward.Location = new System.Drawing.Point(428, 83);
-            this.btnGeneral_Servo_Engine_X_X1_Forward.Size = new System.Drawing.Size(72, 34);
-            this.btnGeneral_Servo_Engine_X_X1_Forward.LogAction = true;
-            this.btnGeneral_Servo_Engine_X_X1_Forward.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // dispGeneral_Servo_Engine_X_X1_Actual_Position
-            // 
-            // Servo Engine X X1 Actual Position: D400, raw / 10000.
-            this.dispGeneral_Servo_Engine_X_X1_Actual_Position.Name = "dispGeneral_Servo_Engine_X_X1_Actual_Position";
-            this.dispGeneral_Servo_Engine_X_X1_Actual_Position.PlcNumber = 1;
-            this.dispGeneral_Servo_Engine_X_X1_Actual_Position.Address = "D400";
-            this.dispGeneral_Servo_Engine_X_X1_Actual_Position.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.dispGeneral_Servo_Engine_X_X1_Actual_Position.Divisor = 10000D;
-            this.dispGeneral_Servo_Engine_X_X1_Actual_Position.DecimalPlaces = 2;
-            this.dispGeneral_Servo_Engine_X_X1_Actual_Position.Digits = 7;
-            this.dispGeneral_Servo_Engine_X_X1_Actual_Position.Suffix = "mm";
-            this.dispGeneral_Servo_Engine_X_X1_Actual_Position.Location = new System.Drawing.Point(506, 83);
-            this.dispGeneral_Servo_Engine_X_X1_Actual_Position.Size = new System.Drawing.Size(104, 34);
             // 
             // capX2
             // 
@@ -233,22 +151,19 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.capX2.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.capX2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
             this.capX2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capX2.Location = new System.Drawing.Point(16, 120);
-            this.capX2.Size = new System.Drawing.Size(150, 40);
+            this.capX2.Location = new System.Drawing.Point(16, 152);
+            this.capX2.Size = new System.Drawing.Size(150, 72);
             this.capX2.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             // 
-            // btnGeneral_Servo_Engine_X_X2_Back
+            // axGeneral_Servo_Engine_X_X2_Axis
             // 
-            this.btnGeneral_Servo_Engine_X_X2_Back.Name = "btnGeneral_Servo_Engine_X_X2_Back";
-            this.btnGeneral_Servo_Engine_X_X2_Back.PlcNumber = 1;
-            this.btnGeneral_Servo_Engine_X_X2_Back.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.Left;
-            bitAction3.Address = "M41";
-            bitAction3.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnGeneral_Servo_Engine_X_X2_Back.BitActions.Add(bitAction3);
-            this.btnGeneral_Servo_Engine_X_X2_Back.Location = new System.Drawing.Point(224, 123);
-            this.btnGeneral_Servo_Engine_X_X2_Back.Size = new System.Drawing.Size(72, 34);
-            this.btnGeneral_Servo_Engine_X_X2_Back.LogAction = true;
-            this.btnGeneral_Servo_Engine_X_X2_Back.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            // Body X2: axis 2 of the axis settings page (its buttons, position, reference sensor and error come from there).
+            this.axGeneral_Servo_Engine_X_X2_Axis.BackColor = System.Drawing.Color.White;
+            this.axGeneral_Servo_Engine_X_X2_Axis.Name = "axGeneral_Servo_Engine_X_X2_Axis";
+            this.axGeneral_Servo_Engine_X_X2_Axis.AxisNumber = 2;
+            this.axGeneral_Servo_Engine_X_X2_Axis.PlcNumber = 1;
+            this.axGeneral_Servo_Engine_X_X2_Axis.Location = new System.Drawing.Point(172, 156);
+            this.axGeneral_Servo_Engine_X_X2_Axis.Size = new System.Drawing.Size(300, 64);
             // 
             // loadGeneral_Servo_Engine_X_X2_Overload
             // 
@@ -262,35 +177,8 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.loadGeneral_Servo_Engine_X_X2_Overload.ScaleMinimum = 0D;
             this.loadGeneral_Servo_Engine_X_X2_Overload.ScaleMaximum = 100D;
             this.loadGeneral_Servo_Engine_X_X2_Overload.Signed = true;
-            this.loadGeneral_Servo_Engine_X_X2_Overload.Location = new System.Drawing.Point(302, 127);
+            this.loadGeneral_Servo_Engine_X_X2_Overload.Location = new System.Drawing.Point(478, 175);
             this.loadGeneral_Servo_Engine_X_X2_Overload.Size = new System.Drawing.Size(120, 26);
-            // 
-            // btnGeneral_Servo_Engine_X_X2_Forward
-            // 
-            this.btnGeneral_Servo_Engine_X_X2_Forward.Name = "btnGeneral_Servo_Engine_X_X2_Forward";
-            this.btnGeneral_Servo_Engine_X_X2_Forward.PlcNumber = 1;
-            this.btnGeneral_Servo_Engine_X_X2_Forward.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.Right;
-            bitAction4.Address = "M22";
-            bitAction4.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnGeneral_Servo_Engine_X_X2_Forward.BitActions.Add(bitAction4);
-            this.btnGeneral_Servo_Engine_X_X2_Forward.Location = new System.Drawing.Point(428, 123);
-            this.btnGeneral_Servo_Engine_X_X2_Forward.Size = new System.Drawing.Size(72, 34);
-            this.btnGeneral_Servo_Engine_X_X2_Forward.LogAction = true;
-            this.btnGeneral_Servo_Engine_X_X2_Forward.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // dispGeneral_Servo_Engine_X_X2_Actual_Position
-            // 
-            // Servo Engine X X2 Actual Position: D320, raw / 10000.
-            this.dispGeneral_Servo_Engine_X_X2_Actual_Position.Name = "dispGeneral_Servo_Engine_X_X2_Actual_Position";
-            this.dispGeneral_Servo_Engine_X_X2_Actual_Position.PlcNumber = 1;
-            this.dispGeneral_Servo_Engine_X_X2_Actual_Position.Address = "D320";
-            this.dispGeneral_Servo_Engine_X_X2_Actual_Position.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.dispGeneral_Servo_Engine_X_X2_Actual_Position.Divisor = 10000D;
-            this.dispGeneral_Servo_Engine_X_X2_Actual_Position.DecimalPlaces = 2;
-            this.dispGeneral_Servo_Engine_X_X2_Actual_Position.Digits = 7;
-            this.dispGeneral_Servo_Engine_X_X2_Actual_Position.Suffix = "mm";
-            this.dispGeneral_Servo_Engine_X_X2_Actual_Position.Location = new System.Drawing.Point(506, 123);
-            this.dispGeneral_Servo_Engine_X_X2_Actual_Position.Size = new System.Drawing.Size(104, 34);
             // 
             // capBrake_Cylinder
             // 
@@ -300,23 +188,27 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.capBrake_Cylinder.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.capBrake_Cylinder.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
             this.capBrake_Cylinder.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capBrake_Cylinder.Location = new System.Drawing.Point(16, 160);
-            this.capBrake_Cylinder.Size = new System.Drawing.Size(150, 40);
+            this.capBrake_Cylinder.Location = new System.Drawing.Point(16, 224);
+            this.capBrake_Cylinder.Size = new System.Drawing.Size(150, 72);
             this.capBrake_Cylinder.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             // 
-            // btnGeneral_Servo_Engine_X_Brake_Cylinder_Back
+            // unitGeneral_Servo_Engine_X_Brake_Cylinder_Axis
             // 
-            this.btnGeneral_Servo_Engine_X_Brake_Cylinder_Back.Name = "btnGeneral_Servo_Engine_X_Brake_Cylinder_Back";
-            this.btnGeneral_Servo_Engine_X_Brake_Cylinder_Back.PlcNumber = 1;
-            this.btnGeneral_Servo_Engine_X_Brake_Cylinder_Back.TranslationKey = "Brake Cylinder";
-            this.btnGeneral_Servo_Engine_X_Brake_Cylinder_Back.FallbackText = "Brake Cylinder";
-            bitAction5.Address = "M260";
-            bitAction5.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnGeneral_Servo_Engine_X_Brake_Cylinder_Back.BitActions.Add(bitAction5);
-            this.btnGeneral_Servo_Engine_X_Brake_Cylinder_Back.Location = new System.Drawing.Point(224, 163);
-            this.btnGeneral_Servo_Engine_X_Brake_Cylinder_Back.Size = new System.Drawing.Size(276, 34);
-            this.btnGeneral_Servo_Engine_X_Brake_Cylinder_Back.LogAction = true;
-            this.btnGeneral_Servo_Engine_X_Brake_Cylinder_Back.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            // Y14.4, two cylinders (5/2 spring, on the island) - no sensor on the drawings.
+            this.unitGeneral_Servo_Engine_X_Brake_Cylinder_Axis.BackColor = System.Drawing.Color.White;
+            this.unitGeneral_Servo_Engine_X_Brake_Cylinder_Axis.Name = "unitGeneral_Servo_Engine_X_Brake_Cylinder_Axis";
+            this.unitGeneral_Servo_Engine_X_Brake_Cylinder_Axis.PlcNumber = 1;
+            this.unitGeneral_Servo_Engine_X_Brake_Cylinder_Axis.TitleTextKey = "Unit_MD3020_BrakeX";
+            this.unitGeneral_Servo_Engine_X_Brake_Cylinder_Axis.Location = new System.Drawing.Point(172, 228);
+            this.unitGeneral_Servo_Engine_X_Brake_Cylinder_Axis.Size = new System.Drawing.Size(300, 64);
+            this.unitGeneral_Servo_Engine_X_Brake_Cylinder_Axis.LogAction = true;
+            this.unitGeneral_Servo_Engine_X_Brake_Cylinder_Axis.Arrows = Kaban.Core.Enums.ButtonArrowStyle.Custom;
+            this.unitGeneral_Servo_Engine_X_Brake_Cylinder_Axis.ButtonATextKey = "Brake Cylinder";
+            this.unitGeneral_Servo_Engine_X_Brake_Cylinder_Axis.CommandAAddress = "M260";
+            this.unitGeneral_Servo_Engine_X_Brake_Cylinder_Axis.CommandAAction = Kaban.Core.Enums.BitActionType.Momentary;
+            this.unitGeneral_Servo_Engine_X_Brake_Cylinder_Axis.ValveType = Kaban.UI.Controls.CylinderValve.IslandSingleSolenoid;
+            this.unitGeneral_Servo_Engine_X_Brake_Cylinder_Axis.FeedbackType = Kaban.UI.Controls.CylinderFeedback.NoSensor;
+            this.unitGeneral_Servo_Engine_X_Brake_Cylinder_Axis.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
             // 
             // lblServo_Engine_Y1
             // 
@@ -326,8 +218,8 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.lblServo_Engine_Y1.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.lblServo_Engine_Y1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
             this.lblServo_Engine_Y1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.lblServo_Engine_Y1.Location = new System.Drawing.Point(16, 202);
-            this.lblServo_Engine_Y1.Size = new System.Drawing.Size(594, 26);
+            this.lblServo_Engine_Y1.Location = new System.Drawing.Point(16, 298);
+            this.lblServo_Engine_Y1.Size = new System.Drawing.Size(582, 26);
             // 
             // capY1
             // 
@@ -337,22 +229,19 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.capY1.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.capY1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
             this.capY1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capY1.Location = new System.Drawing.Point(16, 230);
-            this.capY1.Size = new System.Drawing.Size(150, 40);
+            this.capY1.Location = new System.Drawing.Point(16, 326);
+            this.capY1.Size = new System.Drawing.Size(150, 72);
             this.capY1.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             // 
-            // btnGeneral_Servo_Engine_Y1_Y1_Back
+            // axGeneral_Servo_Engine_Y1_Y1_Axis
             // 
-            this.btnGeneral_Servo_Engine_Y1_Y1_Back.Name = "btnGeneral_Servo_Engine_Y1_Y1_Back";
-            this.btnGeneral_Servo_Engine_Y1_Y1_Back.PlcNumber = 1;
-            this.btnGeneral_Servo_Engine_Y1_Y1_Back.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.Left;
-            bitAction6.Address = "M42";
-            bitAction6.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnGeneral_Servo_Engine_Y1_Y1_Back.BitActions.Add(bitAction6);
-            this.btnGeneral_Servo_Engine_Y1_Y1_Back.Location = new System.Drawing.Point(224, 233);
-            this.btnGeneral_Servo_Engine_Y1_Y1_Back.Size = new System.Drawing.Size(72, 34);
-            this.btnGeneral_Servo_Engine_Y1_Y1_Back.LogAction = true;
-            this.btnGeneral_Servo_Engine_Y1_Y1_Back.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            // Body Y1: axis 3 of the axis settings page (its buttons, position, reference sensor and error come from there).
+            this.axGeneral_Servo_Engine_Y1_Y1_Axis.BackColor = System.Drawing.Color.White;
+            this.axGeneral_Servo_Engine_Y1_Y1_Axis.Name = "axGeneral_Servo_Engine_Y1_Y1_Axis";
+            this.axGeneral_Servo_Engine_Y1_Y1_Axis.AxisNumber = 3;
+            this.axGeneral_Servo_Engine_Y1_Y1_Axis.PlcNumber = 1;
+            this.axGeneral_Servo_Engine_Y1_Y1_Axis.Location = new System.Drawing.Point(172, 330);
+            this.axGeneral_Servo_Engine_Y1_Y1_Axis.Size = new System.Drawing.Size(300, 64);
             // 
             // loadGeneral_Servo_Engine_Y1_Y1_Overload
             // 
@@ -366,35 +255,8 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.loadGeneral_Servo_Engine_Y1_Y1_Overload.ScaleMinimum = 0D;
             this.loadGeneral_Servo_Engine_Y1_Y1_Overload.ScaleMaximum = 100D;
             this.loadGeneral_Servo_Engine_Y1_Y1_Overload.Signed = true;
-            this.loadGeneral_Servo_Engine_Y1_Y1_Overload.Location = new System.Drawing.Point(302, 237);
+            this.loadGeneral_Servo_Engine_Y1_Y1_Overload.Location = new System.Drawing.Point(478, 349);
             this.loadGeneral_Servo_Engine_Y1_Y1_Overload.Size = new System.Drawing.Size(120, 26);
-            // 
-            // btnGeneral_Servo_Engine_Y1_Y1_Forward
-            // 
-            this.btnGeneral_Servo_Engine_Y1_Y1_Forward.Name = "btnGeneral_Servo_Engine_Y1_Y1_Forward";
-            this.btnGeneral_Servo_Engine_Y1_Y1_Forward.PlcNumber = 1;
-            this.btnGeneral_Servo_Engine_Y1_Y1_Forward.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.Right;
-            bitAction7.Address = "M23";
-            bitAction7.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnGeneral_Servo_Engine_Y1_Y1_Forward.BitActions.Add(bitAction7);
-            this.btnGeneral_Servo_Engine_Y1_Y1_Forward.Location = new System.Drawing.Point(428, 233);
-            this.btnGeneral_Servo_Engine_Y1_Y1_Forward.Size = new System.Drawing.Size(72, 34);
-            this.btnGeneral_Servo_Engine_Y1_Y1_Forward.LogAction = true;
-            this.btnGeneral_Servo_Engine_Y1_Y1_Forward.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // dispGeneral_Servo_Engine_Y1_Y1_Actual_Position
-            // 
-            // Servo Engine Y1 Y1 Actual Position: D340, raw / 10000.
-            this.dispGeneral_Servo_Engine_Y1_Y1_Actual_Position.Name = "dispGeneral_Servo_Engine_Y1_Y1_Actual_Position";
-            this.dispGeneral_Servo_Engine_Y1_Y1_Actual_Position.PlcNumber = 1;
-            this.dispGeneral_Servo_Engine_Y1_Y1_Actual_Position.Address = "D340";
-            this.dispGeneral_Servo_Engine_Y1_Y1_Actual_Position.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.dispGeneral_Servo_Engine_Y1_Y1_Actual_Position.Divisor = 10000D;
-            this.dispGeneral_Servo_Engine_Y1_Y1_Actual_Position.DecimalPlaces = 2;
-            this.dispGeneral_Servo_Engine_Y1_Y1_Actual_Position.Digits = 7;
-            this.dispGeneral_Servo_Engine_Y1_Y1_Actual_Position.Suffix = "mm";
-            this.dispGeneral_Servo_Engine_Y1_Y1_Actual_Position.Location = new System.Drawing.Point(506, 233);
-            this.dispGeneral_Servo_Engine_Y1_Y1_Actual_Position.Size = new System.Drawing.Size(104, 34);
             // 
             // capBrake_Cylinder_2
             // 
@@ -404,23 +266,27 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.capBrake_Cylinder_2.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.capBrake_Cylinder_2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
             this.capBrake_Cylinder_2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capBrake_Cylinder_2.Location = new System.Drawing.Point(16, 270);
-            this.capBrake_Cylinder_2.Size = new System.Drawing.Size(150, 40);
+            this.capBrake_Cylinder_2.Location = new System.Drawing.Point(16, 398);
+            this.capBrake_Cylinder_2.Size = new System.Drawing.Size(150, 72);
             this.capBrake_Cylinder_2.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             // 
-            // btnGeneral_Servo_Engine_Y1_Brake_Cylinder_Back
+            // unitGeneral_Servo_Engine_Y1_Brake_Cylinder_Axis
             // 
-            this.btnGeneral_Servo_Engine_Y1_Brake_Cylinder_Back.Name = "btnGeneral_Servo_Engine_Y1_Brake_Cylinder_Back";
-            this.btnGeneral_Servo_Engine_Y1_Brake_Cylinder_Back.PlcNumber = 1;
-            this.btnGeneral_Servo_Engine_Y1_Brake_Cylinder_Back.TranslationKey = "Brake Cylinder";
-            this.btnGeneral_Servo_Engine_Y1_Brake_Cylinder_Back.FallbackText = "Brake Cylinder";
-            bitAction8.Address = "M261";
-            bitAction8.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnGeneral_Servo_Engine_Y1_Brake_Cylinder_Back.BitActions.Add(bitAction8);
-            this.btnGeneral_Servo_Engine_Y1_Brake_Cylinder_Back.Location = new System.Drawing.Point(224, 273);
-            this.btnGeneral_Servo_Engine_Y1_Brake_Cylinder_Back.Size = new System.Drawing.Size(276, 34);
-            this.btnGeneral_Servo_Engine_Y1_Brake_Cylinder_Back.LogAction = true;
-            this.btnGeneral_Servo_Engine_Y1_Brake_Cylinder_Back.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            // Y14.2 (5/2 spring, on the island) - no sensor on the drawings.
+            this.unitGeneral_Servo_Engine_Y1_Brake_Cylinder_Axis.BackColor = System.Drawing.Color.White;
+            this.unitGeneral_Servo_Engine_Y1_Brake_Cylinder_Axis.Name = "unitGeneral_Servo_Engine_Y1_Brake_Cylinder_Axis";
+            this.unitGeneral_Servo_Engine_Y1_Brake_Cylinder_Axis.PlcNumber = 1;
+            this.unitGeneral_Servo_Engine_Y1_Brake_Cylinder_Axis.TitleTextKey = "Unit_MD3020_BrakeY1";
+            this.unitGeneral_Servo_Engine_Y1_Brake_Cylinder_Axis.Location = new System.Drawing.Point(172, 402);
+            this.unitGeneral_Servo_Engine_Y1_Brake_Cylinder_Axis.Size = new System.Drawing.Size(300, 64);
+            this.unitGeneral_Servo_Engine_Y1_Brake_Cylinder_Axis.LogAction = true;
+            this.unitGeneral_Servo_Engine_Y1_Brake_Cylinder_Axis.Arrows = Kaban.Core.Enums.ButtonArrowStyle.Custom;
+            this.unitGeneral_Servo_Engine_Y1_Brake_Cylinder_Axis.ButtonATextKey = "Brake Cylinder";
+            this.unitGeneral_Servo_Engine_Y1_Brake_Cylinder_Axis.CommandAAddress = "M261";
+            this.unitGeneral_Servo_Engine_Y1_Brake_Cylinder_Axis.CommandAAction = Kaban.Core.Enums.BitActionType.Momentary;
+            this.unitGeneral_Servo_Engine_Y1_Brake_Cylinder_Axis.ValveType = Kaban.UI.Controls.CylinderValve.IslandSingleSolenoid;
+            this.unitGeneral_Servo_Engine_Y1_Brake_Cylinder_Axis.FeedbackType = Kaban.UI.Controls.CylinderFeedback.NoSensor;
+            this.unitGeneral_Servo_Engine_Y1_Brake_Cylinder_Axis.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
             // 
             // lblServo_Engine_Y2
             // 
@@ -430,8 +296,8 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.lblServo_Engine_Y2.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.lblServo_Engine_Y2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
             this.lblServo_Engine_Y2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.lblServo_Engine_Y2.Location = new System.Drawing.Point(16, 312);
-            this.lblServo_Engine_Y2.Size = new System.Drawing.Size(594, 26);
+            this.lblServo_Engine_Y2.Location = new System.Drawing.Point(16, 472);
+            this.lblServo_Engine_Y2.Size = new System.Drawing.Size(582, 26);
             // 
             // capY2
             // 
@@ -441,22 +307,19 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.capY2.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.capY2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
             this.capY2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capY2.Location = new System.Drawing.Point(16, 340);
-            this.capY2.Size = new System.Drawing.Size(150, 40);
+            this.capY2.Location = new System.Drawing.Point(16, 500);
+            this.capY2.Size = new System.Drawing.Size(150, 72);
             this.capY2.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             // 
-            // btnGeneral_Servo_Engine_Y2_Y2_Back
+            // axGeneral_Servo_Engine_Y2_Y2_Axis
             // 
-            this.btnGeneral_Servo_Engine_Y2_Y2_Back.Name = "btnGeneral_Servo_Engine_Y2_Y2_Back";
-            this.btnGeneral_Servo_Engine_Y2_Y2_Back.PlcNumber = 1;
-            this.btnGeneral_Servo_Engine_Y2_Y2_Back.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.Left;
-            bitAction9.Address = "M43";
-            bitAction9.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnGeneral_Servo_Engine_Y2_Y2_Back.BitActions.Add(bitAction9);
-            this.btnGeneral_Servo_Engine_Y2_Y2_Back.Location = new System.Drawing.Point(224, 343);
-            this.btnGeneral_Servo_Engine_Y2_Y2_Back.Size = new System.Drawing.Size(72, 34);
-            this.btnGeneral_Servo_Engine_Y2_Y2_Back.LogAction = true;
-            this.btnGeneral_Servo_Engine_Y2_Y2_Back.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            // Body Y2: axis 4 of the axis settings page (its buttons, position, reference sensor and error come from there).
+            this.axGeneral_Servo_Engine_Y2_Y2_Axis.BackColor = System.Drawing.Color.White;
+            this.axGeneral_Servo_Engine_Y2_Y2_Axis.Name = "axGeneral_Servo_Engine_Y2_Y2_Axis";
+            this.axGeneral_Servo_Engine_Y2_Y2_Axis.AxisNumber = 4;
+            this.axGeneral_Servo_Engine_Y2_Y2_Axis.PlcNumber = 1;
+            this.axGeneral_Servo_Engine_Y2_Y2_Axis.Location = new System.Drawing.Point(172, 504);
+            this.axGeneral_Servo_Engine_Y2_Y2_Axis.Size = new System.Drawing.Size(300, 64);
             // 
             // loadGeneral_Servo_Engine_Y2_Y2_Overload
             // 
@@ -470,35 +333,8 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.loadGeneral_Servo_Engine_Y2_Y2_Overload.ScaleMinimum = 0D;
             this.loadGeneral_Servo_Engine_Y2_Y2_Overload.ScaleMaximum = 100D;
             this.loadGeneral_Servo_Engine_Y2_Y2_Overload.Signed = true;
-            this.loadGeneral_Servo_Engine_Y2_Y2_Overload.Location = new System.Drawing.Point(302, 347);
+            this.loadGeneral_Servo_Engine_Y2_Y2_Overload.Location = new System.Drawing.Point(478, 523);
             this.loadGeneral_Servo_Engine_Y2_Y2_Overload.Size = new System.Drawing.Size(120, 26);
-            // 
-            // btnGeneral_Servo_Engine_Y2_Y2_Forward
-            // 
-            this.btnGeneral_Servo_Engine_Y2_Y2_Forward.Name = "btnGeneral_Servo_Engine_Y2_Y2_Forward";
-            this.btnGeneral_Servo_Engine_Y2_Y2_Forward.PlcNumber = 1;
-            this.btnGeneral_Servo_Engine_Y2_Y2_Forward.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.Right;
-            bitAction10.Address = "M24";
-            bitAction10.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnGeneral_Servo_Engine_Y2_Y2_Forward.BitActions.Add(bitAction10);
-            this.btnGeneral_Servo_Engine_Y2_Y2_Forward.Location = new System.Drawing.Point(428, 343);
-            this.btnGeneral_Servo_Engine_Y2_Y2_Forward.Size = new System.Drawing.Size(72, 34);
-            this.btnGeneral_Servo_Engine_Y2_Y2_Forward.LogAction = true;
-            this.btnGeneral_Servo_Engine_Y2_Y2_Forward.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // dispGeneral_Servo_Engine_Y2_Y2_Actual_Position
-            // 
-            // Servo Engine Y2 Y2 Actual Position: D360, raw / 10000.
-            this.dispGeneral_Servo_Engine_Y2_Y2_Actual_Position.Name = "dispGeneral_Servo_Engine_Y2_Y2_Actual_Position";
-            this.dispGeneral_Servo_Engine_Y2_Y2_Actual_Position.PlcNumber = 1;
-            this.dispGeneral_Servo_Engine_Y2_Y2_Actual_Position.Address = "D360";
-            this.dispGeneral_Servo_Engine_Y2_Y2_Actual_Position.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.dispGeneral_Servo_Engine_Y2_Y2_Actual_Position.Divisor = 10000D;
-            this.dispGeneral_Servo_Engine_Y2_Y2_Actual_Position.DecimalPlaces = 2;
-            this.dispGeneral_Servo_Engine_Y2_Y2_Actual_Position.Digits = 7;
-            this.dispGeneral_Servo_Engine_Y2_Y2_Actual_Position.Suffix = "mm";
-            this.dispGeneral_Servo_Engine_Y2_Y2_Actual_Position.Location = new System.Drawing.Point(506, 343);
-            this.dispGeneral_Servo_Engine_Y2_Y2_Actual_Position.Size = new System.Drawing.Size(104, 34);
             // 
             // capBrake_Cylinder_3
             // 
@@ -508,23 +344,27 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.capBrake_Cylinder_3.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.capBrake_Cylinder_3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
             this.capBrake_Cylinder_3.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capBrake_Cylinder_3.Location = new System.Drawing.Point(16, 380);
-            this.capBrake_Cylinder_3.Size = new System.Drawing.Size(150, 40);
+            this.capBrake_Cylinder_3.Location = new System.Drawing.Point(16, 572);
+            this.capBrake_Cylinder_3.Size = new System.Drawing.Size(150, 72);
             this.capBrake_Cylinder_3.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             // 
-            // btnGeneral_Servo_Engine_Y2_Brake_Cylinder_Back
+            // unitGeneral_Servo_Engine_Y2_Brake_Cylinder_Axis
             // 
-            this.btnGeneral_Servo_Engine_Y2_Brake_Cylinder_Back.Name = "btnGeneral_Servo_Engine_Y2_Brake_Cylinder_Back";
-            this.btnGeneral_Servo_Engine_Y2_Brake_Cylinder_Back.PlcNumber = 1;
-            this.btnGeneral_Servo_Engine_Y2_Brake_Cylinder_Back.TranslationKey = "Brake Cylinder";
-            this.btnGeneral_Servo_Engine_Y2_Brake_Cylinder_Back.FallbackText = "Brake Cylinder";
-            bitAction11.Address = "M262";
-            bitAction11.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnGeneral_Servo_Engine_Y2_Brake_Cylinder_Back.BitActions.Add(bitAction11);
-            this.btnGeneral_Servo_Engine_Y2_Brake_Cylinder_Back.Location = new System.Drawing.Point(224, 383);
-            this.btnGeneral_Servo_Engine_Y2_Brake_Cylinder_Back.Size = new System.Drawing.Size(276, 34);
-            this.btnGeneral_Servo_Engine_Y2_Brake_Cylinder_Back.LogAction = true;
-            this.btnGeneral_Servo_Engine_Y2_Brake_Cylinder_Back.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            // Y14.3 (5/2 spring, on the island) - no sensor on the drawings.
+            this.unitGeneral_Servo_Engine_Y2_Brake_Cylinder_Axis.BackColor = System.Drawing.Color.White;
+            this.unitGeneral_Servo_Engine_Y2_Brake_Cylinder_Axis.Name = "unitGeneral_Servo_Engine_Y2_Brake_Cylinder_Axis";
+            this.unitGeneral_Servo_Engine_Y2_Brake_Cylinder_Axis.PlcNumber = 1;
+            this.unitGeneral_Servo_Engine_Y2_Brake_Cylinder_Axis.TitleTextKey = "Unit_MD3020_BrakeY2";
+            this.unitGeneral_Servo_Engine_Y2_Brake_Cylinder_Axis.Location = new System.Drawing.Point(172, 576);
+            this.unitGeneral_Servo_Engine_Y2_Brake_Cylinder_Axis.Size = new System.Drawing.Size(300, 64);
+            this.unitGeneral_Servo_Engine_Y2_Brake_Cylinder_Axis.LogAction = true;
+            this.unitGeneral_Servo_Engine_Y2_Brake_Cylinder_Axis.Arrows = Kaban.Core.Enums.ButtonArrowStyle.Custom;
+            this.unitGeneral_Servo_Engine_Y2_Brake_Cylinder_Axis.ButtonATextKey = "Brake Cylinder";
+            this.unitGeneral_Servo_Engine_Y2_Brake_Cylinder_Axis.CommandAAddress = "M262";
+            this.unitGeneral_Servo_Engine_Y2_Brake_Cylinder_Axis.CommandAAction = Kaban.Core.Enums.BitActionType.Momentary;
+            this.unitGeneral_Servo_Engine_Y2_Brake_Cylinder_Axis.ValveType = Kaban.UI.Controls.CylinderValve.IslandSingleSolenoid;
+            this.unitGeneral_Servo_Engine_Y2_Brake_Cylinder_Axis.FeedbackType = Kaban.UI.Controls.CylinderFeedback.NoSensor;
+            this.unitGeneral_Servo_Engine_Y2_Brake_Cylinder_Axis.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
             // 
             // lblConveyor
             // 
@@ -534,8 +374,41 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.lblConveyor.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.lblConveyor.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
             this.lblConveyor.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.lblConveyor.Location = new System.Drawing.Point(16, 422);
-            this.lblConveyor.Size = new System.Drawing.Size(594, 26);
+            this.lblConveyor.Location = new System.Drawing.Point(630, 16);
+            this.lblConveyor.Size = new System.Drawing.Size(306, 26);
+            // 
+            // hdName_2
+            // 
+            this.hdName_2.Name = "hdName_2";
+            this.hdName_2.TranslationKey = "Name";
+            this.hdName_2.Text = "Name";
+            this.hdName_2.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
+            this.hdName_2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
+            this.hdName_2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.hdName_2.Location = new System.Drawing.Point(630, 46);
+            this.hdName_2.Size = new System.Drawing.Size(150, 26);
+            // 
+            // hdBack
+            // 
+            this.hdBack.Name = "hdBack";
+            this.hdBack.TranslationKey = "Back";
+            this.hdBack.Text = "Back";
+            this.hdBack.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
+            this.hdBack.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
+            this.hdBack.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.hdBack.Location = new System.Drawing.Point(786, 46);
+            this.hdBack.Size = new System.Drawing.Size(72, 26);
+            // 
+            // hdForward
+            // 
+            this.hdForward.Name = "hdForward";
+            this.hdForward.TranslationKey = "Forward";
+            this.hdForward.Text = "Forward";
+            this.hdForward.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
+            this.hdForward.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
+            this.hdForward.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.hdForward.Location = new System.Drawing.Point(864, 46);
+            this.hdForward.Size = new System.Drawing.Size(72, 26);
             // 
             // capConveyor_Up_Down
             // 
@@ -545,35 +418,35 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.capConveyor_Up_Down.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.capConveyor_Up_Down.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
             this.capConveyor_Up_Down.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capConveyor_Up_Down.Location = new System.Drawing.Point(16, 450);
+            this.capConveyor_Up_Down.Location = new System.Drawing.Point(630, 80);
             this.capConveyor_Up_Down.Size = new System.Drawing.Size(150, 40);
             this.capConveyor_Up_Down.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             // 
-            // btnGeneral_Conveyor_Conveyor_Up_Down_Back
+            // btnConveyor_Conveyor_Up_Down_Back
             // 
-            this.btnGeneral_Conveyor_Conveyor_Up_Down_Back.Name = "btnGeneral_Conveyor_Conveyor_Up_Down_Back";
-            this.btnGeneral_Conveyor_Conveyor_Up_Down_Back.PlcNumber = 1;
-            this.btnGeneral_Conveyor_Conveyor_Up_Down_Back.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.Left;
-            bitAction12.Address = "M207";
-            bitAction12.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnGeneral_Conveyor_Conveyor_Up_Down_Back.BitActions.Add(bitAction12);
-            this.btnGeneral_Conveyor_Conveyor_Up_Down_Back.Location = new System.Drawing.Point(224, 453);
-            this.btnGeneral_Conveyor_Conveyor_Up_Down_Back.Size = new System.Drawing.Size(72, 34);
-            this.btnGeneral_Conveyor_Conveyor_Up_Down_Back.LogAction = true;
-            this.btnGeneral_Conveyor_Conveyor_Up_Down_Back.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            this.btnConveyor_Conveyor_Up_Down_Back.Name = "btnConveyor_Conveyor_Up_Down_Back";
+            this.btnConveyor_Conveyor_Up_Down_Back.PlcNumber = 1;
+            this.btnConveyor_Conveyor_Up_Down_Back.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.Left;
+            bitAction1.Address = "M207";
+            bitAction1.Action = Kaban.Core.Enums.BitActionType.Momentary;
+            this.btnConveyor_Conveyor_Up_Down_Back.BitActions.Add(bitAction1);
+            this.btnConveyor_Conveyor_Up_Down_Back.Location = new System.Drawing.Point(786, 83);
+            this.btnConveyor_Conveyor_Up_Down_Back.Size = new System.Drawing.Size(72, 34);
+            this.btnConveyor_Conveyor_Up_Down_Back.LogAction = true;
+            this.btnConveyor_Conveyor_Up_Down_Back.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
             // 
-            // btnGeneral_Conveyor_Conveyor_Up_Down_Forward
+            // btnConveyor_Conveyor_Up_Down_Forward
             // 
-            this.btnGeneral_Conveyor_Conveyor_Up_Down_Forward.Name = "btnGeneral_Conveyor_Conveyor_Up_Down_Forward";
-            this.btnGeneral_Conveyor_Conveyor_Up_Down_Forward.PlcNumber = 1;
-            this.btnGeneral_Conveyor_Conveyor_Up_Down_Forward.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.Right;
-            bitAction13.Address = "M206";
-            bitAction13.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnGeneral_Conveyor_Conveyor_Up_Down_Forward.BitActions.Add(bitAction13);
-            this.btnGeneral_Conveyor_Conveyor_Up_Down_Forward.Location = new System.Drawing.Point(428, 453);
-            this.btnGeneral_Conveyor_Conveyor_Up_Down_Forward.Size = new System.Drawing.Size(72, 34);
-            this.btnGeneral_Conveyor_Conveyor_Up_Down_Forward.LogAction = true;
-            this.btnGeneral_Conveyor_Conveyor_Up_Down_Forward.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            this.btnConveyor_Conveyor_Up_Down_Forward.Name = "btnConveyor_Conveyor_Up_Down_Forward";
+            this.btnConveyor_Conveyor_Up_Down_Forward.PlcNumber = 1;
+            this.btnConveyor_Conveyor_Up_Down_Forward.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.Right;
+            bitAction2.Address = "M206";
+            bitAction2.Action = Kaban.Core.Enums.BitActionType.Momentary;
+            this.btnConveyor_Conveyor_Up_Down_Forward.BitActions.Add(bitAction2);
+            this.btnConveyor_Conveyor_Up_Down_Forward.Location = new System.Drawing.Point(864, 83);
+            this.btnConveyor_Conveyor_Up_Down_Forward.Size = new System.Drawing.Size(72, 34);
+            this.btnConveyor_Conveyor_Up_Down_Forward.LogAction = true;
+            this.btnConveyor_Conveyor_Up_Down_Forward.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
             // 
             // capConveyor_Run
             // 
@@ -583,23 +456,23 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.capConveyor_Run.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.capConveyor_Run.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
             this.capConveyor_Run.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capConveyor_Run.Location = new System.Drawing.Point(16, 490);
+            this.capConveyor_Run.Location = new System.Drawing.Point(630, 120);
             this.capConveyor_Run.Size = new System.Drawing.Size(150, 40);
             this.capConveyor_Run.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             // 
-            // btnGeneral_Conveyor_Conveyor_Run_Back
+            // btnConveyor_Conveyor_Run_Back
             // 
-            this.btnGeneral_Conveyor_Conveyor_Run_Back.Name = "btnGeneral_Conveyor_Conveyor_Run_Back";
-            this.btnGeneral_Conveyor_Conveyor_Run_Back.PlcNumber = 1;
-            this.btnGeneral_Conveyor_Conveyor_Run_Back.TranslationKey = "Conveyor Run";
-            this.btnGeneral_Conveyor_Conveyor_Run_Back.FallbackText = "Conveyor Run";
-            bitAction14.Address = "M208";
-            bitAction14.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnGeneral_Conveyor_Conveyor_Run_Back.BitActions.Add(bitAction14);
-            this.btnGeneral_Conveyor_Conveyor_Run_Back.Location = new System.Drawing.Point(224, 493);
-            this.btnGeneral_Conveyor_Conveyor_Run_Back.Size = new System.Drawing.Size(276, 34);
-            this.btnGeneral_Conveyor_Conveyor_Run_Back.LogAction = true;
-            this.btnGeneral_Conveyor_Conveyor_Run_Back.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            this.btnConveyor_Conveyor_Run_Back.Name = "btnConveyor_Conveyor_Run_Back";
+            this.btnConveyor_Conveyor_Run_Back.PlcNumber = 1;
+            this.btnConveyor_Conveyor_Run_Back.TranslationKey = "Conveyor Run";
+            this.btnConveyor_Conveyor_Run_Back.FallbackText = "Conveyor Run";
+            bitAction3.Address = "M208";
+            bitAction3.Action = Kaban.Core.Enums.BitActionType.Momentary;
+            this.btnConveyor_Conveyor_Run_Back.BitActions.Add(bitAction3);
+            this.btnConveyor_Conveyor_Run_Back.Location = new System.Drawing.Point(786, 123);
+            this.btnConveyor_Conveyor_Run_Back.Size = new System.Drawing.Size(150, 34);
+            this.btnConveyor_Conveyor_Run_Back.LogAction = true;
+            this.btnConveyor_Conveyor_Run_Back.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
             // 
             // ManualGeneral
             // 
@@ -611,47 +484,39 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.BackColor = System.Drawing.Color.White;
             this.Controls.Add(this.hdName);
             this.Controls.Add(this.hdAxis);
-            this.Controls.Add(this.hdBack);
             this.Controls.Add(this.hdOverload);
-            this.Controls.Add(this.hdForward);
-            this.Controls.Add(this.hdActual_Position);
             this.Controls.Add(this.lblServo_Engine_X);
             this.Controls.Add(this.capX1);
-            this.Controls.Add(this.btnGeneral_Servo_Engine_X_X1_Back);
+            this.Controls.Add(this.axGeneral_Servo_Engine_X_X1_Axis);
             this.Controls.Add(this.loadGeneral_Servo_Engine_X_X1_Overload);
-            this.Controls.Add(this.btnGeneral_Servo_Engine_X_X1_Forward);
-            this.Controls.Add(this.dispGeneral_Servo_Engine_X_X1_Actual_Position);
             this.Controls.Add(this.capX2);
-            this.Controls.Add(this.btnGeneral_Servo_Engine_X_X2_Back);
+            this.Controls.Add(this.axGeneral_Servo_Engine_X_X2_Axis);
             this.Controls.Add(this.loadGeneral_Servo_Engine_X_X2_Overload);
-            this.Controls.Add(this.btnGeneral_Servo_Engine_X_X2_Forward);
-            this.Controls.Add(this.dispGeneral_Servo_Engine_X_X2_Actual_Position);
             this.Controls.Add(this.capBrake_Cylinder);
-            this.Controls.Add(this.btnGeneral_Servo_Engine_X_Brake_Cylinder_Back);
+            this.Controls.Add(this.unitGeneral_Servo_Engine_X_Brake_Cylinder_Axis);
             this.Controls.Add(this.lblServo_Engine_Y1);
             this.Controls.Add(this.capY1);
-            this.Controls.Add(this.btnGeneral_Servo_Engine_Y1_Y1_Back);
+            this.Controls.Add(this.axGeneral_Servo_Engine_Y1_Y1_Axis);
             this.Controls.Add(this.loadGeneral_Servo_Engine_Y1_Y1_Overload);
-            this.Controls.Add(this.btnGeneral_Servo_Engine_Y1_Y1_Forward);
-            this.Controls.Add(this.dispGeneral_Servo_Engine_Y1_Y1_Actual_Position);
             this.Controls.Add(this.capBrake_Cylinder_2);
-            this.Controls.Add(this.btnGeneral_Servo_Engine_Y1_Brake_Cylinder_Back);
+            this.Controls.Add(this.unitGeneral_Servo_Engine_Y1_Brake_Cylinder_Axis);
             this.Controls.Add(this.lblServo_Engine_Y2);
             this.Controls.Add(this.capY2);
-            this.Controls.Add(this.btnGeneral_Servo_Engine_Y2_Y2_Back);
+            this.Controls.Add(this.axGeneral_Servo_Engine_Y2_Y2_Axis);
             this.Controls.Add(this.loadGeneral_Servo_Engine_Y2_Y2_Overload);
-            this.Controls.Add(this.btnGeneral_Servo_Engine_Y2_Y2_Forward);
-            this.Controls.Add(this.dispGeneral_Servo_Engine_Y2_Y2_Actual_Position);
             this.Controls.Add(this.capBrake_Cylinder_3);
-            this.Controls.Add(this.btnGeneral_Servo_Engine_Y2_Brake_Cylinder_Back);
+            this.Controls.Add(this.unitGeneral_Servo_Engine_Y2_Brake_Cylinder_Axis);
             this.Controls.Add(this.lblConveyor);
+            this.Controls.Add(this.hdName_2);
+            this.Controls.Add(this.hdBack);
+            this.Controls.Add(this.hdForward);
             this.Controls.Add(this.capConveyor_Up_Down);
-            this.Controls.Add(this.btnGeneral_Conveyor_Conveyor_Up_Down_Back);
-            this.Controls.Add(this.btnGeneral_Conveyor_Conveyor_Up_Down_Forward);
+            this.Controls.Add(this.btnConveyor_Conveyor_Up_Down_Back);
+            this.Controls.Add(this.btnConveyor_Conveyor_Up_Down_Forward);
             this.Controls.Add(this.capConveyor_Run);
-            this.Controls.Add(this.btnGeneral_Conveyor_Conveyor_Run_Back);
+            this.Controls.Add(this.btnConveyor_Conveyor_Run_Back);
             this.Name = "ManualGeneral";
-            this.Size = new System.Drawing.Size(626, 554);
+            this.Size = new System.Drawing.Size(952, 668);
             this.ResumeLayout(false);
             this.PerformLayout();
         }
@@ -660,44 +525,36 @@ namespace Kaban.Machines.MD3020.Screens.Manual
 
         private Kaban.UI.Controls.LabelHMI hdName;
         private Kaban.UI.Controls.LabelHMI hdAxis;
-        private Kaban.UI.Controls.LabelHMI hdBack;
         private Kaban.UI.Controls.LabelHMI hdOverload;
-        private Kaban.UI.Controls.LabelHMI hdForward;
-        private Kaban.UI.Controls.LabelHMI hdActual_Position;
         private Kaban.UI.Controls.LabelHMI lblServo_Engine_X;
         private Kaban.UI.Controls.LabelHMI capX1;
-        private Kaban.UI.Controls.ButtonHMI btnGeneral_Servo_Engine_X_X1_Back;
+        private Kaban.UI.Controls.AxisUnitHMI axGeneral_Servo_Engine_X_X1_Axis;
         private Kaban.UI.Controls.MeterHMI loadGeneral_Servo_Engine_X_X1_Overload;
-        private Kaban.UI.Controls.ButtonHMI btnGeneral_Servo_Engine_X_X1_Forward;
-        private Kaban.UI.Controls.NumericDisplayHMI dispGeneral_Servo_Engine_X_X1_Actual_Position;
         private Kaban.UI.Controls.LabelHMI capX2;
-        private Kaban.UI.Controls.ButtonHMI btnGeneral_Servo_Engine_X_X2_Back;
+        private Kaban.UI.Controls.AxisUnitHMI axGeneral_Servo_Engine_X_X2_Axis;
         private Kaban.UI.Controls.MeterHMI loadGeneral_Servo_Engine_X_X2_Overload;
-        private Kaban.UI.Controls.ButtonHMI btnGeneral_Servo_Engine_X_X2_Forward;
-        private Kaban.UI.Controls.NumericDisplayHMI dispGeneral_Servo_Engine_X_X2_Actual_Position;
         private Kaban.UI.Controls.LabelHMI capBrake_Cylinder;
-        private Kaban.UI.Controls.ButtonHMI btnGeneral_Servo_Engine_X_Brake_Cylinder_Back;
+        private Kaban.UI.Controls.CylinderUnitHMI unitGeneral_Servo_Engine_X_Brake_Cylinder_Axis;
         private Kaban.UI.Controls.LabelHMI lblServo_Engine_Y1;
         private Kaban.UI.Controls.LabelHMI capY1;
-        private Kaban.UI.Controls.ButtonHMI btnGeneral_Servo_Engine_Y1_Y1_Back;
+        private Kaban.UI.Controls.AxisUnitHMI axGeneral_Servo_Engine_Y1_Y1_Axis;
         private Kaban.UI.Controls.MeterHMI loadGeneral_Servo_Engine_Y1_Y1_Overload;
-        private Kaban.UI.Controls.ButtonHMI btnGeneral_Servo_Engine_Y1_Y1_Forward;
-        private Kaban.UI.Controls.NumericDisplayHMI dispGeneral_Servo_Engine_Y1_Y1_Actual_Position;
         private Kaban.UI.Controls.LabelHMI capBrake_Cylinder_2;
-        private Kaban.UI.Controls.ButtonHMI btnGeneral_Servo_Engine_Y1_Brake_Cylinder_Back;
+        private Kaban.UI.Controls.CylinderUnitHMI unitGeneral_Servo_Engine_Y1_Brake_Cylinder_Axis;
         private Kaban.UI.Controls.LabelHMI lblServo_Engine_Y2;
         private Kaban.UI.Controls.LabelHMI capY2;
-        private Kaban.UI.Controls.ButtonHMI btnGeneral_Servo_Engine_Y2_Y2_Back;
+        private Kaban.UI.Controls.AxisUnitHMI axGeneral_Servo_Engine_Y2_Y2_Axis;
         private Kaban.UI.Controls.MeterHMI loadGeneral_Servo_Engine_Y2_Y2_Overload;
-        private Kaban.UI.Controls.ButtonHMI btnGeneral_Servo_Engine_Y2_Y2_Forward;
-        private Kaban.UI.Controls.NumericDisplayHMI dispGeneral_Servo_Engine_Y2_Y2_Actual_Position;
         private Kaban.UI.Controls.LabelHMI capBrake_Cylinder_3;
-        private Kaban.UI.Controls.ButtonHMI btnGeneral_Servo_Engine_Y2_Brake_Cylinder_Back;
+        private Kaban.UI.Controls.CylinderUnitHMI unitGeneral_Servo_Engine_Y2_Brake_Cylinder_Axis;
         private Kaban.UI.Controls.LabelHMI lblConveyor;
+        private Kaban.UI.Controls.LabelHMI hdName_2;
+        private Kaban.UI.Controls.LabelHMI hdBack;
+        private Kaban.UI.Controls.LabelHMI hdForward;
         private Kaban.UI.Controls.LabelHMI capConveyor_Up_Down;
-        private Kaban.UI.Controls.ButtonHMI btnGeneral_Conveyor_Conveyor_Up_Down_Back;
-        private Kaban.UI.Controls.ButtonHMI btnGeneral_Conveyor_Conveyor_Up_Down_Forward;
+        private Kaban.UI.Controls.ButtonHMI btnConveyor_Conveyor_Up_Down_Back;
+        private Kaban.UI.Controls.ButtonHMI btnConveyor_Conveyor_Up_Down_Forward;
         private Kaban.UI.Controls.LabelHMI capConveyor_Run;
-        private Kaban.UI.Controls.ButtonHMI btnGeneral_Conveyor_Conveyor_Run_Back;
+        private Kaban.UI.Controls.ButtonHMI btnConveyor_Conveyor_Run_Back;
     }
 }

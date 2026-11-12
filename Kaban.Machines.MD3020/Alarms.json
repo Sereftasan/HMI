@@ -1,1 +1,650 @@
-[]
+[
+  {
+    "PlcAddress": "M605",
+    "TagCode": "Head_1_Z_Servo_Alarm",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M606",
+    "TagCode": "Head_1_X_Servo_Alarm",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M607",
+    "TagCode": "Head_1_Y1_Servo_Alarm",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M608",
+    "TagCode": "Head_1_Y2_Servo_Alarm",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M609",
+    "TagCode": "Head_2_Z_Servo_Alarm",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M610",
+    "TagCode": "Head_2_X_Servo_Alarm",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M611",
+    "TagCode": "Head_2_Y1_Servo_Alarm",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M612",
+    "TagCode": "Head_2_Y2_Servo_Alarm",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M613",
+    "TagCode": "Head_3_Z_Servo_Alarm",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M614",
+    "TagCode": "Head_3_X_Servo_Alarm",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M615",
+    "TagCode": "Head_3_Y1_Servo_Alarm",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M616",
+    "TagCode": "Head_3_Y2_Servo_Alarm",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M617",
+    "TagCode": "Head_4_Z_Servo_Alarm",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M618",
+    "TagCode": "Head_4_X_Servo_Alarm",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M619",
+    "TagCode": "Head_4_Y1_Servo_Alarm",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M620",
+    "TagCode": "Head_4_Y2_Servo_Alarm",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M621",
+    "TagCode": "Body_X1_Servo_Alarm",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M622",
+    "TagCode": "Body_Y1_Servo_Alarm",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M623",
+    "TagCode": "Body_Y2_Servo_Alarm",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M624",
+    "TagCode": "Conveyor_did_not_go_up",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M625",
+    "TagCode": "Conveyor_did_not_go_down",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M626",
+    "TagCode": "Conveyor_is_not_running",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M627",
+    "TagCode": "Oil_tank_empty",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M628",
+    "TagCode": "Head_1_Stripping_Knife_did_not_go_forward",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M629",
+    "TagCode": "Head_2_Stripping_Knife_did_not_go_forward",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M630",
+    "TagCode": "Head_3_Stripping_Knife_did_not_go_forward",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M631",
+    "TagCode": "Head_4_Stripping_Knife_did_not_go_forward",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M632",
+    "TagCode": "Head_1_Stripping_Knife_did_not_go_back",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M633",
+    "TagCode": "Head_2_Stripping_Knife_did_not_go_back",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M634",
+    "TagCode": "Head_3_Stripping_Knife_did_not_go_back",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M635",
+    "TagCode": "Head_4_Stripping_Knife_did_not_go_back",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M636",
+    "TagCode": "Head_1_Support_Plate_did_not_go_down",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M637",
+    "TagCode": "Head_2_Support_Plate_did_not_go_down",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M638",
+    "TagCode": "Head_3_Support_Plate_did_not_go_down",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M639",
+    "TagCode": "Head_4_Support_Plate_did_not_go_down",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M640",
+    "TagCode": "Head_1_Support_Plate_did_not_go_up",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M641",
+    "TagCode": "Head_2_Support_Plate_did_not_go_up",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M642",
+    "TagCode": "Head_3_Support_Plate_did_not_go_up",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M643",
+    "TagCode": "Head_4_Support_Plate_did_not_go_up",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M660",
+    "TagCode": "Head_1_Left_Top_Press_did_not_go_down",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M661",
+    "TagCode": "Head_1_Right_Top_Press_did_not_go_down",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M662",
+    "TagCode": "Head_2_Left_Top_Press_did_not_go_down",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M663",
+    "TagCode": "Head_2_Right_Top_Press_did_not_go_down",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M664",
+    "TagCode": "Head_3_Left_Top_Press_did_not_go_down",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M665",
+    "TagCode": "Head_3_Right_Top_Press_did_not_go_down",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M666",
+    "TagCode": "Head_4_Left_Top_Press_did_not_go_down",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M667",
+    "TagCode": "Head_4_Right_Top_Press_did_not_go_down",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M668",
+    "TagCode": "Head_1_Left_Top_Press_did_not_go_up",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M669",
+    "TagCode": "Head_1_Right_Top_Press_did_not_go_up",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M670",
+    "TagCode": "Head_2_Left_Top_Press_did_not_go_up",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M671",
+    "TagCode": "Head_2_Right_Top_Press_did_not_go_up",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M672",
+    "TagCode": "Head_3_Left_Top_Press_did_not_go_up",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M673",
+    "TagCode": "Head_3_Right_Top_Press_did_not_go_up",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M674",
+    "TagCode": "Head_4_Left_Top_Press_did_not_go_up",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M675",
+    "TagCode": "Head_4_Right_Top_Press_did_not_go_up",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M676",
+    "TagCode": "Head_1_Left_Small_Horizontal_did_not_go_forward",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M677",
+    "TagCode": "Head_1_Right_Small_Horizontal_did_not_go_forward",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M678",
+    "TagCode": "Head_2_Left_Small_Horizontal_did_not_go_forward",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M679",
+    "TagCode": "Head_2_Right_Small_Horizontal_did_not_go_forward",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M680",
+    "TagCode": "Head_3_Left_Small_Horizontal_did_not_go_forward",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M681",
+    "TagCode": "Head_3_Right_Small_Horizontal_did_not_go_forward",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M682",
+    "TagCode": "Head_4_Left_Small_Horizontal_did_not_go_forward",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M683",
+    "TagCode": "Head_4_Right_Small_Horizontal_did_not_go_forward",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M684",
+    "TagCode": "Head_1_Left_Small_Horizontal_did_not_go_back",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M685",
+    "TagCode": "Head_1_Right_Small_Horizontal_did_not_go_back",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M686",
+    "TagCode": "Head_2_Left_Small_Horizontal_did_not_go_back",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M687",
+    "TagCode": "Head_2_Right_Small_Horizontal_did_not_go_back",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M688",
+    "TagCode": "Head_3_Left_Small_Horizontal_did_not_go_back",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M689",
+    "TagCode": "Head_3_Right_Small_Horizontal_did_not_go_back",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M690",
+    "TagCode": "Head_4_Left_Small_Horizontal_did_not_go_back",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M691",
+    "TagCode": "Head_4_Right_Small_Horizontal_did_not_go_back",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M717",
+    "TagCode": "Head_1_Left_Front_Clamp_did_not_clamp",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M718",
+    "TagCode": "Head_1_Right_Front_Clamp_did_not_clamp",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M719",
+    "TagCode": "Head_2_Left_Front_Clamp_did_not_clamp",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M720",
+    "TagCode": "Head_2_Right_Front_Clamp_did_not_clamp",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M721",
+    "TagCode": "Head_3_Left_Front_Clamp_did_not_clamp",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M722",
+    "TagCode": "Head_3_Right_Front_Clamp_did_not_clamp",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M723",
+    "TagCode": "Head_4_Left_Front_Clamp_did_not_clamp",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M724",
+    "TagCode": "Head_4_Right_Front_Clamp_did_not_clamp",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M725",
+    "TagCode": "Head_1_Left_Front_Clamp_did_not_open",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M726",
+    "TagCode": "Head_1_Right_Front_Clamp_did_not_open",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M727",
+    "TagCode": "Head_2_Left_Front_Clamp_did_not_open",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M728",
+    "TagCode": "Head_2_Right_Front_Clamp_did_not_open",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M729",
+    "TagCode": "Head_3_Left_Front_Clamp_did_not_open",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M730",
+    "TagCode": "Head_3_Right_Front_Clamp_did_not_open",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M731",
+    "TagCode": "Head_4_Left_Front_Clamp_did_not_open",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M732",
+    "TagCode": "Head_4_Right_Front_Clamp_did_not_open",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M733",
+    "TagCode": "Head_1_Left_Small_Vertical_did_not_go_up",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M734",
+    "TagCode": "Head_1_Right_Small_Vertical_did_not_go_up",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M735",
+    "TagCode": "Head_2_Left_Small_Vertical_did_not_go_up",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M736",
+    "TagCode": "Head_2_Right_Small_Vertical_did_not_go_up",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M737",
+    "TagCode": "Head_3_Left_Small_Vertical_did_not_go_up",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M738",
+    "TagCode": "Head_3_Right_Small_Vertical_did_not_go_up",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M739",
+    "TagCode": "Head_4_Left_Small_Vertical_did_not_go_up",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M740",
+    "TagCode": "Head_4_Right_Small_Vertical_did_not_go_up",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M741",
+    "TagCode": "Head_1_Left_Small_Vertical_did_not_go_down",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M742",
+    "TagCode": "Head_1_Right_Small_Vertical_did_not_go_down",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M743",
+    "TagCode": "Head_2_Left_Small_Vertical_did_not_go_down",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M744",
+    "TagCode": "Head_2_Right_Small_Vertical_did_not_go_down",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M745",
+    "TagCode": "Head_3_Left_Small_Vertical_did_not_go_down",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M746",
+    "TagCode": "Head_3_Right_Small_Vertical_did_not_go_down",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M747",
+    "TagCode": "Head_4_Left_Small_Vertical_did_not_go_down",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M748",
+    "TagCode": "Head_4_Right_Small_Vertical_did_not_go_down",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M752",
+    "TagCode": "Body_X2_Servo_Alarm",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M757",
+    "TagCode": "Head_1_Resistance_Z_Servo_Alarm",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M758",
+    "TagCode": "Head_2_Resistance_Z_Servo_Alarm",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M759",
+    "TagCode": "Head_3_Resistance_Z_Servo_Alarm",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M760",
+    "TagCode": "Head_4_Resistance_Z_Servo_Alarm",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  }
+]

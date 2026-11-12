@@ -64,7 +64,10 @@
   columns and rows of the program's own controls (the machinery: `tools\legacy_grid_pages.py`); `--check` compares the
   devices, the buttons' actions and the values' divisors with the old pages. They keep what was set on a control by hand
   (found by its name). The manual pages' bar: each machine's `Screens\Shared\JogBar`. MK2010 is a project of its own
-  (in KabanHMI.sln, its own program like MD3020's).
+  (in KabanHMI.sln, its own program like MD3020's). 12 November: their axes are axis settings rows (`AR`, the spec's
+  AXES table: number, motion module and axis, reference sensor, servo alarm) and axis units on the manual pages (`Ax`);
+  their cylinders cylinder units (`Cy`: valve and feedback from the drawings, error bits from the alarm list - which
+  the spec also writes, ALARMS -> Alarms.json and its texts). A valve island's valves are CylinderValve Island... (5 - 8).
 - Machine Settings' rows (3 November): a page of settings is rows, UiStyle.SettingRowHeight (38) high, touching, a light
   line under each (UiStyle.RowRule, lighter than a table's GridRule) - every row 450 wide (the user's choice; a frame 474,
   its rows 12 in) - a switch: CheckBoxHMI SwitchRow; a value: NumericInputHMI.RowWidth (its caption is the row, words at the

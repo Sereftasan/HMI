@@ -76,6 +76,9 @@ namespace Kaban.Machines.MD3020
                         SecurityLevel.Operator, () => new Screens.Manual.ManualGeneral()),
                     new Kaban.UI.Settings.SimplePage("Tab_MD3020_ManualMovement", "Manual Movement",
                         SecurityLevel.Operator, () => new Screens.Manual.ManualMovement()),
+                    // 12 November: the old Manual Movement's units and piston sensors as a cylinder unit each, head by head
+                    new Kaban.UI.Settings.SimplePage("Tab_MD3020_ManualCylinders", "Cylinders",
+                        SecurityLevel.Operator, () => new Screens.Manual.ManualCylinders()),
                     new Kaban.UI.Settings.SimplePage("Tab_MD3020_ManualServos", "Servos",
                         SecurityLevel.Operator, () => new Screens.Manual.ManualServos())
                 },

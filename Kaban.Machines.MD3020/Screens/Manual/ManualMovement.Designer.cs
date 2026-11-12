@@ -28,242 +28,93 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             Kaban.Core.Models.BitAction bitAction2 = new Kaban.Core.Models.BitAction();
             Kaban.Core.Models.BitAction bitAction3 = new Kaban.Core.Models.BitAction();
             Kaban.Core.Models.BitAction bitAction4 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction5 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction6 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction7 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction8 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction9 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction10 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction11 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction12 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction13 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction14 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction15 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction16 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction17 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction18 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction19 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction20 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction21 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction22 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction23 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction24 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction25 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction26 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction27 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction28 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction29 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction30 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction31 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction32 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction33 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction34 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction35 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction36 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction37 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction38 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction39 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction40 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction41 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction42 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction43 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction44 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction45 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction46 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction47 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction48 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction49 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction50 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction51 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction52 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction53 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction54 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction55 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction56 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction57 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction58 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction59 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction60 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction61 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction62 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction63 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction64 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction65 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction66 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction67 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction68 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction69 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction70 = new Kaban.Core.Models.BitAction();
             this.hdAxis = new Kaban.UI.Controls.LabelHMI();
-            this.hdBack = new Kaban.UI.Controls.LabelHMI();
-            this.hdAxis_Position = new Kaban.UI.Controls.LabelHMI();
-            this.hdForward = new Kaban.UI.Controls.LabelHMI();
+            this.hdAxis_Unit = new Kaban.UI.Controls.LabelHMI();
             this.hdActual_Torque = new Kaban.UI.Controls.LabelHMI();
             this.lblHead_1 = new Kaban.UI.Controls.LabelHMI();
             this.capX = new Kaban.UI.Controls.LabelHMI();
-            this.btnHeads_1_2_Head_1_X_Back = new Kaban.UI.Controls.ButtonHMI();
-            this.dispHeads_1_2_Head_1_X_Axis_Position = new Kaban.UI.Controls.NumericDisplayHMI();
-            this.btnHeads_1_2_Head_1_X_Forward = new Kaban.UI.Controls.ButtonHMI();
+            this.axHeads_1_2_Head_1_X_Axis_Unit = new Kaban.UI.Controls.AxisUnitHMI();
             this.loadHeads_1_2_Head_1_X_Actual_Torque = new Kaban.UI.Controls.MeterHMI();
-            this.capX2 = new Kaban.UI.Controls.LabelHMI();
-            this.btnHeads_1_2_Head_1_X2_Back = new Kaban.UI.Controls.ButtonHMI();
-            this.dispHeads_1_2_Head_1_X2_Axis_Position = new Kaban.UI.Controls.NumericDisplayHMI();
-            this.btnHeads_1_2_Head_1_X2_Forward = new Kaban.UI.Controls.ButtonHMI();
-            this.loadHeads_1_2_Head_1_X2_Actual_Torque = new Kaban.UI.Controls.MeterHMI();
             this.capY1 = new Kaban.UI.Controls.LabelHMI();
-            this.btnHeads_1_2_Head_1_Y1_Back = new Kaban.UI.Controls.ButtonHMI();
-            this.dispHeads_1_2_Head_1_Y1_Axis_Position = new Kaban.UI.Controls.NumericDisplayHMI();
-            this.btnHeads_1_2_Head_1_Y1_Forward = new Kaban.UI.Controls.ButtonHMI();
+            this.axHeads_1_2_Head_1_Y1_Axis_Unit = new Kaban.UI.Controls.AxisUnitHMI();
             this.loadHeads_1_2_Head_1_Y1_Actual_Torque = new Kaban.UI.Controls.MeterHMI();
             this.capY2 = new Kaban.UI.Controls.LabelHMI();
-            this.btnHeads_1_2_Head_1_Y2_Back = new Kaban.UI.Controls.ButtonHMI();
-            this.dispHeads_1_2_Head_1_Y2_Axis_Position = new Kaban.UI.Controls.NumericDisplayHMI();
-            this.btnHeads_1_2_Head_1_Y2_Forward = new Kaban.UI.Controls.ButtonHMI();
+            this.axHeads_1_2_Head_1_Y2_Axis_Unit = new Kaban.UI.Controls.AxisUnitHMI();
             this.loadHeads_1_2_Head_1_Y2_Actual_Torque = new Kaban.UI.Controls.MeterHMI();
-            this.capZ1 = new Kaban.UI.Controls.LabelHMI();
-            this.btnHeads_1_2_Head_1_Z1_Back = new Kaban.UI.Controls.ButtonHMI();
-            this.dispHeads_1_2_Head_1_Z1_Axis_Position = new Kaban.UI.Controls.NumericDisplayHMI();
-            this.btnHeads_1_2_Head_1_Z1_Forward = new Kaban.UI.Controls.ButtonHMI();
-            this.loadHeads_1_2_Head_1_Z1_Actual_Torque = new Kaban.UI.Controls.MeterHMI();
-            this.capZ2 = new Kaban.UI.Controls.LabelHMI();
-            this.btnHeads_1_2_Head_1_Z2_Back = new Kaban.UI.Controls.ButtonHMI();
-            this.dispHeads_1_2_Head_1_Z2_Axis_Position = new Kaban.UI.Controls.NumericDisplayHMI();
-            this.btnHeads_1_2_Head_1_Z2_Forward = new Kaban.UI.Controls.ButtonHMI();
-            this.loadHeads_1_2_Head_1_Z2_Actual_Torque = new Kaban.UI.Controls.MeterHMI();
+            this.capZ = new Kaban.UI.Controls.LabelHMI();
+            this.axHeads_1_2_Head_1_Z_Axis_Unit = new Kaban.UI.Controls.AxisUnitHMI();
+            this.loadHeads_1_2_Head_1_Z_Actual_Torque = new Kaban.UI.Controls.MeterHMI();
+            this.capRZ = new Kaban.UI.Controls.LabelHMI();
+            this.axHeads_1_2_Head_1_RZ_Axis_Unit = new Kaban.UI.Controls.AxisUnitHMI();
+            this.loadHeads_1_2_Head_1_RZ_Actual_Torque = new Kaban.UI.Controls.MeterHMI();
             this.lblHead_2 = new Kaban.UI.Controls.LabelHMI();
             this.capX_2 = new Kaban.UI.Controls.LabelHMI();
-            this.btnHeads_1_2_Head_2_X_Back = new Kaban.UI.Controls.ButtonHMI();
-            this.dispHeads_1_2_Head_2_X_Axis_Position = new Kaban.UI.Controls.NumericDisplayHMI();
-            this.btnHeads_1_2_Head_2_X_Forward = new Kaban.UI.Controls.ButtonHMI();
+            this.axHeads_1_2_Head_2_X_Axis_Unit = new Kaban.UI.Controls.AxisUnitHMI();
             this.loadHeads_1_2_Head_2_X_Actual_Torque = new Kaban.UI.Controls.MeterHMI();
-            this.capX2_2 = new Kaban.UI.Controls.LabelHMI();
-            this.btnHeads_1_2_Head_2_X2_Back = new Kaban.UI.Controls.ButtonHMI();
-            this.dispHeads_1_2_Head_2_X2_Axis_Position = new Kaban.UI.Controls.NumericDisplayHMI();
-            this.btnHeads_1_2_Head_2_X2_Forward = new Kaban.UI.Controls.ButtonHMI();
-            this.loadHeads_1_2_Head_2_X2_Actual_Torque = new Kaban.UI.Controls.MeterHMI();
             this.capY1_2 = new Kaban.UI.Controls.LabelHMI();
-            this.btnHeads_1_2_Head_2_Y1_Back = new Kaban.UI.Controls.ButtonHMI();
-            this.dispHeads_1_2_Head_2_Y1_Axis_Position = new Kaban.UI.Controls.NumericDisplayHMI();
-            this.btnHeads_1_2_Head_2_Y1_Forward = new Kaban.UI.Controls.ButtonHMI();
+            this.axHeads_1_2_Head_2_Y1_Axis_Unit = new Kaban.UI.Controls.AxisUnitHMI();
             this.loadHeads_1_2_Head_2_Y1_Actual_Torque = new Kaban.UI.Controls.MeterHMI();
             this.capY2_2 = new Kaban.UI.Controls.LabelHMI();
-            this.btnHeads_1_2_Head_2_Y2_Back = new Kaban.UI.Controls.ButtonHMI();
-            this.dispHeads_1_2_Head_2_Y2_Axis_Position = new Kaban.UI.Controls.NumericDisplayHMI();
-            this.btnHeads_1_2_Head_2_Y2_Forward = new Kaban.UI.Controls.ButtonHMI();
+            this.axHeads_1_2_Head_2_Y2_Axis_Unit = new Kaban.UI.Controls.AxisUnitHMI();
             this.loadHeads_1_2_Head_2_Y2_Actual_Torque = new Kaban.UI.Controls.MeterHMI();
-            this.capZ1_2 = new Kaban.UI.Controls.LabelHMI();
-            this.btnHeads_1_2_Head_2_Z1_Back = new Kaban.UI.Controls.ButtonHMI();
-            this.dispHeads_1_2_Head_2_Z1_Axis_Position = new Kaban.UI.Controls.NumericDisplayHMI();
-            this.btnHeads_1_2_Head_2_Z1_Forward = new Kaban.UI.Controls.ButtonHMI();
-            this.loadHeads_1_2_Head_2_Z1_Actual_Torque = new Kaban.UI.Controls.MeterHMI();
-            this.capZ2_2 = new Kaban.UI.Controls.LabelHMI();
-            this.btnHeads_1_2_Head_2_Z2_Back = new Kaban.UI.Controls.ButtonHMI();
-            this.dispHeads_1_2_Head_2_Z2_Axis_Position = new Kaban.UI.Controls.NumericDisplayHMI();
-            this.btnHeads_1_2_Head_2_Z2_Forward = new Kaban.UI.Controls.ButtonHMI();
-            this.loadHeads_1_2_Head_2_Z2_Actual_Torque = new Kaban.UI.Controls.MeterHMI();
-            this.lblGeneral = new Kaban.UI.Controls.LabelHMI();
-            this.capX_3 = new Kaban.UI.Controls.LabelHMI();
-            this.btnHeads_1_2_General_X_Back = new Kaban.UI.Controls.ButtonHMI();
-            this.dispHeads_1_2_General_X_Axis_Position = new Kaban.UI.Controls.NumericDisplayHMI();
-            this.btnHeads_1_2_General_X_Forward = new Kaban.UI.Controls.ButtonHMI();
-            this.capY1_3 = new Kaban.UI.Controls.LabelHMI();
-            this.btnHeads_1_2_General_Y1_Back = new Kaban.UI.Controls.ButtonHMI();
-            this.dispHeads_1_2_General_Y1_Axis_Position = new Kaban.UI.Controls.NumericDisplayHMI();
-            this.btnHeads_1_2_General_Y1_Forward = new Kaban.UI.Controls.ButtonHMI();
-            this.capY2_3 = new Kaban.UI.Controls.LabelHMI();
-            this.btnHeads_1_2_General_Y2_Back = new Kaban.UI.Controls.ButtonHMI();
-            this.dispHeads_1_2_General_Y2_Axis_Position = new Kaban.UI.Controls.NumericDisplayHMI();
-            this.btnHeads_1_2_General_Y2_Forward = new Kaban.UI.Controls.ButtonHMI();
+            this.capZ_2 = new Kaban.UI.Controls.LabelHMI();
+            this.axHeads_1_2_Head_2_Z_Axis_Unit = new Kaban.UI.Controls.AxisUnitHMI();
+            this.loadHeads_1_2_Head_2_Z_Actual_Torque = new Kaban.UI.Controls.MeterHMI();
+            this.capRZ_2 = new Kaban.UI.Controls.LabelHMI();
+            this.axHeads_1_2_Head_2_RZ_Axis_Unit = new Kaban.UI.Controls.AxisUnitHMI();
+            this.loadHeads_1_2_Head_2_RZ_Actual_Torque = new Kaban.UI.Controls.MeterHMI();
             this.hdAxis_2 = new Kaban.UI.Controls.LabelHMI();
-            this.hdBack_2 = new Kaban.UI.Controls.LabelHMI();
-            this.hdAxis_Position_2 = new Kaban.UI.Controls.LabelHMI();
-            this.hdForward_2 = new Kaban.UI.Controls.LabelHMI();
+            this.hdAxis_Unit_2 = new Kaban.UI.Controls.LabelHMI();
             this.hdActual_Torque_2 = new Kaban.UI.Controls.LabelHMI();
             this.lblHead_3 = new Kaban.UI.Controls.LabelHMI();
-            this.capX_4 = new Kaban.UI.Controls.LabelHMI();
-            this.btnHeads_3_4_Head_3_X_Back = new Kaban.UI.Controls.ButtonHMI();
-            this.dispHeads_3_4_Head_3_X_Axis_Position = new Kaban.UI.Controls.NumericDisplayHMI();
-            this.btnHeads_3_4_Head_3_X_Forward = new Kaban.UI.Controls.ButtonHMI();
+            this.capX_3 = new Kaban.UI.Controls.LabelHMI();
+            this.axHeads_3_4_Head_3_X_Axis_Unit = new Kaban.UI.Controls.AxisUnitHMI();
             this.loadHeads_3_4_Head_3_X_Actual_Torque = new Kaban.UI.Controls.MeterHMI();
-            this.capX2_3 = new Kaban.UI.Controls.LabelHMI();
-            this.btnHeads_3_4_Head_3_X2_Back = new Kaban.UI.Controls.ButtonHMI();
-            this.dispHeads_3_4_Head_3_X2_Axis_Position = new Kaban.UI.Controls.NumericDisplayHMI();
-            this.btnHeads_3_4_Head_3_X2_Forward = new Kaban.UI.Controls.ButtonHMI();
-            this.loadHeads_3_4_Head_3_X2_Actual_Torque = new Kaban.UI.Controls.MeterHMI();
-            this.capY1_4 = new Kaban.UI.Controls.LabelHMI();
-            this.btnHeads_3_4_Head_3_Y1_Back = new Kaban.UI.Controls.ButtonHMI();
-            this.dispHeads_3_4_Head_3_Y1_Axis_Position = new Kaban.UI.Controls.NumericDisplayHMI();
-            this.btnHeads_3_4_Head_3_Y1_Forward = new Kaban.UI.Controls.ButtonHMI();
+            this.capY1_3 = new Kaban.UI.Controls.LabelHMI();
+            this.axHeads_3_4_Head_3_Y1_Axis_Unit = new Kaban.UI.Controls.AxisUnitHMI();
             this.loadHeads_3_4_Head_3_Y1_Actual_Torque = new Kaban.UI.Controls.MeterHMI();
-            this.capY2_4 = new Kaban.UI.Controls.LabelHMI();
-            this.btnHeads_3_4_Head_3_Y2_Back = new Kaban.UI.Controls.ButtonHMI();
-            this.dispHeads_3_4_Head_3_Y2_Axis_Position = new Kaban.UI.Controls.NumericDisplayHMI();
-            this.btnHeads_3_4_Head_3_Y2_Forward = new Kaban.UI.Controls.ButtonHMI();
+            this.capY2_3 = new Kaban.UI.Controls.LabelHMI();
+            this.axHeads_3_4_Head_3_Y2_Axis_Unit = new Kaban.UI.Controls.AxisUnitHMI();
             this.loadHeads_3_4_Head_3_Y2_Actual_Torque = new Kaban.UI.Controls.MeterHMI();
-            this.capZ1_3 = new Kaban.UI.Controls.LabelHMI();
-            this.btnHeads_3_4_Head_3_Z1_Back = new Kaban.UI.Controls.ButtonHMI();
-            this.dispHeads_3_4_Head_3_Z1_Axis_Position = new Kaban.UI.Controls.NumericDisplayHMI();
-            this.btnHeads_3_4_Head_3_Z1_Forward = new Kaban.UI.Controls.ButtonHMI();
-            this.loadHeads_3_4_Head_3_Z1_Actual_Torque = new Kaban.UI.Controls.MeterHMI();
-            this.capZ2_3 = new Kaban.UI.Controls.LabelHMI();
-            this.btnHeads_3_4_Head_3_Z2_Back = new Kaban.UI.Controls.ButtonHMI();
-            this.dispHeads_3_4_Head_3_Z2_Axis_Position = new Kaban.UI.Controls.NumericDisplayHMI();
-            this.btnHeads_3_4_Head_3_Z2_Forward = new Kaban.UI.Controls.ButtonHMI();
-            this.loadHeads_3_4_Head_3_Z2_Actual_Torque = new Kaban.UI.Controls.MeterHMI();
+            this.capZ_3 = new Kaban.UI.Controls.LabelHMI();
+            this.axHeads_3_4_Head_3_Z_Axis_Unit = new Kaban.UI.Controls.AxisUnitHMI();
+            this.loadHeads_3_4_Head_3_Z_Actual_Torque = new Kaban.UI.Controls.MeterHMI();
+            this.capRZ_3 = new Kaban.UI.Controls.LabelHMI();
+            this.axHeads_3_4_Head_3_RZ_Axis_Unit = new Kaban.UI.Controls.AxisUnitHMI();
+            this.loadHeads_3_4_Head_3_RZ_Actual_Torque = new Kaban.UI.Controls.MeterHMI();
             this.lblHead_4 = new Kaban.UI.Controls.LabelHMI();
-            this.capX_5 = new Kaban.UI.Controls.LabelHMI();
-            this.btnHeads_3_4_Head_4_X_Back = new Kaban.UI.Controls.ButtonHMI();
-            this.dispHeads_3_4_Head_4_X_Axis_Position = new Kaban.UI.Controls.NumericDisplayHMI();
-            this.btnHeads_3_4_Head_4_X_Forward = new Kaban.UI.Controls.ButtonHMI();
+            this.capX_4 = new Kaban.UI.Controls.LabelHMI();
+            this.axHeads_3_4_Head_4_X_Axis_Unit = new Kaban.UI.Controls.AxisUnitHMI();
             this.loadHeads_3_4_Head_4_X_Actual_Torque = new Kaban.UI.Controls.MeterHMI();
-            this.capX2_4 = new Kaban.UI.Controls.LabelHMI();
-            this.btnHeads_3_4_Head_4_X2_Back = new Kaban.UI.Controls.ButtonHMI();
-            this.dispHeads_3_4_Head_4_X2_Axis_Position = new Kaban.UI.Controls.NumericDisplayHMI();
-            this.btnHeads_3_4_Head_4_X2_Forward = new Kaban.UI.Controls.ButtonHMI();
-            this.loadHeads_3_4_Head_4_X2_Actual_Torque = new Kaban.UI.Controls.MeterHMI();
-            this.capY1_5 = new Kaban.UI.Controls.LabelHMI();
-            this.btnHeads_3_4_Head_4_Y1_Back = new Kaban.UI.Controls.ButtonHMI();
-            this.dispHeads_3_4_Head_4_Y1_Axis_Position = new Kaban.UI.Controls.NumericDisplayHMI();
-            this.btnHeads_3_4_Head_4_Y1_Forward = new Kaban.UI.Controls.ButtonHMI();
+            this.capY1_4 = new Kaban.UI.Controls.LabelHMI();
+            this.axHeads_3_4_Head_4_Y1_Axis_Unit = new Kaban.UI.Controls.AxisUnitHMI();
             this.loadHeads_3_4_Head_4_Y1_Actual_Torque = new Kaban.UI.Controls.MeterHMI();
-            this.capY2_5 = new Kaban.UI.Controls.LabelHMI();
-            this.btnHeads_3_4_Head_4_Y2_Back = new Kaban.UI.Controls.ButtonHMI();
-            this.dispHeads_3_4_Head_4_Y2_Axis_Position = new Kaban.UI.Controls.NumericDisplayHMI();
-            this.btnHeads_3_4_Head_4_Y2_Forward = new Kaban.UI.Controls.ButtonHMI();
+            this.capY2_4 = new Kaban.UI.Controls.LabelHMI();
+            this.axHeads_3_4_Head_4_Y2_Axis_Unit = new Kaban.UI.Controls.AxisUnitHMI();
             this.loadHeads_3_4_Head_4_Y2_Actual_Torque = new Kaban.UI.Controls.MeterHMI();
-            this.capZ1_4 = new Kaban.UI.Controls.LabelHMI();
-            this.btnHeads_3_4_Head_4_Z1_Back = new Kaban.UI.Controls.ButtonHMI();
-            this.dispHeads_3_4_Head_4_Z1_Axis_Position = new Kaban.UI.Controls.NumericDisplayHMI();
-            this.btnHeads_3_4_Head_4_Z1_Forward = new Kaban.UI.Controls.ButtonHMI();
-            this.loadHeads_3_4_Head_4_Z1_Actual_Torque = new Kaban.UI.Controls.MeterHMI();
-            this.capZ2_4 = new Kaban.UI.Controls.LabelHMI();
-            this.btnHeads_3_4_Head_4_Z2_Back = new Kaban.UI.Controls.ButtonHMI();
-            this.dispHeads_3_4_Head_4_Z2_Axis_Position = new Kaban.UI.Controls.NumericDisplayHMI();
-            this.btnHeads_3_4_Head_4_Z2_Forward = new Kaban.UI.Controls.ButtonHMI();
-            this.loadHeads_3_4_Head_4_Z2_Actual_Torque = new Kaban.UI.Controls.MeterHMI();
+            this.capZ_4 = new Kaban.UI.Controls.LabelHMI();
+            this.axHeads_3_4_Head_4_Z_Axis_Unit = new Kaban.UI.Controls.AxisUnitHMI();
+            this.loadHeads_3_4_Head_4_Z_Actual_Torque = new Kaban.UI.Controls.MeterHMI();
+            this.capRZ_4 = new Kaban.UI.Controls.LabelHMI();
+            this.axHeads_3_4_Head_4_RZ_Axis_Unit = new Kaban.UI.Controls.AxisUnitHMI();
+            this.loadHeads_3_4_Head_4_RZ_Actual_Torque = new Kaban.UI.Controls.MeterHMI();
+            this.hdAxis_3 = new Kaban.UI.Controls.LabelHMI();
+            this.hdAxis_Unit_3 = new Kaban.UI.Controls.LabelHMI();
+            this.hdActual_Torque_3 = new Kaban.UI.Controls.LabelHMI();
+            this.lblGeneral = new Kaban.UI.Controls.LabelHMI();
+            this.capX1 = new Kaban.UI.Controls.LabelHMI();
+            this.axBody_General_X1_Axis_Unit = new Kaban.UI.Controls.AxisUnitHMI();
+            this.capX2 = new Kaban.UI.Controls.LabelHMI();
+            this.axBody_General_X2_Axis_Unit = new Kaban.UI.Controls.AxisUnitHMI();
+            this.capY1_5 = new Kaban.UI.Controls.LabelHMI();
+            this.axBody_General_Y1_Axis_Unit = new Kaban.UI.Controls.AxisUnitHMI();
+            this.capY2_5 = new Kaban.UI.Controls.LabelHMI();
+            this.axBody_General_Y2_Axis_Unit = new Kaban.UI.Controls.AxisUnitHMI();
             this.hdName = new Kaban.UI.Controls.LabelHMI();
-            this.hdBack_3 = new Kaban.UI.Controls.LabelHMI();
-            this.hdForward_3 = new Kaban.UI.Controls.LabelHMI();
+            this.hdBack = new Kaban.UI.Controls.LabelHMI();
+            this.hdForward = new Kaban.UI.Controls.LabelHMI();
             this.capMilling_Cutters = new Kaban.UI.Controls.LabelHMI();
             this.btnUnits_Milling_Cutters_Back = new Kaban.UI.Controls.ButtonHMI();
-            this.capResistance_Lower_Down_Up = new Kaban.UI.Controls.LabelHMI();
-            this.btnUnits_Resistance_Lower_Down_Up_Back = new Kaban.UI.Controls.ButtonHMI();
-            this.btnUnits_Resistance_Lower_Down_Up_Forward = new Kaban.UI.Controls.ButtonHMI();
-            this.capProfile_Tightening = new Kaban.UI.Controls.LabelHMI();
-            this.btnUnits_Profile_Tightening_Back = new Kaban.UI.Controls.ButtonHMI();
-            this.btnUnits_Profile_Tightening_Forward = new Kaban.UI.Controls.ButtonHMI();
-            this.capFront_Clamping = new Kaban.UI.Controls.LabelHMI();
-            this.btnUnits_Front_Clamping_Back = new Kaban.UI.Controls.ButtonHMI();
-            this.btnUnits_Front_Clamping_Forward = new Kaban.UI.Controls.ButtonHMI();
-            this.capProfile_Emptying = new Kaban.UI.Controls.LabelHMI();
-            this.btnUnits_Profile_Emptying_Back = new Kaban.UI.Controls.ButtonHMI();
-            this.btnUnits_Profile_Emptying_Forward = new Kaban.UI.Controls.ButtonHMI();
-            this.capProfile_Ear_Clamping = new Kaban.UI.Controls.LabelHMI();
-            this.btnUnits_Profile_Ear_Clamping_Back = new Kaban.UI.Controls.ButtonHMI();
-            this.btnUnits_Profile_Ear_Clamping_Forward = new Kaban.UI.Controls.ButtonHMI();
-            this.capMold_Shifting = new Kaban.UI.Controls.LabelHMI();
-            this.btnUnits_Mold_Shifting_Back = new Kaban.UI.Controls.ButtonHMI();
-            this.btnUnits_Mold_Shifting_Forward = new Kaban.UI.Controls.ButtonHMI();
             this.capConveyor_Up_Down = new Kaban.UI.Controls.LabelHMI();
             this.btnUnits_Conveyor_Up_Down_Back = new Kaban.UI.Controls.ButtonHMI();
             this.btnUnits_Conveyor_Up_Down_Forward = new Kaban.UI.Controls.ButtonHMI();
@@ -273,65 +124,6 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.dispUnits_Thermocouple_Lower_Back = new Kaban.UI.Controls.NumericDisplayHMI();
             this.capThermocouple_Upper = new Kaban.UI.Controls.LabelHMI();
             this.dispUnits_Thermocouple_Upper_Back = new Kaban.UI.Controls.NumericDisplayHMI();
-            this.hdHead_1 = new Kaban.UI.Controls.LabelHMI();
-            this.hdHead_2 = new Kaban.UI.Controls.LabelHMI();
-            this.hdHead_3 = new Kaban.UI.Controls.LabelHMI();
-            this.hdHead_4 = new Kaban.UI.Controls.LabelHMI();
-            this.hdPiston_Sensors = new Kaban.UI.Controls.LabelHMI();
-            this.hdLeft = new Kaban.UI.Controls.LabelHMI();
-            this.hdRight = new Kaban.UI.Controls.LabelHMI();
-            this.hdLeft_2 = new Kaban.UI.Controls.LabelHMI();
-            this.hdRight_2 = new Kaban.UI.Controls.LabelHMI();
-            this.hdLeft_3 = new Kaban.UI.Controls.LabelHMI();
-            this.hdRight_3 = new Kaban.UI.Controls.LabelHMI();
-            this.hdLeft_4 = new Kaban.UI.Controls.LabelHMI();
-            this.hdRight_4 = new Kaban.UI.Controls.LabelHMI();
-            this.capUpper_Clamp_Is_Up = new Kaban.UI.Controls.LabelHMI();
-            this.lampPiston_Sensors_Upper_Clamp_Is_Up_Head_1_Left = new Kaban.UI.Controls.LampHMI();
-            this.lampPiston_Sensors_Upper_Clamp_Is_Up_Head_1_Right = new Kaban.UI.Controls.LampHMI();
-            this.lampPiston_Sensors_Upper_Clamp_Is_Up_Head_2_Left = new Kaban.UI.Controls.LampHMI();
-            this.lampPiston_Sensors_Upper_Clamp_Is_Up_Head_2_Right = new Kaban.UI.Controls.LampHMI();
-            this.lampPiston_Sensors_Upper_Clamp_Is_Up_Head_3_Left = new Kaban.UI.Controls.LampHMI();
-            this.lampPiston_Sensors_Upper_Clamp_Is_Up_Head_3_Right = new Kaban.UI.Controls.LampHMI();
-            this.lampPiston_Sensors_Upper_Clamp_Is_Up_Head_4_Left = new Kaban.UI.Controls.LampHMI();
-            this.lampPiston_Sensors_Upper_Clamp_Is_Up_Head_4_Right = new Kaban.UI.Controls.LampHMI();
-            this.capDown_Resistance_Is_Up = new Kaban.UI.Controls.LabelHMI();
-            this.lampPiston_Sensors_Down_Resistance_Is_Up_Head_1_Left = new Kaban.UI.Controls.LampHMI();
-            this.lampPiston_Sensors_Down_Resistance_Is_Up_Head_2_Left = new Kaban.UI.Controls.LampHMI();
-            this.lampPiston_Sensors_Down_Resistance_Is_Up_Head_3_Left = new Kaban.UI.Controls.LampHMI();
-            this.lampPiston_Sensors_Down_Resistance_Is_Up_Head_4_Left = new Kaban.UI.Controls.LampHMI();
-            this.capFront_Clamp_Is_Front = new Kaban.UI.Controls.LabelHMI();
-            this.lampPiston_Sensors_Front_Clamp_Is_Front_Head_1_Left = new Kaban.UI.Controls.LampHMI();
-            this.lampPiston_Sensors_Front_Clamp_Is_Front_Head_1_Right = new Kaban.UI.Controls.LampHMI();
-            this.lampPiston_Sensors_Front_Clamp_Is_Front_Head_2_Left = new Kaban.UI.Controls.LampHMI();
-            this.lampPiston_Sensors_Front_Clamp_Is_Front_Head_2_Right = new Kaban.UI.Controls.LampHMI();
-            this.lampPiston_Sensors_Front_Clamp_Is_Front_Head_3_Left = new Kaban.UI.Controls.LampHMI();
-            this.lampPiston_Sensors_Front_Clamp_Is_Front_Head_3_Right = new Kaban.UI.Controls.LampHMI();
-            this.lampPiston_Sensors_Front_Clamp_Is_Front_Head_4_Left = new Kaban.UI.Controls.LampHMI();
-            this.lampPiston_Sensors_Front_Clamp_Is_Front_Head_4_Right = new Kaban.UI.Controls.LampHMI();
-            this.capEar_Clamp_Is_Down = new Kaban.UI.Controls.LabelHMI();
-            this.lampPiston_Sensors_Ear_Clamp_Is_Down_Head_1_Left = new Kaban.UI.Controls.LampHMI();
-            this.lampPiston_Sensors_Ear_Clamp_Is_Down_Head_1_Right = new Kaban.UI.Controls.LampHMI();
-            this.lampPiston_Sensors_Ear_Clamp_Is_Down_Head_2_Left = new Kaban.UI.Controls.LampHMI();
-            this.lampPiston_Sensors_Ear_Clamp_Is_Down_Head_2_Right = new Kaban.UI.Controls.LampHMI();
-            this.lampPiston_Sensors_Ear_Clamp_Is_Down_Head_3_Left = new Kaban.UI.Controls.LampHMI();
-            this.lampPiston_Sensors_Ear_Clamp_Is_Down_Head_3_Right = new Kaban.UI.Controls.LampHMI();
-            this.lampPiston_Sensors_Ear_Clamp_Is_Down_Head_4_Left = new Kaban.UI.Controls.LampHMI();
-            this.lampPiston_Sensors_Ear_Clamp_Is_Down_Head_4_Right = new Kaban.UI.Controls.LampHMI();
-            this.capMold_Shifting_Is_Back = new Kaban.UI.Controls.LabelHMI();
-            this.lampPiston_Sensors_Mold_Shifting_Is_Back_Head_1_Left = new Kaban.UI.Controls.LampHMI();
-            this.lampPiston_Sensors_Mold_Shifting_Is_Back_Head_1_Right = new Kaban.UI.Controls.LampHMI();
-            this.lampPiston_Sensors_Mold_Shifting_Is_Back_Head_2_Left = new Kaban.UI.Controls.LampHMI();
-            this.lampPiston_Sensors_Mold_Shifting_Is_Back_Head_2_Right = new Kaban.UI.Controls.LampHMI();
-            this.lampPiston_Sensors_Mold_Shifting_Is_Back_Head_3_Left = new Kaban.UI.Controls.LampHMI();
-            this.lampPiston_Sensors_Mold_Shifting_Is_Back_Head_3_Right = new Kaban.UI.Controls.LampHMI();
-            this.lampPiston_Sensors_Mold_Shifting_Is_Back_Head_4_Left = new Kaban.UI.Controls.LampHMI();
-            this.lampPiston_Sensors_Mold_Shifting_Is_Back_Head_4_Right = new Kaban.UI.Controls.LampHMI();
-            this.capProfile_Emptying_Is_Up = new Kaban.UI.Controls.LabelHMI();
-            this.lampPiston_Sensors_Profile_Emptying_Is_Up_Head_1_Left = new Kaban.UI.Controls.LampHMI();
-            this.lampPiston_Sensors_Profile_Emptying_Is_Up_Head_2_Left = new Kaban.UI.Controls.LampHMI();
-            this.lampPiston_Sensors_Profile_Emptying_Is_Up_Head_3_Left = new Kaban.UI.Controls.LampHMI();
-            this.lampPiston_Sensors_Profile_Emptying_Is_Up_Head_4_Left = new Kaban.UI.Controls.LampHMI();
             this.SuspendLayout();
             // 
             // hdAxis
@@ -345,38 +137,16 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.hdAxis.Location = new System.Drawing.Point(16, 16);
             this.hdAxis.Size = new System.Drawing.Size(46, 26);
             // 
-            // hdBack
+            // hdAxis_Unit
             // 
-            this.hdBack.Name = "hdBack";
-            this.hdBack.TranslationKey = "Back";
-            this.hdBack.Text = "Back";
-            this.hdBack.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
-            this.hdBack.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
-            this.hdBack.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.hdBack.Location = new System.Drawing.Point(68, 16);
-            this.hdBack.Size = new System.Drawing.Size(72, 26);
-            // 
-            // hdAxis_Position
-            // 
-            this.hdAxis_Position.Name = "hdAxis_Position";
-            this.hdAxis_Position.TranslationKey = "Axis Position";
-            this.hdAxis_Position.Text = "Axis Position";
-            this.hdAxis_Position.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
-            this.hdAxis_Position.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
-            this.hdAxis_Position.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.hdAxis_Position.Location = new System.Drawing.Point(146, 16);
-            this.hdAxis_Position.Size = new System.Drawing.Size(104, 26);
-            // 
-            // hdForward
-            // 
-            this.hdForward.Name = "hdForward";
-            this.hdForward.TranslationKey = "Forward";
-            this.hdForward.Text = "Forward";
-            this.hdForward.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
-            this.hdForward.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
-            this.hdForward.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.hdForward.Location = new System.Drawing.Point(256, 16);
-            this.hdForward.Size = new System.Drawing.Size(72, 26);
+            this.hdAxis_Unit.Name = "hdAxis_Unit";
+            this.hdAxis_Unit.TranslationKey = "Axis Unit";
+            this.hdAxis_Unit.Text = "Axis Unit";
+            this.hdAxis_Unit.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
+            this.hdAxis_Unit.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
+            this.hdAxis_Unit.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.hdAxis_Unit.Location = new System.Drawing.Point(68, 16);
+            this.hdAxis_Unit.Size = new System.Drawing.Size(300, 26);
             // 
             // hdActual_Torque
             // 
@@ -386,7 +156,7 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.hdActual_Torque.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
             this.hdActual_Torque.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
             this.hdActual_Torque.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.hdActual_Torque.Location = new System.Drawing.Point(334, 16);
+            this.hdActual_Torque.Location = new System.Drawing.Point(374, 16);
             this.hdActual_Torque.Size = new System.Drawing.Size(120, 26);
             // 
             // lblHead_1
@@ -398,7 +168,7 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.lblHead_1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
             this.lblHead_1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.lblHead_1.Location = new System.Drawing.Point(16, 52);
-            this.lblHead_1.Size = new System.Drawing.Size(438, 26);
+            this.lblHead_1.Size = new System.Drawing.Size(478, 26);
             // 
             // capX
             // 
@@ -409,49 +179,18 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.capX.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
             this.capX.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.capX.Location = new System.Drawing.Point(16, 80);
-            this.capX.Size = new System.Drawing.Size(46, 40);
+            this.capX.Size = new System.Drawing.Size(46, 72);
             this.capX.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             // 
-            // btnHeads_1_2_Head_1_X_Back
+            // axHeads_1_2_Head_1_X_Axis_Unit
             // 
-            this.btnHeads_1_2_Head_1_X_Back.Name = "btnHeads_1_2_Head_1_X_Back";
-            this.btnHeads_1_2_Head_1_X_Back.PlcNumber = 1;
-            this.btnHeads_1_2_Head_1_X_Back.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.Left;
-            bitAction1.Address = "M45";
-            bitAction1.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnHeads_1_2_Head_1_X_Back.BitActions.Add(bitAction1);
-            this.btnHeads_1_2_Head_1_X_Back.Lamp1Address = "W0.0";
-            this.btnHeads_1_2_Head_1_X_Back.Location = new System.Drawing.Point(68, 83);
-            this.btnHeads_1_2_Head_1_X_Back.Size = new System.Drawing.Size(72, 34);
-            this.btnHeads_1_2_Head_1_X_Back.LogAction = true;
-            this.btnHeads_1_2_Head_1_X_Back.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // dispHeads_1_2_Head_1_X_Axis_Position
-            // 
-            // Head 1 X Axis Position: D20, raw / 10000.
-            this.dispHeads_1_2_Head_1_X_Axis_Position.Name = "dispHeads_1_2_Head_1_X_Axis_Position";
-            this.dispHeads_1_2_Head_1_X_Axis_Position.PlcNumber = 1;
-            this.dispHeads_1_2_Head_1_X_Axis_Position.Address = "D20";
-            this.dispHeads_1_2_Head_1_X_Axis_Position.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.dispHeads_1_2_Head_1_X_Axis_Position.Divisor = 10000D;
-            this.dispHeads_1_2_Head_1_X_Axis_Position.DecimalPlaces = 2;
-            this.dispHeads_1_2_Head_1_X_Axis_Position.Digits = 7;
-            this.dispHeads_1_2_Head_1_X_Axis_Position.Suffix = "mm";
-            this.dispHeads_1_2_Head_1_X_Axis_Position.Location = new System.Drawing.Point(146, 83);
-            this.dispHeads_1_2_Head_1_X_Axis_Position.Size = new System.Drawing.Size(104, 34);
-            // 
-            // btnHeads_1_2_Head_1_X_Forward
-            // 
-            this.btnHeads_1_2_Head_1_X_Forward.Name = "btnHeads_1_2_Head_1_X_Forward";
-            this.btnHeads_1_2_Head_1_X_Forward.PlcNumber = 1;
-            this.btnHeads_1_2_Head_1_X_Forward.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.Right;
-            bitAction2.Address = "M26";
-            bitAction2.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnHeads_1_2_Head_1_X_Forward.BitActions.Add(bitAction2);
-            this.btnHeads_1_2_Head_1_X_Forward.Location = new System.Drawing.Point(256, 83);
-            this.btnHeads_1_2_Head_1_X_Forward.Size = new System.Drawing.Size(72, 34);
-            this.btnHeads_1_2_Head_1_X_Forward.LogAction = true;
-            this.btnHeads_1_2_Head_1_X_Forward.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            // Head 1 X: axis 5 of the axis settings page (its buttons, position, reference sensor and error come from there).
+            this.axHeads_1_2_Head_1_X_Axis_Unit.BackColor = System.Drawing.Color.White;
+            this.axHeads_1_2_Head_1_X_Axis_Unit.Name = "axHeads_1_2_Head_1_X_Axis_Unit";
+            this.axHeads_1_2_Head_1_X_Axis_Unit.AxisNumber = 5;
+            this.axHeads_1_2_Head_1_X_Axis_Unit.PlcNumber = 1;
+            this.axHeads_1_2_Head_1_X_Axis_Unit.Location = new System.Drawing.Point(68, 84);
+            this.axHeads_1_2_Head_1_X_Axis_Unit.Size = new System.Drawing.Size(300, 64);
             // 
             // loadHeads_1_2_Head_1_X_Actual_Torque
             // 
@@ -465,76 +204,8 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.loadHeads_1_2_Head_1_X_Actual_Torque.ScaleMinimum = 0D;
             this.loadHeads_1_2_Head_1_X_Actual_Torque.ScaleMaximum = 100D;
             this.loadHeads_1_2_Head_1_X_Actual_Torque.Signed = true;
-            this.loadHeads_1_2_Head_1_X_Actual_Torque.Location = new System.Drawing.Point(334, 87);
+            this.loadHeads_1_2_Head_1_X_Actual_Torque.Location = new System.Drawing.Point(374, 103);
             this.loadHeads_1_2_Head_1_X_Actual_Torque.Size = new System.Drawing.Size(120, 26);
-            // 
-            // capX2
-            // 
-            this.capX2.Name = "capX2";
-            this.capX2.TranslationKey = "X2";
-            this.capX2.Text = "X2";
-            this.capX2.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.capX2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
-            this.capX2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capX2.Location = new System.Drawing.Point(16, 120);
-            this.capX2.Size = new System.Drawing.Size(46, 40);
-            this.capX2.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            // 
-            // btnHeads_1_2_Head_1_X2_Back
-            // 
-            this.btnHeads_1_2_Head_1_X2_Back.Name = "btnHeads_1_2_Head_1_X2_Back";
-            this.btnHeads_1_2_Head_1_X2_Back.PlcNumber = 1;
-            this.btnHeads_1_2_Head_1_X2_Back.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.Left;
-            bitAction3.Address = "M223";
-            bitAction3.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnHeads_1_2_Head_1_X2_Back.BitActions.Add(bitAction3);
-            this.btnHeads_1_2_Head_1_X2_Back.Lamp1Address = "W1.6";
-            this.btnHeads_1_2_Head_1_X2_Back.Location = new System.Drawing.Point(68, 123);
-            this.btnHeads_1_2_Head_1_X2_Back.Size = new System.Drawing.Size(72, 34);
-            this.btnHeads_1_2_Head_1_X2_Back.LogAction = true;
-            this.btnHeads_1_2_Head_1_X2_Back.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // dispHeads_1_2_Head_1_X2_Axis_Position
-            // 
-            // Head 1 X2 Axis Position: D460, raw / 10000.
-            this.dispHeads_1_2_Head_1_X2_Axis_Position.Name = "dispHeads_1_2_Head_1_X2_Axis_Position";
-            this.dispHeads_1_2_Head_1_X2_Axis_Position.PlcNumber = 1;
-            this.dispHeads_1_2_Head_1_X2_Axis_Position.Address = "D460";
-            this.dispHeads_1_2_Head_1_X2_Axis_Position.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.dispHeads_1_2_Head_1_X2_Axis_Position.Divisor = 10000D;
-            this.dispHeads_1_2_Head_1_X2_Axis_Position.DecimalPlaces = 2;
-            this.dispHeads_1_2_Head_1_X2_Axis_Position.Digits = 7;
-            this.dispHeads_1_2_Head_1_X2_Axis_Position.Suffix = "mm";
-            this.dispHeads_1_2_Head_1_X2_Axis_Position.Location = new System.Drawing.Point(146, 123);
-            this.dispHeads_1_2_Head_1_X2_Axis_Position.Size = new System.Drawing.Size(104, 34);
-            // 
-            // btnHeads_1_2_Head_1_X2_Forward
-            // 
-            this.btnHeads_1_2_Head_1_X2_Forward.Name = "btnHeads_1_2_Head_1_X2_Forward";
-            this.btnHeads_1_2_Head_1_X2_Forward.PlcNumber = 1;
-            this.btnHeads_1_2_Head_1_X2_Forward.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.Right;
-            bitAction4.Address = "M222";
-            bitAction4.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnHeads_1_2_Head_1_X2_Forward.BitActions.Add(bitAction4);
-            this.btnHeads_1_2_Head_1_X2_Forward.Location = new System.Drawing.Point(256, 123);
-            this.btnHeads_1_2_Head_1_X2_Forward.Size = new System.Drawing.Size(72, 34);
-            this.btnHeads_1_2_Head_1_X2_Forward.LogAction = true;
-            this.btnHeads_1_2_Head_1_X2_Forward.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // loadHeads_1_2_Head_1_X2_Actual_Torque
-            // 
-            // Head 1 X2 Actual Torque: D6656, |raw| on 0 - 100 % as the old page's bar.
-            this.loadHeads_1_2_Head_1_X2_Actual_Torque.Name = "loadHeads_1_2_Head_1_X2_Actual_Torque";
-            this.loadHeads_1_2_Head_1_X2_Actual_Torque.PlcNumber = 1;
-            this.loadHeads_1_2_Head_1_X2_Actual_Torque.Address = "D6656";
-            this.loadHeads_1_2_Head_1_X2_Actual_Torque.Divisor = 1D;
-            this.loadHeads_1_2_Head_1_X2_Actual_Torque.DecimalPlaces = 0;
-            this.loadHeads_1_2_Head_1_X2_Actual_Torque.Suffix = "%";
-            this.loadHeads_1_2_Head_1_X2_Actual_Torque.ScaleMinimum = 0D;
-            this.loadHeads_1_2_Head_1_X2_Actual_Torque.ScaleMaximum = 100D;
-            this.loadHeads_1_2_Head_1_X2_Actual_Torque.Signed = true;
-            this.loadHeads_1_2_Head_1_X2_Actual_Torque.Location = new System.Drawing.Point(334, 127);
-            this.loadHeads_1_2_Head_1_X2_Actual_Torque.Size = new System.Drawing.Size(120, 26);
             // 
             // capY1
             // 
@@ -544,50 +215,19 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.capY1.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.capY1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
             this.capY1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capY1.Location = new System.Drawing.Point(16, 160);
-            this.capY1.Size = new System.Drawing.Size(46, 40);
+            this.capY1.Location = new System.Drawing.Point(16, 152);
+            this.capY1.Size = new System.Drawing.Size(46, 72);
             this.capY1.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             // 
-            // btnHeads_1_2_Head_1_Y1_Back
+            // axHeads_1_2_Head_1_Y1_Axis_Unit
             // 
-            this.btnHeads_1_2_Head_1_Y1_Back.Name = "btnHeads_1_2_Head_1_Y1_Back";
-            this.btnHeads_1_2_Head_1_Y1_Back.PlcNumber = 1;
-            this.btnHeads_1_2_Head_1_Y1_Back.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.Left;
-            bitAction5.Address = "M27";
-            bitAction5.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnHeads_1_2_Head_1_Y1_Back.BitActions.Add(bitAction5);
-            this.btnHeads_1_2_Head_1_Y1_Back.Lamp1Address = "W0.1";
-            this.btnHeads_1_2_Head_1_Y1_Back.Location = new System.Drawing.Point(68, 163);
-            this.btnHeads_1_2_Head_1_Y1_Back.Size = new System.Drawing.Size(72, 34);
-            this.btnHeads_1_2_Head_1_Y1_Back.LogAction = true;
-            this.btnHeads_1_2_Head_1_Y1_Back.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // dispHeads_1_2_Head_1_Y1_Axis_Position
-            // 
-            // Head 1 Y1 Axis Position: D40, raw / 10000.
-            this.dispHeads_1_2_Head_1_Y1_Axis_Position.Name = "dispHeads_1_2_Head_1_Y1_Axis_Position";
-            this.dispHeads_1_2_Head_1_Y1_Axis_Position.PlcNumber = 1;
-            this.dispHeads_1_2_Head_1_Y1_Axis_Position.Address = "D40";
-            this.dispHeads_1_2_Head_1_Y1_Axis_Position.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.dispHeads_1_2_Head_1_Y1_Axis_Position.Divisor = 10000D;
-            this.dispHeads_1_2_Head_1_Y1_Axis_Position.DecimalPlaces = 2;
-            this.dispHeads_1_2_Head_1_Y1_Axis_Position.Digits = 7;
-            this.dispHeads_1_2_Head_1_Y1_Axis_Position.Suffix = "mm";
-            this.dispHeads_1_2_Head_1_Y1_Axis_Position.Location = new System.Drawing.Point(146, 163);
-            this.dispHeads_1_2_Head_1_Y1_Axis_Position.Size = new System.Drawing.Size(104, 34);
-            // 
-            // btnHeads_1_2_Head_1_Y1_Forward
-            // 
-            this.btnHeads_1_2_Head_1_Y1_Forward.Name = "btnHeads_1_2_Head_1_Y1_Forward";
-            this.btnHeads_1_2_Head_1_Y1_Forward.PlcNumber = 1;
-            this.btnHeads_1_2_Head_1_Y1_Forward.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.Right;
-            bitAction6.Address = "M46";
-            bitAction6.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnHeads_1_2_Head_1_Y1_Forward.BitActions.Add(bitAction6);
-            this.btnHeads_1_2_Head_1_Y1_Forward.Location = new System.Drawing.Point(256, 163);
-            this.btnHeads_1_2_Head_1_Y1_Forward.Size = new System.Drawing.Size(72, 34);
-            this.btnHeads_1_2_Head_1_Y1_Forward.LogAction = true;
-            this.btnHeads_1_2_Head_1_Y1_Forward.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            // Head 1 Y1: axis 6 of the axis settings page (its buttons, position, reference sensor and error come from there).
+            this.axHeads_1_2_Head_1_Y1_Axis_Unit.BackColor = System.Drawing.Color.White;
+            this.axHeads_1_2_Head_1_Y1_Axis_Unit.Name = "axHeads_1_2_Head_1_Y1_Axis_Unit";
+            this.axHeads_1_2_Head_1_Y1_Axis_Unit.AxisNumber = 6;
+            this.axHeads_1_2_Head_1_Y1_Axis_Unit.PlcNumber = 1;
+            this.axHeads_1_2_Head_1_Y1_Axis_Unit.Location = new System.Drawing.Point(68, 156);
+            this.axHeads_1_2_Head_1_Y1_Axis_Unit.Size = new System.Drawing.Size(300, 64);
             // 
             // loadHeads_1_2_Head_1_Y1_Actual_Torque
             // 
@@ -601,7 +241,7 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.loadHeads_1_2_Head_1_Y1_Actual_Torque.ScaleMinimum = 0D;
             this.loadHeads_1_2_Head_1_Y1_Actual_Torque.ScaleMaximum = 100D;
             this.loadHeads_1_2_Head_1_Y1_Actual_Torque.Signed = true;
-            this.loadHeads_1_2_Head_1_Y1_Actual_Torque.Location = new System.Drawing.Point(334, 167);
+            this.loadHeads_1_2_Head_1_Y1_Actual_Torque.Location = new System.Drawing.Point(374, 175);
             this.loadHeads_1_2_Head_1_Y1_Actual_Torque.Size = new System.Drawing.Size(120, 26);
             // 
             // capY2
@@ -612,50 +252,19 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.capY2.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.capY2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
             this.capY2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capY2.Location = new System.Drawing.Point(16, 200);
-            this.capY2.Size = new System.Drawing.Size(46, 40);
+            this.capY2.Location = new System.Drawing.Point(16, 224);
+            this.capY2.Size = new System.Drawing.Size(46, 72);
             this.capY2.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             // 
-            // btnHeads_1_2_Head_1_Y2_Back
+            // axHeads_1_2_Head_1_Y2_Axis_Unit
             // 
-            this.btnHeads_1_2_Head_1_Y2_Back.Name = "btnHeads_1_2_Head_1_Y2_Back";
-            this.btnHeads_1_2_Head_1_Y2_Back.PlcNumber = 1;
-            this.btnHeads_1_2_Head_1_Y2_Back.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.Left;
-            bitAction7.Address = "M28";
-            bitAction7.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnHeads_1_2_Head_1_Y2_Back.BitActions.Add(bitAction7);
-            this.btnHeads_1_2_Head_1_Y2_Back.Lamp1Address = "W0.2";
-            this.btnHeads_1_2_Head_1_Y2_Back.Location = new System.Drawing.Point(68, 203);
-            this.btnHeads_1_2_Head_1_Y2_Back.Size = new System.Drawing.Size(72, 34);
-            this.btnHeads_1_2_Head_1_Y2_Back.LogAction = true;
-            this.btnHeads_1_2_Head_1_Y2_Back.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // dispHeads_1_2_Head_1_Y2_Axis_Position
-            // 
-            // Head 1 Y2 Axis Position: D60, raw / 10000.
-            this.dispHeads_1_2_Head_1_Y2_Axis_Position.Name = "dispHeads_1_2_Head_1_Y2_Axis_Position";
-            this.dispHeads_1_2_Head_1_Y2_Axis_Position.PlcNumber = 1;
-            this.dispHeads_1_2_Head_1_Y2_Axis_Position.Address = "D60";
-            this.dispHeads_1_2_Head_1_Y2_Axis_Position.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.dispHeads_1_2_Head_1_Y2_Axis_Position.Divisor = 10000D;
-            this.dispHeads_1_2_Head_1_Y2_Axis_Position.DecimalPlaces = 2;
-            this.dispHeads_1_2_Head_1_Y2_Axis_Position.Digits = 7;
-            this.dispHeads_1_2_Head_1_Y2_Axis_Position.Suffix = "mm";
-            this.dispHeads_1_2_Head_1_Y2_Axis_Position.Location = new System.Drawing.Point(146, 203);
-            this.dispHeads_1_2_Head_1_Y2_Axis_Position.Size = new System.Drawing.Size(104, 34);
-            // 
-            // btnHeads_1_2_Head_1_Y2_Forward
-            // 
-            this.btnHeads_1_2_Head_1_Y2_Forward.Name = "btnHeads_1_2_Head_1_Y2_Forward";
-            this.btnHeads_1_2_Head_1_Y2_Forward.PlcNumber = 1;
-            this.btnHeads_1_2_Head_1_Y2_Forward.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.Right;
-            bitAction8.Address = "M47";
-            bitAction8.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnHeads_1_2_Head_1_Y2_Forward.BitActions.Add(bitAction8);
-            this.btnHeads_1_2_Head_1_Y2_Forward.Location = new System.Drawing.Point(256, 203);
-            this.btnHeads_1_2_Head_1_Y2_Forward.Size = new System.Drawing.Size(72, 34);
-            this.btnHeads_1_2_Head_1_Y2_Forward.LogAction = true;
-            this.btnHeads_1_2_Head_1_Y2_Forward.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            // Head 1 Y2: axis 7 of the axis settings page (its buttons, position, reference sensor and error come from there).
+            this.axHeads_1_2_Head_1_Y2_Axis_Unit.BackColor = System.Drawing.Color.White;
+            this.axHeads_1_2_Head_1_Y2_Axis_Unit.Name = "axHeads_1_2_Head_1_Y2_Axis_Unit";
+            this.axHeads_1_2_Head_1_Y2_Axis_Unit.AxisNumber = 7;
+            this.axHeads_1_2_Head_1_Y2_Axis_Unit.PlcNumber = 1;
+            this.axHeads_1_2_Head_1_Y2_Axis_Unit.Location = new System.Drawing.Point(68, 228);
+            this.axHeads_1_2_Head_1_Y2_Axis_Unit.Size = new System.Drawing.Size(300, 64);
             // 
             // loadHeads_1_2_Head_1_Y2_Actual_Torque
             // 
@@ -669,144 +278,82 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.loadHeads_1_2_Head_1_Y2_Actual_Torque.ScaleMinimum = 0D;
             this.loadHeads_1_2_Head_1_Y2_Actual_Torque.ScaleMaximum = 100D;
             this.loadHeads_1_2_Head_1_Y2_Actual_Torque.Signed = true;
-            this.loadHeads_1_2_Head_1_Y2_Actual_Torque.Location = new System.Drawing.Point(334, 207);
+            this.loadHeads_1_2_Head_1_Y2_Actual_Torque.Location = new System.Drawing.Point(374, 247);
             this.loadHeads_1_2_Head_1_Y2_Actual_Torque.Size = new System.Drawing.Size(120, 26);
             // 
-            // capZ1
+            // capZ
             // 
-            this.capZ1.Name = "capZ1";
-            this.capZ1.TranslationKey = "Z1";
-            this.capZ1.Text = "Z1";
-            this.capZ1.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.capZ1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
-            this.capZ1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capZ1.Location = new System.Drawing.Point(16, 240);
-            this.capZ1.Size = new System.Drawing.Size(46, 40);
-            this.capZ1.Font = new System.Drawing.Font("Segoe UI", 9.5F);
+            this.capZ.Name = "capZ";
+            this.capZ.TranslationKey = "Z";
+            this.capZ.Text = "Z";
+            this.capZ.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.capZ.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
+            this.capZ.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.capZ.Location = new System.Drawing.Point(16, 296);
+            this.capZ.Size = new System.Drawing.Size(46, 72);
+            this.capZ.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             // 
-            // btnHeads_1_2_Head_1_Z1_Back
+            // axHeads_1_2_Head_1_Z_Axis_Unit
             // 
-            this.btnHeads_1_2_Head_1_Z1_Back.Name = "btnHeads_1_2_Head_1_Z1_Back";
-            this.btnHeads_1_2_Head_1_Z1_Back.PlcNumber = 1;
-            this.btnHeads_1_2_Head_1_Z1_Back.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.Left;
-            bitAction9.Address = "M44";
-            bitAction9.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnHeads_1_2_Head_1_Z1_Back.BitActions.Add(bitAction9);
-            this.btnHeads_1_2_Head_1_Z1_Back.Location = new System.Drawing.Point(68, 243);
-            this.btnHeads_1_2_Head_1_Z1_Back.Size = new System.Drawing.Size(72, 34);
-            this.btnHeads_1_2_Head_1_Z1_Back.LogAction = true;
-            this.btnHeads_1_2_Head_1_Z1_Back.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            // Head 1 Z1: axis 8 of the axis settings page (its buttons, position, reference sensor and error come from there).
+            this.axHeads_1_2_Head_1_Z_Axis_Unit.BackColor = System.Drawing.Color.White;
+            this.axHeads_1_2_Head_1_Z_Axis_Unit.Name = "axHeads_1_2_Head_1_Z_Axis_Unit";
+            this.axHeads_1_2_Head_1_Z_Axis_Unit.AxisNumber = 8;
+            this.axHeads_1_2_Head_1_Z_Axis_Unit.PlcNumber = 1;
+            this.axHeads_1_2_Head_1_Z_Axis_Unit.Location = new System.Drawing.Point(68, 300);
+            this.axHeads_1_2_Head_1_Z_Axis_Unit.Size = new System.Drawing.Size(300, 64);
             // 
-            // dispHeads_1_2_Head_1_Z1_Axis_Position
+            // loadHeads_1_2_Head_1_Z_Actual_Torque
             // 
-            // Head 1 Z1 Axis Position: D0, raw / 10000.
-            this.dispHeads_1_2_Head_1_Z1_Axis_Position.Name = "dispHeads_1_2_Head_1_Z1_Axis_Position";
-            this.dispHeads_1_2_Head_1_Z1_Axis_Position.PlcNumber = 1;
-            this.dispHeads_1_2_Head_1_Z1_Axis_Position.Address = "D0";
-            this.dispHeads_1_2_Head_1_Z1_Axis_Position.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.dispHeads_1_2_Head_1_Z1_Axis_Position.Divisor = 10000D;
-            this.dispHeads_1_2_Head_1_Z1_Axis_Position.DecimalPlaces = 2;
-            this.dispHeads_1_2_Head_1_Z1_Axis_Position.Digits = 7;
-            this.dispHeads_1_2_Head_1_Z1_Axis_Position.Suffix = "mm";
-            this.dispHeads_1_2_Head_1_Z1_Axis_Position.Location = new System.Drawing.Point(146, 243);
-            this.dispHeads_1_2_Head_1_Z1_Axis_Position.Size = new System.Drawing.Size(104, 34);
+            // Head 1 Z Actual Torque: D6640, |raw| on 0 - 100 % as the old page's bar.
+            this.loadHeads_1_2_Head_1_Z_Actual_Torque.Name = "loadHeads_1_2_Head_1_Z_Actual_Torque";
+            this.loadHeads_1_2_Head_1_Z_Actual_Torque.PlcNumber = 1;
+            this.loadHeads_1_2_Head_1_Z_Actual_Torque.Address = "D6640";
+            this.loadHeads_1_2_Head_1_Z_Actual_Torque.Divisor = 1D;
+            this.loadHeads_1_2_Head_1_Z_Actual_Torque.DecimalPlaces = 0;
+            this.loadHeads_1_2_Head_1_Z_Actual_Torque.Suffix = "%";
+            this.loadHeads_1_2_Head_1_Z_Actual_Torque.ScaleMinimum = 0D;
+            this.loadHeads_1_2_Head_1_Z_Actual_Torque.ScaleMaximum = 100D;
+            this.loadHeads_1_2_Head_1_Z_Actual_Torque.Signed = true;
+            this.loadHeads_1_2_Head_1_Z_Actual_Torque.Location = new System.Drawing.Point(374, 319);
+            this.loadHeads_1_2_Head_1_Z_Actual_Torque.Size = new System.Drawing.Size(120, 26);
             // 
-            // btnHeads_1_2_Head_1_Z1_Forward
+            // capRZ
             // 
-            this.btnHeads_1_2_Head_1_Z1_Forward.Name = "btnHeads_1_2_Head_1_Z1_Forward";
-            this.btnHeads_1_2_Head_1_Z1_Forward.PlcNumber = 1;
-            this.btnHeads_1_2_Head_1_Z1_Forward.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.Right;
-            bitAction10.Address = "M25";
-            bitAction10.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnHeads_1_2_Head_1_Z1_Forward.BitActions.Add(bitAction10);
-            this.btnHeads_1_2_Head_1_Z1_Forward.Lamp1Address = "W0.3";
-            this.btnHeads_1_2_Head_1_Z1_Forward.Location = new System.Drawing.Point(256, 243);
-            this.btnHeads_1_2_Head_1_Z1_Forward.Size = new System.Drawing.Size(72, 34);
-            this.btnHeads_1_2_Head_1_Z1_Forward.LogAction = true;
-            this.btnHeads_1_2_Head_1_Z1_Forward.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            this.capRZ.Name = "capRZ";
+            this.capRZ.TranslationKey = "RZ";
+            this.capRZ.Text = "RZ";
+            this.capRZ.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.capRZ.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
+            this.capRZ.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.capRZ.Location = new System.Drawing.Point(16, 368);
+            this.capRZ.Size = new System.Drawing.Size(46, 72);
+            this.capRZ.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             // 
-            // loadHeads_1_2_Head_1_Z1_Actual_Torque
+            // axHeads_1_2_Head_1_RZ_Axis_Unit
             // 
-            // Head 1 Z1 Actual Torque: D6640, |raw| on 0 - 100 % as the old page's bar.
-            this.loadHeads_1_2_Head_1_Z1_Actual_Torque.Name = "loadHeads_1_2_Head_1_Z1_Actual_Torque";
-            this.loadHeads_1_2_Head_1_Z1_Actual_Torque.PlcNumber = 1;
-            this.loadHeads_1_2_Head_1_Z1_Actual_Torque.Address = "D6640";
-            this.loadHeads_1_2_Head_1_Z1_Actual_Torque.Divisor = 1D;
-            this.loadHeads_1_2_Head_1_Z1_Actual_Torque.DecimalPlaces = 0;
-            this.loadHeads_1_2_Head_1_Z1_Actual_Torque.Suffix = "%";
-            this.loadHeads_1_2_Head_1_Z1_Actual_Torque.ScaleMinimum = 0D;
-            this.loadHeads_1_2_Head_1_Z1_Actual_Torque.ScaleMaximum = 100D;
-            this.loadHeads_1_2_Head_1_Z1_Actual_Torque.Signed = true;
-            this.loadHeads_1_2_Head_1_Z1_Actual_Torque.Location = new System.Drawing.Point(334, 247);
-            this.loadHeads_1_2_Head_1_Z1_Actual_Torque.Size = new System.Drawing.Size(120, 26);
+            // Head 1 Z2: axis 9 of the axis settings page (its buttons, position, reference sensor and error come from there).
+            this.axHeads_1_2_Head_1_RZ_Axis_Unit.BackColor = System.Drawing.Color.White;
+            this.axHeads_1_2_Head_1_RZ_Axis_Unit.Name = "axHeads_1_2_Head_1_RZ_Axis_Unit";
+            this.axHeads_1_2_Head_1_RZ_Axis_Unit.AxisNumber = 9;
+            this.axHeads_1_2_Head_1_RZ_Axis_Unit.PlcNumber = 1;
+            this.axHeads_1_2_Head_1_RZ_Axis_Unit.Location = new System.Drawing.Point(68, 372);
+            this.axHeads_1_2_Head_1_RZ_Axis_Unit.Size = new System.Drawing.Size(300, 64);
             // 
-            // capZ2
+            // loadHeads_1_2_Head_1_RZ_Actual_Torque
             // 
-            this.capZ2.Name = "capZ2";
-            this.capZ2.TranslationKey = "Z2";
-            this.capZ2.Text = "Z2";
-            this.capZ2.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.capZ2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
-            this.capZ2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capZ2.Location = new System.Drawing.Point(16, 280);
-            this.capZ2.Size = new System.Drawing.Size(46, 40);
-            this.capZ2.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            // 
-            // btnHeads_1_2_Head_1_Z2_Back
-            // 
-            this.btnHeads_1_2_Head_1_Z2_Back.Name = "btnHeads_1_2_Head_1_Z2_Back";
-            this.btnHeads_1_2_Head_1_Z2_Back.PlcNumber = 1;
-            this.btnHeads_1_2_Head_1_Z2_Back.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.Left;
-            bitAction11.Address = "M242";
-            bitAction11.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnHeads_1_2_Head_1_Z2_Back.BitActions.Add(bitAction11);
-            this.btnHeads_1_2_Head_1_Z2_Back.Location = new System.Drawing.Point(68, 283);
-            this.btnHeads_1_2_Head_1_Z2_Back.Size = new System.Drawing.Size(72, 34);
-            this.btnHeads_1_2_Head_1_Z2_Back.LogAction = true;
-            this.btnHeads_1_2_Head_1_Z2_Back.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // dispHeads_1_2_Head_1_Z2_Axis_Position
-            // 
-            // Head 1 Z2 Axis Position: D420, raw / 10000.
-            this.dispHeads_1_2_Head_1_Z2_Axis_Position.Name = "dispHeads_1_2_Head_1_Z2_Axis_Position";
-            this.dispHeads_1_2_Head_1_Z2_Axis_Position.PlcNumber = 1;
-            this.dispHeads_1_2_Head_1_Z2_Axis_Position.Address = "D420";
-            this.dispHeads_1_2_Head_1_Z2_Axis_Position.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.dispHeads_1_2_Head_1_Z2_Axis_Position.Divisor = 10000D;
-            this.dispHeads_1_2_Head_1_Z2_Axis_Position.DecimalPlaces = 2;
-            this.dispHeads_1_2_Head_1_Z2_Axis_Position.Digits = 7;
-            this.dispHeads_1_2_Head_1_Z2_Axis_Position.Suffix = "mm";
-            this.dispHeads_1_2_Head_1_Z2_Axis_Position.Location = new System.Drawing.Point(146, 283);
-            this.dispHeads_1_2_Head_1_Z2_Axis_Position.Size = new System.Drawing.Size(104, 34);
-            // 
-            // btnHeads_1_2_Head_1_Z2_Forward
-            // 
-            this.btnHeads_1_2_Head_1_Z2_Forward.Name = "btnHeads_1_2_Head_1_Z2_Forward";
-            this.btnHeads_1_2_Head_1_Z2_Forward.PlcNumber = 1;
-            this.btnHeads_1_2_Head_1_Z2_Forward.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.Right;
-            bitAction12.Address = "M243";
-            bitAction12.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnHeads_1_2_Head_1_Z2_Forward.BitActions.Add(bitAction12);
-            this.btnHeads_1_2_Head_1_Z2_Forward.Lamp1Address = "W0.4";
-            this.btnHeads_1_2_Head_1_Z2_Forward.Location = new System.Drawing.Point(256, 283);
-            this.btnHeads_1_2_Head_1_Z2_Forward.Size = new System.Drawing.Size(72, 34);
-            this.btnHeads_1_2_Head_1_Z2_Forward.LogAction = true;
-            this.btnHeads_1_2_Head_1_Z2_Forward.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // loadHeads_1_2_Head_1_Z2_Actual_Torque
-            // 
-            // Head 1 Z2 Actual Torque: D6658, |raw| on 0 - 100 % as the old page's bar.
-            this.loadHeads_1_2_Head_1_Z2_Actual_Torque.Name = "loadHeads_1_2_Head_1_Z2_Actual_Torque";
-            this.loadHeads_1_2_Head_1_Z2_Actual_Torque.PlcNumber = 1;
-            this.loadHeads_1_2_Head_1_Z2_Actual_Torque.Address = "D6658";
-            this.loadHeads_1_2_Head_1_Z2_Actual_Torque.Divisor = 1D;
-            this.loadHeads_1_2_Head_1_Z2_Actual_Torque.DecimalPlaces = 0;
-            this.loadHeads_1_2_Head_1_Z2_Actual_Torque.Suffix = "%";
-            this.loadHeads_1_2_Head_1_Z2_Actual_Torque.ScaleMinimum = 0D;
-            this.loadHeads_1_2_Head_1_Z2_Actual_Torque.ScaleMaximum = 100D;
-            this.loadHeads_1_2_Head_1_Z2_Actual_Torque.Signed = true;
-            this.loadHeads_1_2_Head_1_Z2_Actual_Torque.Location = new System.Drawing.Point(334, 287);
-            this.loadHeads_1_2_Head_1_Z2_Actual_Torque.Size = new System.Drawing.Size(120, 26);
+            // Head 1 RZ Actual Torque: D6658, |raw| on 0 - 100 % as the old page's bar.
+            this.loadHeads_1_2_Head_1_RZ_Actual_Torque.Name = "loadHeads_1_2_Head_1_RZ_Actual_Torque";
+            this.loadHeads_1_2_Head_1_RZ_Actual_Torque.PlcNumber = 1;
+            this.loadHeads_1_2_Head_1_RZ_Actual_Torque.Address = "D6658";
+            this.loadHeads_1_2_Head_1_RZ_Actual_Torque.Divisor = 1D;
+            this.loadHeads_1_2_Head_1_RZ_Actual_Torque.DecimalPlaces = 0;
+            this.loadHeads_1_2_Head_1_RZ_Actual_Torque.Suffix = "%";
+            this.loadHeads_1_2_Head_1_RZ_Actual_Torque.ScaleMinimum = 0D;
+            this.loadHeads_1_2_Head_1_RZ_Actual_Torque.ScaleMaximum = 100D;
+            this.loadHeads_1_2_Head_1_RZ_Actual_Torque.Signed = true;
+            this.loadHeads_1_2_Head_1_RZ_Actual_Torque.Location = new System.Drawing.Point(374, 391);
+            this.loadHeads_1_2_Head_1_RZ_Actual_Torque.Size = new System.Drawing.Size(120, 26);
             // 
             // lblHead_2
             // 
@@ -816,8 +363,8 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.lblHead_2.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.lblHead_2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
             this.lblHead_2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.lblHead_2.Location = new System.Drawing.Point(16, 322);
-            this.lblHead_2.Size = new System.Drawing.Size(438, 26);
+            this.lblHead_2.Location = new System.Drawing.Point(16, 442);
+            this.lblHead_2.Size = new System.Drawing.Size(478, 26);
             // 
             // capX_2
             // 
@@ -827,50 +374,19 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.capX_2.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.capX_2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
             this.capX_2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capX_2.Location = new System.Drawing.Point(16, 350);
-            this.capX_2.Size = new System.Drawing.Size(46, 40);
+            this.capX_2.Location = new System.Drawing.Point(16, 470);
+            this.capX_2.Size = new System.Drawing.Size(46, 72);
             this.capX_2.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             // 
-            // btnHeads_1_2_Head_2_X_Back
+            // axHeads_1_2_Head_2_X_Axis_Unit
             // 
-            this.btnHeads_1_2_Head_2_X_Back.Name = "btnHeads_1_2_Head_2_X_Back";
-            this.btnHeads_1_2_Head_2_X_Back.PlcNumber = 1;
-            this.btnHeads_1_2_Head_2_X_Back.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.Left;
-            bitAction13.Address = "M49";
-            bitAction13.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnHeads_1_2_Head_2_X_Back.BitActions.Add(bitAction13);
-            this.btnHeads_1_2_Head_2_X_Back.Lamp1Address = "W2.0";
-            this.btnHeads_1_2_Head_2_X_Back.Location = new System.Drawing.Point(68, 353);
-            this.btnHeads_1_2_Head_2_X_Back.Size = new System.Drawing.Size(72, 34);
-            this.btnHeads_1_2_Head_2_X_Back.LogAction = true;
-            this.btnHeads_1_2_Head_2_X_Back.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // dispHeads_1_2_Head_2_X_Axis_Position
-            // 
-            // Head 2 X Axis Position: D100, raw / 10000.
-            this.dispHeads_1_2_Head_2_X_Axis_Position.Name = "dispHeads_1_2_Head_2_X_Axis_Position";
-            this.dispHeads_1_2_Head_2_X_Axis_Position.PlcNumber = 1;
-            this.dispHeads_1_2_Head_2_X_Axis_Position.Address = "D100";
-            this.dispHeads_1_2_Head_2_X_Axis_Position.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.dispHeads_1_2_Head_2_X_Axis_Position.Divisor = 10000D;
-            this.dispHeads_1_2_Head_2_X_Axis_Position.DecimalPlaces = 2;
-            this.dispHeads_1_2_Head_2_X_Axis_Position.Digits = 7;
-            this.dispHeads_1_2_Head_2_X_Axis_Position.Suffix = "mm";
-            this.dispHeads_1_2_Head_2_X_Axis_Position.Location = new System.Drawing.Point(146, 353);
-            this.dispHeads_1_2_Head_2_X_Axis_Position.Size = new System.Drawing.Size(104, 34);
-            // 
-            // btnHeads_1_2_Head_2_X_Forward
-            // 
-            this.btnHeads_1_2_Head_2_X_Forward.Name = "btnHeads_1_2_Head_2_X_Forward";
-            this.btnHeads_1_2_Head_2_X_Forward.PlcNumber = 1;
-            this.btnHeads_1_2_Head_2_X_Forward.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.Right;
-            bitAction14.Address = "M30";
-            bitAction14.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnHeads_1_2_Head_2_X_Forward.BitActions.Add(bitAction14);
-            this.btnHeads_1_2_Head_2_X_Forward.Location = new System.Drawing.Point(256, 353);
-            this.btnHeads_1_2_Head_2_X_Forward.Size = new System.Drawing.Size(72, 34);
-            this.btnHeads_1_2_Head_2_X_Forward.LogAction = true;
-            this.btnHeads_1_2_Head_2_X_Forward.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            // Head 2 X: axis 10 of the axis settings page (its buttons, position, reference sensor and error come from there).
+            this.axHeads_1_2_Head_2_X_Axis_Unit.BackColor = System.Drawing.Color.White;
+            this.axHeads_1_2_Head_2_X_Axis_Unit.Name = "axHeads_1_2_Head_2_X_Axis_Unit";
+            this.axHeads_1_2_Head_2_X_Axis_Unit.AxisNumber = 10;
+            this.axHeads_1_2_Head_2_X_Axis_Unit.PlcNumber = 1;
+            this.axHeads_1_2_Head_2_X_Axis_Unit.Location = new System.Drawing.Point(68, 474);
+            this.axHeads_1_2_Head_2_X_Axis_Unit.Size = new System.Drawing.Size(300, 64);
             // 
             // loadHeads_1_2_Head_2_X_Actual_Torque
             // 
@@ -884,76 +400,8 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.loadHeads_1_2_Head_2_X_Actual_Torque.ScaleMinimum = 0D;
             this.loadHeads_1_2_Head_2_X_Actual_Torque.ScaleMaximum = 100D;
             this.loadHeads_1_2_Head_2_X_Actual_Torque.Signed = true;
-            this.loadHeads_1_2_Head_2_X_Actual_Torque.Location = new System.Drawing.Point(334, 357);
+            this.loadHeads_1_2_Head_2_X_Actual_Torque.Location = new System.Drawing.Point(374, 493);
             this.loadHeads_1_2_Head_2_X_Actual_Torque.Size = new System.Drawing.Size(120, 26);
-            // 
-            // capX2_2
-            // 
-            this.capX2_2.Name = "capX2_2";
-            this.capX2_2.TranslationKey = "X2";
-            this.capX2_2.Text = "X2";
-            this.capX2_2.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.capX2_2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
-            this.capX2_2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capX2_2.Location = new System.Drawing.Point(16, 390);
-            this.capX2_2.Size = new System.Drawing.Size(46, 40);
-            this.capX2_2.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            // 
-            // btnHeads_1_2_Head_2_X2_Back
-            // 
-            this.btnHeads_1_2_Head_2_X2_Back.Name = "btnHeads_1_2_Head_2_X2_Back";
-            this.btnHeads_1_2_Head_2_X2_Back.PlcNumber = 1;
-            this.btnHeads_1_2_Head_2_X2_Back.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.Left;
-            bitAction15.Address = "M246";
-            bitAction15.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnHeads_1_2_Head_2_X2_Back.BitActions.Add(bitAction15);
-            this.btnHeads_1_2_Head_2_X2_Back.Lamp1Address = "W3.6";
-            this.btnHeads_1_2_Head_2_X2_Back.Location = new System.Drawing.Point(68, 393);
-            this.btnHeads_1_2_Head_2_X2_Back.Size = new System.Drawing.Size(72, 34);
-            this.btnHeads_1_2_Head_2_X2_Back.LogAction = true;
-            this.btnHeads_1_2_Head_2_X2_Back.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // dispHeads_1_2_Head_2_X2_Axis_Position
-            // 
-            // Head 2 X2 Axis Position: D470, raw / 10000.
-            this.dispHeads_1_2_Head_2_X2_Axis_Position.Name = "dispHeads_1_2_Head_2_X2_Axis_Position";
-            this.dispHeads_1_2_Head_2_X2_Axis_Position.PlcNumber = 1;
-            this.dispHeads_1_2_Head_2_X2_Axis_Position.Address = "D470";
-            this.dispHeads_1_2_Head_2_X2_Axis_Position.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.dispHeads_1_2_Head_2_X2_Axis_Position.Divisor = 10000D;
-            this.dispHeads_1_2_Head_2_X2_Axis_Position.DecimalPlaces = 2;
-            this.dispHeads_1_2_Head_2_X2_Axis_Position.Digits = 7;
-            this.dispHeads_1_2_Head_2_X2_Axis_Position.Suffix = "mm";
-            this.dispHeads_1_2_Head_2_X2_Axis_Position.Location = new System.Drawing.Point(146, 393);
-            this.dispHeads_1_2_Head_2_X2_Axis_Position.Size = new System.Drawing.Size(104, 34);
-            // 
-            // btnHeads_1_2_Head_2_X2_Forward
-            // 
-            this.btnHeads_1_2_Head_2_X2_Forward.Name = "btnHeads_1_2_Head_2_X2_Forward";
-            this.btnHeads_1_2_Head_2_X2_Forward.PlcNumber = 1;
-            this.btnHeads_1_2_Head_2_X2_Forward.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.Right;
-            bitAction16.Address = "M247";
-            bitAction16.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnHeads_1_2_Head_2_X2_Forward.BitActions.Add(bitAction16);
-            this.btnHeads_1_2_Head_2_X2_Forward.Location = new System.Drawing.Point(256, 393);
-            this.btnHeads_1_2_Head_2_X2_Forward.Size = new System.Drawing.Size(72, 34);
-            this.btnHeads_1_2_Head_2_X2_Forward.LogAction = true;
-            this.btnHeads_1_2_Head_2_X2_Forward.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // loadHeads_1_2_Head_2_X2_Actual_Torque
-            // 
-            // Head 2 X2 Actual Torque: D6657, |raw| on 0 - 100 % as the old page's bar.
-            this.loadHeads_1_2_Head_2_X2_Actual_Torque.Name = "loadHeads_1_2_Head_2_X2_Actual_Torque";
-            this.loadHeads_1_2_Head_2_X2_Actual_Torque.PlcNumber = 1;
-            this.loadHeads_1_2_Head_2_X2_Actual_Torque.Address = "D6657";
-            this.loadHeads_1_2_Head_2_X2_Actual_Torque.Divisor = 1D;
-            this.loadHeads_1_2_Head_2_X2_Actual_Torque.DecimalPlaces = 0;
-            this.loadHeads_1_2_Head_2_X2_Actual_Torque.Suffix = "%";
-            this.loadHeads_1_2_Head_2_X2_Actual_Torque.ScaleMinimum = 0D;
-            this.loadHeads_1_2_Head_2_X2_Actual_Torque.ScaleMaximum = 100D;
-            this.loadHeads_1_2_Head_2_X2_Actual_Torque.Signed = true;
-            this.loadHeads_1_2_Head_2_X2_Actual_Torque.Location = new System.Drawing.Point(334, 397);
-            this.loadHeads_1_2_Head_2_X2_Actual_Torque.Size = new System.Drawing.Size(120, 26);
             // 
             // capY1_2
             // 
@@ -963,50 +411,19 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.capY1_2.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.capY1_2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
             this.capY1_2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capY1_2.Location = new System.Drawing.Point(16, 430);
-            this.capY1_2.Size = new System.Drawing.Size(46, 40);
+            this.capY1_2.Location = new System.Drawing.Point(16, 542);
+            this.capY1_2.Size = new System.Drawing.Size(46, 72);
             this.capY1_2.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             // 
-            // btnHeads_1_2_Head_2_Y1_Back
+            // axHeads_1_2_Head_2_Y1_Axis_Unit
             // 
-            this.btnHeads_1_2_Head_2_Y1_Back.Name = "btnHeads_1_2_Head_2_Y1_Back";
-            this.btnHeads_1_2_Head_2_Y1_Back.PlcNumber = 1;
-            this.btnHeads_1_2_Head_2_Y1_Back.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.Left;
-            bitAction17.Address = "M31";
-            bitAction17.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnHeads_1_2_Head_2_Y1_Back.BitActions.Add(bitAction17);
-            this.btnHeads_1_2_Head_2_Y1_Back.Lamp1Address = "W2.1";
-            this.btnHeads_1_2_Head_2_Y1_Back.Location = new System.Drawing.Point(68, 433);
-            this.btnHeads_1_2_Head_2_Y1_Back.Size = new System.Drawing.Size(72, 34);
-            this.btnHeads_1_2_Head_2_Y1_Back.LogAction = true;
-            this.btnHeads_1_2_Head_2_Y1_Back.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // dispHeads_1_2_Head_2_Y1_Axis_Position
-            // 
-            // Head 2 Y1 Axis Position: D120, raw / 10000.
-            this.dispHeads_1_2_Head_2_Y1_Axis_Position.Name = "dispHeads_1_2_Head_2_Y1_Axis_Position";
-            this.dispHeads_1_2_Head_2_Y1_Axis_Position.PlcNumber = 1;
-            this.dispHeads_1_2_Head_2_Y1_Axis_Position.Address = "D120";
-            this.dispHeads_1_2_Head_2_Y1_Axis_Position.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.dispHeads_1_2_Head_2_Y1_Axis_Position.Divisor = 10000D;
-            this.dispHeads_1_2_Head_2_Y1_Axis_Position.DecimalPlaces = 2;
-            this.dispHeads_1_2_Head_2_Y1_Axis_Position.Digits = 7;
-            this.dispHeads_1_2_Head_2_Y1_Axis_Position.Suffix = "mm";
-            this.dispHeads_1_2_Head_2_Y1_Axis_Position.Location = new System.Drawing.Point(146, 433);
-            this.dispHeads_1_2_Head_2_Y1_Axis_Position.Size = new System.Drawing.Size(104, 34);
-            // 
-            // btnHeads_1_2_Head_2_Y1_Forward
-            // 
-            this.btnHeads_1_2_Head_2_Y1_Forward.Name = "btnHeads_1_2_Head_2_Y1_Forward";
-            this.btnHeads_1_2_Head_2_Y1_Forward.PlcNumber = 1;
-            this.btnHeads_1_2_Head_2_Y1_Forward.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.Right;
-            bitAction18.Address = "M50";
-            bitAction18.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnHeads_1_2_Head_2_Y1_Forward.BitActions.Add(bitAction18);
-            this.btnHeads_1_2_Head_2_Y1_Forward.Location = new System.Drawing.Point(256, 433);
-            this.btnHeads_1_2_Head_2_Y1_Forward.Size = new System.Drawing.Size(72, 34);
-            this.btnHeads_1_2_Head_2_Y1_Forward.LogAction = true;
-            this.btnHeads_1_2_Head_2_Y1_Forward.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            // Head 2 Y1: axis 11 of the axis settings page (its buttons, position, reference sensor and error come from there).
+            this.axHeads_1_2_Head_2_Y1_Axis_Unit.BackColor = System.Drawing.Color.White;
+            this.axHeads_1_2_Head_2_Y1_Axis_Unit.Name = "axHeads_1_2_Head_2_Y1_Axis_Unit";
+            this.axHeads_1_2_Head_2_Y1_Axis_Unit.AxisNumber = 11;
+            this.axHeads_1_2_Head_2_Y1_Axis_Unit.PlcNumber = 1;
+            this.axHeads_1_2_Head_2_Y1_Axis_Unit.Location = new System.Drawing.Point(68, 546);
+            this.axHeads_1_2_Head_2_Y1_Axis_Unit.Size = new System.Drawing.Size(300, 64);
             // 
             // loadHeads_1_2_Head_2_Y1_Actual_Torque
             // 
@@ -1020,7 +437,7 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.loadHeads_1_2_Head_2_Y1_Actual_Torque.ScaleMinimum = 0D;
             this.loadHeads_1_2_Head_2_Y1_Actual_Torque.ScaleMaximum = 100D;
             this.loadHeads_1_2_Head_2_Y1_Actual_Torque.Signed = true;
-            this.loadHeads_1_2_Head_2_Y1_Actual_Torque.Location = new System.Drawing.Point(334, 437);
+            this.loadHeads_1_2_Head_2_Y1_Actual_Torque.Location = new System.Drawing.Point(374, 565);
             this.loadHeads_1_2_Head_2_Y1_Actual_Torque.Size = new System.Drawing.Size(120, 26);
             // 
             // capY2_2
@@ -1031,50 +448,19 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.capY2_2.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.capY2_2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
             this.capY2_2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capY2_2.Location = new System.Drawing.Point(16, 470);
-            this.capY2_2.Size = new System.Drawing.Size(46, 40);
+            this.capY2_2.Location = new System.Drawing.Point(16, 614);
+            this.capY2_2.Size = new System.Drawing.Size(46, 72);
             this.capY2_2.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             // 
-            // btnHeads_1_2_Head_2_Y2_Back
+            // axHeads_1_2_Head_2_Y2_Axis_Unit
             // 
-            this.btnHeads_1_2_Head_2_Y2_Back.Name = "btnHeads_1_2_Head_2_Y2_Back";
-            this.btnHeads_1_2_Head_2_Y2_Back.PlcNumber = 1;
-            this.btnHeads_1_2_Head_2_Y2_Back.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.Left;
-            bitAction19.Address = "M32";
-            bitAction19.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnHeads_1_2_Head_2_Y2_Back.BitActions.Add(bitAction19);
-            this.btnHeads_1_2_Head_2_Y2_Back.Lamp1Address = "W2.2";
-            this.btnHeads_1_2_Head_2_Y2_Back.Location = new System.Drawing.Point(68, 473);
-            this.btnHeads_1_2_Head_2_Y2_Back.Size = new System.Drawing.Size(72, 34);
-            this.btnHeads_1_2_Head_2_Y2_Back.LogAction = true;
-            this.btnHeads_1_2_Head_2_Y2_Back.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // dispHeads_1_2_Head_2_Y2_Axis_Position
-            // 
-            // Head 2 Y2 Axis Position: D140, raw / 10000.
-            this.dispHeads_1_2_Head_2_Y2_Axis_Position.Name = "dispHeads_1_2_Head_2_Y2_Axis_Position";
-            this.dispHeads_1_2_Head_2_Y2_Axis_Position.PlcNumber = 1;
-            this.dispHeads_1_2_Head_2_Y2_Axis_Position.Address = "D140";
-            this.dispHeads_1_2_Head_2_Y2_Axis_Position.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.dispHeads_1_2_Head_2_Y2_Axis_Position.Divisor = 10000D;
-            this.dispHeads_1_2_Head_2_Y2_Axis_Position.DecimalPlaces = 2;
-            this.dispHeads_1_2_Head_2_Y2_Axis_Position.Digits = 7;
-            this.dispHeads_1_2_Head_2_Y2_Axis_Position.Suffix = "mm";
-            this.dispHeads_1_2_Head_2_Y2_Axis_Position.Location = new System.Drawing.Point(146, 473);
-            this.dispHeads_1_2_Head_2_Y2_Axis_Position.Size = new System.Drawing.Size(104, 34);
-            // 
-            // btnHeads_1_2_Head_2_Y2_Forward
-            // 
-            this.btnHeads_1_2_Head_2_Y2_Forward.Name = "btnHeads_1_2_Head_2_Y2_Forward";
-            this.btnHeads_1_2_Head_2_Y2_Forward.PlcNumber = 1;
-            this.btnHeads_1_2_Head_2_Y2_Forward.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.Right;
-            bitAction20.Address = "M51";
-            bitAction20.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnHeads_1_2_Head_2_Y2_Forward.BitActions.Add(bitAction20);
-            this.btnHeads_1_2_Head_2_Y2_Forward.Location = new System.Drawing.Point(256, 473);
-            this.btnHeads_1_2_Head_2_Y2_Forward.Size = new System.Drawing.Size(72, 34);
-            this.btnHeads_1_2_Head_2_Y2_Forward.LogAction = true;
-            this.btnHeads_1_2_Head_2_Y2_Forward.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            // Head 2 Y2: axis 12 of the axis settings page (its buttons, position, reference sensor and error come from there).
+            this.axHeads_1_2_Head_2_Y2_Axis_Unit.BackColor = System.Drawing.Color.White;
+            this.axHeads_1_2_Head_2_Y2_Axis_Unit.Name = "axHeads_1_2_Head_2_Y2_Axis_Unit";
+            this.axHeads_1_2_Head_2_Y2_Axis_Unit.AxisNumber = 12;
+            this.axHeads_1_2_Head_2_Y2_Axis_Unit.PlcNumber = 1;
+            this.axHeads_1_2_Head_2_Y2_Axis_Unit.Location = new System.Drawing.Point(68, 618);
+            this.axHeads_1_2_Head_2_Y2_Axis_Unit.Size = new System.Drawing.Size(300, 64);
             // 
             // loadHeads_1_2_Head_2_Y2_Actual_Torque
             // 
@@ -1088,311 +474,82 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.loadHeads_1_2_Head_2_Y2_Actual_Torque.ScaleMinimum = 0D;
             this.loadHeads_1_2_Head_2_Y2_Actual_Torque.ScaleMaximum = 100D;
             this.loadHeads_1_2_Head_2_Y2_Actual_Torque.Signed = true;
-            this.loadHeads_1_2_Head_2_Y2_Actual_Torque.Location = new System.Drawing.Point(334, 477);
+            this.loadHeads_1_2_Head_2_Y2_Actual_Torque.Location = new System.Drawing.Point(374, 637);
             this.loadHeads_1_2_Head_2_Y2_Actual_Torque.Size = new System.Drawing.Size(120, 26);
             // 
-            // capZ1_2
+            // capZ_2
             // 
-            this.capZ1_2.Name = "capZ1_2";
-            this.capZ1_2.TranslationKey = "Z1";
-            this.capZ1_2.Text = "Z1";
-            this.capZ1_2.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.capZ1_2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
-            this.capZ1_2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capZ1_2.Location = new System.Drawing.Point(16, 510);
-            this.capZ1_2.Size = new System.Drawing.Size(46, 40);
-            this.capZ1_2.Font = new System.Drawing.Font("Segoe UI", 9.5F);
+            this.capZ_2.Name = "capZ_2";
+            this.capZ_2.TranslationKey = "Z";
+            this.capZ_2.Text = "Z";
+            this.capZ_2.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.capZ_2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
+            this.capZ_2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.capZ_2.Location = new System.Drawing.Point(16, 686);
+            this.capZ_2.Size = new System.Drawing.Size(46, 72);
+            this.capZ_2.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             // 
-            // btnHeads_1_2_Head_2_Z1_Back
+            // axHeads_1_2_Head_2_Z_Axis_Unit
             // 
-            this.btnHeads_1_2_Head_2_Z1_Back.Name = "btnHeads_1_2_Head_2_Z1_Back";
-            this.btnHeads_1_2_Head_2_Z1_Back.PlcNumber = 1;
-            this.btnHeads_1_2_Head_2_Z1_Back.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.Left;
-            bitAction21.Address = "M48";
-            bitAction21.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnHeads_1_2_Head_2_Z1_Back.BitActions.Add(bitAction21);
-            this.btnHeads_1_2_Head_2_Z1_Back.Location = new System.Drawing.Point(68, 513);
-            this.btnHeads_1_2_Head_2_Z1_Back.Size = new System.Drawing.Size(72, 34);
-            this.btnHeads_1_2_Head_2_Z1_Back.LogAction = true;
-            this.btnHeads_1_2_Head_2_Z1_Back.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            // Head 2 Z1: axis 13 of the axis settings page (its buttons, position, reference sensor and error come from there).
+            this.axHeads_1_2_Head_2_Z_Axis_Unit.BackColor = System.Drawing.Color.White;
+            this.axHeads_1_2_Head_2_Z_Axis_Unit.Name = "axHeads_1_2_Head_2_Z_Axis_Unit";
+            this.axHeads_1_2_Head_2_Z_Axis_Unit.AxisNumber = 13;
+            this.axHeads_1_2_Head_2_Z_Axis_Unit.PlcNumber = 1;
+            this.axHeads_1_2_Head_2_Z_Axis_Unit.Location = new System.Drawing.Point(68, 690);
+            this.axHeads_1_2_Head_2_Z_Axis_Unit.Size = new System.Drawing.Size(300, 64);
             // 
-            // dispHeads_1_2_Head_2_Z1_Axis_Position
+            // loadHeads_1_2_Head_2_Z_Actual_Torque
             // 
-            // Head 2 Z1 Axis Position: D80, raw / 10000.
-            this.dispHeads_1_2_Head_2_Z1_Axis_Position.Name = "dispHeads_1_2_Head_2_Z1_Axis_Position";
-            this.dispHeads_1_2_Head_2_Z1_Axis_Position.PlcNumber = 1;
-            this.dispHeads_1_2_Head_2_Z1_Axis_Position.Address = "D80";
-            this.dispHeads_1_2_Head_2_Z1_Axis_Position.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.dispHeads_1_2_Head_2_Z1_Axis_Position.Divisor = 10000D;
-            this.dispHeads_1_2_Head_2_Z1_Axis_Position.DecimalPlaces = 2;
-            this.dispHeads_1_2_Head_2_Z1_Axis_Position.Digits = 7;
-            this.dispHeads_1_2_Head_2_Z1_Axis_Position.Suffix = "mm";
-            this.dispHeads_1_2_Head_2_Z1_Axis_Position.Location = new System.Drawing.Point(146, 513);
-            this.dispHeads_1_2_Head_2_Z1_Axis_Position.Size = new System.Drawing.Size(104, 34);
+            // Head 2 Z Actual Torque: D6644, |raw| on 0 - 100 % as the old page's bar.
+            this.loadHeads_1_2_Head_2_Z_Actual_Torque.Name = "loadHeads_1_2_Head_2_Z_Actual_Torque";
+            this.loadHeads_1_2_Head_2_Z_Actual_Torque.PlcNumber = 1;
+            this.loadHeads_1_2_Head_2_Z_Actual_Torque.Address = "D6644";
+            this.loadHeads_1_2_Head_2_Z_Actual_Torque.Divisor = 1D;
+            this.loadHeads_1_2_Head_2_Z_Actual_Torque.DecimalPlaces = 0;
+            this.loadHeads_1_2_Head_2_Z_Actual_Torque.Suffix = "%";
+            this.loadHeads_1_2_Head_2_Z_Actual_Torque.ScaleMinimum = 0D;
+            this.loadHeads_1_2_Head_2_Z_Actual_Torque.ScaleMaximum = 100D;
+            this.loadHeads_1_2_Head_2_Z_Actual_Torque.Signed = true;
+            this.loadHeads_1_2_Head_2_Z_Actual_Torque.Location = new System.Drawing.Point(374, 709);
+            this.loadHeads_1_2_Head_2_Z_Actual_Torque.Size = new System.Drawing.Size(120, 26);
             // 
-            // btnHeads_1_2_Head_2_Z1_Forward
+            // capRZ_2
             // 
-            this.btnHeads_1_2_Head_2_Z1_Forward.Name = "btnHeads_1_2_Head_2_Z1_Forward";
-            this.btnHeads_1_2_Head_2_Z1_Forward.PlcNumber = 1;
-            this.btnHeads_1_2_Head_2_Z1_Forward.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.Right;
-            bitAction22.Address = "M29";
-            bitAction22.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnHeads_1_2_Head_2_Z1_Forward.BitActions.Add(bitAction22);
-            this.btnHeads_1_2_Head_2_Z1_Forward.Lamp1Address = "W2.3";
-            this.btnHeads_1_2_Head_2_Z1_Forward.Location = new System.Drawing.Point(256, 513);
-            this.btnHeads_1_2_Head_2_Z1_Forward.Size = new System.Drawing.Size(72, 34);
-            this.btnHeads_1_2_Head_2_Z1_Forward.LogAction = true;
-            this.btnHeads_1_2_Head_2_Z1_Forward.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            this.capRZ_2.Name = "capRZ_2";
+            this.capRZ_2.TranslationKey = "RZ";
+            this.capRZ_2.Text = "RZ";
+            this.capRZ_2.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.capRZ_2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
+            this.capRZ_2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.capRZ_2.Location = new System.Drawing.Point(16, 758);
+            this.capRZ_2.Size = new System.Drawing.Size(46, 72);
+            this.capRZ_2.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             // 
-            // loadHeads_1_2_Head_2_Z1_Actual_Torque
+            // axHeads_1_2_Head_2_RZ_Axis_Unit
             // 
-            // Head 2 Z1 Actual Torque: D6644, |raw| on 0 - 100 % as the old page's bar.
-            this.loadHeads_1_2_Head_2_Z1_Actual_Torque.Name = "loadHeads_1_2_Head_2_Z1_Actual_Torque";
-            this.loadHeads_1_2_Head_2_Z1_Actual_Torque.PlcNumber = 1;
-            this.loadHeads_1_2_Head_2_Z1_Actual_Torque.Address = "D6644";
-            this.loadHeads_1_2_Head_2_Z1_Actual_Torque.Divisor = 1D;
-            this.loadHeads_1_2_Head_2_Z1_Actual_Torque.DecimalPlaces = 0;
-            this.loadHeads_1_2_Head_2_Z1_Actual_Torque.Suffix = "%";
-            this.loadHeads_1_2_Head_2_Z1_Actual_Torque.ScaleMinimum = 0D;
-            this.loadHeads_1_2_Head_2_Z1_Actual_Torque.ScaleMaximum = 100D;
-            this.loadHeads_1_2_Head_2_Z1_Actual_Torque.Signed = true;
-            this.loadHeads_1_2_Head_2_Z1_Actual_Torque.Location = new System.Drawing.Point(334, 517);
-            this.loadHeads_1_2_Head_2_Z1_Actual_Torque.Size = new System.Drawing.Size(120, 26);
+            // Head 2 Z2: axis 14 of the axis settings page (its buttons, position, reference sensor and error come from there).
+            this.axHeads_1_2_Head_2_RZ_Axis_Unit.BackColor = System.Drawing.Color.White;
+            this.axHeads_1_2_Head_2_RZ_Axis_Unit.Name = "axHeads_1_2_Head_2_RZ_Axis_Unit";
+            this.axHeads_1_2_Head_2_RZ_Axis_Unit.AxisNumber = 14;
+            this.axHeads_1_2_Head_2_RZ_Axis_Unit.PlcNumber = 1;
+            this.axHeads_1_2_Head_2_RZ_Axis_Unit.Location = new System.Drawing.Point(68, 762);
+            this.axHeads_1_2_Head_2_RZ_Axis_Unit.Size = new System.Drawing.Size(300, 64);
             // 
-            // capZ2_2
+            // loadHeads_1_2_Head_2_RZ_Actual_Torque
             // 
-            this.capZ2_2.Name = "capZ2_2";
-            this.capZ2_2.TranslationKey = "Z2";
-            this.capZ2_2.Text = "Z2";
-            this.capZ2_2.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.capZ2_2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
-            this.capZ2_2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capZ2_2.Location = new System.Drawing.Point(16, 550);
-            this.capZ2_2.Size = new System.Drawing.Size(46, 40);
-            this.capZ2_2.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            // 
-            // btnHeads_1_2_Head_2_Z2_Back
-            // 
-            this.btnHeads_1_2_Head_2_Z2_Back.Name = "btnHeads_1_2_Head_2_Z2_Back";
-            this.btnHeads_1_2_Head_2_Z2_Back.PlcNumber = 1;
-            this.btnHeads_1_2_Head_2_Z2_Back.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.Left;
-            bitAction23.Address = "M236";
-            bitAction23.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnHeads_1_2_Head_2_Z2_Back.BitActions.Add(bitAction23);
-            this.btnHeads_1_2_Head_2_Z2_Back.Location = new System.Drawing.Point(68, 553);
-            this.btnHeads_1_2_Head_2_Z2_Back.Size = new System.Drawing.Size(72, 34);
-            this.btnHeads_1_2_Head_2_Z2_Back.LogAction = true;
-            this.btnHeads_1_2_Head_2_Z2_Back.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // dispHeads_1_2_Head_2_Z2_Axis_Position
-            // 
-            // Head 2 Z2 Axis Position: D440, raw / 10000.
-            this.dispHeads_1_2_Head_2_Z2_Axis_Position.Name = "dispHeads_1_2_Head_2_Z2_Axis_Position";
-            this.dispHeads_1_2_Head_2_Z2_Axis_Position.PlcNumber = 1;
-            this.dispHeads_1_2_Head_2_Z2_Axis_Position.Address = "D440";
-            this.dispHeads_1_2_Head_2_Z2_Axis_Position.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.dispHeads_1_2_Head_2_Z2_Axis_Position.Divisor = 10000D;
-            this.dispHeads_1_2_Head_2_Z2_Axis_Position.DecimalPlaces = 2;
-            this.dispHeads_1_2_Head_2_Z2_Axis_Position.Digits = 7;
-            this.dispHeads_1_2_Head_2_Z2_Axis_Position.Suffix = "mm";
-            this.dispHeads_1_2_Head_2_Z2_Axis_Position.Location = new System.Drawing.Point(146, 553);
-            this.dispHeads_1_2_Head_2_Z2_Axis_Position.Size = new System.Drawing.Size(104, 34);
-            // 
-            // btnHeads_1_2_Head_2_Z2_Forward
-            // 
-            this.btnHeads_1_2_Head_2_Z2_Forward.Name = "btnHeads_1_2_Head_2_Z2_Forward";
-            this.btnHeads_1_2_Head_2_Z2_Forward.PlcNumber = 1;
-            this.btnHeads_1_2_Head_2_Z2_Forward.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.Right;
-            bitAction24.Address = "M237";
-            bitAction24.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnHeads_1_2_Head_2_Z2_Forward.BitActions.Add(bitAction24);
-            this.btnHeads_1_2_Head_2_Z2_Forward.Lamp1Address = "W2.4";
-            this.btnHeads_1_2_Head_2_Z2_Forward.Location = new System.Drawing.Point(256, 553);
-            this.btnHeads_1_2_Head_2_Z2_Forward.Size = new System.Drawing.Size(72, 34);
-            this.btnHeads_1_2_Head_2_Z2_Forward.LogAction = true;
-            this.btnHeads_1_2_Head_2_Z2_Forward.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // loadHeads_1_2_Head_2_Z2_Actual_Torque
-            // 
-            // Head 2 Z2 Actual Torque: D7194, |raw| on 0 - 100 % as the old page's bar.
-            this.loadHeads_1_2_Head_2_Z2_Actual_Torque.Name = "loadHeads_1_2_Head_2_Z2_Actual_Torque";
-            this.loadHeads_1_2_Head_2_Z2_Actual_Torque.PlcNumber = 1;
-            this.loadHeads_1_2_Head_2_Z2_Actual_Torque.Address = "D7194";
-            this.loadHeads_1_2_Head_2_Z2_Actual_Torque.Divisor = 1D;
-            this.loadHeads_1_2_Head_2_Z2_Actual_Torque.DecimalPlaces = 0;
-            this.loadHeads_1_2_Head_2_Z2_Actual_Torque.Suffix = "%";
-            this.loadHeads_1_2_Head_2_Z2_Actual_Torque.ScaleMinimum = 0D;
-            this.loadHeads_1_2_Head_2_Z2_Actual_Torque.ScaleMaximum = 100D;
-            this.loadHeads_1_2_Head_2_Z2_Actual_Torque.Signed = true;
-            this.loadHeads_1_2_Head_2_Z2_Actual_Torque.Location = new System.Drawing.Point(334, 557);
-            this.loadHeads_1_2_Head_2_Z2_Actual_Torque.Size = new System.Drawing.Size(120, 26);
-            // 
-            // lblGeneral
-            // 
-            this.lblGeneral.Name = "lblGeneral";
-            this.lblGeneral.TranslationKey = "General";
-            this.lblGeneral.Text = "General";
-            this.lblGeneral.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.lblGeneral.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
-            this.lblGeneral.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.lblGeneral.Location = new System.Drawing.Point(16, 592);
-            this.lblGeneral.Size = new System.Drawing.Size(438, 26);
-            // 
-            // capX_3
-            // 
-            this.capX_3.Name = "capX_3";
-            this.capX_3.TranslationKey = "X";
-            this.capX_3.Text = "X";
-            this.capX_3.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.capX_3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
-            this.capX_3.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capX_3.Location = new System.Drawing.Point(16, 620);
-            this.capX_3.Size = new System.Drawing.Size(46, 40);
-            this.capX_3.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            // 
-            // btnHeads_1_2_General_X_Back
-            // 
-            this.btnHeads_1_2_General_X_Back.Name = "btnHeads_1_2_General_X_Back";
-            this.btnHeads_1_2_General_X_Back.PlcNumber = 1;
-            this.btnHeads_1_2_General_X_Back.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.Left;
-            bitAction25.Address = "M41";
-            bitAction25.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnHeads_1_2_General_X_Back.BitActions.Add(bitAction25);
-            this.btnHeads_1_2_General_X_Back.Location = new System.Drawing.Point(68, 623);
-            this.btnHeads_1_2_General_X_Back.Size = new System.Drawing.Size(72, 34);
-            this.btnHeads_1_2_General_X_Back.LogAction = true;
-            this.btnHeads_1_2_General_X_Back.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // dispHeads_1_2_General_X_Axis_Position
-            // 
-            // General X Axis Position: D320, raw / 10000.
-            this.dispHeads_1_2_General_X_Axis_Position.Name = "dispHeads_1_2_General_X_Axis_Position";
-            this.dispHeads_1_2_General_X_Axis_Position.PlcNumber = 1;
-            this.dispHeads_1_2_General_X_Axis_Position.Address = "D320";
-            this.dispHeads_1_2_General_X_Axis_Position.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.dispHeads_1_2_General_X_Axis_Position.Divisor = 10000D;
-            this.dispHeads_1_2_General_X_Axis_Position.DecimalPlaces = 2;
-            this.dispHeads_1_2_General_X_Axis_Position.Digits = 7;
-            this.dispHeads_1_2_General_X_Axis_Position.Suffix = "mm";
-            this.dispHeads_1_2_General_X_Axis_Position.Location = new System.Drawing.Point(146, 623);
-            this.dispHeads_1_2_General_X_Axis_Position.Size = new System.Drawing.Size(104, 34);
-            // 
-            // btnHeads_1_2_General_X_Forward
-            // 
-            this.btnHeads_1_2_General_X_Forward.Name = "btnHeads_1_2_General_X_Forward";
-            this.btnHeads_1_2_General_X_Forward.PlcNumber = 1;
-            this.btnHeads_1_2_General_X_Forward.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.Right;
-            bitAction26.Address = "M22";
-            bitAction26.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnHeads_1_2_General_X_Forward.BitActions.Add(bitAction26);
-            this.btnHeads_1_2_General_X_Forward.Location = new System.Drawing.Point(256, 623);
-            this.btnHeads_1_2_General_X_Forward.Size = new System.Drawing.Size(72, 34);
-            this.btnHeads_1_2_General_X_Forward.LogAction = true;
-            this.btnHeads_1_2_General_X_Forward.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // capY1_3
-            // 
-            this.capY1_3.Name = "capY1_3";
-            this.capY1_3.TranslationKey = "Y1";
-            this.capY1_3.Text = "Y1";
-            this.capY1_3.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.capY1_3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
-            this.capY1_3.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capY1_3.Location = new System.Drawing.Point(16, 660);
-            this.capY1_3.Size = new System.Drawing.Size(46, 40);
-            this.capY1_3.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            // 
-            // btnHeads_1_2_General_Y1_Back
-            // 
-            this.btnHeads_1_2_General_Y1_Back.Name = "btnHeads_1_2_General_Y1_Back";
-            this.btnHeads_1_2_General_Y1_Back.PlcNumber = 1;
-            this.btnHeads_1_2_General_Y1_Back.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.Left;
-            bitAction27.Address = "M42";
-            bitAction27.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnHeads_1_2_General_Y1_Back.BitActions.Add(bitAction27);
-            this.btnHeads_1_2_General_Y1_Back.Location = new System.Drawing.Point(68, 663);
-            this.btnHeads_1_2_General_Y1_Back.Size = new System.Drawing.Size(72, 34);
-            this.btnHeads_1_2_General_Y1_Back.LogAction = true;
-            this.btnHeads_1_2_General_Y1_Back.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // dispHeads_1_2_General_Y1_Axis_Position
-            // 
-            // General Y1 Axis Position: D340, raw / 10000.
-            this.dispHeads_1_2_General_Y1_Axis_Position.Name = "dispHeads_1_2_General_Y1_Axis_Position";
-            this.dispHeads_1_2_General_Y1_Axis_Position.PlcNumber = 1;
-            this.dispHeads_1_2_General_Y1_Axis_Position.Address = "D340";
-            this.dispHeads_1_2_General_Y1_Axis_Position.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.dispHeads_1_2_General_Y1_Axis_Position.Divisor = 10000D;
-            this.dispHeads_1_2_General_Y1_Axis_Position.DecimalPlaces = 2;
-            this.dispHeads_1_2_General_Y1_Axis_Position.Digits = 7;
-            this.dispHeads_1_2_General_Y1_Axis_Position.Suffix = "mm";
-            this.dispHeads_1_2_General_Y1_Axis_Position.Location = new System.Drawing.Point(146, 663);
-            this.dispHeads_1_2_General_Y1_Axis_Position.Size = new System.Drawing.Size(104, 34);
-            // 
-            // btnHeads_1_2_General_Y1_Forward
-            // 
-            this.btnHeads_1_2_General_Y1_Forward.Name = "btnHeads_1_2_General_Y1_Forward";
-            this.btnHeads_1_2_General_Y1_Forward.PlcNumber = 1;
-            this.btnHeads_1_2_General_Y1_Forward.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.Right;
-            bitAction28.Address = "M23";
-            bitAction28.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnHeads_1_2_General_Y1_Forward.BitActions.Add(bitAction28);
-            this.btnHeads_1_2_General_Y1_Forward.Location = new System.Drawing.Point(256, 663);
-            this.btnHeads_1_2_General_Y1_Forward.Size = new System.Drawing.Size(72, 34);
-            this.btnHeads_1_2_General_Y1_Forward.LogAction = true;
-            this.btnHeads_1_2_General_Y1_Forward.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // capY2_3
-            // 
-            this.capY2_3.Name = "capY2_3";
-            this.capY2_3.TranslationKey = "Y2";
-            this.capY2_3.Text = "Y2";
-            this.capY2_3.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.capY2_3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
-            this.capY2_3.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capY2_3.Location = new System.Drawing.Point(16, 700);
-            this.capY2_3.Size = new System.Drawing.Size(46, 40);
-            this.capY2_3.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            // 
-            // btnHeads_1_2_General_Y2_Back
-            // 
-            this.btnHeads_1_2_General_Y2_Back.Name = "btnHeads_1_2_General_Y2_Back";
-            this.btnHeads_1_2_General_Y2_Back.PlcNumber = 1;
-            this.btnHeads_1_2_General_Y2_Back.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.Left;
-            bitAction29.Address = "M43";
-            bitAction29.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnHeads_1_2_General_Y2_Back.BitActions.Add(bitAction29);
-            this.btnHeads_1_2_General_Y2_Back.Location = new System.Drawing.Point(68, 703);
-            this.btnHeads_1_2_General_Y2_Back.Size = new System.Drawing.Size(72, 34);
-            this.btnHeads_1_2_General_Y2_Back.LogAction = true;
-            this.btnHeads_1_2_General_Y2_Back.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // dispHeads_1_2_General_Y2_Axis_Position
-            // 
-            // General Y2 Axis Position: D360, raw / 10000.
-            this.dispHeads_1_2_General_Y2_Axis_Position.Name = "dispHeads_1_2_General_Y2_Axis_Position";
-            this.dispHeads_1_2_General_Y2_Axis_Position.PlcNumber = 1;
-            this.dispHeads_1_2_General_Y2_Axis_Position.Address = "D360";
-            this.dispHeads_1_2_General_Y2_Axis_Position.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.dispHeads_1_2_General_Y2_Axis_Position.Divisor = 10000D;
-            this.dispHeads_1_2_General_Y2_Axis_Position.DecimalPlaces = 2;
-            this.dispHeads_1_2_General_Y2_Axis_Position.Digits = 7;
-            this.dispHeads_1_2_General_Y2_Axis_Position.Suffix = "mm";
-            this.dispHeads_1_2_General_Y2_Axis_Position.Location = new System.Drawing.Point(146, 703);
-            this.dispHeads_1_2_General_Y2_Axis_Position.Size = new System.Drawing.Size(104, 34);
-            // 
-            // btnHeads_1_2_General_Y2_Forward
-            // 
-            this.btnHeads_1_2_General_Y2_Forward.Name = "btnHeads_1_2_General_Y2_Forward";
-            this.btnHeads_1_2_General_Y2_Forward.PlcNumber = 1;
-            this.btnHeads_1_2_General_Y2_Forward.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.Right;
-            bitAction30.Address = "M24";
-            bitAction30.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnHeads_1_2_General_Y2_Forward.BitActions.Add(bitAction30);
-            this.btnHeads_1_2_General_Y2_Forward.Location = new System.Drawing.Point(256, 703);
-            this.btnHeads_1_2_General_Y2_Forward.Size = new System.Drawing.Size(72, 34);
-            this.btnHeads_1_2_General_Y2_Forward.LogAction = true;
-            this.btnHeads_1_2_General_Y2_Forward.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            // Head 2 RZ Actual Torque: D7194, |raw| on 0 - 100 % as the old page's bar.
+            this.loadHeads_1_2_Head_2_RZ_Actual_Torque.Name = "loadHeads_1_2_Head_2_RZ_Actual_Torque";
+            this.loadHeads_1_2_Head_2_RZ_Actual_Torque.PlcNumber = 1;
+            this.loadHeads_1_2_Head_2_RZ_Actual_Torque.Address = "D7194";
+            this.loadHeads_1_2_Head_2_RZ_Actual_Torque.Divisor = 1D;
+            this.loadHeads_1_2_Head_2_RZ_Actual_Torque.DecimalPlaces = 0;
+            this.loadHeads_1_2_Head_2_RZ_Actual_Torque.Suffix = "%";
+            this.loadHeads_1_2_Head_2_RZ_Actual_Torque.ScaleMinimum = 0D;
+            this.loadHeads_1_2_Head_2_RZ_Actual_Torque.ScaleMaximum = 100D;
+            this.loadHeads_1_2_Head_2_RZ_Actual_Torque.Signed = true;
+            this.loadHeads_1_2_Head_2_RZ_Actual_Torque.Location = new System.Drawing.Point(374, 781);
+            this.loadHeads_1_2_Head_2_RZ_Actual_Torque.Size = new System.Drawing.Size(120, 26);
             // 
             // hdAxis_2
             // 
@@ -1402,41 +559,19 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.hdAxis_2.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
             this.hdAxis_2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
             this.hdAxis_2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.hdAxis_2.Location = new System.Drawing.Point(486, 16);
+            this.hdAxis_2.Location = new System.Drawing.Point(526, 16);
             this.hdAxis_2.Size = new System.Drawing.Size(46, 26);
             // 
-            // hdBack_2
+            // hdAxis_Unit_2
             // 
-            this.hdBack_2.Name = "hdBack_2";
-            this.hdBack_2.TranslationKey = "Back";
-            this.hdBack_2.Text = "Back";
-            this.hdBack_2.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
-            this.hdBack_2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
-            this.hdBack_2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.hdBack_2.Location = new System.Drawing.Point(538, 16);
-            this.hdBack_2.Size = new System.Drawing.Size(72, 26);
-            // 
-            // hdAxis_Position_2
-            // 
-            this.hdAxis_Position_2.Name = "hdAxis_Position_2";
-            this.hdAxis_Position_2.TranslationKey = "Axis Position";
-            this.hdAxis_Position_2.Text = "Axis Position";
-            this.hdAxis_Position_2.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
-            this.hdAxis_Position_2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
-            this.hdAxis_Position_2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.hdAxis_Position_2.Location = new System.Drawing.Point(616, 16);
-            this.hdAxis_Position_2.Size = new System.Drawing.Size(104, 26);
-            // 
-            // hdForward_2
-            // 
-            this.hdForward_2.Name = "hdForward_2";
-            this.hdForward_2.TranslationKey = "Forward";
-            this.hdForward_2.Text = "Forward";
-            this.hdForward_2.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
-            this.hdForward_2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
-            this.hdForward_2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.hdForward_2.Location = new System.Drawing.Point(726, 16);
-            this.hdForward_2.Size = new System.Drawing.Size(72, 26);
+            this.hdAxis_Unit_2.Name = "hdAxis_Unit_2";
+            this.hdAxis_Unit_2.TranslationKey = "Axis Unit";
+            this.hdAxis_Unit_2.Text = "Axis Unit";
+            this.hdAxis_Unit_2.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
+            this.hdAxis_Unit_2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
+            this.hdAxis_Unit_2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.hdAxis_Unit_2.Location = new System.Drawing.Point(578, 16);
+            this.hdAxis_Unit_2.Size = new System.Drawing.Size(300, 26);
             // 
             // hdActual_Torque_2
             // 
@@ -1446,7 +581,7 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.hdActual_Torque_2.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
             this.hdActual_Torque_2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
             this.hdActual_Torque_2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.hdActual_Torque_2.Location = new System.Drawing.Point(804, 16);
+            this.hdActual_Torque_2.Location = new System.Drawing.Point(884, 16);
             this.hdActual_Torque_2.Size = new System.Drawing.Size(120, 26);
             // 
             // lblHead_3
@@ -1457,61 +592,30 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.lblHead_3.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.lblHead_3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
             this.lblHead_3.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.lblHead_3.Location = new System.Drawing.Point(486, 52);
-            this.lblHead_3.Size = new System.Drawing.Size(438, 26);
+            this.lblHead_3.Location = new System.Drawing.Point(526, 52);
+            this.lblHead_3.Size = new System.Drawing.Size(478, 26);
             // 
-            // capX_4
+            // capX_3
             // 
-            this.capX_4.Name = "capX_4";
-            this.capX_4.TranslationKey = "X";
-            this.capX_4.Text = "X";
-            this.capX_4.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.capX_4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
-            this.capX_4.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capX_4.Location = new System.Drawing.Point(486, 80);
-            this.capX_4.Size = new System.Drawing.Size(46, 40);
-            this.capX_4.Font = new System.Drawing.Font("Segoe UI", 9.5F);
+            this.capX_3.Name = "capX_3";
+            this.capX_3.TranslationKey = "X";
+            this.capX_3.Text = "X";
+            this.capX_3.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.capX_3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
+            this.capX_3.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.capX_3.Location = new System.Drawing.Point(526, 80);
+            this.capX_3.Size = new System.Drawing.Size(46, 72);
+            this.capX_3.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             // 
-            // btnHeads_3_4_Head_3_X_Back
+            // axHeads_3_4_Head_3_X_Axis_Unit
             // 
-            this.btnHeads_3_4_Head_3_X_Back.Name = "btnHeads_3_4_Head_3_X_Back";
-            this.btnHeads_3_4_Head_3_X_Back.PlcNumber = 1;
-            this.btnHeads_3_4_Head_3_X_Back.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.Left;
-            bitAction31.Address = "M53";
-            bitAction31.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnHeads_3_4_Head_3_X_Back.BitActions.Add(bitAction31);
-            this.btnHeads_3_4_Head_3_X_Back.Lamp1Address = "W4.0";
-            this.btnHeads_3_4_Head_3_X_Back.Location = new System.Drawing.Point(538, 83);
-            this.btnHeads_3_4_Head_3_X_Back.Size = new System.Drawing.Size(72, 34);
-            this.btnHeads_3_4_Head_3_X_Back.LogAction = true;
-            this.btnHeads_3_4_Head_3_X_Back.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // dispHeads_3_4_Head_3_X_Axis_Position
-            // 
-            // Head 3 X Axis Position: D180, raw / 10000.
-            this.dispHeads_3_4_Head_3_X_Axis_Position.Name = "dispHeads_3_4_Head_3_X_Axis_Position";
-            this.dispHeads_3_4_Head_3_X_Axis_Position.PlcNumber = 1;
-            this.dispHeads_3_4_Head_3_X_Axis_Position.Address = "D180";
-            this.dispHeads_3_4_Head_3_X_Axis_Position.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.dispHeads_3_4_Head_3_X_Axis_Position.Divisor = 10000D;
-            this.dispHeads_3_4_Head_3_X_Axis_Position.DecimalPlaces = 2;
-            this.dispHeads_3_4_Head_3_X_Axis_Position.Digits = 7;
-            this.dispHeads_3_4_Head_3_X_Axis_Position.Suffix = "mm";
-            this.dispHeads_3_4_Head_3_X_Axis_Position.Location = new System.Drawing.Point(616, 83);
-            this.dispHeads_3_4_Head_3_X_Axis_Position.Size = new System.Drawing.Size(104, 34);
-            // 
-            // btnHeads_3_4_Head_3_X_Forward
-            // 
-            this.btnHeads_3_4_Head_3_X_Forward.Name = "btnHeads_3_4_Head_3_X_Forward";
-            this.btnHeads_3_4_Head_3_X_Forward.PlcNumber = 1;
-            this.btnHeads_3_4_Head_3_X_Forward.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.Right;
-            bitAction32.Address = "M34";
-            bitAction32.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnHeads_3_4_Head_3_X_Forward.BitActions.Add(bitAction32);
-            this.btnHeads_3_4_Head_3_X_Forward.Location = new System.Drawing.Point(726, 83);
-            this.btnHeads_3_4_Head_3_X_Forward.Size = new System.Drawing.Size(72, 34);
-            this.btnHeads_3_4_Head_3_X_Forward.LogAction = true;
-            this.btnHeads_3_4_Head_3_X_Forward.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            // Head 3 X: axis 15 of the axis settings page (its buttons, position, reference sensor and error come from there).
+            this.axHeads_3_4_Head_3_X_Axis_Unit.BackColor = System.Drawing.Color.White;
+            this.axHeads_3_4_Head_3_X_Axis_Unit.Name = "axHeads_3_4_Head_3_X_Axis_Unit";
+            this.axHeads_3_4_Head_3_X_Axis_Unit.AxisNumber = 15;
+            this.axHeads_3_4_Head_3_X_Axis_Unit.PlcNumber = 1;
+            this.axHeads_3_4_Head_3_X_Axis_Unit.Location = new System.Drawing.Point(578, 84);
+            this.axHeads_3_4_Head_3_X_Axis_Unit.Size = new System.Drawing.Size(300, 64);
             // 
             // loadHeads_3_4_Head_3_X_Actual_Torque
             // 
@@ -1525,129 +629,30 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.loadHeads_3_4_Head_3_X_Actual_Torque.ScaleMinimum = 0D;
             this.loadHeads_3_4_Head_3_X_Actual_Torque.ScaleMaximum = 100D;
             this.loadHeads_3_4_Head_3_X_Actual_Torque.Signed = true;
-            this.loadHeads_3_4_Head_3_X_Actual_Torque.Location = new System.Drawing.Point(804, 87);
+            this.loadHeads_3_4_Head_3_X_Actual_Torque.Location = new System.Drawing.Point(884, 103);
             this.loadHeads_3_4_Head_3_X_Actual_Torque.Size = new System.Drawing.Size(120, 26);
             // 
-            // capX2_3
+            // capY1_3
             // 
-            this.capX2_3.Name = "capX2_3";
-            this.capX2_3.TranslationKey = "X2";
-            this.capX2_3.Text = "X2";
-            this.capX2_3.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.capX2_3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
-            this.capX2_3.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capX2_3.Location = new System.Drawing.Point(486, 120);
-            this.capX2_3.Size = new System.Drawing.Size(46, 40);
-            this.capX2_3.Font = new System.Drawing.Font("Segoe UI", 9.5F);
+            this.capY1_3.Name = "capY1_3";
+            this.capY1_3.TranslationKey = "Y1";
+            this.capY1_3.Text = "Y1";
+            this.capY1_3.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.capY1_3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
+            this.capY1_3.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.capY1_3.Location = new System.Drawing.Point(526, 152);
+            this.capY1_3.Size = new System.Drawing.Size(46, 72);
+            this.capY1_3.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             // 
-            // btnHeads_3_4_Head_3_X2_Back
+            // axHeads_3_4_Head_3_Y1_Axis_Unit
             // 
-            this.btnHeads_3_4_Head_3_X2_Back.Name = "btnHeads_3_4_Head_3_X2_Back";
-            this.btnHeads_3_4_Head_3_X2_Back.PlcNumber = 1;
-            this.btnHeads_3_4_Head_3_X2_Back.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.Left;
-            bitAction33.Address = "M248";
-            bitAction33.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnHeads_3_4_Head_3_X2_Back.BitActions.Add(bitAction33);
-            this.btnHeads_3_4_Head_3_X2_Back.Lamp1Address = "W5.6";
-            this.btnHeads_3_4_Head_3_X2_Back.Location = new System.Drawing.Point(538, 123);
-            this.btnHeads_3_4_Head_3_X2_Back.Size = new System.Drawing.Size(72, 34);
-            this.btnHeads_3_4_Head_3_X2_Back.LogAction = true;
-            this.btnHeads_3_4_Head_3_X2_Back.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // dispHeads_3_4_Head_3_X2_Axis_Position
-            // 
-            // Head 3 X2 Axis Position: D480, raw / 10000.
-            this.dispHeads_3_4_Head_3_X2_Axis_Position.Name = "dispHeads_3_4_Head_3_X2_Axis_Position";
-            this.dispHeads_3_4_Head_3_X2_Axis_Position.PlcNumber = 1;
-            this.dispHeads_3_4_Head_3_X2_Axis_Position.Address = "D480";
-            this.dispHeads_3_4_Head_3_X2_Axis_Position.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.dispHeads_3_4_Head_3_X2_Axis_Position.Divisor = 10000D;
-            this.dispHeads_3_4_Head_3_X2_Axis_Position.DecimalPlaces = 2;
-            this.dispHeads_3_4_Head_3_X2_Axis_Position.Digits = 7;
-            this.dispHeads_3_4_Head_3_X2_Axis_Position.Suffix = "mm";
-            this.dispHeads_3_4_Head_3_X2_Axis_Position.Location = new System.Drawing.Point(616, 123);
-            this.dispHeads_3_4_Head_3_X2_Axis_Position.Size = new System.Drawing.Size(104, 34);
-            // 
-            // btnHeads_3_4_Head_3_X2_Forward
-            // 
-            this.btnHeads_3_4_Head_3_X2_Forward.Name = "btnHeads_3_4_Head_3_X2_Forward";
-            this.btnHeads_3_4_Head_3_X2_Forward.PlcNumber = 1;
-            this.btnHeads_3_4_Head_3_X2_Forward.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.Right;
-            bitAction34.Address = "M249";
-            bitAction34.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnHeads_3_4_Head_3_X2_Forward.BitActions.Add(bitAction34);
-            this.btnHeads_3_4_Head_3_X2_Forward.Location = new System.Drawing.Point(726, 123);
-            this.btnHeads_3_4_Head_3_X2_Forward.Size = new System.Drawing.Size(72, 34);
-            this.btnHeads_3_4_Head_3_X2_Forward.LogAction = true;
-            this.btnHeads_3_4_Head_3_X2_Forward.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // loadHeads_3_4_Head_3_X2_Actual_Torque
-            // 
-            // Head 3 X2 Actual Torque: D7195, |raw| on 0 - 100 % as the old page's bar.
-            this.loadHeads_3_4_Head_3_X2_Actual_Torque.Name = "loadHeads_3_4_Head_3_X2_Actual_Torque";
-            this.loadHeads_3_4_Head_3_X2_Actual_Torque.PlcNumber = 1;
-            this.loadHeads_3_4_Head_3_X2_Actual_Torque.Address = "D7195";
-            this.loadHeads_3_4_Head_3_X2_Actual_Torque.Divisor = 1D;
-            this.loadHeads_3_4_Head_3_X2_Actual_Torque.DecimalPlaces = 0;
-            this.loadHeads_3_4_Head_3_X2_Actual_Torque.Suffix = "%";
-            this.loadHeads_3_4_Head_3_X2_Actual_Torque.ScaleMinimum = 0D;
-            this.loadHeads_3_4_Head_3_X2_Actual_Torque.ScaleMaximum = 100D;
-            this.loadHeads_3_4_Head_3_X2_Actual_Torque.Signed = true;
-            this.loadHeads_3_4_Head_3_X2_Actual_Torque.Location = new System.Drawing.Point(804, 127);
-            this.loadHeads_3_4_Head_3_X2_Actual_Torque.Size = new System.Drawing.Size(120, 26);
-            // 
-            // capY1_4
-            // 
-            this.capY1_4.Name = "capY1_4";
-            this.capY1_4.TranslationKey = "Y1";
-            this.capY1_4.Text = "Y1";
-            this.capY1_4.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.capY1_4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
-            this.capY1_4.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capY1_4.Location = new System.Drawing.Point(486, 160);
-            this.capY1_4.Size = new System.Drawing.Size(46, 40);
-            this.capY1_4.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            // 
-            // btnHeads_3_4_Head_3_Y1_Back
-            // 
-            this.btnHeads_3_4_Head_3_Y1_Back.Name = "btnHeads_3_4_Head_3_Y1_Back";
-            this.btnHeads_3_4_Head_3_Y1_Back.PlcNumber = 1;
-            this.btnHeads_3_4_Head_3_Y1_Back.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.Left;
-            bitAction35.Address = "M35";
-            bitAction35.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnHeads_3_4_Head_3_Y1_Back.BitActions.Add(bitAction35);
-            this.btnHeads_3_4_Head_3_Y1_Back.Lamp1Address = "W4.1";
-            this.btnHeads_3_4_Head_3_Y1_Back.Location = new System.Drawing.Point(538, 163);
-            this.btnHeads_3_4_Head_3_Y1_Back.Size = new System.Drawing.Size(72, 34);
-            this.btnHeads_3_4_Head_3_Y1_Back.LogAction = true;
-            this.btnHeads_3_4_Head_3_Y1_Back.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // dispHeads_3_4_Head_3_Y1_Axis_Position
-            // 
-            // Head 3 Y1 Axis Position: D200, raw / 10000.
-            this.dispHeads_3_4_Head_3_Y1_Axis_Position.Name = "dispHeads_3_4_Head_3_Y1_Axis_Position";
-            this.dispHeads_3_4_Head_3_Y1_Axis_Position.PlcNumber = 1;
-            this.dispHeads_3_4_Head_3_Y1_Axis_Position.Address = "D200";
-            this.dispHeads_3_4_Head_3_Y1_Axis_Position.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.dispHeads_3_4_Head_3_Y1_Axis_Position.Divisor = 10000D;
-            this.dispHeads_3_4_Head_3_Y1_Axis_Position.DecimalPlaces = 2;
-            this.dispHeads_3_4_Head_3_Y1_Axis_Position.Digits = 7;
-            this.dispHeads_3_4_Head_3_Y1_Axis_Position.Suffix = "mm";
-            this.dispHeads_3_4_Head_3_Y1_Axis_Position.Location = new System.Drawing.Point(616, 163);
-            this.dispHeads_3_4_Head_3_Y1_Axis_Position.Size = new System.Drawing.Size(104, 34);
-            // 
-            // btnHeads_3_4_Head_3_Y1_Forward
-            // 
-            this.btnHeads_3_4_Head_3_Y1_Forward.Name = "btnHeads_3_4_Head_3_Y1_Forward";
-            this.btnHeads_3_4_Head_3_Y1_Forward.PlcNumber = 1;
-            this.btnHeads_3_4_Head_3_Y1_Forward.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.Right;
-            bitAction36.Address = "M54";
-            bitAction36.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnHeads_3_4_Head_3_Y1_Forward.BitActions.Add(bitAction36);
-            this.btnHeads_3_4_Head_3_Y1_Forward.Location = new System.Drawing.Point(726, 163);
-            this.btnHeads_3_4_Head_3_Y1_Forward.Size = new System.Drawing.Size(72, 34);
-            this.btnHeads_3_4_Head_3_Y1_Forward.LogAction = true;
-            this.btnHeads_3_4_Head_3_Y1_Forward.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            // Head 3 Y1: axis 16 of the axis settings page (its buttons, position, reference sensor and error come from there).
+            this.axHeads_3_4_Head_3_Y1_Axis_Unit.BackColor = System.Drawing.Color.White;
+            this.axHeads_3_4_Head_3_Y1_Axis_Unit.Name = "axHeads_3_4_Head_3_Y1_Axis_Unit";
+            this.axHeads_3_4_Head_3_Y1_Axis_Unit.AxisNumber = 16;
+            this.axHeads_3_4_Head_3_Y1_Axis_Unit.PlcNumber = 1;
+            this.axHeads_3_4_Head_3_Y1_Axis_Unit.Location = new System.Drawing.Point(578, 156);
+            this.axHeads_3_4_Head_3_Y1_Axis_Unit.Size = new System.Drawing.Size(300, 64);
             // 
             // loadHeads_3_4_Head_3_Y1_Actual_Torque
             // 
@@ -1661,61 +666,30 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.loadHeads_3_4_Head_3_Y1_Actual_Torque.ScaleMinimum = 0D;
             this.loadHeads_3_4_Head_3_Y1_Actual_Torque.ScaleMaximum = 100D;
             this.loadHeads_3_4_Head_3_Y1_Actual_Torque.Signed = true;
-            this.loadHeads_3_4_Head_3_Y1_Actual_Torque.Location = new System.Drawing.Point(804, 167);
+            this.loadHeads_3_4_Head_3_Y1_Actual_Torque.Location = new System.Drawing.Point(884, 175);
             this.loadHeads_3_4_Head_3_Y1_Actual_Torque.Size = new System.Drawing.Size(120, 26);
             // 
-            // capY2_4
+            // capY2_3
             // 
-            this.capY2_4.Name = "capY2_4";
-            this.capY2_4.TranslationKey = "Y2";
-            this.capY2_4.Text = "Y2";
-            this.capY2_4.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.capY2_4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
-            this.capY2_4.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capY2_4.Location = new System.Drawing.Point(486, 200);
-            this.capY2_4.Size = new System.Drawing.Size(46, 40);
-            this.capY2_4.Font = new System.Drawing.Font("Segoe UI", 9.5F);
+            this.capY2_3.Name = "capY2_3";
+            this.capY2_3.TranslationKey = "Y2";
+            this.capY2_3.Text = "Y2";
+            this.capY2_3.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.capY2_3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
+            this.capY2_3.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.capY2_3.Location = new System.Drawing.Point(526, 224);
+            this.capY2_3.Size = new System.Drawing.Size(46, 72);
+            this.capY2_3.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             // 
-            // btnHeads_3_4_Head_3_Y2_Back
+            // axHeads_3_4_Head_3_Y2_Axis_Unit
             // 
-            this.btnHeads_3_4_Head_3_Y2_Back.Name = "btnHeads_3_4_Head_3_Y2_Back";
-            this.btnHeads_3_4_Head_3_Y2_Back.PlcNumber = 1;
-            this.btnHeads_3_4_Head_3_Y2_Back.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.Left;
-            bitAction37.Address = "M36";
-            bitAction37.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnHeads_3_4_Head_3_Y2_Back.BitActions.Add(bitAction37);
-            this.btnHeads_3_4_Head_3_Y2_Back.Lamp1Address = "W4.2";
-            this.btnHeads_3_4_Head_3_Y2_Back.Location = new System.Drawing.Point(538, 203);
-            this.btnHeads_3_4_Head_3_Y2_Back.Size = new System.Drawing.Size(72, 34);
-            this.btnHeads_3_4_Head_3_Y2_Back.LogAction = true;
-            this.btnHeads_3_4_Head_3_Y2_Back.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // dispHeads_3_4_Head_3_Y2_Axis_Position
-            // 
-            // Head 3 Y2 Axis Position: D220, raw / 10000.
-            this.dispHeads_3_4_Head_3_Y2_Axis_Position.Name = "dispHeads_3_4_Head_3_Y2_Axis_Position";
-            this.dispHeads_3_4_Head_3_Y2_Axis_Position.PlcNumber = 1;
-            this.dispHeads_3_4_Head_3_Y2_Axis_Position.Address = "D220";
-            this.dispHeads_3_4_Head_3_Y2_Axis_Position.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.dispHeads_3_4_Head_3_Y2_Axis_Position.Divisor = 10000D;
-            this.dispHeads_3_4_Head_3_Y2_Axis_Position.DecimalPlaces = 2;
-            this.dispHeads_3_4_Head_3_Y2_Axis_Position.Digits = 7;
-            this.dispHeads_3_4_Head_3_Y2_Axis_Position.Suffix = "mm";
-            this.dispHeads_3_4_Head_3_Y2_Axis_Position.Location = new System.Drawing.Point(616, 203);
-            this.dispHeads_3_4_Head_3_Y2_Axis_Position.Size = new System.Drawing.Size(104, 34);
-            // 
-            // btnHeads_3_4_Head_3_Y2_Forward
-            // 
-            this.btnHeads_3_4_Head_3_Y2_Forward.Name = "btnHeads_3_4_Head_3_Y2_Forward";
-            this.btnHeads_3_4_Head_3_Y2_Forward.PlcNumber = 1;
-            this.btnHeads_3_4_Head_3_Y2_Forward.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.Right;
-            bitAction38.Address = "M55";
-            bitAction38.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnHeads_3_4_Head_3_Y2_Forward.BitActions.Add(bitAction38);
-            this.btnHeads_3_4_Head_3_Y2_Forward.Location = new System.Drawing.Point(726, 203);
-            this.btnHeads_3_4_Head_3_Y2_Forward.Size = new System.Drawing.Size(72, 34);
-            this.btnHeads_3_4_Head_3_Y2_Forward.LogAction = true;
-            this.btnHeads_3_4_Head_3_Y2_Forward.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            // Head 3 Y2: axis 17 of the axis settings page (its buttons, position, reference sensor and error come from there).
+            this.axHeads_3_4_Head_3_Y2_Axis_Unit.BackColor = System.Drawing.Color.White;
+            this.axHeads_3_4_Head_3_Y2_Axis_Unit.Name = "axHeads_3_4_Head_3_Y2_Axis_Unit";
+            this.axHeads_3_4_Head_3_Y2_Axis_Unit.AxisNumber = 17;
+            this.axHeads_3_4_Head_3_Y2_Axis_Unit.PlcNumber = 1;
+            this.axHeads_3_4_Head_3_Y2_Axis_Unit.Location = new System.Drawing.Point(578, 228);
+            this.axHeads_3_4_Head_3_Y2_Axis_Unit.Size = new System.Drawing.Size(300, 64);
             // 
             // loadHeads_3_4_Head_3_Y2_Actual_Torque
             // 
@@ -1729,144 +703,82 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.loadHeads_3_4_Head_3_Y2_Actual_Torque.ScaleMinimum = 0D;
             this.loadHeads_3_4_Head_3_Y2_Actual_Torque.ScaleMaximum = 100D;
             this.loadHeads_3_4_Head_3_Y2_Actual_Torque.Signed = true;
-            this.loadHeads_3_4_Head_3_Y2_Actual_Torque.Location = new System.Drawing.Point(804, 207);
+            this.loadHeads_3_4_Head_3_Y2_Actual_Torque.Location = new System.Drawing.Point(884, 247);
             this.loadHeads_3_4_Head_3_Y2_Actual_Torque.Size = new System.Drawing.Size(120, 26);
             // 
-            // capZ1_3
+            // capZ_3
             // 
-            this.capZ1_3.Name = "capZ1_3";
-            this.capZ1_3.TranslationKey = "Z1";
-            this.capZ1_3.Text = "Z1";
-            this.capZ1_3.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.capZ1_3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
-            this.capZ1_3.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capZ1_3.Location = new System.Drawing.Point(486, 240);
-            this.capZ1_3.Size = new System.Drawing.Size(46, 40);
-            this.capZ1_3.Font = new System.Drawing.Font("Segoe UI", 9.5F);
+            this.capZ_3.Name = "capZ_3";
+            this.capZ_3.TranslationKey = "Z";
+            this.capZ_3.Text = "Z";
+            this.capZ_3.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.capZ_3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
+            this.capZ_3.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.capZ_3.Location = new System.Drawing.Point(526, 296);
+            this.capZ_3.Size = new System.Drawing.Size(46, 72);
+            this.capZ_3.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             // 
-            // btnHeads_3_4_Head_3_Z1_Back
+            // axHeads_3_4_Head_3_Z_Axis_Unit
             // 
-            this.btnHeads_3_4_Head_3_Z1_Back.Name = "btnHeads_3_4_Head_3_Z1_Back";
-            this.btnHeads_3_4_Head_3_Z1_Back.PlcNumber = 1;
-            this.btnHeads_3_4_Head_3_Z1_Back.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.Left;
-            bitAction39.Address = "M52";
-            bitAction39.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnHeads_3_4_Head_3_Z1_Back.BitActions.Add(bitAction39);
-            this.btnHeads_3_4_Head_3_Z1_Back.Location = new System.Drawing.Point(538, 243);
-            this.btnHeads_3_4_Head_3_Z1_Back.Size = new System.Drawing.Size(72, 34);
-            this.btnHeads_3_4_Head_3_Z1_Back.LogAction = true;
-            this.btnHeads_3_4_Head_3_Z1_Back.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            // Head 3 Z1: axis 18 of the axis settings page (its buttons, position, reference sensor and error come from there).
+            this.axHeads_3_4_Head_3_Z_Axis_Unit.BackColor = System.Drawing.Color.White;
+            this.axHeads_3_4_Head_3_Z_Axis_Unit.Name = "axHeads_3_4_Head_3_Z_Axis_Unit";
+            this.axHeads_3_4_Head_3_Z_Axis_Unit.AxisNumber = 18;
+            this.axHeads_3_4_Head_3_Z_Axis_Unit.PlcNumber = 1;
+            this.axHeads_3_4_Head_3_Z_Axis_Unit.Location = new System.Drawing.Point(578, 300);
+            this.axHeads_3_4_Head_3_Z_Axis_Unit.Size = new System.Drawing.Size(300, 64);
             // 
-            // dispHeads_3_4_Head_3_Z1_Axis_Position
+            // loadHeads_3_4_Head_3_Z_Actual_Torque
             // 
-            // Head 3 Z1 Axis Position: D160, raw / 10000.
-            this.dispHeads_3_4_Head_3_Z1_Axis_Position.Name = "dispHeads_3_4_Head_3_Z1_Axis_Position";
-            this.dispHeads_3_4_Head_3_Z1_Axis_Position.PlcNumber = 1;
-            this.dispHeads_3_4_Head_3_Z1_Axis_Position.Address = "D160";
-            this.dispHeads_3_4_Head_3_Z1_Axis_Position.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.dispHeads_3_4_Head_3_Z1_Axis_Position.Divisor = 10000D;
-            this.dispHeads_3_4_Head_3_Z1_Axis_Position.DecimalPlaces = 2;
-            this.dispHeads_3_4_Head_3_Z1_Axis_Position.Digits = 7;
-            this.dispHeads_3_4_Head_3_Z1_Axis_Position.Suffix = "mm";
-            this.dispHeads_3_4_Head_3_Z1_Axis_Position.Location = new System.Drawing.Point(616, 243);
-            this.dispHeads_3_4_Head_3_Z1_Axis_Position.Size = new System.Drawing.Size(104, 34);
+            // Head 3 Z Actual Torque: D6648, |raw| on 0 - 100 % as the old page's bar.
+            this.loadHeads_3_4_Head_3_Z_Actual_Torque.Name = "loadHeads_3_4_Head_3_Z_Actual_Torque";
+            this.loadHeads_3_4_Head_3_Z_Actual_Torque.PlcNumber = 1;
+            this.loadHeads_3_4_Head_3_Z_Actual_Torque.Address = "D6648";
+            this.loadHeads_3_4_Head_3_Z_Actual_Torque.Divisor = 1D;
+            this.loadHeads_3_4_Head_3_Z_Actual_Torque.DecimalPlaces = 0;
+            this.loadHeads_3_4_Head_3_Z_Actual_Torque.Suffix = "%";
+            this.loadHeads_3_4_Head_3_Z_Actual_Torque.ScaleMinimum = 0D;
+            this.loadHeads_3_4_Head_3_Z_Actual_Torque.ScaleMaximum = 100D;
+            this.loadHeads_3_4_Head_3_Z_Actual_Torque.Signed = true;
+            this.loadHeads_3_4_Head_3_Z_Actual_Torque.Location = new System.Drawing.Point(884, 319);
+            this.loadHeads_3_4_Head_3_Z_Actual_Torque.Size = new System.Drawing.Size(120, 26);
             // 
-            // btnHeads_3_4_Head_3_Z1_Forward
+            // capRZ_3
             // 
-            this.btnHeads_3_4_Head_3_Z1_Forward.Name = "btnHeads_3_4_Head_3_Z1_Forward";
-            this.btnHeads_3_4_Head_3_Z1_Forward.PlcNumber = 1;
-            this.btnHeads_3_4_Head_3_Z1_Forward.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.Right;
-            bitAction40.Address = "M33";
-            bitAction40.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnHeads_3_4_Head_3_Z1_Forward.BitActions.Add(bitAction40);
-            this.btnHeads_3_4_Head_3_Z1_Forward.Lamp1Address = "W4.3";
-            this.btnHeads_3_4_Head_3_Z1_Forward.Location = new System.Drawing.Point(726, 243);
-            this.btnHeads_3_4_Head_3_Z1_Forward.Size = new System.Drawing.Size(72, 34);
-            this.btnHeads_3_4_Head_3_Z1_Forward.LogAction = true;
-            this.btnHeads_3_4_Head_3_Z1_Forward.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            this.capRZ_3.Name = "capRZ_3";
+            this.capRZ_3.TranslationKey = "RZ";
+            this.capRZ_3.Text = "RZ";
+            this.capRZ_3.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.capRZ_3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
+            this.capRZ_3.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.capRZ_3.Location = new System.Drawing.Point(526, 368);
+            this.capRZ_3.Size = new System.Drawing.Size(46, 72);
+            this.capRZ_3.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             // 
-            // loadHeads_3_4_Head_3_Z1_Actual_Torque
+            // axHeads_3_4_Head_3_RZ_Axis_Unit
             // 
-            // Head 3 Z1 Actual Torque: D6648, |raw| on 0 - 100 % as the old page's bar.
-            this.loadHeads_3_4_Head_3_Z1_Actual_Torque.Name = "loadHeads_3_4_Head_3_Z1_Actual_Torque";
-            this.loadHeads_3_4_Head_3_Z1_Actual_Torque.PlcNumber = 1;
-            this.loadHeads_3_4_Head_3_Z1_Actual_Torque.Address = "D6648";
-            this.loadHeads_3_4_Head_3_Z1_Actual_Torque.Divisor = 1D;
-            this.loadHeads_3_4_Head_3_Z1_Actual_Torque.DecimalPlaces = 0;
-            this.loadHeads_3_4_Head_3_Z1_Actual_Torque.Suffix = "%";
-            this.loadHeads_3_4_Head_3_Z1_Actual_Torque.ScaleMinimum = 0D;
-            this.loadHeads_3_4_Head_3_Z1_Actual_Torque.ScaleMaximum = 100D;
-            this.loadHeads_3_4_Head_3_Z1_Actual_Torque.Signed = true;
-            this.loadHeads_3_4_Head_3_Z1_Actual_Torque.Location = new System.Drawing.Point(804, 247);
-            this.loadHeads_3_4_Head_3_Z1_Actual_Torque.Size = new System.Drawing.Size(120, 26);
+            // Head 3 Z2: axis 19 of the axis settings page (its buttons, position, reference sensor and error come from there).
+            this.axHeads_3_4_Head_3_RZ_Axis_Unit.BackColor = System.Drawing.Color.White;
+            this.axHeads_3_4_Head_3_RZ_Axis_Unit.Name = "axHeads_3_4_Head_3_RZ_Axis_Unit";
+            this.axHeads_3_4_Head_3_RZ_Axis_Unit.AxisNumber = 19;
+            this.axHeads_3_4_Head_3_RZ_Axis_Unit.PlcNumber = 1;
+            this.axHeads_3_4_Head_3_RZ_Axis_Unit.Location = new System.Drawing.Point(578, 372);
+            this.axHeads_3_4_Head_3_RZ_Axis_Unit.Size = new System.Drawing.Size(300, 64);
             // 
-            // capZ2_3
+            // loadHeads_3_4_Head_3_RZ_Actual_Torque
             // 
-            this.capZ2_3.Name = "capZ2_3";
-            this.capZ2_3.TranslationKey = "Z2";
-            this.capZ2_3.Text = "Z2";
-            this.capZ2_3.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.capZ2_3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
-            this.capZ2_3.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capZ2_3.Location = new System.Drawing.Point(486, 280);
-            this.capZ2_3.Size = new System.Drawing.Size(46, 40);
-            this.capZ2_3.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            // 
-            // btnHeads_3_4_Head_3_Z2_Back
-            // 
-            this.btnHeads_3_4_Head_3_Z2_Back.Name = "btnHeads_3_4_Head_3_Z2_Back";
-            this.btnHeads_3_4_Head_3_Z2_Back.PlcNumber = 1;
-            this.btnHeads_3_4_Head_3_Z2_Back.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.Left;
-            bitAction41.Address = "M238";
-            bitAction41.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnHeads_3_4_Head_3_Z2_Back.BitActions.Add(bitAction41);
-            this.btnHeads_3_4_Head_3_Z2_Back.Location = new System.Drawing.Point(538, 283);
-            this.btnHeads_3_4_Head_3_Z2_Back.Size = new System.Drawing.Size(72, 34);
-            this.btnHeads_3_4_Head_3_Z2_Back.LogAction = true;
-            this.btnHeads_3_4_Head_3_Z2_Back.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // dispHeads_3_4_Head_3_Z2_Axis_Position
-            // 
-            // Head 3 Z2 Axis Position: D492, raw / 10000.
-            this.dispHeads_3_4_Head_3_Z2_Axis_Position.Name = "dispHeads_3_4_Head_3_Z2_Axis_Position";
-            this.dispHeads_3_4_Head_3_Z2_Axis_Position.PlcNumber = 1;
-            this.dispHeads_3_4_Head_3_Z2_Axis_Position.Address = "D492";
-            this.dispHeads_3_4_Head_3_Z2_Axis_Position.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.dispHeads_3_4_Head_3_Z2_Axis_Position.Divisor = 10000D;
-            this.dispHeads_3_4_Head_3_Z2_Axis_Position.DecimalPlaces = 2;
-            this.dispHeads_3_4_Head_3_Z2_Axis_Position.Digits = 7;
-            this.dispHeads_3_4_Head_3_Z2_Axis_Position.Suffix = "mm";
-            this.dispHeads_3_4_Head_3_Z2_Axis_Position.Location = new System.Drawing.Point(616, 283);
-            this.dispHeads_3_4_Head_3_Z2_Axis_Position.Size = new System.Drawing.Size(104, 34);
-            // 
-            // btnHeads_3_4_Head_3_Z2_Forward
-            // 
-            this.btnHeads_3_4_Head_3_Z2_Forward.Name = "btnHeads_3_4_Head_3_Z2_Forward";
-            this.btnHeads_3_4_Head_3_Z2_Forward.PlcNumber = 1;
-            this.btnHeads_3_4_Head_3_Z2_Forward.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.Right;
-            bitAction42.Address = "M239";
-            bitAction42.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnHeads_3_4_Head_3_Z2_Forward.BitActions.Add(bitAction42);
-            this.btnHeads_3_4_Head_3_Z2_Forward.Lamp1Address = "W4.4";
-            this.btnHeads_3_4_Head_3_Z2_Forward.Location = new System.Drawing.Point(726, 283);
-            this.btnHeads_3_4_Head_3_Z2_Forward.Size = new System.Drawing.Size(72, 34);
-            this.btnHeads_3_4_Head_3_Z2_Forward.LogAction = true;
-            this.btnHeads_3_4_Head_3_Z2_Forward.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // loadHeads_3_4_Head_3_Z2_Actual_Torque
-            // 
-            // Head 3 Z2 Actual Torque: D7192, |raw| on 0 - 100 % as the old page's bar.
-            this.loadHeads_3_4_Head_3_Z2_Actual_Torque.Name = "loadHeads_3_4_Head_3_Z2_Actual_Torque";
-            this.loadHeads_3_4_Head_3_Z2_Actual_Torque.PlcNumber = 1;
-            this.loadHeads_3_4_Head_3_Z2_Actual_Torque.Address = "D7192";
-            this.loadHeads_3_4_Head_3_Z2_Actual_Torque.Divisor = 1D;
-            this.loadHeads_3_4_Head_3_Z2_Actual_Torque.DecimalPlaces = 0;
-            this.loadHeads_3_4_Head_3_Z2_Actual_Torque.Suffix = "%";
-            this.loadHeads_3_4_Head_3_Z2_Actual_Torque.ScaleMinimum = 0D;
-            this.loadHeads_3_4_Head_3_Z2_Actual_Torque.ScaleMaximum = 100D;
-            this.loadHeads_3_4_Head_3_Z2_Actual_Torque.Signed = true;
-            this.loadHeads_3_4_Head_3_Z2_Actual_Torque.Location = new System.Drawing.Point(804, 287);
-            this.loadHeads_3_4_Head_3_Z2_Actual_Torque.Size = new System.Drawing.Size(120, 26);
+            // Head 3 RZ Actual Torque: D7192, |raw| on 0 - 100 % as the old page's bar.
+            this.loadHeads_3_4_Head_3_RZ_Actual_Torque.Name = "loadHeads_3_4_Head_3_RZ_Actual_Torque";
+            this.loadHeads_3_4_Head_3_RZ_Actual_Torque.PlcNumber = 1;
+            this.loadHeads_3_4_Head_3_RZ_Actual_Torque.Address = "D7192";
+            this.loadHeads_3_4_Head_3_RZ_Actual_Torque.Divisor = 1D;
+            this.loadHeads_3_4_Head_3_RZ_Actual_Torque.DecimalPlaces = 0;
+            this.loadHeads_3_4_Head_3_RZ_Actual_Torque.Suffix = "%";
+            this.loadHeads_3_4_Head_3_RZ_Actual_Torque.ScaleMinimum = 0D;
+            this.loadHeads_3_4_Head_3_RZ_Actual_Torque.ScaleMaximum = 100D;
+            this.loadHeads_3_4_Head_3_RZ_Actual_Torque.Signed = true;
+            this.loadHeads_3_4_Head_3_RZ_Actual_Torque.Location = new System.Drawing.Point(884, 391);
+            this.loadHeads_3_4_Head_3_RZ_Actual_Torque.Size = new System.Drawing.Size(120, 26);
             // 
             // lblHead_4
             // 
@@ -1876,61 +788,30 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.lblHead_4.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.lblHead_4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
             this.lblHead_4.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.lblHead_4.Location = new System.Drawing.Point(486, 322);
-            this.lblHead_4.Size = new System.Drawing.Size(438, 26);
+            this.lblHead_4.Location = new System.Drawing.Point(526, 442);
+            this.lblHead_4.Size = new System.Drawing.Size(478, 26);
             // 
-            // capX_5
+            // capX_4
             // 
-            this.capX_5.Name = "capX_5";
-            this.capX_5.TranslationKey = "X";
-            this.capX_5.Text = "X";
-            this.capX_5.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.capX_5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
-            this.capX_5.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capX_5.Location = new System.Drawing.Point(486, 350);
-            this.capX_5.Size = new System.Drawing.Size(46, 40);
-            this.capX_5.Font = new System.Drawing.Font("Segoe UI", 9.5F);
+            this.capX_4.Name = "capX_4";
+            this.capX_4.TranslationKey = "X";
+            this.capX_4.Text = "X";
+            this.capX_4.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.capX_4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
+            this.capX_4.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.capX_4.Location = new System.Drawing.Point(526, 470);
+            this.capX_4.Size = new System.Drawing.Size(46, 72);
+            this.capX_4.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             // 
-            // btnHeads_3_4_Head_4_X_Back
+            // axHeads_3_4_Head_4_X_Axis_Unit
             // 
-            this.btnHeads_3_4_Head_4_X_Back.Name = "btnHeads_3_4_Head_4_X_Back";
-            this.btnHeads_3_4_Head_4_X_Back.PlcNumber = 1;
-            this.btnHeads_3_4_Head_4_X_Back.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.Left;
-            bitAction43.Address = "M57";
-            bitAction43.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnHeads_3_4_Head_4_X_Back.BitActions.Add(bitAction43);
-            this.btnHeads_3_4_Head_4_X_Back.Lamp1Address = "W6.0";
-            this.btnHeads_3_4_Head_4_X_Back.Location = new System.Drawing.Point(538, 353);
-            this.btnHeads_3_4_Head_4_X_Back.Size = new System.Drawing.Size(72, 34);
-            this.btnHeads_3_4_Head_4_X_Back.LogAction = true;
-            this.btnHeads_3_4_Head_4_X_Back.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // dispHeads_3_4_Head_4_X_Axis_Position
-            // 
-            // Head 4 X Axis Position: D260, raw / 10000.
-            this.dispHeads_3_4_Head_4_X_Axis_Position.Name = "dispHeads_3_4_Head_4_X_Axis_Position";
-            this.dispHeads_3_4_Head_4_X_Axis_Position.PlcNumber = 1;
-            this.dispHeads_3_4_Head_4_X_Axis_Position.Address = "D260";
-            this.dispHeads_3_4_Head_4_X_Axis_Position.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.dispHeads_3_4_Head_4_X_Axis_Position.Divisor = 10000D;
-            this.dispHeads_3_4_Head_4_X_Axis_Position.DecimalPlaces = 2;
-            this.dispHeads_3_4_Head_4_X_Axis_Position.Digits = 7;
-            this.dispHeads_3_4_Head_4_X_Axis_Position.Suffix = "mm";
-            this.dispHeads_3_4_Head_4_X_Axis_Position.Location = new System.Drawing.Point(616, 353);
-            this.dispHeads_3_4_Head_4_X_Axis_Position.Size = new System.Drawing.Size(104, 34);
-            // 
-            // btnHeads_3_4_Head_4_X_Forward
-            // 
-            this.btnHeads_3_4_Head_4_X_Forward.Name = "btnHeads_3_4_Head_4_X_Forward";
-            this.btnHeads_3_4_Head_4_X_Forward.PlcNumber = 1;
-            this.btnHeads_3_4_Head_4_X_Forward.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.Right;
-            bitAction44.Address = "M38";
-            bitAction44.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnHeads_3_4_Head_4_X_Forward.BitActions.Add(bitAction44);
-            this.btnHeads_3_4_Head_4_X_Forward.Location = new System.Drawing.Point(726, 353);
-            this.btnHeads_3_4_Head_4_X_Forward.Size = new System.Drawing.Size(72, 34);
-            this.btnHeads_3_4_Head_4_X_Forward.LogAction = true;
-            this.btnHeads_3_4_Head_4_X_Forward.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            // Head 4 X: axis 20 of the axis settings page (its buttons, position, reference sensor and error come from there).
+            this.axHeads_3_4_Head_4_X_Axis_Unit.BackColor = System.Drawing.Color.White;
+            this.axHeads_3_4_Head_4_X_Axis_Unit.Name = "axHeads_3_4_Head_4_X_Axis_Unit";
+            this.axHeads_3_4_Head_4_X_Axis_Unit.AxisNumber = 20;
+            this.axHeads_3_4_Head_4_X_Axis_Unit.PlcNumber = 1;
+            this.axHeads_3_4_Head_4_X_Axis_Unit.Location = new System.Drawing.Point(578, 474);
+            this.axHeads_3_4_Head_4_X_Axis_Unit.Size = new System.Drawing.Size(300, 64);
             // 
             // loadHeads_3_4_Head_4_X_Actual_Torque
             // 
@@ -1944,129 +825,30 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.loadHeads_3_4_Head_4_X_Actual_Torque.ScaleMinimum = 0D;
             this.loadHeads_3_4_Head_4_X_Actual_Torque.ScaleMaximum = 100D;
             this.loadHeads_3_4_Head_4_X_Actual_Torque.Signed = true;
-            this.loadHeads_3_4_Head_4_X_Actual_Torque.Location = new System.Drawing.Point(804, 357);
+            this.loadHeads_3_4_Head_4_X_Actual_Torque.Location = new System.Drawing.Point(884, 493);
             this.loadHeads_3_4_Head_4_X_Actual_Torque.Size = new System.Drawing.Size(120, 26);
             // 
-            // capX2_4
+            // capY1_4
             // 
-            this.capX2_4.Name = "capX2_4";
-            this.capX2_4.TranslationKey = "X2";
-            this.capX2_4.Text = "X2";
-            this.capX2_4.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.capX2_4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
-            this.capX2_4.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capX2_4.Location = new System.Drawing.Point(486, 390);
-            this.capX2_4.Size = new System.Drawing.Size(46, 40);
-            this.capX2_4.Font = new System.Drawing.Font("Segoe UI", 9.5F);
+            this.capY1_4.Name = "capY1_4";
+            this.capY1_4.TranslationKey = "Y1";
+            this.capY1_4.Text = "Y1";
+            this.capY1_4.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.capY1_4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
+            this.capY1_4.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.capY1_4.Location = new System.Drawing.Point(526, 542);
+            this.capY1_4.Size = new System.Drawing.Size(46, 72);
+            this.capY1_4.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             // 
-            // btnHeads_3_4_Head_4_X2_Back
+            // axHeads_3_4_Head_4_Y1_Axis_Unit
             // 
-            this.btnHeads_3_4_Head_4_X2_Back.Name = "btnHeads_3_4_Head_4_X2_Back";
-            this.btnHeads_3_4_Head_4_X2_Back.PlcNumber = 1;
-            this.btnHeads_3_4_Head_4_X2_Back.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.Left;
-            bitAction45.Address = "M250";
-            bitAction45.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnHeads_3_4_Head_4_X2_Back.BitActions.Add(bitAction45);
-            this.btnHeads_3_4_Head_4_X2_Back.Lamp1Address = "W7.6";
-            this.btnHeads_3_4_Head_4_X2_Back.Location = new System.Drawing.Point(538, 393);
-            this.btnHeads_3_4_Head_4_X2_Back.Size = new System.Drawing.Size(72, 34);
-            this.btnHeads_3_4_Head_4_X2_Back.LogAction = true;
-            this.btnHeads_3_4_Head_4_X2_Back.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // dispHeads_3_4_Head_4_X2_Axis_Position
-            // 
-            // Head 4 X2 Axis Position: D490, raw / 10000.
-            this.dispHeads_3_4_Head_4_X2_Axis_Position.Name = "dispHeads_3_4_Head_4_X2_Axis_Position";
-            this.dispHeads_3_4_Head_4_X2_Axis_Position.PlcNumber = 1;
-            this.dispHeads_3_4_Head_4_X2_Axis_Position.Address = "D490";
-            this.dispHeads_3_4_Head_4_X2_Axis_Position.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.dispHeads_3_4_Head_4_X2_Axis_Position.Divisor = 10000D;
-            this.dispHeads_3_4_Head_4_X2_Axis_Position.DecimalPlaces = 2;
-            this.dispHeads_3_4_Head_4_X2_Axis_Position.Digits = 7;
-            this.dispHeads_3_4_Head_4_X2_Axis_Position.Suffix = "mm";
-            this.dispHeads_3_4_Head_4_X2_Axis_Position.Location = new System.Drawing.Point(616, 393);
-            this.dispHeads_3_4_Head_4_X2_Axis_Position.Size = new System.Drawing.Size(104, 34);
-            // 
-            // btnHeads_3_4_Head_4_X2_Forward
-            // 
-            this.btnHeads_3_4_Head_4_X2_Forward.Name = "btnHeads_3_4_Head_4_X2_Forward";
-            this.btnHeads_3_4_Head_4_X2_Forward.PlcNumber = 1;
-            this.btnHeads_3_4_Head_4_X2_Forward.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.Right;
-            bitAction46.Address = "M251";
-            bitAction46.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnHeads_3_4_Head_4_X2_Forward.BitActions.Add(bitAction46);
-            this.btnHeads_3_4_Head_4_X2_Forward.Location = new System.Drawing.Point(726, 393);
-            this.btnHeads_3_4_Head_4_X2_Forward.Size = new System.Drawing.Size(72, 34);
-            this.btnHeads_3_4_Head_4_X2_Forward.LogAction = true;
-            this.btnHeads_3_4_Head_4_X2_Forward.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // loadHeads_3_4_Head_4_X2_Actual_Torque
-            // 
-            // Head 4 X2 Actual Torque: D7190, |raw| on 0 - 100 % as the old page's bar.
-            this.loadHeads_3_4_Head_4_X2_Actual_Torque.Name = "loadHeads_3_4_Head_4_X2_Actual_Torque";
-            this.loadHeads_3_4_Head_4_X2_Actual_Torque.PlcNumber = 1;
-            this.loadHeads_3_4_Head_4_X2_Actual_Torque.Address = "D7190";
-            this.loadHeads_3_4_Head_4_X2_Actual_Torque.Divisor = 1D;
-            this.loadHeads_3_4_Head_4_X2_Actual_Torque.DecimalPlaces = 0;
-            this.loadHeads_3_4_Head_4_X2_Actual_Torque.Suffix = "%";
-            this.loadHeads_3_4_Head_4_X2_Actual_Torque.ScaleMinimum = 0D;
-            this.loadHeads_3_4_Head_4_X2_Actual_Torque.ScaleMaximum = 100D;
-            this.loadHeads_3_4_Head_4_X2_Actual_Torque.Signed = true;
-            this.loadHeads_3_4_Head_4_X2_Actual_Torque.Location = new System.Drawing.Point(804, 397);
-            this.loadHeads_3_4_Head_4_X2_Actual_Torque.Size = new System.Drawing.Size(120, 26);
-            // 
-            // capY1_5
-            // 
-            this.capY1_5.Name = "capY1_5";
-            this.capY1_5.TranslationKey = "Y1";
-            this.capY1_5.Text = "Y1";
-            this.capY1_5.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.capY1_5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
-            this.capY1_5.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capY1_5.Location = new System.Drawing.Point(486, 430);
-            this.capY1_5.Size = new System.Drawing.Size(46, 40);
-            this.capY1_5.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            // 
-            // btnHeads_3_4_Head_4_Y1_Back
-            // 
-            this.btnHeads_3_4_Head_4_Y1_Back.Name = "btnHeads_3_4_Head_4_Y1_Back";
-            this.btnHeads_3_4_Head_4_Y1_Back.PlcNumber = 1;
-            this.btnHeads_3_4_Head_4_Y1_Back.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.Left;
-            bitAction47.Address = "M39";
-            bitAction47.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnHeads_3_4_Head_4_Y1_Back.BitActions.Add(bitAction47);
-            this.btnHeads_3_4_Head_4_Y1_Back.Lamp1Address = "W6.1";
-            this.btnHeads_3_4_Head_4_Y1_Back.Location = new System.Drawing.Point(538, 433);
-            this.btnHeads_3_4_Head_4_Y1_Back.Size = new System.Drawing.Size(72, 34);
-            this.btnHeads_3_4_Head_4_Y1_Back.LogAction = true;
-            this.btnHeads_3_4_Head_4_Y1_Back.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // dispHeads_3_4_Head_4_Y1_Axis_Position
-            // 
-            // Head 4 Y1 Axis Position: D280, raw / 10000.
-            this.dispHeads_3_4_Head_4_Y1_Axis_Position.Name = "dispHeads_3_4_Head_4_Y1_Axis_Position";
-            this.dispHeads_3_4_Head_4_Y1_Axis_Position.PlcNumber = 1;
-            this.dispHeads_3_4_Head_4_Y1_Axis_Position.Address = "D280";
-            this.dispHeads_3_4_Head_4_Y1_Axis_Position.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.dispHeads_3_4_Head_4_Y1_Axis_Position.Divisor = 10000D;
-            this.dispHeads_3_4_Head_4_Y1_Axis_Position.DecimalPlaces = 2;
-            this.dispHeads_3_4_Head_4_Y1_Axis_Position.Digits = 7;
-            this.dispHeads_3_4_Head_4_Y1_Axis_Position.Suffix = "mm";
-            this.dispHeads_3_4_Head_4_Y1_Axis_Position.Location = new System.Drawing.Point(616, 433);
-            this.dispHeads_3_4_Head_4_Y1_Axis_Position.Size = new System.Drawing.Size(104, 34);
-            // 
-            // btnHeads_3_4_Head_4_Y1_Forward
-            // 
-            this.btnHeads_3_4_Head_4_Y1_Forward.Name = "btnHeads_3_4_Head_4_Y1_Forward";
-            this.btnHeads_3_4_Head_4_Y1_Forward.PlcNumber = 1;
-            this.btnHeads_3_4_Head_4_Y1_Forward.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.Right;
-            bitAction48.Address = "M58";
-            bitAction48.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnHeads_3_4_Head_4_Y1_Forward.BitActions.Add(bitAction48);
-            this.btnHeads_3_4_Head_4_Y1_Forward.Location = new System.Drawing.Point(726, 433);
-            this.btnHeads_3_4_Head_4_Y1_Forward.Size = new System.Drawing.Size(72, 34);
-            this.btnHeads_3_4_Head_4_Y1_Forward.LogAction = true;
-            this.btnHeads_3_4_Head_4_Y1_Forward.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            // Head 4 Y1: axis 21 of the axis settings page (its buttons, position, reference sensor and error come from there).
+            this.axHeads_3_4_Head_4_Y1_Axis_Unit.BackColor = System.Drawing.Color.White;
+            this.axHeads_3_4_Head_4_Y1_Axis_Unit.Name = "axHeads_3_4_Head_4_Y1_Axis_Unit";
+            this.axHeads_3_4_Head_4_Y1_Axis_Unit.AxisNumber = 21;
+            this.axHeads_3_4_Head_4_Y1_Axis_Unit.PlcNumber = 1;
+            this.axHeads_3_4_Head_4_Y1_Axis_Unit.Location = new System.Drawing.Point(578, 546);
+            this.axHeads_3_4_Head_4_Y1_Axis_Unit.Size = new System.Drawing.Size(300, 64);
             // 
             // loadHeads_3_4_Head_4_Y1_Actual_Torque
             // 
@@ -2080,61 +862,30 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.loadHeads_3_4_Head_4_Y1_Actual_Torque.ScaleMinimum = 0D;
             this.loadHeads_3_4_Head_4_Y1_Actual_Torque.ScaleMaximum = 100D;
             this.loadHeads_3_4_Head_4_Y1_Actual_Torque.Signed = true;
-            this.loadHeads_3_4_Head_4_Y1_Actual_Torque.Location = new System.Drawing.Point(804, 437);
+            this.loadHeads_3_4_Head_4_Y1_Actual_Torque.Location = new System.Drawing.Point(884, 565);
             this.loadHeads_3_4_Head_4_Y1_Actual_Torque.Size = new System.Drawing.Size(120, 26);
             // 
-            // capY2_5
+            // capY2_4
             // 
-            this.capY2_5.Name = "capY2_5";
-            this.capY2_5.TranslationKey = "Y2";
-            this.capY2_5.Text = "Y2";
-            this.capY2_5.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.capY2_5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
-            this.capY2_5.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capY2_5.Location = new System.Drawing.Point(486, 470);
-            this.capY2_5.Size = new System.Drawing.Size(46, 40);
-            this.capY2_5.Font = new System.Drawing.Font("Segoe UI", 9.5F);
+            this.capY2_4.Name = "capY2_4";
+            this.capY2_4.TranslationKey = "Y2";
+            this.capY2_4.Text = "Y2";
+            this.capY2_4.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.capY2_4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
+            this.capY2_4.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.capY2_4.Location = new System.Drawing.Point(526, 614);
+            this.capY2_4.Size = new System.Drawing.Size(46, 72);
+            this.capY2_4.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             // 
-            // btnHeads_3_4_Head_4_Y2_Back
+            // axHeads_3_4_Head_4_Y2_Axis_Unit
             // 
-            this.btnHeads_3_4_Head_4_Y2_Back.Name = "btnHeads_3_4_Head_4_Y2_Back";
-            this.btnHeads_3_4_Head_4_Y2_Back.PlcNumber = 1;
-            this.btnHeads_3_4_Head_4_Y2_Back.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.Left;
-            bitAction49.Address = "M40";
-            bitAction49.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnHeads_3_4_Head_4_Y2_Back.BitActions.Add(bitAction49);
-            this.btnHeads_3_4_Head_4_Y2_Back.Lamp1Address = "W6.2";
-            this.btnHeads_3_4_Head_4_Y2_Back.Location = new System.Drawing.Point(538, 473);
-            this.btnHeads_3_4_Head_4_Y2_Back.Size = new System.Drawing.Size(72, 34);
-            this.btnHeads_3_4_Head_4_Y2_Back.LogAction = true;
-            this.btnHeads_3_4_Head_4_Y2_Back.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // dispHeads_3_4_Head_4_Y2_Axis_Position
-            // 
-            // Head 4 Y2 Axis Position: D300, raw / 10000.
-            this.dispHeads_3_4_Head_4_Y2_Axis_Position.Name = "dispHeads_3_4_Head_4_Y2_Axis_Position";
-            this.dispHeads_3_4_Head_4_Y2_Axis_Position.PlcNumber = 1;
-            this.dispHeads_3_4_Head_4_Y2_Axis_Position.Address = "D300";
-            this.dispHeads_3_4_Head_4_Y2_Axis_Position.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.dispHeads_3_4_Head_4_Y2_Axis_Position.Divisor = 10000D;
-            this.dispHeads_3_4_Head_4_Y2_Axis_Position.DecimalPlaces = 2;
-            this.dispHeads_3_4_Head_4_Y2_Axis_Position.Digits = 7;
-            this.dispHeads_3_4_Head_4_Y2_Axis_Position.Suffix = "mm";
-            this.dispHeads_3_4_Head_4_Y2_Axis_Position.Location = new System.Drawing.Point(616, 473);
-            this.dispHeads_3_4_Head_4_Y2_Axis_Position.Size = new System.Drawing.Size(104, 34);
-            // 
-            // btnHeads_3_4_Head_4_Y2_Forward
-            // 
-            this.btnHeads_3_4_Head_4_Y2_Forward.Name = "btnHeads_3_4_Head_4_Y2_Forward";
-            this.btnHeads_3_4_Head_4_Y2_Forward.PlcNumber = 1;
-            this.btnHeads_3_4_Head_4_Y2_Forward.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.Right;
-            bitAction50.Address = "M59";
-            bitAction50.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnHeads_3_4_Head_4_Y2_Forward.BitActions.Add(bitAction50);
-            this.btnHeads_3_4_Head_4_Y2_Forward.Location = new System.Drawing.Point(726, 473);
-            this.btnHeads_3_4_Head_4_Y2_Forward.Size = new System.Drawing.Size(72, 34);
-            this.btnHeads_3_4_Head_4_Y2_Forward.LogAction = true;
-            this.btnHeads_3_4_Head_4_Y2_Forward.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            // Head 4 Y2: axis 22 of the axis settings page (its buttons, position, reference sensor and error come from there).
+            this.axHeads_3_4_Head_4_Y2_Axis_Unit.BackColor = System.Drawing.Color.White;
+            this.axHeads_3_4_Head_4_Y2_Axis_Unit.Name = "axHeads_3_4_Head_4_Y2_Axis_Unit";
+            this.axHeads_3_4_Head_4_Y2_Axis_Unit.AxisNumber = 22;
+            this.axHeads_3_4_Head_4_Y2_Axis_Unit.PlcNumber = 1;
+            this.axHeads_3_4_Head_4_Y2_Axis_Unit.Location = new System.Drawing.Point(578, 618);
+            this.axHeads_3_4_Head_4_Y2_Axis_Unit.Size = new System.Drawing.Size(300, 64);
             // 
             // loadHeads_3_4_Head_4_Y2_Actual_Torque
             // 
@@ -2148,144 +899,214 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.loadHeads_3_4_Head_4_Y2_Actual_Torque.ScaleMinimum = 0D;
             this.loadHeads_3_4_Head_4_Y2_Actual_Torque.ScaleMaximum = 100D;
             this.loadHeads_3_4_Head_4_Y2_Actual_Torque.Signed = true;
-            this.loadHeads_3_4_Head_4_Y2_Actual_Torque.Location = new System.Drawing.Point(804, 477);
+            this.loadHeads_3_4_Head_4_Y2_Actual_Torque.Location = new System.Drawing.Point(884, 637);
             this.loadHeads_3_4_Head_4_Y2_Actual_Torque.Size = new System.Drawing.Size(120, 26);
             // 
-            // capZ1_4
+            // capZ_4
             // 
-            this.capZ1_4.Name = "capZ1_4";
-            this.capZ1_4.TranslationKey = "Z1";
-            this.capZ1_4.Text = "Z1";
-            this.capZ1_4.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.capZ1_4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
-            this.capZ1_4.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capZ1_4.Location = new System.Drawing.Point(486, 510);
-            this.capZ1_4.Size = new System.Drawing.Size(46, 40);
-            this.capZ1_4.Font = new System.Drawing.Font("Segoe UI", 9.5F);
+            this.capZ_4.Name = "capZ_4";
+            this.capZ_4.TranslationKey = "Z";
+            this.capZ_4.Text = "Z";
+            this.capZ_4.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.capZ_4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
+            this.capZ_4.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.capZ_4.Location = new System.Drawing.Point(526, 686);
+            this.capZ_4.Size = new System.Drawing.Size(46, 72);
+            this.capZ_4.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             // 
-            // btnHeads_3_4_Head_4_Z1_Back
+            // axHeads_3_4_Head_4_Z_Axis_Unit
             // 
-            this.btnHeads_3_4_Head_4_Z1_Back.Name = "btnHeads_3_4_Head_4_Z1_Back";
-            this.btnHeads_3_4_Head_4_Z1_Back.PlcNumber = 1;
-            this.btnHeads_3_4_Head_4_Z1_Back.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.Left;
-            bitAction51.Address = "M56";
-            bitAction51.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnHeads_3_4_Head_4_Z1_Back.BitActions.Add(bitAction51);
-            this.btnHeads_3_4_Head_4_Z1_Back.Location = new System.Drawing.Point(538, 513);
-            this.btnHeads_3_4_Head_4_Z1_Back.Size = new System.Drawing.Size(72, 34);
-            this.btnHeads_3_4_Head_4_Z1_Back.LogAction = true;
-            this.btnHeads_3_4_Head_4_Z1_Back.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            // Head 4 Z1: axis 23 of the axis settings page (its buttons, position, reference sensor and error come from there).
+            this.axHeads_3_4_Head_4_Z_Axis_Unit.BackColor = System.Drawing.Color.White;
+            this.axHeads_3_4_Head_4_Z_Axis_Unit.Name = "axHeads_3_4_Head_4_Z_Axis_Unit";
+            this.axHeads_3_4_Head_4_Z_Axis_Unit.AxisNumber = 23;
+            this.axHeads_3_4_Head_4_Z_Axis_Unit.PlcNumber = 1;
+            this.axHeads_3_4_Head_4_Z_Axis_Unit.Location = new System.Drawing.Point(578, 690);
+            this.axHeads_3_4_Head_4_Z_Axis_Unit.Size = new System.Drawing.Size(300, 64);
             // 
-            // dispHeads_3_4_Head_4_Z1_Axis_Position
+            // loadHeads_3_4_Head_4_Z_Actual_Torque
             // 
-            // Head 4 Z1 Axis Position: D240, raw / 10000.
-            this.dispHeads_3_4_Head_4_Z1_Axis_Position.Name = "dispHeads_3_4_Head_4_Z1_Axis_Position";
-            this.dispHeads_3_4_Head_4_Z1_Axis_Position.PlcNumber = 1;
-            this.dispHeads_3_4_Head_4_Z1_Axis_Position.Address = "D240";
-            this.dispHeads_3_4_Head_4_Z1_Axis_Position.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.dispHeads_3_4_Head_4_Z1_Axis_Position.Divisor = 10000D;
-            this.dispHeads_3_4_Head_4_Z1_Axis_Position.DecimalPlaces = 2;
-            this.dispHeads_3_4_Head_4_Z1_Axis_Position.Digits = 7;
-            this.dispHeads_3_4_Head_4_Z1_Axis_Position.Suffix = "mm";
-            this.dispHeads_3_4_Head_4_Z1_Axis_Position.Location = new System.Drawing.Point(616, 513);
-            this.dispHeads_3_4_Head_4_Z1_Axis_Position.Size = new System.Drawing.Size(104, 34);
+            // Head 4 Z Actual Torque: D6652, |raw| on 0 - 100 % as the old page's bar.
+            this.loadHeads_3_4_Head_4_Z_Actual_Torque.Name = "loadHeads_3_4_Head_4_Z_Actual_Torque";
+            this.loadHeads_3_4_Head_4_Z_Actual_Torque.PlcNumber = 1;
+            this.loadHeads_3_4_Head_4_Z_Actual_Torque.Address = "D6652";
+            this.loadHeads_3_4_Head_4_Z_Actual_Torque.Divisor = 1D;
+            this.loadHeads_3_4_Head_4_Z_Actual_Torque.DecimalPlaces = 0;
+            this.loadHeads_3_4_Head_4_Z_Actual_Torque.Suffix = "%";
+            this.loadHeads_3_4_Head_4_Z_Actual_Torque.ScaleMinimum = 0D;
+            this.loadHeads_3_4_Head_4_Z_Actual_Torque.ScaleMaximum = 100D;
+            this.loadHeads_3_4_Head_4_Z_Actual_Torque.Signed = true;
+            this.loadHeads_3_4_Head_4_Z_Actual_Torque.Location = new System.Drawing.Point(884, 709);
+            this.loadHeads_3_4_Head_4_Z_Actual_Torque.Size = new System.Drawing.Size(120, 26);
             // 
-            // btnHeads_3_4_Head_4_Z1_Forward
+            // capRZ_4
             // 
-            this.btnHeads_3_4_Head_4_Z1_Forward.Name = "btnHeads_3_4_Head_4_Z1_Forward";
-            this.btnHeads_3_4_Head_4_Z1_Forward.PlcNumber = 1;
-            this.btnHeads_3_4_Head_4_Z1_Forward.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.Right;
-            bitAction52.Address = "M37";
-            bitAction52.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnHeads_3_4_Head_4_Z1_Forward.BitActions.Add(bitAction52);
-            this.btnHeads_3_4_Head_4_Z1_Forward.Lamp1Address = "W6.3";
-            this.btnHeads_3_4_Head_4_Z1_Forward.Location = new System.Drawing.Point(726, 513);
-            this.btnHeads_3_4_Head_4_Z1_Forward.Size = new System.Drawing.Size(72, 34);
-            this.btnHeads_3_4_Head_4_Z1_Forward.LogAction = true;
-            this.btnHeads_3_4_Head_4_Z1_Forward.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            this.capRZ_4.Name = "capRZ_4";
+            this.capRZ_4.TranslationKey = "RZ";
+            this.capRZ_4.Text = "RZ";
+            this.capRZ_4.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.capRZ_4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
+            this.capRZ_4.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.capRZ_4.Location = new System.Drawing.Point(526, 758);
+            this.capRZ_4.Size = new System.Drawing.Size(46, 72);
+            this.capRZ_4.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             // 
-            // loadHeads_3_4_Head_4_Z1_Actual_Torque
+            // axHeads_3_4_Head_4_RZ_Axis_Unit
             // 
-            // Head 4 Z1 Actual Torque: D6652, |raw| on 0 - 100 % as the old page's bar.
-            this.loadHeads_3_4_Head_4_Z1_Actual_Torque.Name = "loadHeads_3_4_Head_4_Z1_Actual_Torque";
-            this.loadHeads_3_4_Head_4_Z1_Actual_Torque.PlcNumber = 1;
-            this.loadHeads_3_4_Head_4_Z1_Actual_Torque.Address = "D6652";
-            this.loadHeads_3_4_Head_4_Z1_Actual_Torque.Divisor = 1D;
-            this.loadHeads_3_4_Head_4_Z1_Actual_Torque.DecimalPlaces = 0;
-            this.loadHeads_3_4_Head_4_Z1_Actual_Torque.Suffix = "%";
-            this.loadHeads_3_4_Head_4_Z1_Actual_Torque.ScaleMinimum = 0D;
-            this.loadHeads_3_4_Head_4_Z1_Actual_Torque.ScaleMaximum = 100D;
-            this.loadHeads_3_4_Head_4_Z1_Actual_Torque.Signed = true;
-            this.loadHeads_3_4_Head_4_Z1_Actual_Torque.Location = new System.Drawing.Point(804, 517);
-            this.loadHeads_3_4_Head_4_Z1_Actual_Torque.Size = new System.Drawing.Size(120, 26);
+            // Head 4 Z2: axis 24 of the axis settings page (its buttons, position, reference sensor and error come from there).
+            this.axHeads_3_4_Head_4_RZ_Axis_Unit.BackColor = System.Drawing.Color.White;
+            this.axHeads_3_4_Head_4_RZ_Axis_Unit.Name = "axHeads_3_4_Head_4_RZ_Axis_Unit";
+            this.axHeads_3_4_Head_4_RZ_Axis_Unit.AxisNumber = 24;
+            this.axHeads_3_4_Head_4_RZ_Axis_Unit.PlcNumber = 1;
+            this.axHeads_3_4_Head_4_RZ_Axis_Unit.Location = new System.Drawing.Point(578, 762);
+            this.axHeads_3_4_Head_4_RZ_Axis_Unit.Size = new System.Drawing.Size(300, 64);
             // 
-            // capZ2_4
+            // loadHeads_3_4_Head_4_RZ_Actual_Torque
             // 
-            this.capZ2_4.Name = "capZ2_4";
-            this.capZ2_4.TranslationKey = "Z2";
-            this.capZ2_4.Text = "Z2";
-            this.capZ2_4.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.capZ2_4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
-            this.capZ2_4.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capZ2_4.Location = new System.Drawing.Point(486, 550);
-            this.capZ2_4.Size = new System.Drawing.Size(46, 40);
-            this.capZ2_4.Font = new System.Drawing.Font("Segoe UI", 9.5F);
+            // Head 4 RZ Actual Torque: D7191, |raw| on 0 - 100 % as the old page's bar.
+            this.loadHeads_3_4_Head_4_RZ_Actual_Torque.Name = "loadHeads_3_4_Head_4_RZ_Actual_Torque";
+            this.loadHeads_3_4_Head_4_RZ_Actual_Torque.PlcNumber = 1;
+            this.loadHeads_3_4_Head_4_RZ_Actual_Torque.Address = "D7191";
+            this.loadHeads_3_4_Head_4_RZ_Actual_Torque.Divisor = 1D;
+            this.loadHeads_3_4_Head_4_RZ_Actual_Torque.DecimalPlaces = 0;
+            this.loadHeads_3_4_Head_4_RZ_Actual_Torque.Suffix = "%";
+            this.loadHeads_3_4_Head_4_RZ_Actual_Torque.ScaleMinimum = 0D;
+            this.loadHeads_3_4_Head_4_RZ_Actual_Torque.ScaleMaximum = 100D;
+            this.loadHeads_3_4_Head_4_RZ_Actual_Torque.Signed = true;
+            this.loadHeads_3_4_Head_4_RZ_Actual_Torque.Location = new System.Drawing.Point(884, 781);
+            this.loadHeads_3_4_Head_4_RZ_Actual_Torque.Size = new System.Drawing.Size(120, 26);
             // 
-            // btnHeads_3_4_Head_4_Z2_Back
+            // hdAxis_3
             // 
-            this.btnHeads_3_4_Head_4_Z2_Back.Name = "btnHeads_3_4_Head_4_Z2_Back";
-            this.btnHeads_3_4_Head_4_Z2_Back.PlcNumber = 1;
-            this.btnHeads_3_4_Head_4_Z2_Back.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.Left;
-            bitAction53.Address = "M240";
-            bitAction53.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnHeads_3_4_Head_4_Z2_Back.BitActions.Add(bitAction53);
-            this.btnHeads_3_4_Head_4_Z2_Back.Location = new System.Drawing.Point(538, 553);
-            this.btnHeads_3_4_Head_4_Z2_Back.Size = new System.Drawing.Size(72, 34);
-            this.btnHeads_3_4_Head_4_Z2_Back.LogAction = true;
-            this.btnHeads_3_4_Head_4_Z2_Back.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            this.hdAxis_3.Name = "hdAxis_3";
+            this.hdAxis_3.TranslationKey = "Axis";
+            this.hdAxis_3.Text = "Axis";
+            this.hdAxis_3.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
+            this.hdAxis_3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
+            this.hdAxis_3.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.hdAxis_3.Location = new System.Drawing.Point(16, 854);
+            this.hdAxis_3.Size = new System.Drawing.Size(46, 26);
             // 
-            // dispHeads_3_4_Head_4_Z2_Axis_Position
+            // hdAxis_Unit_3
             // 
-            // Head 4 Z2 Axis Position: D380, raw / 10000.
-            this.dispHeads_3_4_Head_4_Z2_Axis_Position.Name = "dispHeads_3_4_Head_4_Z2_Axis_Position";
-            this.dispHeads_3_4_Head_4_Z2_Axis_Position.PlcNumber = 1;
-            this.dispHeads_3_4_Head_4_Z2_Axis_Position.Address = "D380";
-            this.dispHeads_3_4_Head_4_Z2_Axis_Position.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.dispHeads_3_4_Head_4_Z2_Axis_Position.Divisor = 10000D;
-            this.dispHeads_3_4_Head_4_Z2_Axis_Position.DecimalPlaces = 2;
-            this.dispHeads_3_4_Head_4_Z2_Axis_Position.Digits = 7;
-            this.dispHeads_3_4_Head_4_Z2_Axis_Position.Suffix = "mm";
-            this.dispHeads_3_4_Head_4_Z2_Axis_Position.Location = new System.Drawing.Point(616, 553);
-            this.dispHeads_3_4_Head_4_Z2_Axis_Position.Size = new System.Drawing.Size(104, 34);
+            this.hdAxis_Unit_3.Name = "hdAxis_Unit_3";
+            this.hdAxis_Unit_3.TranslationKey = "Axis Unit";
+            this.hdAxis_Unit_3.Text = "Axis Unit";
+            this.hdAxis_Unit_3.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
+            this.hdAxis_Unit_3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
+            this.hdAxis_Unit_3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.hdAxis_Unit_3.Location = new System.Drawing.Point(68, 854);
+            this.hdAxis_Unit_3.Size = new System.Drawing.Size(300, 26);
             // 
-            // btnHeads_3_4_Head_4_Z2_Forward
+            // hdActual_Torque_3
             // 
-            this.btnHeads_3_4_Head_4_Z2_Forward.Name = "btnHeads_3_4_Head_4_Z2_Forward";
-            this.btnHeads_3_4_Head_4_Z2_Forward.PlcNumber = 1;
-            this.btnHeads_3_4_Head_4_Z2_Forward.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.Right;
-            bitAction54.Address = "M241";
-            bitAction54.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnHeads_3_4_Head_4_Z2_Forward.BitActions.Add(bitAction54);
-            this.btnHeads_3_4_Head_4_Z2_Forward.Lamp1Address = "W6.4";
-            this.btnHeads_3_4_Head_4_Z2_Forward.Location = new System.Drawing.Point(726, 553);
-            this.btnHeads_3_4_Head_4_Z2_Forward.Size = new System.Drawing.Size(72, 34);
-            this.btnHeads_3_4_Head_4_Z2_Forward.LogAction = true;
-            this.btnHeads_3_4_Head_4_Z2_Forward.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            this.hdActual_Torque_3.Name = "hdActual_Torque_3";
+            this.hdActual_Torque_3.TranslationKey = "Actual Torque";
+            this.hdActual_Torque_3.Text = "Actual Torque";
+            this.hdActual_Torque_3.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
+            this.hdActual_Torque_3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
+            this.hdActual_Torque_3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.hdActual_Torque_3.Location = new System.Drawing.Point(374, 854);
+            this.hdActual_Torque_3.Size = new System.Drawing.Size(120, 26);
             // 
-            // loadHeads_3_4_Head_4_Z2_Actual_Torque
+            // lblGeneral
             // 
-            // Head 4 Z2 Actual Torque: D7191, |raw| on 0 - 100 % as the old page's bar.
-            this.loadHeads_3_4_Head_4_Z2_Actual_Torque.Name = "loadHeads_3_4_Head_4_Z2_Actual_Torque";
-            this.loadHeads_3_4_Head_4_Z2_Actual_Torque.PlcNumber = 1;
-            this.loadHeads_3_4_Head_4_Z2_Actual_Torque.Address = "D7191";
-            this.loadHeads_3_4_Head_4_Z2_Actual_Torque.Divisor = 1D;
-            this.loadHeads_3_4_Head_4_Z2_Actual_Torque.DecimalPlaces = 0;
-            this.loadHeads_3_4_Head_4_Z2_Actual_Torque.Suffix = "%";
-            this.loadHeads_3_4_Head_4_Z2_Actual_Torque.ScaleMinimum = 0D;
-            this.loadHeads_3_4_Head_4_Z2_Actual_Torque.ScaleMaximum = 100D;
-            this.loadHeads_3_4_Head_4_Z2_Actual_Torque.Signed = true;
-            this.loadHeads_3_4_Head_4_Z2_Actual_Torque.Location = new System.Drawing.Point(804, 557);
-            this.loadHeads_3_4_Head_4_Z2_Actual_Torque.Size = new System.Drawing.Size(120, 26);
+            this.lblGeneral.Name = "lblGeneral";
+            this.lblGeneral.TranslationKey = "General";
+            this.lblGeneral.Text = "General";
+            this.lblGeneral.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.lblGeneral.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
+            this.lblGeneral.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblGeneral.Location = new System.Drawing.Point(16, 890);
+            this.lblGeneral.Size = new System.Drawing.Size(478, 26);
+            // 
+            // capX1
+            // 
+            this.capX1.Name = "capX1";
+            this.capX1.TranslationKey = "X1";
+            this.capX1.Text = "X1";
+            this.capX1.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.capX1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
+            this.capX1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.capX1.Location = new System.Drawing.Point(16, 918);
+            this.capX1.Size = new System.Drawing.Size(46, 72);
+            this.capX1.Font = new System.Drawing.Font("Segoe UI", 9.5F);
+            // 
+            // axBody_General_X1_Axis_Unit
+            // 
+            // Body X1: axis 1 of the axis settings page (its buttons, position, reference sensor and error come from there).
+            this.axBody_General_X1_Axis_Unit.BackColor = System.Drawing.Color.White;
+            this.axBody_General_X1_Axis_Unit.Name = "axBody_General_X1_Axis_Unit";
+            this.axBody_General_X1_Axis_Unit.AxisNumber = 1;
+            this.axBody_General_X1_Axis_Unit.PlcNumber = 1;
+            this.axBody_General_X1_Axis_Unit.Location = new System.Drawing.Point(68, 922);
+            this.axBody_General_X1_Axis_Unit.Size = new System.Drawing.Size(300, 64);
+            // 
+            // capX2
+            // 
+            this.capX2.Name = "capX2";
+            this.capX2.TranslationKey = "X2";
+            this.capX2.Text = "X2";
+            this.capX2.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.capX2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
+            this.capX2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.capX2.Location = new System.Drawing.Point(16, 990);
+            this.capX2.Size = new System.Drawing.Size(46, 72);
+            this.capX2.Font = new System.Drawing.Font("Segoe UI", 9.5F);
+            // 
+            // axBody_General_X2_Axis_Unit
+            // 
+            // Body X2: axis 2 of the axis settings page (its buttons, position, reference sensor and error come from there).
+            this.axBody_General_X2_Axis_Unit.BackColor = System.Drawing.Color.White;
+            this.axBody_General_X2_Axis_Unit.Name = "axBody_General_X2_Axis_Unit";
+            this.axBody_General_X2_Axis_Unit.AxisNumber = 2;
+            this.axBody_General_X2_Axis_Unit.PlcNumber = 1;
+            this.axBody_General_X2_Axis_Unit.Location = new System.Drawing.Point(68, 994);
+            this.axBody_General_X2_Axis_Unit.Size = new System.Drawing.Size(300, 64);
+            // 
+            // capY1_5
+            // 
+            this.capY1_5.Name = "capY1_5";
+            this.capY1_5.TranslationKey = "Y1";
+            this.capY1_5.Text = "Y1";
+            this.capY1_5.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.capY1_5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
+            this.capY1_5.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.capY1_5.Location = new System.Drawing.Point(16, 1062);
+            this.capY1_5.Size = new System.Drawing.Size(46, 72);
+            this.capY1_5.Font = new System.Drawing.Font("Segoe UI", 9.5F);
+            // 
+            // axBody_General_Y1_Axis_Unit
+            // 
+            // Body Y1: axis 3 of the axis settings page (its buttons, position, reference sensor and error come from there).
+            this.axBody_General_Y1_Axis_Unit.BackColor = System.Drawing.Color.White;
+            this.axBody_General_Y1_Axis_Unit.Name = "axBody_General_Y1_Axis_Unit";
+            this.axBody_General_Y1_Axis_Unit.AxisNumber = 3;
+            this.axBody_General_Y1_Axis_Unit.PlcNumber = 1;
+            this.axBody_General_Y1_Axis_Unit.Location = new System.Drawing.Point(68, 1066);
+            this.axBody_General_Y1_Axis_Unit.Size = new System.Drawing.Size(300, 64);
+            // 
+            // capY2_5
+            // 
+            this.capY2_5.Name = "capY2_5";
+            this.capY2_5.TranslationKey = "Y2";
+            this.capY2_5.Text = "Y2";
+            this.capY2_5.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.capY2_5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
+            this.capY2_5.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.capY2_5.Location = new System.Drawing.Point(16, 1134);
+            this.capY2_5.Size = new System.Drawing.Size(46, 72);
+            this.capY2_5.Font = new System.Drawing.Font("Segoe UI", 9.5F);
+            // 
+            // axBody_General_Y2_Axis_Unit
+            // 
+            // Body Y2: axis 4 of the axis settings page (its buttons, position, reference sensor and error come from there).
+            this.axBody_General_Y2_Axis_Unit.BackColor = System.Drawing.Color.White;
+            this.axBody_General_Y2_Axis_Unit.Name = "axBody_General_Y2_Axis_Unit";
+            this.axBody_General_Y2_Axis_Unit.AxisNumber = 4;
+            this.axBody_General_Y2_Axis_Unit.PlcNumber = 1;
+            this.axBody_General_Y2_Axis_Unit.Location = new System.Drawing.Point(68, 1138);
+            this.axBody_General_Y2_Axis_Unit.Size = new System.Drawing.Size(300, 64);
             // 
             // hdName
             // 
@@ -2295,30 +1116,30 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.hdName.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
             this.hdName.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
             this.hdName.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.hdName.Location = new System.Drawing.Point(16, 764);
+            this.hdName.Location = new System.Drawing.Point(526, 854);
             this.hdName.Size = new System.Drawing.Size(190, 26);
             // 
-            // hdBack_3
+            // hdBack
             // 
-            this.hdBack_3.Name = "hdBack_3";
-            this.hdBack_3.TranslationKey = "Back";
-            this.hdBack_3.Text = "Back";
-            this.hdBack_3.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
-            this.hdBack_3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
-            this.hdBack_3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.hdBack_3.Location = new System.Drawing.Point(212, 764);
-            this.hdBack_3.Size = new System.Drawing.Size(72, 26);
+            this.hdBack.Name = "hdBack";
+            this.hdBack.TranslationKey = "Back";
+            this.hdBack.Text = "Back";
+            this.hdBack.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
+            this.hdBack.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
+            this.hdBack.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.hdBack.Location = new System.Drawing.Point(722, 854);
+            this.hdBack.Size = new System.Drawing.Size(72, 26);
             // 
-            // hdForward_3
+            // hdForward
             // 
-            this.hdForward_3.Name = "hdForward_3";
-            this.hdForward_3.TranslationKey = "Forward";
-            this.hdForward_3.Text = "Forward";
-            this.hdForward_3.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
-            this.hdForward_3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
-            this.hdForward_3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.hdForward_3.Location = new System.Drawing.Point(290, 764);
-            this.hdForward_3.Size = new System.Drawing.Size(72, 26);
+            this.hdForward.Name = "hdForward";
+            this.hdForward.TranslationKey = "Forward";
+            this.hdForward.Text = "Forward";
+            this.hdForward.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
+            this.hdForward.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
+            this.hdForward.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.hdForward.Location = new System.Drawing.Point(800, 854);
+            this.hdForward.Size = new System.Drawing.Size(72, 26);
             // 
             // capMilling_Cutters
             // 
@@ -2328,7 +1149,7 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.capMilling_Cutters.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.capMilling_Cutters.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
             this.capMilling_Cutters.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capMilling_Cutters.Location = new System.Drawing.Point(16, 798);
+            this.capMilling_Cutters.Location = new System.Drawing.Point(526, 888);
             this.capMilling_Cutters.Size = new System.Drawing.Size(190, 40);
             this.capMilling_Cutters.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             // 
@@ -2338,241 +1159,13 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.btnUnits_Milling_Cutters_Back.PlcNumber = 1;
             this.btnUnits_Milling_Cutters_Back.TranslationKey = "Milling Cutters";
             this.btnUnits_Milling_Cutters_Back.FallbackText = "Milling Cutters";
-            bitAction55.Address = "M200";
-            bitAction55.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnUnits_Milling_Cutters_Back.BitActions.Add(bitAction55);
-            this.btnUnits_Milling_Cutters_Back.Location = new System.Drawing.Point(212, 801);
+            bitAction1.Address = "M200";
+            bitAction1.Action = Kaban.Core.Enums.BitActionType.Momentary;
+            this.btnUnits_Milling_Cutters_Back.BitActions.Add(bitAction1);
+            this.btnUnits_Milling_Cutters_Back.Location = new System.Drawing.Point(722, 891);
             this.btnUnits_Milling_Cutters_Back.Size = new System.Drawing.Size(150, 34);
             this.btnUnits_Milling_Cutters_Back.LogAction = true;
             this.btnUnits_Milling_Cutters_Back.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // capResistance_Lower_Down_Up
-            // 
-            this.capResistance_Lower_Down_Up.Name = "capResistance_Lower_Down_Up";
-            this.capResistance_Lower_Down_Up.TranslationKey = "Resistance Lower Down/Up";
-            this.capResistance_Lower_Down_Up.Text = "Resistance Lower Down/Up";
-            this.capResistance_Lower_Down_Up.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.capResistance_Lower_Down_Up.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
-            this.capResistance_Lower_Down_Up.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capResistance_Lower_Down_Up.Location = new System.Drawing.Point(16, 838);
-            this.capResistance_Lower_Down_Up.Size = new System.Drawing.Size(190, 40);
-            this.capResistance_Lower_Down_Up.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            // 
-            // btnUnits_Resistance_Lower_Down_Up_Back
-            // 
-            this.btnUnits_Resistance_Lower_Down_Up_Back.Name = "btnUnits_Resistance_Lower_Down_Up_Back";
-            this.btnUnits_Resistance_Lower_Down_Up_Back.PlcNumber = 1;
-            this.btnUnits_Resistance_Lower_Down_Up_Back.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.Left;
-            bitAction56.Address = "M233";
-            bitAction56.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnUnits_Resistance_Lower_Down_Up_Back.BitActions.Add(bitAction56);
-            this.btnUnits_Resistance_Lower_Down_Up_Back.Location = new System.Drawing.Point(212, 841);
-            this.btnUnits_Resistance_Lower_Down_Up_Back.Size = new System.Drawing.Size(72, 34);
-            this.btnUnits_Resistance_Lower_Down_Up_Back.LogAction = true;
-            this.btnUnits_Resistance_Lower_Down_Up_Back.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // btnUnits_Resistance_Lower_Down_Up_Forward
-            // 
-            this.btnUnits_Resistance_Lower_Down_Up_Forward.Name = "btnUnits_Resistance_Lower_Down_Up_Forward";
-            this.btnUnits_Resistance_Lower_Down_Up_Forward.PlcNumber = 1;
-            this.btnUnits_Resistance_Lower_Down_Up_Forward.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.Right;
-            bitAction57.Address = "M234";
-            bitAction57.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnUnits_Resistance_Lower_Down_Up_Forward.BitActions.Add(bitAction57);
-            this.btnUnits_Resistance_Lower_Down_Up_Forward.Location = new System.Drawing.Point(290, 841);
-            this.btnUnits_Resistance_Lower_Down_Up_Forward.Size = new System.Drawing.Size(72, 34);
-            this.btnUnits_Resistance_Lower_Down_Up_Forward.LogAction = true;
-            this.btnUnits_Resistance_Lower_Down_Up_Forward.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // capProfile_Tightening
-            // 
-            this.capProfile_Tightening.Name = "capProfile_Tightening";
-            this.capProfile_Tightening.TranslationKey = "Profile Tightening";
-            this.capProfile_Tightening.Text = "Profile Tightening";
-            this.capProfile_Tightening.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.capProfile_Tightening.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
-            this.capProfile_Tightening.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capProfile_Tightening.Location = new System.Drawing.Point(16, 878);
-            this.capProfile_Tightening.Size = new System.Drawing.Size(190, 40);
-            this.capProfile_Tightening.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            // 
-            // btnUnits_Profile_Tightening_Back
-            // 
-            this.btnUnits_Profile_Tightening_Back.Name = "btnUnits_Profile_Tightening_Back";
-            this.btnUnits_Profile_Tightening_Back.PlcNumber = 1;
-            this.btnUnits_Profile_Tightening_Back.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.Left;
-            bitAction58.Address = "M201";
-            bitAction58.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnUnits_Profile_Tightening_Back.BitActions.Add(bitAction58);
-            this.btnUnits_Profile_Tightening_Back.Location = new System.Drawing.Point(212, 881);
-            this.btnUnits_Profile_Tightening_Back.Size = new System.Drawing.Size(72, 34);
-            this.btnUnits_Profile_Tightening_Back.LogAction = true;
-            this.btnUnits_Profile_Tightening_Back.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // btnUnits_Profile_Tightening_Forward
-            // 
-            this.btnUnits_Profile_Tightening_Forward.Name = "btnUnits_Profile_Tightening_Forward";
-            this.btnUnits_Profile_Tightening_Forward.PlcNumber = 1;
-            this.btnUnits_Profile_Tightening_Forward.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.Right;
-            bitAction59.Address = "M202";
-            bitAction59.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnUnits_Profile_Tightening_Forward.BitActions.Add(bitAction59);
-            this.btnUnits_Profile_Tightening_Forward.Location = new System.Drawing.Point(290, 881);
-            this.btnUnits_Profile_Tightening_Forward.Size = new System.Drawing.Size(72, 34);
-            this.btnUnits_Profile_Tightening_Forward.LogAction = true;
-            this.btnUnits_Profile_Tightening_Forward.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // capFront_Clamping
-            // 
-            this.capFront_Clamping.Name = "capFront_Clamping";
-            this.capFront_Clamping.TranslationKey = "Front Clamping";
-            this.capFront_Clamping.Text = "Front Clamping";
-            this.capFront_Clamping.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.capFront_Clamping.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
-            this.capFront_Clamping.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capFront_Clamping.Location = new System.Drawing.Point(16, 918);
-            this.capFront_Clamping.Size = new System.Drawing.Size(190, 40);
-            this.capFront_Clamping.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            // 
-            // btnUnits_Front_Clamping_Back
-            // 
-            this.btnUnits_Front_Clamping_Back.Name = "btnUnits_Front_Clamping_Back";
-            this.btnUnits_Front_Clamping_Back.PlcNumber = 1;
-            this.btnUnits_Front_Clamping_Back.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.Left;
-            bitAction60.Address = "M230";
-            bitAction60.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnUnits_Front_Clamping_Back.BitActions.Add(bitAction60);
-            this.btnUnits_Front_Clamping_Back.Location = new System.Drawing.Point(212, 921);
-            this.btnUnits_Front_Clamping_Back.Size = new System.Drawing.Size(72, 34);
-            this.btnUnits_Front_Clamping_Back.LogAction = true;
-            this.btnUnits_Front_Clamping_Back.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // btnUnits_Front_Clamping_Forward
-            // 
-            this.btnUnits_Front_Clamping_Forward.Name = "btnUnits_Front_Clamping_Forward";
-            this.btnUnits_Front_Clamping_Forward.PlcNumber = 1;
-            this.btnUnits_Front_Clamping_Forward.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.Right;
-            bitAction61.Address = "M231";
-            bitAction61.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnUnits_Front_Clamping_Forward.BitActions.Add(bitAction61);
-            this.btnUnits_Front_Clamping_Forward.Location = new System.Drawing.Point(290, 921);
-            this.btnUnits_Front_Clamping_Forward.Size = new System.Drawing.Size(72, 34);
-            this.btnUnits_Front_Clamping_Forward.LogAction = true;
-            this.btnUnits_Front_Clamping_Forward.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // capProfile_Emptying
-            // 
-            this.capProfile_Emptying.Name = "capProfile_Emptying";
-            this.capProfile_Emptying.TranslationKey = "Profile Emptying";
-            this.capProfile_Emptying.Text = "Profile Emptying";
-            this.capProfile_Emptying.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.capProfile_Emptying.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
-            this.capProfile_Emptying.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capProfile_Emptying.Location = new System.Drawing.Point(16, 958);
-            this.capProfile_Emptying.Size = new System.Drawing.Size(190, 40);
-            this.capProfile_Emptying.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            // 
-            // btnUnits_Profile_Emptying_Back
-            // 
-            this.btnUnits_Profile_Emptying_Back.Name = "btnUnits_Profile_Emptying_Back";
-            this.btnUnits_Profile_Emptying_Back.PlcNumber = 1;
-            this.btnUnits_Profile_Emptying_Back.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.Left;
-            bitAction62.Address = "M204";
-            bitAction62.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnUnits_Profile_Emptying_Back.BitActions.Add(bitAction62);
-            this.btnUnits_Profile_Emptying_Back.Location = new System.Drawing.Point(212, 961);
-            this.btnUnits_Profile_Emptying_Back.Size = new System.Drawing.Size(72, 34);
-            this.btnUnits_Profile_Emptying_Back.LogAction = true;
-            this.btnUnits_Profile_Emptying_Back.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // btnUnits_Profile_Emptying_Forward
-            // 
-            this.btnUnits_Profile_Emptying_Forward.Name = "btnUnits_Profile_Emptying_Forward";
-            this.btnUnits_Profile_Emptying_Forward.PlcNumber = 1;
-            this.btnUnits_Profile_Emptying_Forward.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.Right;
-            bitAction63.Address = "M205";
-            bitAction63.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnUnits_Profile_Emptying_Forward.BitActions.Add(bitAction63);
-            this.btnUnits_Profile_Emptying_Forward.Location = new System.Drawing.Point(290, 961);
-            this.btnUnits_Profile_Emptying_Forward.Size = new System.Drawing.Size(72, 34);
-            this.btnUnits_Profile_Emptying_Forward.LogAction = true;
-            this.btnUnits_Profile_Emptying_Forward.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // capProfile_Ear_Clamping
-            // 
-            this.capProfile_Ear_Clamping.Name = "capProfile_Ear_Clamping";
-            this.capProfile_Ear_Clamping.TranslationKey = "Profile Ear Clamping";
-            this.capProfile_Ear_Clamping.Text = "Profile Ear Clamping";
-            this.capProfile_Ear_Clamping.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.capProfile_Ear_Clamping.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
-            this.capProfile_Ear_Clamping.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capProfile_Ear_Clamping.Location = new System.Drawing.Point(16, 998);
-            this.capProfile_Ear_Clamping.Size = new System.Drawing.Size(190, 40);
-            this.capProfile_Ear_Clamping.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            // 
-            // btnUnits_Profile_Ear_Clamping_Back
-            // 
-            this.btnUnits_Profile_Ear_Clamping_Back.Name = "btnUnits_Profile_Ear_Clamping_Back";
-            this.btnUnits_Profile_Ear_Clamping_Back.PlcNumber = 1;
-            this.btnUnits_Profile_Ear_Clamping_Back.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.Left;
-            bitAction64.Address = "M217";
-            bitAction64.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnUnits_Profile_Ear_Clamping_Back.BitActions.Add(bitAction64);
-            this.btnUnits_Profile_Ear_Clamping_Back.Location = new System.Drawing.Point(212, 1001);
-            this.btnUnits_Profile_Ear_Clamping_Back.Size = new System.Drawing.Size(72, 34);
-            this.btnUnits_Profile_Ear_Clamping_Back.LogAction = true;
-            this.btnUnits_Profile_Ear_Clamping_Back.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // btnUnits_Profile_Ear_Clamping_Forward
-            // 
-            this.btnUnits_Profile_Ear_Clamping_Forward.Name = "btnUnits_Profile_Ear_Clamping_Forward";
-            this.btnUnits_Profile_Ear_Clamping_Forward.PlcNumber = 1;
-            this.btnUnits_Profile_Ear_Clamping_Forward.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.Right;
-            bitAction65.Address = "M218";
-            bitAction65.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnUnits_Profile_Ear_Clamping_Forward.BitActions.Add(bitAction65);
-            this.btnUnits_Profile_Ear_Clamping_Forward.Location = new System.Drawing.Point(290, 1001);
-            this.btnUnits_Profile_Ear_Clamping_Forward.Size = new System.Drawing.Size(72, 34);
-            this.btnUnits_Profile_Ear_Clamping_Forward.LogAction = true;
-            this.btnUnits_Profile_Ear_Clamping_Forward.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // capMold_Shifting
-            // 
-            this.capMold_Shifting.Name = "capMold_Shifting";
-            this.capMold_Shifting.TranslationKey = "Mold Shifting";
-            this.capMold_Shifting.Text = "Mold Shifting";
-            this.capMold_Shifting.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.capMold_Shifting.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
-            this.capMold_Shifting.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capMold_Shifting.Location = new System.Drawing.Point(16, 1038);
-            this.capMold_Shifting.Size = new System.Drawing.Size(190, 40);
-            this.capMold_Shifting.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            // 
-            // btnUnits_Mold_Shifting_Back
-            // 
-            this.btnUnits_Mold_Shifting_Back.Name = "btnUnits_Mold_Shifting_Back";
-            this.btnUnits_Mold_Shifting_Back.PlcNumber = 1;
-            this.btnUnits_Mold_Shifting_Back.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.Left;
-            bitAction66.Address = "M228";
-            bitAction66.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnUnits_Mold_Shifting_Back.BitActions.Add(bitAction66);
-            this.btnUnits_Mold_Shifting_Back.Location = new System.Drawing.Point(212, 1041);
-            this.btnUnits_Mold_Shifting_Back.Size = new System.Drawing.Size(72, 34);
-            this.btnUnits_Mold_Shifting_Back.LogAction = true;
-            this.btnUnits_Mold_Shifting_Back.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // btnUnits_Mold_Shifting_Forward
-            // 
-            this.btnUnits_Mold_Shifting_Forward.Name = "btnUnits_Mold_Shifting_Forward";
-            this.btnUnits_Mold_Shifting_Forward.PlcNumber = 1;
-            this.btnUnits_Mold_Shifting_Forward.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.Right;
-            bitAction67.Address = "M229";
-            bitAction67.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnUnits_Mold_Shifting_Forward.BitActions.Add(bitAction67);
-            this.btnUnits_Mold_Shifting_Forward.Location = new System.Drawing.Point(290, 1041);
-            this.btnUnits_Mold_Shifting_Forward.Size = new System.Drawing.Size(72, 34);
-            this.btnUnits_Mold_Shifting_Forward.LogAction = true;
-            this.btnUnits_Mold_Shifting_Forward.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
             // 
             // capConveyor_Up_Down
             // 
@@ -2582,7 +1175,7 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.capConveyor_Up_Down.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.capConveyor_Up_Down.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
             this.capConveyor_Up_Down.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capConveyor_Up_Down.Location = new System.Drawing.Point(16, 1078);
+            this.capConveyor_Up_Down.Location = new System.Drawing.Point(526, 928);
             this.capConveyor_Up_Down.Size = new System.Drawing.Size(190, 40);
             this.capConveyor_Up_Down.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             // 
@@ -2591,10 +1184,10 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.btnUnits_Conveyor_Up_Down_Back.Name = "btnUnits_Conveyor_Up_Down_Back";
             this.btnUnits_Conveyor_Up_Down_Back.PlcNumber = 1;
             this.btnUnits_Conveyor_Up_Down_Back.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.Left;
-            bitAction68.Address = "M207";
-            bitAction68.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnUnits_Conveyor_Up_Down_Back.BitActions.Add(bitAction68);
-            this.btnUnits_Conveyor_Up_Down_Back.Location = new System.Drawing.Point(212, 1081);
+            bitAction2.Address = "M207";
+            bitAction2.Action = Kaban.Core.Enums.BitActionType.Momentary;
+            this.btnUnits_Conveyor_Up_Down_Back.BitActions.Add(bitAction2);
+            this.btnUnits_Conveyor_Up_Down_Back.Location = new System.Drawing.Point(722, 931);
             this.btnUnits_Conveyor_Up_Down_Back.Size = new System.Drawing.Size(72, 34);
             this.btnUnits_Conveyor_Up_Down_Back.LogAction = true;
             this.btnUnits_Conveyor_Up_Down_Back.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
@@ -2604,10 +1197,10 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.btnUnits_Conveyor_Up_Down_Forward.Name = "btnUnits_Conveyor_Up_Down_Forward";
             this.btnUnits_Conveyor_Up_Down_Forward.PlcNumber = 1;
             this.btnUnits_Conveyor_Up_Down_Forward.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.Right;
-            bitAction69.Address = "M206";
-            bitAction69.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnUnits_Conveyor_Up_Down_Forward.BitActions.Add(bitAction69);
-            this.btnUnits_Conveyor_Up_Down_Forward.Location = new System.Drawing.Point(290, 1081);
+            bitAction3.Address = "M206";
+            bitAction3.Action = Kaban.Core.Enums.BitActionType.Momentary;
+            this.btnUnits_Conveyor_Up_Down_Forward.BitActions.Add(bitAction3);
+            this.btnUnits_Conveyor_Up_Down_Forward.Location = new System.Drawing.Point(800, 931);
             this.btnUnits_Conveyor_Up_Down_Forward.Size = new System.Drawing.Size(72, 34);
             this.btnUnits_Conveyor_Up_Down_Forward.LogAction = true;
             this.btnUnits_Conveyor_Up_Down_Forward.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
@@ -2620,7 +1213,7 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.capConveyor_Run.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.capConveyor_Run.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
             this.capConveyor_Run.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capConveyor_Run.Location = new System.Drawing.Point(16, 1118);
+            this.capConveyor_Run.Location = new System.Drawing.Point(526, 968);
             this.capConveyor_Run.Size = new System.Drawing.Size(190, 40);
             this.capConveyor_Run.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             // 
@@ -2630,10 +1223,10 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.btnUnits_Conveyor_Run_Back.PlcNumber = 1;
             this.btnUnits_Conveyor_Run_Back.TranslationKey = "Conveyor Run";
             this.btnUnits_Conveyor_Run_Back.FallbackText = "Conveyor Run";
-            bitAction70.Address = "M208";
-            bitAction70.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnUnits_Conveyor_Run_Back.BitActions.Add(bitAction70);
-            this.btnUnits_Conveyor_Run_Back.Location = new System.Drawing.Point(212, 1121);
+            bitAction4.Address = "M208";
+            bitAction4.Action = Kaban.Core.Enums.BitActionType.Momentary;
+            this.btnUnits_Conveyor_Run_Back.BitActions.Add(bitAction4);
+            this.btnUnits_Conveyor_Run_Back.Location = new System.Drawing.Point(722, 971);
             this.btnUnits_Conveyor_Run_Back.Size = new System.Drawing.Size(150, 34);
             this.btnUnits_Conveyor_Run_Back.LogAction = true;
             this.btnUnits_Conveyor_Run_Back.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
@@ -2646,7 +1239,7 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.capThermocouple_Lower.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.capThermocouple_Lower.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
             this.capThermocouple_Lower.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capThermocouple_Lower.Location = new System.Drawing.Point(16, 1158);
+            this.capThermocouple_Lower.Location = new System.Drawing.Point(526, 1008);
             this.capThermocouple_Lower.Size = new System.Drawing.Size(190, 40);
             this.capThermocouple_Lower.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             // 
@@ -2661,7 +1254,7 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.dispUnits_Thermocouple_Lower_Back.DecimalPlaces = 1;
             this.dispUnits_Thermocouple_Lower_Back.Digits = 5;
             this.dispUnits_Thermocouple_Lower_Back.Suffix = "°C";
-            this.dispUnits_Thermocouple_Lower_Back.Location = new System.Drawing.Point(212, 1161);
+            this.dispUnits_Thermocouple_Lower_Back.Location = new System.Drawing.Point(722, 1011);
             this.dispUnits_Thermocouple_Lower_Back.Size = new System.Drawing.Size(150, 34);
             // 
             // capThermocouple_Upper
@@ -2672,7 +1265,7 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.capThermocouple_Upper.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.capThermocouple_Upper.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
             this.capThermocouple_Upper.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capThermocouple_Upper.Location = new System.Drawing.Point(16, 1198);
+            this.capThermocouple_Upper.Location = new System.Drawing.Point(526, 1048);
             this.capThermocouple_Upper.Size = new System.Drawing.Size(190, 40);
             this.capThermocouple_Upper.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             // 
@@ -2687,543 +1280,8 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.dispUnits_Thermocouple_Upper_Back.DecimalPlaces = 1;
             this.dispUnits_Thermocouple_Upper_Back.Digits = 5;
             this.dispUnits_Thermocouple_Upper_Back.Suffix = "°C";
-            this.dispUnits_Thermocouple_Upper_Back.Location = new System.Drawing.Point(212, 1201);
+            this.dispUnits_Thermocouple_Upper_Back.Location = new System.Drawing.Point(722, 1051);
             this.dispUnits_Thermocouple_Upper_Back.Size = new System.Drawing.Size(150, 34);
-            // 
-            // hdHead_1
-            // 
-            this.hdHead_1.Name = "hdHead_1";
-            this.hdHead_1.TranslationKey = "Head 1";
-            this.hdHead_1.Text = "Head 1";
-            this.hdHead_1.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
-            this.hdHead_1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
-            this.hdHead_1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.hdHead_1.Location = new System.Drawing.Point(576, 764);
-            this.hdHead_1.Size = new System.Drawing.Size(98, 22);
-            // 
-            // hdHead_2
-            // 
-            this.hdHead_2.Name = "hdHead_2";
-            this.hdHead_2.TranslationKey = "Head 2";
-            this.hdHead_2.Text = "Head 2";
-            this.hdHead_2.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
-            this.hdHead_2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
-            this.hdHead_2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.hdHead_2.Location = new System.Drawing.Point(680, 764);
-            this.hdHead_2.Size = new System.Drawing.Size(98, 22);
-            // 
-            // hdHead_3
-            // 
-            this.hdHead_3.Name = "hdHead_3";
-            this.hdHead_3.TranslationKey = "Head 3";
-            this.hdHead_3.Text = "Head 3";
-            this.hdHead_3.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
-            this.hdHead_3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
-            this.hdHead_3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.hdHead_3.Location = new System.Drawing.Point(784, 764);
-            this.hdHead_3.Size = new System.Drawing.Size(98, 22);
-            // 
-            // hdHead_4
-            // 
-            this.hdHead_4.Name = "hdHead_4";
-            this.hdHead_4.TranslationKey = "Head 4";
-            this.hdHead_4.Text = "Head 4";
-            this.hdHead_4.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
-            this.hdHead_4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
-            this.hdHead_4.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.hdHead_4.Location = new System.Drawing.Point(888, 764);
-            this.hdHead_4.Size = new System.Drawing.Size(98, 22);
-            // 
-            // hdPiston_Sensors
-            // 
-            this.hdPiston_Sensors.Name = "hdPiston_Sensors";
-            this.hdPiston_Sensors.TranslationKey = "Piston Sensors";
-            this.hdPiston_Sensors.Text = "Piston Sensors";
-            this.hdPiston_Sensors.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
-            this.hdPiston_Sensors.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
-            this.hdPiston_Sensors.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.hdPiston_Sensors.Location = new System.Drawing.Point(394, 788);
-            this.hdPiston_Sensors.Size = new System.Drawing.Size(176, 26);
-            // 
-            // hdLeft
-            // 
-            this.hdLeft.Name = "hdLeft";
-            this.hdLeft.TranslationKey = "Left";
-            this.hdLeft.Text = "Left";
-            this.hdLeft.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
-            this.hdLeft.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
-            this.hdLeft.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.hdLeft.Location = new System.Drawing.Point(576, 788);
-            this.hdLeft.Size = new System.Drawing.Size(46, 26);
-            // 
-            // hdRight
-            // 
-            this.hdRight.Name = "hdRight";
-            this.hdRight.TranslationKey = "Right";
-            this.hdRight.Text = "Right";
-            this.hdRight.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
-            this.hdRight.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
-            this.hdRight.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.hdRight.Location = new System.Drawing.Point(628, 788);
-            this.hdRight.Size = new System.Drawing.Size(46, 26);
-            // 
-            // hdLeft_2
-            // 
-            this.hdLeft_2.Name = "hdLeft_2";
-            this.hdLeft_2.TranslationKey = "Left";
-            this.hdLeft_2.Text = "Left";
-            this.hdLeft_2.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
-            this.hdLeft_2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
-            this.hdLeft_2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.hdLeft_2.Location = new System.Drawing.Point(680, 788);
-            this.hdLeft_2.Size = new System.Drawing.Size(46, 26);
-            // 
-            // hdRight_2
-            // 
-            this.hdRight_2.Name = "hdRight_2";
-            this.hdRight_2.TranslationKey = "Right";
-            this.hdRight_2.Text = "Right";
-            this.hdRight_2.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
-            this.hdRight_2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
-            this.hdRight_2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.hdRight_2.Location = new System.Drawing.Point(732, 788);
-            this.hdRight_2.Size = new System.Drawing.Size(46, 26);
-            // 
-            // hdLeft_3
-            // 
-            this.hdLeft_3.Name = "hdLeft_3";
-            this.hdLeft_3.TranslationKey = "Left";
-            this.hdLeft_3.Text = "Left";
-            this.hdLeft_3.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
-            this.hdLeft_3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
-            this.hdLeft_3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.hdLeft_3.Location = new System.Drawing.Point(784, 788);
-            this.hdLeft_3.Size = new System.Drawing.Size(46, 26);
-            // 
-            // hdRight_3
-            // 
-            this.hdRight_3.Name = "hdRight_3";
-            this.hdRight_3.TranslationKey = "Right";
-            this.hdRight_3.Text = "Right";
-            this.hdRight_3.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
-            this.hdRight_3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
-            this.hdRight_3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.hdRight_3.Location = new System.Drawing.Point(836, 788);
-            this.hdRight_3.Size = new System.Drawing.Size(46, 26);
-            // 
-            // hdLeft_4
-            // 
-            this.hdLeft_4.Name = "hdLeft_4";
-            this.hdLeft_4.TranslationKey = "Left";
-            this.hdLeft_4.Text = "Left";
-            this.hdLeft_4.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
-            this.hdLeft_4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
-            this.hdLeft_4.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.hdLeft_4.Location = new System.Drawing.Point(888, 788);
-            this.hdLeft_4.Size = new System.Drawing.Size(46, 26);
-            // 
-            // hdRight_4
-            // 
-            this.hdRight_4.Name = "hdRight_4";
-            this.hdRight_4.TranslationKey = "Right";
-            this.hdRight_4.Text = "Right";
-            this.hdRight_4.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
-            this.hdRight_4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
-            this.hdRight_4.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.hdRight_4.Location = new System.Drawing.Point(940, 788);
-            this.hdRight_4.Size = new System.Drawing.Size(46, 26);
-            // 
-            // capUpper_Clamp_Is_Up
-            // 
-            this.capUpper_Clamp_Is_Up.Name = "capUpper_Clamp_Is_Up";
-            this.capUpper_Clamp_Is_Up.TranslationKey = "Upper Clamp Is Up";
-            this.capUpper_Clamp_Is_Up.Text = "Upper Clamp Is Up";
-            this.capUpper_Clamp_Is_Up.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.capUpper_Clamp_Is_Up.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
-            this.capUpper_Clamp_Is_Up.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capUpper_Clamp_Is_Up.Location = new System.Drawing.Point(394, 822);
-            this.capUpper_Clamp_Is_Up.Size = new System.Drawing.Size(176, 40);
-            this.capUpper_Clamp_Is_Up.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            // 
-            // lampPiston_Sensors_Upper_Clamp_Is_Up_Head_1_Left
-            // 
-            this.lampPiston_Sensors_Upper_Clamp_Is_Up_Head_1_Left.Name = "lampPiston_Sensors_Upper_Clamp_Is_Up_Head_1_Left";
-            this.lampPiston_Sensors_Upper_Clamp_Is_Up_Head_1_Left.PlcNumber = 1;
-            this.lampPiston_Sensors_Upper_Clamp_Is_Up_Head_1_Left.Address = "W0.6";
-            this.lampPiston_Sensors_Upper_Clamp_Is_Up_Head_1_Left.Location = new System.Drawing.Point(584, 827);
-            this.lampPiston_Sensors_Upper_Clamp_Is_Up_Head_1_Left.Size = new System.Drawing.Size(30, 30);
-            // 
-            // lampPiston_Sensors_Upper_Clamp_Is_Up_Head_1_Right
-            // 
-            this.lampPiston_Sensors_Upper_Clamp_Is_Up_Head_1_Right.Name = "lampPiston_Sensors_Upper_Clamp_Is_Up_Head_1_Right";
-            this.lampPiston_Sensors_Upper_Clamp_Is_Up_Head_1_Right.PlcNumber = 1;
-            this.lampPiston_Sensors_Upper_Clamp_Is_Up_Head_1_Right.Address = "W0.7";
-            this.lampPiston_Sensors_Upper_Clamp_Is_Up_Head_1_Right.Location = new System.Drawing.Point(636, 827);
-            this.lampPiston_Sensors_Upper_Clamp_Is_Up_Head_1_Right.Size = new System.Drawing.Size(30, 30);
-            // 
-            // lampPiston_Sensors_Upper_Clamp_Is_Up_Head_2_Left
-            // 
-            this.lampPiston_Sensors_Upper_Clamp_Is_Up_Head_2_Left.Name = "lampPiston_Sensors_Upper_Clamp_Is_Up_Head_2_Left";
-            this.lampPiston_Sensors_Upper_Clamp_Is_Up_Head_2_Left.PlcNumber = 1;
-            this.lampPiston_Sensors_Upper_Clamp_Is_Up_Head_2_Left.Address = "W2.6";
-            this.lampPiston_Sensors_Upper_Clamp_Is_Up_Head_2_Left.Location = new System.Drawing.Point(688, 827);
-            this.lampPiston_Sensors_Upper_Clamp_Is_Up_Head_2_Left.Size = new System.Drawing.Size(30, 30);
-            // 
-            // lampPiston_Sensors_Upper_Clamp_Is_Up_Head_2_Right
-            // 
-            this.lampPiston_Sensors_Upper_Clamp_Is_Up_Head_2_Right.Name = "lampPiston_Sensors_Upper_Clamp_Is_Up_Head_2_Right";
-            this.lampPiston_Sensors_Upper_Clamp_Is_Up_Head_2_Right.PlcNumber = 1;
-            this.lampPiston_Sensors_Upper_Clamp_Is_Up_Head_2_Right.Address = "W2.7";
-            this.lampPiston_Sensors_Upper_Clamp_Is_Up_Head_2_Right.Location = new System.Drawing.Point(740, 827);
-            this.lampPiston_Sensors_Upper_Clamp_Is_Up_Head_2_Right.Size = new System.Drawing.Size(30, 30);
-            // 
-            // lampPiston_Sensors_Upper_Clamp_Is_Up_Head_3_Left
-            // 
-            this.lampPiston_Sensors_Upper_Clamp_Is_Up_Head_3_Left.Name = "lampPiston_Sensors_Upper_Clamp_Is_Up_Head_3_Left";
-            this.lampPiston_Sensors_Upper_Clamp_Is_Up_Head_3_Left.PlcNumber = 1;
-            this.lampPiston_Sensors_Upper_Clamp_Is_Up_Head_3_Left.Address = "W4.6";
-            this.lampPiston_Sensors_Upper_Clamp_Is_Up_Head_3_Left.Location = new System.Drawing.Point(792, 827);
-            this.lampPiston_Sensors_Upper_Clamp_Is_Up_Head_3_Left.Size = new System.Drawing.Size(30, 30);
-            // 
-            // lampPiston_Sensors_Upper_Clamp_Is_Up_Head_3_Right
-            // 
-            this.lampPiston_Sensors_Upper_Clamp_Is_Up_Head_3_Right.Name = "lampPiston_Sensors_Upper_Clamp_Is_Up_Head_3_Right";
-            this.lampPiston_Sensors_Upper_Clamp_Is_Up_Head_3_Right.PlcNumber = 1;
-            this.lampPiston_Sensors_Upper_Clamp_Is_Up_Head_3_Right.Address = "W4.7";
-            this.lampPiston_Sensors_Upper_Clamp_Is_Up_Head_3_Right.Location = new System.Drawing.Point(844, 827);
-            this.lampPiston_Sensors_Upper_Clamp_Is_Up_Head_3_Right.Size = new System.Drawing.Size(30, 30);
-            // 
-            // lampPiston_Sensors_Upper_Clamp_Is_Up_Head_4_Left
-            // 
-            this.lampPiston_Sensors_Upper_Clamp_Is_Up_Head_4_Left.Name = "lampPiston_Sensors_Upper_Clamp_Is_Up_Head_4_Left";
-            this.lampPiston_Sensors_Upper_Clamp_Is_Up_Head_4_Left.PlcNumber = 1;
-            this.lampPiston_Sensors_Upper_Clamp_Is_Up_Head_4_Left.Address = "W6.6";
-            this.lampPiston_Sensors_Upper_Clamp_Is_Up_Head_4_Left.Location = new System.Drawing.Point(896, 827);
-            this.lampPiston_Sensors_Upper_Clamp_Is_Up_Head_4_Left.Size = new System.Drawing.Size(30, 30);
-            // 
-            // lampPiston_Sensors_Upper_Clamp_Is_Up_Head_4_Right
-            // 
-            this.lampPiston_Sensors_Upper_Clamp_Is_Up_Head_4_Right.Name = "lampPiston_Sensors_Upper_Clamp_Is_Up_Head_4_Right";
-            this.lampPiston_Sensors_Upper_Clamp_Is_Up_Head_4_Right.PlcNumber = 1;
-            this.lampPiston_Sensors_Upper_Clamp_Is_Up_Head_4_Right.Address = "W6.7";
-            this.lampPiston_Sensors_Upper_Clamp_Is_Up_Head_4_Right.Location = new System.Drawing.Point(948, 827);
-            this.lampPiston_Sensors_Upper_Clamp_Is_Up_Head_4_Right.Size = new System.Drawing.Size(30, 30);
-            // 
-            // capDown_Resistance_Is_Up
-            // 
-            this.capDown_Resistance_Is_Up.Name = "capDown_Resistance_Is_Up";
-            this.capDown_Resistance_Is_Up.TranslationKey = "Down Resistance Is Up";
-            this.capDown_Resistance_Is_Up.Text = "Down Resistance Is Up";
-            this.capDown_Resistance_Is_Up.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.capDown_Resistance_Is_Up.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
-            this.capDown_Resistance_Is_Up.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capDown_Resistance_Is_Up.Location = new System.Drawing.Point(394, 862);
-            this.capDown_Resistance_Is_Up.Size = new System.Drawing.Size(176, 40);
-            this.capDown_Resistance_Is_Up.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            // 
-            // lampPiston_Sensors_Down_Resistance_Is_Up_Head_1_Left
-            // 
-            this.lampPiston_Sensors_Down_Resistance_Is_Up_Head_1_Left.Name = "lampPiston_Sensors_Down_Resistance_Is_Up_Head_1_Left";
-            this.lampPiston_Sensors_Down_Resistance_Is_Up_Head_1_Left.PlcNumber = 1;
-            this.lampPiston_Sensors_Down_Resistance_Is_Up_Head_1_Left.Address = "W0.5";
-            this.lampPiston_Sensors_Down_Resistance_Is_Up_Head_1_Left.Location = new System.Drawing.Point(610, 867);
-            this.lampPiston_Sensors_Down_Resistance_Is_Up_Head_1_Left.Size = new System.Drawing.Size(30, 30);
-            // 
-            // lampPiston_Sensors_Down_Resistance_Is_Up_Head_2_Left
-            // 
-            this.lampPiston_Sensors_Down_Resistance_Is_Up_Head_2_Left.Name = "lampPiston_Sensors_Down_Resistance_Is_Up_Head_2_Left";
-            this.lampPiston_Sensors_Down_Resistance_Is_Up_Head_2_Left.PlcNumber = 1;
-            this.lampPiston_Sensors_Down_Resistance_Is_Up_Head_2_Left.Address = "W2.5";
-            this.lampPiston_Sensors_Down_Resistance_Is_Up_Head_2_Left.Location = new System.Drawing.Point(714, 867);
-            this.lampPiston_Sensors_Down_Resistance_Is_Up_Head_2_Left.Size = new System.Drawing.Size(30, 30);
-            // 
-            // lampPiston_Sensors_Down_Resistance_Is_Up_Head_3_Left
-            // 
-            this.lampPiston_Sensors_Down_Resistance_Is_Up_Head_3_Left.Name = "lampPiston_Sensors_Down_Resistance_Is_Up_Head_3_Left";
-            this.lampPiston_Sensors_Down_Resistance_Is_Up_Head_3_Left.PlcNumber = 1;
-            this.lampPiston_Sensors_Down_Resistance_Is_Up_Head_3_Left.Address = "W4.5";
-            this.lampPiston_Sensors_Down_Resistance_Is_Up_Head_3_Left.Location = new System.Drawing.Point(818, 867);
-            this.lampPiston_Sensors_Down_Resistance_Is_Up_Head_3_Left.Size = new System.Drawing.Size(30, 30);
-            // 
-            // lampPiston_Sensors_Down_Resistance_Is_Up_Head_4_Left
-            // 
-            this.lampPiston_Sensors_Down_Resistance_Is_Up_Head_4_Left.Name = "lampPiston_Sensors_Down_Resistance_Is_Up_Head_4_Left";
-            this.lampPiston_Sensors_Down_Resistance_Is_Up_Head_4_Left.PlcNumber = 1;
-            this.lampPiston_Sensors_Down_Resistance_Is_Up_Head_4_Left.Address = "W6.5";
-            this.lampPiston_Sensors_Down_Resistance_Is_Up_Head_4_Left.Location = new System.Drawing.Point(922, 867);
-            this.lampPiston_Sensors_Down_Resistance_Is_Up_Head_4_Left.Size = new System.Drawing.Size(30, 30);
-            // 
-            // capFront_Clamp_Is_Front
-            // 
-            this.capFront_Clamp_Is_Front.Name = "capFront_Clamp_Is_Front";
-            this.capFront_Clamp_Is_Front.TranslationKey = "Front Clamp Is Front";
-            this.capFront_Clamp_Is_Front.Text = "Front Clamp Is Front";
-            this.capFront_Clamp_Is_Front.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.capFront_Clamp_Is_Front.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
-            this.capFront_Clamp_Is_Front.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capFront_Clamp_Is_Front.Location = new System.Drawing.Point(394, 902);
-            this.capFront_Clamp_Is_Front.Size = new System.Drawing.Size(176, 40);
-            this.capFront_Clamp_Is_Front.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            // 
-            // lampPiston_Sensors_Front_Clamp_Is_Front_Head_1_Left
-            // 
-            this.lampPiston_Sensors_Front_Clamp_Is_Front_Head_1_Left.Name = "lampPiston_Sensors_Front_Clamp_Is_Front_Head_1_Left";
-            this.lampPiston_Sensors_Front_Clamp_Is_Front_Head_1_Left.PlcNumber = 1;
-            this.lampPiston_Sensors_Front_Clamp_Is_Front_Head_1_Left.Address = "W1.0";
-            this.lampPiston_Sensors_Front_Clamp_Is_Front_Head_1_Left.Location = new System.Drawing.Point(584, 907);
-            this.lampPiston_Sensors_Front_Clamp_Is_Front_Head_1_Left.Size = new System.Drawing.Size(30, 30);
-            // 
-            // lampPiston_Sensors_Front_Clamp_Is_Front_Head_1_Right
-            // 
-            this.lampPiston_Sensors_Front_Clamp_Is_Front_Head_1_Right.Name = "lampPiston_Sensors_Front_Clamp_Is_Front_Head_1_Right";
-            this.lampPiston_Sensors_Front_Clamp_Is_Front_Head_1_Right.PlcNumber = 1;
-            this.lampPiston_Sensors_Front_Clamp_Is_Front_Head_1_Right.Address = "W1.1";
-            this.lampPiston_Sensors_Front_Clamp_Is_Front_Head_1_Right.Location = new System.Drawing.Point(636, 907);
-            this.lampPiston_Sensors_Front_Clamp_Is_Front_Head_1_Right.Size = new System.Drawing.Size(30, 30);
-            // 
-            // lampPiston_Sensors_Front_Clamp_Is_Front_Head_2_Left
-            // 
-            this.lampPiston_Sensors_Front_Clamp_Is_Front_Head_2_Left.Name = "lampPiston_Sensors_Front_Clamp_Is_Front_Head_2_Left";
-            this.lampPiston_Sensors_Front_Clamp_Is_Front_Head_2_Left.PlcNumber = 1;
-            this.lampPiston_Sensors_Front_Clamp_Is_Front_Head_2_Left.Address = "W3.0";
-            this.lampPiston_Sensors_Front_Clamp_Is_Front_Head_2_Left.Location = new System.Drawing.Point(688, 907);
-            this.lampPiston_Sensors_Front_Clamp_Is_Front_Head_2_Left.Size = new System.Drawing.Size(30, 30);
-            // 
-            // lampPiston_Sensors_Front_Clamp_Is_Front_Head_2_Right
-            // 
-            this.lampPiston_Sensors_Front_Clamp_Is_Front_Head_2_Right.Name = "lampPiston_Sensors_Front_Clamp_Is_Front_Head_2_Right";
-            this.lampPiston_Sensors_Front_Clamp_Is_Front_Head_2_Right.PlcNumber = 1;
-            this.lampPiston_Sensors_Front_Clamp_Is_Front_Head_2_Right.Address = "W3.1";
-            this.lampPiston_Sensors_Front_Clamp_Is_Front_Head_2_Right.Location = new System.Drawing.Point(740, 907);
-            this.lampPiston_Sensors_Front_Clamp_Is_Front_Head_2_Right.Size = new System.Drawing.Size(30, 30);
-            // 
-            // lampPiston_Sensors_Front_Clamp_Is_Front_Head_3_Left
-            // 
-            this.lampPiston_Sensors_Front_Clamp_Is_Front_Head_3_Left.Name = "lampPiston_Sensors_Front_Clamp_Is_Front_Head_3_Left";
-            this.lampPiston_Sensors_Front_Clamp_Is_Front_Head_3_Left.PlcNumber = 1;
-            this.lampPiston_Sensors_Front_Clamp_Is_Front_Head_3_Left.Address = "W5.0";
-            this.lampPiston_Sensors_Front_Clamp_Is_Front_Head_3_Left.Location = new System.Drawing.Point(792, 907);
-            this.lampPiston_Sensors_Front_Clamp_Is_Front_Head_3_Left.Size = new System.Drawing.Size(30, 30);
-            // 
-            // lampPiston_Sensors_Front_Clamp_Is_Front_Head_3_Right
-            // 
-            this.lampPiston_Sensors_Front_Clamp_Is_Front_Head_3_Right.Name = "lampPiston_Sensors_Front_Clamp_Is_Front_Head_3_Right";
-            this.lampPiston_Sensors_Front_Clamp_Is_Front_Head_3_Right.PlcNumber = 1;
-            this.lampPiston_Sensors_Front_Clamp_Is_Front_Head_3_Right.Address = "W5.1";
-            this.lampPiston_Sensors_Front_Clamp_Is_Front_Head_3_Right.Location = new System.Drawing.Point(844, 907);
-            this.lampPiston_Sensors_Front_Clamp_Is_Front_Head_3_Right.Size = new System.Drawing.Size(30, 30);
-            // 
-            // lampPiston_Sensors_Front_Clamp_Is_Front_Head_4_Left
-            // 
-            this.lampPiston_Sensors_Front_Clamp_Is_Front_Head_4_Left.Name = "lampPiston_Sensors_Front_Clamp_Is_Front_Head_4_Left";
-            this.lampPiston_Sensors_Front_Clamp_Is_Front_Head_4_Left.PlcNumber = 1;
-            this.lampPiston_Sensors_Front_Clamp_Is_Front_Head_4_Left.Address = "W7.0";
-            this.lampPiston_Sensors_Front_Clamp_Is_Front_Head_4_Left.Location = new System.Drawing.Point(896, 907);
-            this.lampPiston_Sensors_Front_Clamp_Is_Front_Head_4_Left.Size = new System.Drawing.Size(30, 30);
-            // 
-            // lampPiston_Sensors_Front_Clamp_Is_Front_Head_4_Right
-            // 
-            this.lampPiston_Sensors_Front_Clamp_Is_Front_Head_4_Right.Name = "lampPiston_Sensors_Front_Clamp_Is_Front_Head_4_Right";
-            this.lampPiston_Sensors_Front_Clamp_Is_Front_Head_4_Right.PlcNumber = 1;
-            this.lampPiston_Sensors_Front_Clamp_Is_Front_Head_4_Right.Address = "W7.1";
-            this.lampPiston_Sensors_Front_Clamp_Is_Front_Head_4_Right.Location = new System.Drawing.Point(948, 907);
-            this.lampPiston_Sensors_Front_Clamp_Is_Front_Head_4_Right.Size = new System.Drawing.Size(30, 30);
-            // 
-            // capEar_Clamp_Is_Down
-            // 
-            this.capEar_Clamp_Is_Down.Name = "capEar_Clamp_Is_Down";
-            this.capEar_Clamp_Is_Down.TranslationKey = "Ear Clamp Is Down";
-            this.capEar_Clamp_Is_Down.Text = "Ear Clamp Is Down";
-            this.capEar_Clamp_Is_Down.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.capEar_Clamp_Is_Down.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
-            this.capEar_Clamp_Is_Down.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capEar_Clamp_Is_Down.Location = new System.Drawing.Point(394, 942);
-            this.capEar_Clamp_Is_Down.Size = new System.Drawing.Size(176, 40);
-            this.capEar_Clamp_Is_Down.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            // 
-            // lampPiston_Sensors_Ear_Clamp_Is_Down_Head_1_Left
-            // 
-            this.lampPiston_Sensors_Ear_Clamp_Is_Down_Head_1_Left.Name = "lampPiston_Sensors_Ear_Clamp_Is_Down_Head_1_Left";
-            this.lampPiston_Sensors_Ear_Clamp_Is_Down_Head_1_Left.PlcNumber = 1;
-            this.lampPiston_Sensors_Ear_Clamp_Is_Down_Head_1_Left.Address = "W1.2";
-            this.lampPiston_Sensors_Ear_Clamp_Is_Down_Head_1_Left.Location = new System.Drawing.Point(584, 947);
-            this.lampPiston_Sensors_Ear_Clamp_Is_Down_Head_1_Left.Size = new System.Drawing.Size(30, 30);
-            // 
-            // lampPiston_Sensors_Ear_Clamp_Is_Down_Head_1_Right
-            // 
-            this.lampPiston_Sensors_Ear_Clamp_Is_Down_Head_1_Right.Name = "lampPiston_Sensors_Ear_Clamp_Is_Down_Head_1_Right";
-            this.lampPiston_Sensors_Ear_Clamp_Is_Down_Head_1_Right.PlcNumber = 1;
-            this.lampPiston_Sensors_Ear_Clamp_Is_Down_Head_1_Right.Address = "W1.3";
-            this.lampPiston_Sensors_Ear_Clamp_Is_Down_Head_1_Right.Location = new System.Drawing.Point(636, 947);
-            this.lampPiston_Sensors_Ear_Clamp_Is_Down_Head_1_Right.Size = new System.Drawing.Size(30, 30);
-            // 
-            // lampPiston_Sensors_Ear_Clamp_Is_Down_Head_2_Left
-            // 
-            this.lampPiston_Sensors_Ear_Clamp_Is_Down_Head_2_Left.Name = "lampPiston_Sensors_Ear_Clamp_Is_Down_Head_2_Left";
-            this.lampPiston_Sensors_Ear_Clamp_Is_Down_Head_2_Left.PlcNumber = 1;
-            this.lampPiston_Sensors_Ear_Clamp_Is_Down_Head_2_Left.Address = "W3.2";
-            this.lampPiston_Sensors_Ear_Clamp_Is_Down_Head_2_Left.Location = new System.Drawing.Point(688, 947);
-            this.lampPiston_Sensors_Ear_Clamp_Is_Down_Head_2_Left.Size = new System.Drawing.Size(30, 30);
-            // 
-            // lampPiston_Sensors_Ear_Clamp_Is_Down_Head_2_Right
-            // 
-            this.lampPiston_Sensors_Ear_Clamp_Is_Down_Head_2_Right.Name = "lampPiston_Sensors_Ear_Clamp_Is_Down_Head_2_Right";
-            this.lampPiston_Sensors_Ear_Clamp_Is_Down_Head_2_Right.PlcNumber = 1;
-            this.lampPiston_Sensors_Ear_Clamp_Is_Down_Head_2_Right.Address = "W3.3";
-            this.lampPiston_Sensors_Ear_Clamp_Is_Down_Head_2_Right.Location = new System.Drawing.Point(740, 947);
-            this.lampPiston_Sensors_Ear_Clamp_Is_Down_Head_2_Right.Size = new System.Drawing.Size(30, 30);
-            // 
-            // lampPiston_Sensors_Ear_Clamp_Is_Down_Head_3_Left
-            // 
-            this.lampPiston_Sensors_Ear_Clamp_Is_Down_Head_3_Left.Name = "lampPiston_Sensors_Ear_Clamp_Is_Down_Head_3_Left";
-            this.lampPiston_Sensors_Ear_Clamp_Is_Down_Head_3_Left.PlcNumber = 1;
-            this.lampPiston_Sensors_Ear_Clamp_Is_Down_Head_3_Left.Address = "W5.2";
-            this.lampPiston_Sensors_Ear_Clamp_Is_Down_Head_3_Left.Location = new System.Drawing.Point(792, 947);
-            this.lampPiston_Sensors_Ear_Clamp_Is_Down_Head_3_Left.Size = new System.Drawing.Size(30, 30);
-            // 
-            // lampPiston_Sensors_Ear_Clamp_Is_Down_Head_3_Right
-            // 
-            this.lampPiston_Sensors_Ear_Clamp_Is_Down_Head_3_Right.Name = "lampPiston_Sensors_Ear_Clamp_Is_Down_Head_3_Right";
-            this.lampPiston_Sensors_Ear_Clamp_Is_Down_Head_3_Right.PlcNumber = 1;
-            this.lampPiston_Sensors_Ear_Clamp_Is_Down_Head_3_Right.Address = "W5.3";
-            this.lampPiston_Sensors_Ear_Clamp_Is_Down_Head_3_Right.Location = new System.Drawing.Point(844, 947);
-            this.lampPiston_Sensors_Ear_Clamp_Is_Down_Head_3_Right.Size = new System.Drawing.Size(30, 30);
-            // 
-            // lampPiston_Sensors_Ear_Clamp_Is_Down_Head_4_Left
-            // 
-            this.lampPiston_Sensors_Ear_Clamp_Is_Down_Head_4_Left.Name = "lampPiston_Sensors_Ear_Clamp_Is_Down_Head_4_Left";
-            this.lampPiston_Sensors_Ear_Clamp_Is_Down_Head_4_Left.PlcNumber = 1;
-            this.lampPiston_Sensors_Ear_Clamp_Is_Down_Head_4_Left.Address = "W7.2";
-            this.lampPiston_Sensors_Ear_Clamp_Is_Down_Head_4_Left.Location = new System.Drawing.Point(896, 947);
-            this.lampPiston_Sensors_Ear_Clamp_Is_Down_Head_4_Left.Size = new System.Drawing.Size(30, 30);
-            // 
-            // lampPiston_Sensors_Ear_Clamp_Is_Down_Head_4_Right
-            // 
-            this.lampPiston_Sensors_Ear_Clamp_Is_Down_Head_4_Right.Name = "lampPiston_Sensors_Ear_Clamp_Is_Down_Head_4_Right";
-            this.lampPiston_Sensors_Ear_Clamp_Is_Down_Head_4_Right.PlcNumber = 1;
-            this.lampPiston_Sensors_Ear_Clamp_Is_Down_Head_4_Right.Address = "W7.3";
-            this.lampPiston_Sensors_Ear_Clamp_Is_Down_Head_4_Right.Location = new System.Drawing.Point(948, 947);
-            this.lampPiston_Sensors_Ear_Clamp_Is_Down_Head_4_Right.Size = new System.Drawing.Size(30, 30);
-            // 
-            // capMold_Shifting_Is_Back
-            // 
-            this.capMold_Shifting_Is_Back.Name = "capMold_Shifting_Is_Back";
-            this.capMold_Shifting_Is_Back.TranslationKey = "Mold Shifting Is Back";
-            this.capMold_Shifting_Is_Back.Text = "Mold Shifting Is Back";
-            this.capMold_Shifting_Is_Back.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.capMold_Shifting_Is_Back.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
-            this.capMold_Shifting_Is_Back.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capMold_Shifting_Is_Back.Location = new System.Drawing.Point(394, 982);
-            this.capMold_Shifting_Is_Back.Size = new System.Drawing.Size(176, 40);
-            this.capMold_Shifting_Is_Back.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            // 
-            // lampPiston_Sensors_Mold_Shifting_Is_Back_Head_1_Left
-            // 
-            this.lampPiston_Sensors_Mold_Shifting_Is_Back_Head_1_Left.Name = "lampPiston_Sensors_Mold_Shifting_Is_Back_Head_1_Left";
-            this.lampPiston_Sensors_Mold_Shifting_Is_Back_Head_1_Left.PlcNumber = 1;
-            this.lampPiston_Sensors_Mold_Shifting_Is_Back_Head_1_Left.Address = "W1.4";
-            this.lampPiston_Sensors_Mold_Shifting_Is_Back_Head_1_Left.Location = new System.Drawing.Point(584, 987);
-            this.lampPiston_Sensors_Mold_Shifting_Is_Back_Head_1_Left.Size = new System.Drawing.Size(30, 30);
-            // 
-            // lampPiston_Sensors_Mold_Shifting_Is_Back_Head_1_Right
-            // 
-            this.lampPiston_Sensors_Mold_Shifting_Is_Back_Head_1_Right.Name = "lampPiston_Sensors_Mold_Shifting_Is_Back_Head_1_Right";
-            this.lampPiston_Sensors_Mold_Shifting_Is_Back_Head_1_Right.PlcNumber = 1;
-            this.lampPiston_Sensors_Mold_Shifting_Is_Back_Head_1_Right.Address = "W1.5";
-            this.lampPiston_Sensors_Mold_Shifting_Is_Back_Head_1_Right.Location = new System.Drawing.Point(636, 987);
-            this.lampPiston_Sensors_Mold_Shifting_Is_Back_Head_1_Right.Size = new System.Drawing.Size(30, 30);
-            // 
-            // lampPiston_Sensors_Mold_Shifting_Is_Back_Head_2_Left
-            // 
-            this.lampPiston_Sensors_Mold_Shifting_Is_Back_Head_2_Left.Name = "lampPiston_Sensors_Mold_Shifting_Is_Back_Head_2_Left";
-            this.lampPiston_Sensors_Mold_Shifting_Is_Back_Head_2_Left.PlcNumber = 1;
-            this.lampPiston_Sensors_Mold_Shifting_Is_Back_Head_2_Left.Address = "W3.4";
-            this.lampPiston_Sensors_Mold_Shifting_Is_Back_Head_2_Left.Location = new System.Drawing.Point(688, 987);
-            this.lampPiston_Sensors_Mold_Shifting_Is_Back_Head_2_Left.Size = new System.Drawing.Size(30, 30);
-            // 
-            // lampPiston_Sensors_Mold_Shifting_Is_Back_Head_2_Right
-            // 
-            this.lampPiston_Sensors_Mold_Shifting_Is_Back_Head_2_Right.Name = "lampPiston_Sensors_Mold_Shifting_Is_Back_Head_2_Right";
-            this.lampPiston_Sensors_Mold_Shifting_Is_Back_Head_2_Right.PlcNumber = 1;
-            this.lampPiston_Sensors_Mold_Shifting_Is_Back_Head_2_Right.Address = "W3.5";
-            this.lampPiston_Sensors_Mold_Shifting_Is_Back_Head_2_Right.Location = new System.Drawing.Point(740, 987);
-            this.lampPiston_Sensors_Mold_Shifting_Is_Back_Head_2_Right.Size = new System.Drawing.Size(30, 30);
-            // 
-            // lampPiston_Sensors_Mold_Shifting_Is_Back_Head_3_Left
-            // 
-            this.lampPiston_Sensors_Mold_Shifting_Is_Back_Head_3_Left.Name = "lampPiston_Sensors_Mold_Shifting_Is_Back_Head_3_Left";
-            this.lampPiston_Sensors_Mold_Shifting_Is_Back_Head_3_Left.PlcNumber = 1;
-            this.lampPiston_Sensors_Mold_Shifting_Is_Back_Head_3_Left.Address = "W5.4";
-            this.lampPiston_Sensors_Mold_Shifting_Is_Back_Head_3_Left.Location = new System.Drawing.Point(792, 987);
-            this.lampPiston_Sensors_Mold_Shifting_Is_Back_Head_3_Left.Size = new System.Drawing.Size(30, 30);
-            // 
-            // lampPiston_Sensors_Mold_Shifting_Is_Back_Head_3_Right
-            // 
-            this.lampPiston_Sensors_Mold_Shifting_Is_Back_Head_3_Right.Name = "lampPiston_Sensors_Mold_Shifting_Is_Back_Head_3_Right";
-            this.lampPiston_Sensors_Mold_Shifting_Is_Back_Head_3_Right.PlcNumber = 1;
-            this.lampPiston_Sensors_Mold_Shifting_Is_Back_Head_3_Right.Address = "W5.5";
-            this.lampPiston_Sensors_Mold_Shifting_Is_Back_Head_3_Right.Location = new System.Drawing.Point(844, 987);
-            this.lampPiston_Sensors_Mold_Shifting_Is_Back_Head_3_Right.Size = new System.Drawing.Size(30, 30);
-            // 
-            // lampPiston_Sensors_Mold_Shifting_Is_Back_Head_4_Left
-            // 
-            this.lampPiston_Sensors_Mold_Shifting_Is_Back_Head_4_Left.Name = "lampPiston_Sensors_Mold_Shifting_Is_Back_Head_4_Left";
-            this.lampPiston_Sensors_Mold_Shifting_Is_Back_Head_4_Left.PlcNumber = 1;
-            this.lampPiston_Sensors_Mold_Shifting_Is_Back_Head_4_Left.Address = "W7.4";
-            this.lampPiston_Sensors_Mold_Shifting_Is_Back_Head_4_Left.Location = new System.Drawing.Point(896, 987);
-            this.lampPiston_Sensors_Mold_Shifting_Is_Back_Head_4_Left.Size = new System.Drawing.Size(30, 30);
-            // 
-            // lampPiston_Sensors_Mold_Shifting_Is_Back_Head_4_Right
-            // 
-            this.lampPiston_Sensors_Mold_Shifting_Is_Back_Head_4_Right.Name = "lampPiston_Sensors_Mold_Shifting_Is_Back_Head_4_Right";
-            this.lampPiston_Sensors_Mold_Shifting_Is_Back_Head_4_Right.PlcNumber = 1;
-            this.lampPiston_Sensors_Mold_Shifting_Is_Back_Head_4_Right.Address = "W7.5";
-            this.lampPiston_Sensors_Mold_Shifting_Is_Back_Head_4_Right.Location = new System.Drawing.Point(948, 987);
-            this.lampPiston_Sensors_Mold_Shifting_Is_Back_Head_4_Right.Size = new System.Drawing.Size(30, 30);
-            // 
-            // capProfile_Emptying_Is_Up
-            // 
-            this.capProfile_Emptying_Is_Up.Name = "capProfile_Emptying_Is_Up";
-            this.capProfile_Emptying_Is_Up.TranslationKey = "Profile Emptying Is Up";
-            this.capProfile_Emptying_Is_Up.Text = "Profile Emptying Is Up";
-            this.capProfile_Emptying_Is_Up.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.capProfile_Emptying_Is_Up.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
-            this.capProfile_Emptying_Is_Up.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capProfile_Emptying_Is_Up.Location = new System.Drawing.Point(394, 1022);
-            this.capProfile_Emptying_Is_Up.Size = new System.Drawing.Size(176, 40);
-            this.capProfile_Emptying_Is_Up.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            // 
-            // lampPiston_Sensors_Profile_Emptying_Is_Up_Head_1_Left
-            // 
-            this.lampPiston_Sensors_Profile_Emptying_Is_Up_Head_1_Left.Name = "lampPiston_Sensors_Profile_Emptying_Is_Up_Head_1_Left";
-            this.lampPiston_Sensors_Profile_Emptying_Is_Up_Head_1_Left.PlcNumber = 1;
-            this.lampPiston_Sensors_Profile_Emptying_Is_Up_Head_1_Left.Address = "W1.A";
-            this.lampPiston_Sensors_Profile_Emptying_Is_Up_Head_1_Left.Location = new System.Drawing.Point(610, 1027);
-            this.lampPiston_Sensors_Profile_Emptying_Is_Up_Head_1_Left.Size = new System.Drawing.Size(30, 30);
-            // 
-            // lampPiston_Sensors_Profile_Emptying_Is_Up_Head_2_Left
-            // 
-            this.lampPiston_Sensors_Profile_Emptying_Is_Up_Head_2_Left.Name = "lampPiston_Sensors_Profile_Emptying_Is_Up_Head_2_Left";
-            this.lampPiston_Sensors_Profile_Emptying_Is_Up_Head_2_Left.PlcNumber = 1;
-            this.lampPiston_Sensors_Profile_Emptying_Is_Up_Head_2_Left.Address = "W3.A";
-            this.lampPiston_Sensors_Profile_Emptying_Is_Up_Head_2_Left.Location = new System.Drawing.Point(714, 1027);
-            this.lampPiston_Sensors_Profile_Emptying_Is_Up_Head_2_Left.Size = new System.Drawing.Size(30, 30);
-            // 
-            // lampPiston_Sensors_Profile_Emptying_Is_Up_Head_3_Left
-            // 
-            this.lampPiston_Sensors_Profile_Emptying_Is_Up_Head_3_Left.Name = "lampPiston_Sensors_Profile_Emptying_Is_Up_Head_3_Left";
-            this.lampPiston_Sensors_Profile_Emptying_Is_Up_Head_3_Left.PlcNumber = 1;
-            this.lampPiston_Sensors_Profile_Emptying_Is_Up_Head_3_Left.Address = "W5.A";
-            this.lampPiston_Sensors_Profile_Emptying_Is_Up_Head_3_Left.Location = new System.Drawing.Point(818, 1027);
-            this.lampPiston_Sensors_Profile_Emptying_Is_Up_Head_3_Left.Size = new System.Drawing.Size(30, 30);
-            // 
-            // lampPiston_Sensors_Profile_Emptying_Is_Up_Head_4_Left
-            // 
-            this.lampPiston_Sensors_Profile_Emptying_Is_Up_Head_4_Left.Name = "lampPiston_Sensors_Profile_Emptying_Is_Up_Head_4_Left";
-            this.lampPiston_Sensors_Profile_Emptying_Is_Up_Head_4_Left.PlcNumber = 1;
-            this.lampPiston_Sensors_Profile_Emptying_Is_Up_Head_4_Left.Address = "W7.A";
-            this.lampPiston_Sensors_Profile_Emptying_Is_Up_Head_4_Left.Location = new System.Drawing.Point(922, 1027);
-            this.lampPiston_Sensors_Profile_Emptying_Is_Up_Head_4_Left.Size = new System.Drawing.Size(30, 30);
             // 
             // ManualMovement
             // 
@@ -3234,175 +1292,92 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.AutoScroll = true;
             this.BackColor = System.Drawing.Color.White;
             this.Controls.Add(this.hdAxis);
-            this.Controls.Add(this.hdBack);
-            this.Controls.Add(this.hdAxis_Position);
-            this.Controls.Add(this.hdForward);
+            this.Controls.Add(this.hdAxis_Unit);
             this.Controls.Add(this.hdActual_Torque);
             this.Controls.Add(this.lblHead_1);
             this.Controls.Add(this.capX);
-            this.Controls.Add(this.btnHeads_1_2_Head_1_X_Back);
-            this.Controls.Add(this.dispHeads_1_2_Head_1_X_Axis_Position);
-            this.Controls.Add(this.btnHeads_1_2_Head_1_X_Forward);
+            this.Controls.Add(this.axHeads_1_2_Head_1_X_Axis_Unit);
             this.Controls.Add(this.loadHeads_1_2_Head_1_X_Actual_Torque);
-            this.Controls.Add(this.capX2);
-            this.Controls.Add(this.btnHeads_1_2_Head_1_X2_Back);
-            this.Controls.Add(this.dispHeads_1_2_Head_1_X2_Axis_Position);
-            this.Controls.Add(this.btnHeads_1_2_Head_1_X2_Forward);
-            this.Controls.Add(this.loadHeads_1_2_Head_1_X2_Actual_Torque);
             this.Controls.Add(this.capY1);
-            this.Controls.Add(this.btnHeads_1_2_Head_1_Y1_Back);
-            this.Controls.Add(this.dispHeads_1_2_Head_1_Y1_Axis_Position);
-            this.Controls.Add(this.btnHeads_1_2_Head_1_Y1_Forward);
+            this.Controls.Add(this.axHeads_1_2_Head_1_Y1_Axis_Unit);
             this.Controls.Add(this.loadHeads_1_2_Head_1_Y1_Actual_Torque);
             this.Controls.Add(this.capY2);
-            this.Controls.Add(this.btnHeads_1_2_Head_1_Y2_Back);
-            this.Controls.Add(this.dispHeads_1_2_Head_1_Y2_Axis_Position);
-            this.Controls.Add(this.btnHeads_1_2_Head_1_Y2_Forward);
+            this.Controls.Add(this.axHeads_1_2_Head_1_Y2_Axis_Unit);
             this.Controls.Add(this.loadHeads_1_2_Head_1_Y2_Actual_Torque);
-            this.Controls.Add(this.capZ1);
-            this.Controls.Add(this.btnHeads_1_2_Head_1_Z1_Back);
-            this.Controls.Add(this.dispHeads_1_2_Head_1_Z1_Axis_Position);
-            this.Controls.Add(this.btnHeads_1_2_Head_1_Z1_Forward);
-            this.Controls.Add(this.loadHeads_1_2_Head_1_Z1_Actual_Torque);
-            this.Controls.Add(this.capZ2);
-            this.Controls.Add(this.btnHeads_1_2_Head_1_Z2_Back);
-            this.Controls.Add(this.dispHeads_1_2_Head_1_Z2_Axis_Position);
-            this.Controls.Add(this.btnHeads_1_2_Head_1_Z2_Forward);
-            this.Controls.Add(this.loadHeads_1_2_Head_1_Z2_Actual_Torque);
+            this.Controls.Add(this.capZ);
+            this.Controls.Add(this.axHeads_1_2_Head_1_Z_Axis_Unit);
+            this.Controls.Add(this.loadHeads_1_2_Head_1_Z_Actual_Torque);
+            this.Controls.Add(this.capRZ);
+            this.Controls.Add(this.axHeads_1_2_Head_1_RZ_Axis_Unit);
+            this.Controls.Add(this.loadHeads_1_2_Head_1_RZ_Actual_Torque);
             this.Controls.Add(this.lblHead_2);
             this.Controls.Add(this.capX_2);
-            this.Controls.Add(this.btnHeads_1_2_Head_2_X_Back);
-            this.Controls.Add(this.dispHeads_1_2_Head_2_X_Axis_Position);
-            this.Controls.Add(this.btnHeads_1_2_Head_2_X_Forward);
+            this.Controls.Add(this.axHeads_1_2_Head_2_X_Axis_Unit);
             this.Controls.Add(this.loadHeads_1_2_Head_2_X_Actual_Torque);
-            this.Controls.Add(this.capX2_2);
-            this.Controls.Add(this.btnHeads_1_2_Head_2_X2_Back);
-            this.Controls.Add(this.dispHeads_1_2_Head_2_X2_Axis_Position);
-            this.Controls.Add(this.btnHeads_1_2_Head_2_X2_Forward);
-            this.Controls.Add(this.loadHeads_1_2_Head_2_X2_Actual_Torque);
             this.Controls.Add(this.capY1_2);
-            this.Controls.Add(this.btnHeads_1_2_Head_2_Y1_Back);
-            this.Controls.Add(this.dispHeads_1_2_Head_2_Y1_Axis_Position);
-            this.Controls.Add(this.btnHeads_1_2_Head_2_Y1_Forward);
+            this.Controls.Add(this.axHeads_1_2_Head_2_Y1_Axis_Unit);
             this.Controls.Add(this.loadHeads_1_2_Head_2_Y1_Actual_Torque);
             this.Controls.Add(this.capY2_2);
-            this.Controls.Add(this.btnHeads_1_2_Head_2_Y2_Back);
-            this.Controls.Add(this.dispHeads_1_2_Head_2_Y2_Axis_Position);
-            this.Controls.Add(this.btnHeads_1_2_Head_2_Y2_Forward);
+            this.Controls.Add(this.axHeads_1_2_Head_2_Y2_Axis_Unit);
             this.Controls.Add(this.loadHeads_1_2_Head_2_Y2_Actual_Torque);
-            this.Controls.Add(this.capZ1_2);
-            this.Controls.Add(this.btnHeads_1_2_Head_2_Z1_Back);
-            this.Controls.Add(this.dispHeads_1_2_Head_2_Z1_Axis_Position);
-            this.Controls.Add(this.btnHeads_1_2_Head_2_Z1_Forward);
-            this.Controls.Add(this.loadHeads_1_2_Head_2_Z1_Actual_Torque);
-            this.Controls.Add(this.capZ2_2);
-            this.Controls.Add(this.btnHeads_1_2_Head_2_Z2_Back);
-            this.Controls.Add(this.dispHeads_1_2_Head_2_Z2_Axis_Position);
-            this.Controls.Add(this.btnHeads_1_2_Head_2_Z2_Forward);
-            this.Controls.Add(this.loadHeads_1_2_Head_2_Z2_Actual_Torque);
-            this.Controls.Add(this.lblGeneral);
-            this.Controls.Add(this.capX_3);
-            this.Controls.Add(this.btnHeads_1_2_General_X_Back);
-            this.Controls.Add(this.dispHeads_1_2_General_X_Axis_Position);
-            this.Controls.Add(this.btnHeads_1_2_General_X_Forward);
-            this.Controls.Add(this.capY1_3);
-            this.Controls.Add(this.btnHeads_1_2_General_Y1_Back);
-            this.Controls.Add(this.dispHeads_1_2_General_Y1_Axis_Position);
-            this.Controls.Add(this.btnHeads_1_2_General_Y1_Forward);
-            this.Controls.Add(this.capY2_3);
-            this.Controls.Add(this.btnHeads_1_2_General_Y2_Back);
-            this.Controls.Add(this.dispHeads_1_2_General_Y2_Axis_Position);
-            this.Controls.Add(this.btnHeads_1_2_General_Y2_Forward);
+            this.Controls.Add(this.capZ_2);
+            this.Controls.Add(this.axHeads_1_2_Head_2_Z_Axis_Unit);
+            this.Controls.Add(this.loadHeads_1_2_Head_2_Z_Actual_Torque);
+            this.Controls.Add(this.capRZ_2);
+            this.Controls.Add(this.axHeads_1_2_Head_2_RZ_Axis_Unit);
+            this.Controls.Add(this.loadHeads_1_2_Head_2_RZ_Actual_Torque);
             this.Controls.Add(this.hdAxis_2);
-            this.Controls.Add(this.hdBack_2);
-            this.Controls.Add(this.hdAxis_Position_2);
-            this.Controls.Add(this.hdForward_2);
+            this.Controls.Add(this.hdAxis_Unit_2);
             this.Controls.Add(this.hdActual_Torque_2);
             this.Controls.Add(this.lblHead_3);
-            this.Controls.Add(this.capX_4);
-            this.Controls.Add(this.btnHeads_3_4_Head_3_X_Back);
-            this.Controls.Add(this.dispHeads_3_4_Head_3_X_Axis_Position);
-            this.Controls.Add(this.btnHeads_3_4_Head_3_X_Forward);
+            this.Controls.Add(this.capX_3);
+            this.Controls.Add(this.axHeads_3_4_Head_3_X_Axis_Unit);
             this.Controls.Add(this.loadHeads_3_4_Head_3_X_Actual_Torque);
-            this.Controls.Add(this.capX2_3);
-            this.Controls.Add(this.btnHeads_3_4_Head_3_X2_Back);
-            this.Controls.Add(this.dispHeads_3_4_Head_3_X2_Axis_Position);
-            this.Controls.Add(this.btnHeads_3_4_Head_3_X2_Forward);
-            this.Controls.Add(this.loadHeads_3_4_Head_3_X2_Actual_Torque);
-            this.Controls.Add(this.capY1_4);
-            this.Controls.Add(this.btnHeads_3_4_Head_3_Y1_Back);
-            this.Controls.Add(this.dispHeads_3_4_Head_3_Y1_Axis_Position);
-            this.Controls.Add(this.btnHeads_3_4_Head_3_Y1_Forward);
+            this.Controls.Add(this.capY1_3);
+            this.Controls.Add(this.axHeads_3_4_Head_3_Y1_Axis_Unit);
             this.Controls.Add(this.loadHeads_3_4_Head_3_Y1_Actual_Torque);
-            this.Controls.Add(this.capY2_4);
-            this.Controls.Add(this.btnHeads_3_4_Head_3_Y2_Back);
-            this.Controls.Add(this.dispHeads_3_4_Head_3_Y2_Axis_Position);
-            this.Controls.Add(this.btnHeads_3_4_Head_3_Y2_Forward);
+            this.Controls.Add(this.capY2_3);
+            this.Controls.Add(this.axHeads_3_4_Head_3_Y2_Axis_Unit);
             this.Controls.Add(this.loadHeads_3_4_Head_3_Y2_Actual_Torque);
-            this.Controls.Add(this.capZ1_3);
-            this.Controls.Add(this.btnHeads_3_4_Head_3_Z1_Back);
-            this.Controls.Add(this.dispHeads_3_4_Head_3_Z1_Axis_Position);
-            this.Controls.Add(this.btnHeads_3_4_Head_3_Z1_Forward);
-            this.Controls.Add(this.loadHeads_3_4_Head_3_Z1_Actual_Torque);
-            this.Controls.Add(this.capZ2_3);
-            this.Controls.Add(this.btnHeads_3_4_Head_3_Z2_Back);
-            this.Controls.Add(this.dispHeads_3_4_Head_3_Z2_Axis_Position);
-            this.Controls.Add(this.btnHeads_3_4_Head_3_Z2_Forward);
-            this.Controls.Add(this.loadHeads_3_4_Head_3_Z2_Actual_Torque);
+            this.Controls.Add(this.capZ_3);
+            this.Controls.Add(this.axHeads_3_4_Head_3_Z_Axis_Unit);
+            this.Controls.Add(this.loadHeads_3_4_Head_3_Z_Actual_Torque);
+            this.Controls.Add(this.capRZ_3);
+            this.Controls.Add(this.axHeads_3_4_Head_3_RZ_Axis_Unit);
+            this.Controls.Add(this.loadHeads_3_4_Head_3_RZ_Actual_Torque);
             this.Controls.Add(this.lblHead_4);
-            this.Controls.Add(this.capX_5);
-            this.Controls.Add(this.btnHeads_3_4_Head_4_X_Back);
-            this.Controls.Add(this.dispHeads_3_4_Head_4_X_Axis_Position);
-            this.Controls.Add(this.btnHeads_3_4_Head_4_X_Forward);
+            this.Controls.Add(this.capX_4);
+            this.Controls.Add(this.axHeads_3_4_Head_4_X_Axis_Unit);
             this.Controls.Add(this.loadHeads_3_4_Head_4_X_Actual_Torque);
-            this.Controls.Add(this.capX2_4);
-            this.Controls.Add(this.btnHeads_3_4_Head_4_X2_Back);
-            this.Controls.Add(this.dispHeads_3_4_Head_4_X2_Axis_Position);
-            this.Controls.Add(this.btnHeads_3_4_Head_4_X2_Forward);
-            this.Controls.Add(this.loadHeads_3_4_Head_4_X2_Actual_Torque);
-            this.Controls.Add(this.capY1_5);
-            this.Controls.Add(this.btnHeads_3_4_Head_4_Y1_Back);
-            this.Controls.Add(this.dispHeads_3_4_Head_4_Y1_Axis_Position);
-            this.Controls.Add(this.btnHeads_3_4_Head_4_Y1_Forward);
+            this.Controls.Add(this.capY1_4);
+            this.Controls.Add(this.axHeads_3_4_Head_4_Y1_Axis_Unit);
             this.Controls.Add(this.loadHeads_3_4_Head_4_Y1_Actual_Torque);
-            this.Controls.Add(this.capY2_5);
-            this.Controls.Add(this.btnHeads_3_4_Head_4_Y2_Back);
-            this.Controls.Add(this.dispHeads_3_4_Head_4_Y2_Axis_Position);
-            this.Controls.Add(this.btnHeads_3_4_Head_4_Y2_Forward);
+            this.Controls.Add(this.capY2_4);
+            this.Controls.Add(this.axHeads_3_4_Head_4_Y2_Axis_Unit);
             this.Controls.Add(this.loadHeads_3_4_Head_4_Y2_Actual_Torque);
-            this.Controls.Add(this.capZ1_4);
-            this.Controls.Add(this.btnHeads_3_4_Head_4_Z1_Back);
-            this.Controls.Add(this.dispHeads_3_4_Head_4_Z1_Axis_Position);
-            this.Controls.Add(this.btnHeads_3_4_Head_4_Z1_Forward);
-            this.Controls.Add(this.loadHeads_3_4_Head_4_Z1_Actual_Torque);
-            this.Controls.Add(this.capZ2_4);
-            this.Controls.Add(this.btnHeads_3_4_Head_4_Z2_Back);
-            this.Controls.Add(this.dispHeads_3_4_Head_4_Z2_Axis_Position);
-            this.Controls.Add(this.btnHeads_3_4_Head_4_Z2_Forward);
-            this.Controls.Add(this.loadHeads_3_4_Head_4_Z2_Actual_Torque);
+            this.Controls.Add(this.capZ_4);
+            this.Controls.Add(this.axHeads_3_4_Head_4_Z_Axis_Unit);
+            this.Controls.Add(this.loadHeads_3_4_Head_4_Z_Actual_Torque);
+            this.Controls.Add(this.capRZ_4);
+            this.Controls.Add(this.axHeads_3_4_Head_4_RZ_Axis_Unit);
+            this.Controls.Add(this.loadHeads_3_4_Head_4_RZ_Actual_Torque);
+            this.Controls.Add(this.hdAxis_3);
+            this.Controls.Add(this.hdAxis_Unit_3);
+            this.Controls.Add(this.hdActual_Torque_3);
+            this.Controls.Add(this.lblGeneral);
+            this.Controls.Add(this.capX1);
+            this.Controls.Add(this.axBody_General_X1_Axis_Unit);
+            this.Controls.Add(this.capX2);
+            this.Controls.Add(this.axBody_General_X2_Axis_Unit);
+            this.Controls.Add(this.capY1_5);
+            this.Controls.Add(this.axBody_General_Y1_Axis_Unit);
+            this.Controls.Add(this.capY2_5);
+            this.Controls.Add(this.axBody_General_Y2_Axis_Unit);
             this.Controls.Add(this.hdName);
-            this.Controls.Add(this.hdBack_3);
-            this.Controls.Add(this.hdForward_3);
+            this.Controls.Add(this.hdBack);
+            this.Controls.Add(this.hdForward);
             this.Controls.Add(this.capMilling_Cutters);
             this.Controls.Add(this.btnUnits_Milling_Cutters_Back);
-            this.Controls.Add(this.capResistance_Lower_Down_Up);
-            this.Controls.Add(this.btnUnits_Resistance_Lower_Down_Up_Back);
-            this.Controls.Add(this.btnUnits_Resistance_Lower_Down_Up_Forward);
-            this.Controls.Add(this.capProfile_Tightening);
-            this.Controls.Add(this.btnUnits_Profile_Tightening_Back);
-            this.Controls.Add(this.btnUnits_Profile_Tightening_Forward);
-            this.Controls.Add(this.capFront_Clamping);
-            this.Controls.Add(this.btnUnits_Front_Clamping_Back);
-            this.Controls.Add(this.btnUnits_Front_Clamping_Forward);
-            this.Controls.Add(this.capProfile_Emptying);
-            this.Controls.Add(this.btnUnits_Profile_Emptying_Back);
-            this.Controls.Add(this.btnUnits_Profile_Emptying_Forward);
-            this.Controls.Add(this.capProfile_Ear_Clamping);
-            this.Controls.Add(this.btnUnits_Profile_Ear_Clamping_Back);
-            this.Controls.Add(this.btnUnits_Profile_Ear_Clamping_Forward);
-            this.Controls.Add(this.capMold_Shifting);
-            this.Controls.Add(this.btnUnits_Mold_Shifting_Back);
-            this.Controls.Add(this.btnUnits_Mold_Shifting_Forward);
             this.Controls.Add(this.capConveyor_Up_Down);
             this.Controls.Add(this.btnUnits_Conveyor_Up_Down_Back);
             this.Controls.Add(this.btnUnits_Conveyor_Up_Down_Forward);
@@ -3412,67 +1387,8 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.Controls.Add(this.dispUnits_Thermocouple_Lower_Back);
             this.Controls.Add(this.capThermocouple_Upper);
             this.Controls.Add(this.dispUnits_Thermocouple_Upper_Back);
-            this.Controls.Add(this.hdHead_1);
-            this.Controls.Add(this.hdHead_2);
-            this.Controls.Add(this.hdHead_3);
-            this.Controls.Add(this.hdHead_4);
-            this.Controls.Add(this.hdPiston_Sensors);
-            this.Controls.Add(this.hdLeft);
-            this.Controls.Add(this.hdRight);
-            this.Controls.Add(this.hdLeft_2);
-            this.Controls.Add(this.hdRight_2);
-            this.Controls.Add(this.hdLeft_3);
-            this.Controls.Add(this.hdRight_3);
-            this.Controls.Add(this.hdLeft_4);
-            this.Controls.Add(this.hdRight_4);
-            this.Controls.Add(this.capUpper_Clamp_Is_Up);
-            this.Controls.Add(this.lampPiston_Sensors_Upper_Clamp_Is_Up_Head_1_Left);
-            this.Controls.Add(this.lampPiston_Sensors_Upper_Clamp_Is_Up_Head_1_Right);
-            this.Controls.Add(this.lampPiston_Sensors_Upper_Clamp_Is_Up_Head_2_Left);
-            this.Controls.Add(this.lampPiston_Sensors_Upper_Clamp_Is_Up_Head_2_Right);
-            this.Controls.Add(this.lampPiston_Sensors_Upper_Clamp_Is_Up_Head_3_Left);
-            this.Controls.Add(this.lampPiston_Sensors_Upper_Clamp_Is_Up_Head_3_Right);
-            this.Controls.Add(this.lampPiston_Sensors_Upper_Clamp_Is_Up_Head_4_Left);
-            this.Controls.Add(this.lampPiston_Sensors_Upper_Clamp_Is_Up_Head_4_Right);
-            this.Controls.Add(this.capDown_Resistance_Is_Up);
-            this.Controls.Add(this.lampPiston_Sensors_Down_Resistance_Is_Up_Head_1_Left);
-            this.Controls.Add(this.lampPiston_Sensors_Down_Resistance_Is_Up_Head_2_Left);
-            this.Controls.Add(this.lampPiston_Sensors_Down_Resistance_Is_Up_Head_3_Left);
-            this.Controls.Add(this.lampPiston_Sensors_Down_Resistance_Is_Up_Head_4_Left);
-            this.Controls.Add(this.capFront_Clamp_Is_Front);
-            this.Controls.Add(this.lampPiston_Sensors_Front_Clamp_Is_Front_Head_1_Left);
-            this.Controls.Add(this.lampPiston_Sensors_Front_Clamp_Is_Front_Head_1_Right);
-            this.Controls.Add(this.lampPiston_Sensors_Front_Clamp_Is_Front_Head_2_Left);
-            this.Controls.Add(this.lampPiston_Sensors_Front_Clamp_Is_Front_Head_2_Right);
-            this.Controls.Add(this.lampPiston_Sensors_Front_Clamp_Is_Front_Head_3_Left);
-            this.Controls.Add(this.lampPiston_Sensors_Front_Clamp_Is_Front_Head_3_Right);
-            this.Controls.Add(this.lampPiston_Sensors_Front_Clamp_Is_Front_Head_4_Left);
-            this.Controls.Add(this.lampPiston_Sensors_Front_Clamp_Is_Front_Head_4_Right);
-            this.Controls.Add(this.capEar_Clamp_Is_Down);
-            this.Controls.Add(this.lampPiston_Sensors_Ear_Clamp_Is_Down_Head_1_Left);
-            this.Controls.Add(this.lampPiston_Sensors_Ear_Clamp_Is_Down_Head_1_Right);
-            this.Controls.Add(this.lampPiston_Sensors_Ear_Clamp_Is_Down_Head_2_Left);
-            this.Controls.Add(this.lampPiston_Sensors_Ear_Clamp_Is_Down_Head_2_Right);
-            this.Controls.Add(this.lampPiston_Sensors_Ear_Clamp_Is_Down_Head_3_Left);
-            this.Controls.Add(this.lampPiston_Sensors_Ear_Clamp_Is_Down_Head_3_Right);
-            this.Controls.Add(this.lampPiston_Sensors_Ear_Clamp_Is_Down_Head_4_Left);
-            this.Controls.Add(this.lampPiston_Sensors_Ear_Clamp_Is_Down_Head_4_Right);
-            this.Controls.Add(this.capMold_Shifting_Is_Back);
-            this.Controls.Add(this.lampPiston_Sensors_Mold_Shifting_Is_Back_Head_1_Left);
-            this.Controls.Add(this.lampPiston_Sensors_Mold_Shifting_Is_Back_Head_1_Right);
-            this.Controls.Add(this.lampPiston_Sensors_Mold_Shifting_Is_Back_Head_2_Left);
-            this.Controls.Add(this.lampPiston_Sensors_Mold_Shifting_Is_Back_Head_2_Right);
-            this.Controls.Add(this.lampPiston_Sensors_Mold_Shifting_Is_Back_Head_3_Left);
-            this.Controls.Add(this.lampPiston_Sensors_Mold_Shifting_Is_Back_Head_3_Right);
-            this.Controls.Add(this.lampPiston_Sensors_Mold_Shifting_Is_Back_Head_4_Left);
-            this.Controls.Add(this.lampPiston_Sensors_Mold_Shifting_Is_Back_Head_4_Right);
-            this.Controls.Add(this.capProfile_Emptying_Is_Up);
-            this.Controls.Add(this.lampPiston_Sensors_Profile_Emptying_Is_Up_Head_1_Left);
-            this.Controls.Add(this.lampPiston_Sensors_Profile_Emptying_Is_Up_Head_2_Left);
-            this.Controls.Add(this.lampPiston_Sensors_Profile_Emptying_Is_Up_Head_3_Left);
-            this.Controls.Add(this.lampPiston_Sensors_Profile_Emptying_Is_Up_Head_4_Left);
             this.Name = "ManualMovement";
-            this.Size = new System.Drawing.Size(1002, 1262);
+            this.Size = new System.Drawing.Size(1020, 1230);
             this.ResumeLayout(false);
             this.PerformLayout();
         }
@@ -3480,175 +1396,92 @@ namespace Kaban.Machines.MD3020.Screens.Manual
         #endregion
 
         private Kaban.UI.Controls.LabelHMI hdAxis;
-        private Kaban.UI.Controls.LabelHMI hdBack;
-        private Kaban.UI.Controls.LabelHMI hdAxis_Position;
-        private Kaban.UI.Controls.LabelHMI hdForward;
+        private Kaban.UI.Controls.LabelHMI hdAxis_Unit;
         private Kaban.UI.Controls.LabelHMI hdActual_Torque;
         private Kaban.UI.Controls.LabelHMI lblHead_1;
         private Kaban.UI.Controls.LabelHMI capX;
-        private Kaban.UI.Controls.ButtonHMI btnHeads_1_2_Head_1_X_Back;
-        private Kaban.UI.Controls.NumericDisplayHMI dispHeads_1_2_Head_1_X_Axis_Position;
-        private Kaban.UI.Controls.ButtonHMI btnHeads_1_2_Head_1_X_Forward;
+        private Kaban.UI.Controls.AxisUnitHMI axHeads_1_2_Head_1_X_Axis_Unit;
         private Kaban.UI.Controls.MeterHMI loadHeads_1_2_Head_1_X_Actual_Torque;
-        private Kaban.UI.Controls.LabelHMI capX2;
-        private Kaban.UI.Controls.ButtonHMI btnHeads_1_2_Head_1_X2_Back;
-        private Kaban.UI.Controls.NumericDisplayHMI dispHeads_1_2_Head_1_X2_Axis_Position;
-        private Kaban.UI.Controls.ButtonHMI btnHeads_1_2_Head_1_X2_Forward;
-        private Kaban.UI.Controls.MeterHMI loadHeads_1_2_Head_1_X2_Actual_Torque;
         private Kaban.UI.Controls.LabelHMI capY1;
-        private Kaban.UI.Controls.ButtonHMI btnHeads_1_2_Head_1_Y1_Back;
-        private Kaban.UI.Controls.NumericDisplayHMI dispHeads_1_2_Head_1_Y1_Axis_Position;
-        private Kaban.UI.Controls.ButtonHMI btnHeads_1_2_Head_1_Y1_Forward;
+        private Kaban.UI.Controls.AxisUnitHMI axHeads_1_2_Head_1_Y1_Axis_Unit;
         private Kaban.UI.Controls.MeterHMI loadHeads_1_2_Head_1_Y1_Actual_Torque;
         private Kaban.UI.Controls.LabelHMI capY2;
-        private Kaban.UI.Controls.ButtonHMI btnHeads_1_2_Head_1_Y2_Back;
-        private Kaban.UI.Controls.NumericDisplayHMI dispHeads_1_2_Head_1_Y2_Axis_Position;
-        private Kaban.UI.Controls.ButtonHMI btnHeads_1_2_Head_1_Y2_Forward;
+        private Kaban.UI.Controls.AxisUnitHMI axHeads_1_2_Head_1_Y2_Axis_Unit;
         private Kaban.UI.Controls.MeterHMI loadHeads_1_2_Head_1_Y2_Actual_Torque;
-        private Kaban.UI.Controls.LabelHMI capZ1;
-        private Kaban.UI.Controls.ButtonHMI btnHeads_1_2_Head_1_Z1_Back;
-        private Kaban.UI.Controls.NumericDisplayHMI dispHeads_1_2_Head_1_Z1_Axis_Position;
-        private Kaban.UI.Controls.ButtonHMI btnHeads_1_2_Head_1_Z1_Forward;
-        private Kaban.UI.Controls.MeterHMI loadHeads_1_2_Head_1_Z1_Actual_Torque;
-        private Kaban.UI.Controls.LabelHMI capZ2;
-        private Kaban.UI.Controls.ButtonHMI btnHeads_1_2_Head_1_Z2_Back;
-        private Kaban.UI.Controls.NumericDisplayHMI dispHeads_1_2_Head_1_Z2_Axis_Position;
-        private Kaban.UI.Controls.ButtonHMI btnHeads_1_2_Head_1_Z2_Forward;
-        private Kaban.UI.Controls.MeterHMI loadHeads_1_2_Head_1_Z2_Actual_Torque;
+        private Kaban.UI.Controls.LabelHMI capZ;
+        private Kaban.UI.Controls.AxisUnitHMI axHeads_1_2_Head_1_Z_Axis_Unit;
+        private Kaban.UI.Controls.MeterHMI loadHeads_1_2_Head_1_Z_Actual_Torque;
+        private Kaban.UI.Controls.LabelHMI capRZ;
+        private Kaban.UI.Controls.AxisUnitHMI axHeads_1_2_Head_1_RZ_Axis_Unit;
+        private Kaban.UI.Controls.MeterHMI loadHeads_1_2_Head_1_RZ_Actual_Torque;
         private Kaban.UI.Controls.LabelHMI lblHead_2;
         private Kaban.UI.Controls.LabelHMI capX_2;
-        private Kaban.UI.Controls.ButtonHMI btnHeads_1_2_Head_2_X_Back;
-        private Kaban.UI.Controls.NumericDisplayHMI dispHeads_1_2_Head_2_X_Axis_Position;
-        private Kaban.UI.Controls.ButtonHMI btnHeads_1_2_Head_2_X_Forward;
+        private Kaban.UI.Controls.AxisUnitHMI axHeads_1_2_Head_2_X_Axis_Unit;
         private Kaban.UI.Controls.MeterHMI loadHeads_1_2_Head_2_X_Actual_Torque;
-        private Kaban.UI.Controls.LabelHMI capX2_2;
-        private Kaban.UI.Controls.ButtonHMI btnHeads_1_2_Head_2_X2_Back;
-        private Kaban.UI.Controls.NumericDisplayHMI dispHeads_1_2_Head_2_X2_Axis_Position;
-        private Kaban.UI.Controls.ButtonHMI btnHeads_1_2_Head_2_X2_Forward;
-        private Kaban.UI.Controls.MeterHMI loadHeads_1_2_Head_2_X2_Actual_Torque;
         private Kaban.UI.Controls.LabelHMI capY1_2;
-        private Kaban.UI.Controls.ButtonHMI btnHeads_1_2_Head_2_Y1_Back;
-        private Kaban.UI.Controls.NumericDisplayHMI dispHeads_1_2_Head_2_Y1_Axis_Position;
-        private Kaban.UI.Controls.ButtonHMI btnHeads_1_2_Head_2_Y1_Forward;
+        private Kaban.UI.Controls.AxisUnitHMI axHeads_1_2_Head_2_Y1_Axis_Unit;
         private Kaban.UI.Controls.MeterHMI loadHeads_1_2_Head_2_Y1_Actual_Torque;
         private Kaban.UI.Controls.LabelHMI capY2_2;
-        private Kaban.UI.Controls.ButtonHMI btnHeads_1_2_Head_2_Y2_Back;
-        private Kaban.UI.Controls.NumericDisplayHMI dispHeads_1_2_Head_2_Y2_Axis_Position;
-        private Kaban.UI.Controls.ButtonHMI btnHeads_1_2_Head_2_Y2_Forward;
+        private Kaban.UI.Controls.AxisUnitHMI axHeads_1_2_Head_2_Y2_Axis_Unit;
         private Kaban.UI.Controls.MeterHMI loadHeads_1_2_Head_2_Y2_Actual_Torque;
-        private Kaban.UI.Controls.LabelHMI capZ1_2;
-        private Kaban.UI.Controls.ButtonHMI btnHeads_1_2_Head_2_Z1_Back;
-        private Kaban.UI.Controls.NumericDisplayHMI dispHeads_1_2_Head_2_Z1_Axis_Position;
-        private Kaban.UI.Controls.ButtonHMI btnHeads_1_2_Head_2_Z1_Forward;
-        private Kaban.UI.Controls.MeterHMI loadHeads_1_2_Head_2_Z1_Actual_Torque;
-        private Kaban.UI.Controls.LabelHMI capZ2_2;
-        private Kaban.UI.Controls.ButtonHMI btnHeads_1_2_Head_2_Z2_Back;
-        private Kaban.UI.Controls.NumericDisplayHMI dispHeads_1_2_Head_2_Z2_Axis_Position;
-        private Kaban.UI.Controls.ButtonHMI btnHeads_1_2_Head_2_Z2_Forward;
-        private Kaban.UI.Controls.MeterHMI loadHeads_1_2_Head_2_Z2_Actual_Torque;
-        private Kaban.UI.Controls.LabelHMI lblGeneral;
-        private Kaban.UI.Controls.LabelHMI capX_3;
-        private Kaban.UI.Controls.ButtonHMI btnHeads_1_2_General_X_Back;
-        private Kaban.UI.Controls.NumericDisplayHMI dispHeads_1_2_General_X_Axis_Position;
-        private Kaban.UI.Controls.ButtonHMI btnHeads_1_2_General_X_Forward;
-        private Kaban.UI.Controls.LabelHMI capY1_3;
-        private Kaban.UI.Controls.ButtonHMI btnHeads_1_2_General_Y1_Back;
-        private Kaban.UI.Controls.NumericDisplayHMI dispHeads_1_2_General_Y1_Axis_Position;
-        private Kaban.UI.Controls.ButtonHMI btnHeads_1_2_General_Y1_Forward;
-        private Kaban.UI.Controls.LabelHMI capY2_3;
-        private Kaban.UI.Controls.ButtonHMI btnHeads_1_2_General_Y2_Back;
-        private Kaban.UI.Controls.NumericDisplayHMI dispHeads_1_2_General_Y2_Axis_Position;
-        private Kaban.UI.Controls.ButtonHMI btnHeads_1_2_General_Y2_Forward;
+        private Kaban.UI.Controls.LabelHMI capZ_2;
+        private Kaban.UI.Controls.AxisUnitHMI axHeads_1_2_Head_2_Z_Axis_Unit;
+        private Kaban.UI.Controls.MeterHMI loadHeads_1_2_Head_2_Z_Actual_Torque;
+        private Kaban.UI.Controls.LabelHMI capRZ_2;
+        private Kaban.UI.Controls.AxisUnitHMI axHeads_1_2_Head_2_RZ_Axis_Unit;
+        private Kaban.UI.Controls.MeterHMI loadHeads_1_2_Head_2_RZ_Actual_Torque;
         private Kaban.UI.Controls.LabelHMI hdAxis_2;
-        private Kaban.UI.Controls.LabelHMI hdBack_2;
-        private Kaban.UI.Controls.LabelHMI hdAxis_Position_2;
-        private Kaban.UI.Controls.LabelHMI hdForward_2;
+        private Kaban.UI.Controls.LabelHMI hdAxis_Unit_2;
         private Kaban.UI.Controls.LabelHMI hdActual_Torque_2;
         private Kaban.UI.Controls.LabelHMI lblHead_3;
-        private Kaban.UI.Controls.LabelHMI capX_4;
-        private Kaban.UI.Controls.ButtonHMI btnHeads_3_4_Head_3_X_Back;
-        private Kaban.UI.Controls.NumericDisplayHMI dispHeads_3_4_Head_3_X_Axis_Position;
-        private Kaban.UI.Controls.ButtonHMI btnHeads_3_4_Head_3_X_Forward;
+        private Kaban.UI.Controls.LabelHMI capX_3;
+        private Kaban.UI.Controls.AxisUnitHMI axHeads_3_4_Head_3_X_Axis_Unit;
         private Kaban.UI.Controls.MeterHMI loadHeads_3_4_Head_3_X_Actual_Torque;
-        private Kaban.UI.Controls.LabelHMI capX2_3;
-        private Kaban.UI.Controls.ButtonHMI btnHeads_3_4_Head_3_X2_Back;
-        private Kaban.UI.Controls.NumericDisplayHMI dispHeads_3_4_Head_3_X2_Axis_Position;
-        private Kaban.UI.Controls.ButtonHMI btnHeads_3_4_Head_3_X2_Forward;
-        private Kaban.UI.Controls.MeterHMI loadHeads_3_4_Head_3_X2_Actual_Torque;
-        private Kaban.UI.Controls.LabelHMI capY1_4;
-        private Kaban.UI.Controls.ButtonHMI btnHeads_3_4_Head_3_Y1_Back;
-        private Kaban.UI.Controls.NumericDisplayHMI dispHeads_3_4_Head_3_Y1_Axis_Position;
-        private Kaban.UI.Controls.ButtonHMI btnHeads_3_4_Head_3_Y1_Forward;
+        private Kaban.UI.Controls.LabelHMI capY1_3;
+        private Kaban.UI.Controls.AxisUnitHMI axHeads_3_4_Head_3_Y1_Axis_Unit;
         private Kaban.UI.Controls.MeterHMI loadHeads_3_4_Head_3_Y1_Actual_Torque;
-        private Kaban.UI.Controls.LabelHMI capY2_4;
-        private Kaban.UI.Controls.ButtonHMI btnHeads_3_4_Head_3_Y2_Back;
-        private Kaban.UI.Controls.NumericDisplayHMI dispHeads_3_4_Head_3_Y2_Axis_Position;
-        private Kaban.UI.Controls.ButtonHMI btnHeads_3_4_Head_3_Y2_Forward;
+        private Kaban.UI.Controls.LabelHMI capY2_3;
+        private Kaban.UI.Controls.AxisUnitHMI axHeads_3_4_Head_3_Y2_Axis_Unit;
         private Kaban.UI.Controls.MeterHMI loadHeads_3_4_Head_3_Y2_Actual_Torque;
-        private Kaban.UI.Controls.LabelHMI capZ1_3;
-        private Kaban.UI.Controls.ButtonHMI btnHeads_3_4_Head_3_Z1_Back;
-        private Kaban.UI.Controls.NumericDisplayHMI dispHeads_3_4_Head_3_Z1_Axis_Position;
-        private Kaban.UI.Controls.ButtonHMI btnHeads_3_4_Head_3_Z1_Forward;
-        private Kaban.UI.Controls.MeterHMI loadHeads_3_4_Head_3_Z1_Actual_Torque;
-        private Kaban.UI.Controls.LabelHMI capZ2_3;
-        private Kaban.UI.Controls.ButtonHMI btnHeads_3_4_Head_3_Z2_Back;
-        private Kaban.UI.Controls.NumericDisplayHMI dispHeads_3_4_Head_3_Z2_Axis_Position;
-        private Kaban.UI.Controls.ButtonHMI btnHeads_3_4_Head_3_Z2_Forward;
-        private Kaban.UI.Controls.MeterHMI loadHeads_3_4_Head_3_Z2_Actual_Torque;
+        private Kaban.UI.Controls.LabelHMI capZ_3;
+        private Kaban.UI.Controls.AxisUnitHMI axHeads_3_4_Head_3_Z_Axis_Unit;
+        private Kaban.UI.Controls.MeterHMI loadHeads_3_4_Head_3_Z_Actual_Torque;
+        private Kaban.UI.Controls.LabelHMI capRZ_3;
+        private Kaban.UI.Controls.AxisUnitHMI axHeads_3_4_Head_3_RZ_Axis_Unit;
+        private Kaban.UI.Controls.MeterHMI loadHeads_3_4_Head_3_RZ_Actual_Torque;
         private Kaban.UI.Controls.LabelHMI lblHead_4;
-        private Kaban.UI.Controls.LabelHMI capX_5;
-        private Kaban.UI.Controls.ButtonHMI btnHeads_3_4_Head_4_X_Back;
-        private Kaban.UI.Controls.NumericDisplayHMI dispHeads_3_4_Head_4_X_Axis_Position;
-        private Kaban.UI.Controls.ButtonHMI btnHeads_3_4_Head_4_X_Forward;
+        private Kaban.UI.Controls.LabelHMI capX_4;
+        private Kaban.UI.Controls.AxisUnitHMI axHeads_3_4_Head_4_X_Axis_Unit;
         private Kaban.UI.Controls.MeterHMI loadHeads_3_4_Head_4_X_Actual_Torque;
-        private Kaban.UI.Controls.LabelHMI capX2_4;
-        private Kaban.UI.Controls.ButtonHMI btnHeads_3_4_Head_4_X2_Back;
-        private Kaban.UI.Controls.NumericDisplayHMI dispHeads_3_4_Head_4_X2_Axis_Position;
-        private Kaban.UI.Controls.ButtonHMI btnHeads_3_4_Head_4_X2_Forward;
-        private Kaban.UI.Controls.MeterHMI loadHeads_3_4_Head_4_X2_Actual_Torque;
-        private Kaban.UI.Controls.LabelHMI capY1_5;
-        private Kaban.UI.Controls.ButtonHMI btnHeads_3_4_Head_4_Y1_Back;
-        private Kaban.UI.Controls.NumericDisplayHMI dispHeads_3_4_Head_4_Y1_Axis_Position;
-        private Kaban.UI.Controls.ButtonHMI btnHeads_3_4_Head_4_Y1_Forward;
+        private Kaban.UI.Controls.LabelHMI capY1_4;
+        private Kaban.UI.Controls.AxisUnitHMI axHeads_3_4_Head_4_Y1_Axis_Unit;
         private Kaban.UI.Controls.MeterHMI loadHeads_3_4_Head_4_Y1_Actual_Torque;
-        private Kaban.UI.Controls.LabelHMI capY2_5;
-        private Kaban.UI.Controls.ButtonHMI btnHeads_3_4_Head_4_Y2_Back;
-        private Kaban.UI.Controls.NumericDisplayHMI dispHeads_3_4_Head_4_Y2_Axis_Position;
-        private Kaban.UI.Controls.ButtonHMI btnHeads_3_4_Head_4_Y2_Forward;
+        private Kaban.UI.Controls.LabelHMI capY2_4;
+        private Kaban.UI.Controls.AxisUnitHMI axHeads_3_4_Head_4_Y2_Axis_Unit;
         private Kaban.UI.Controls.MeterHMI loadHeads_3_4_Head_4_Y2_Actual_Torque;
-        private Kaban.UI.Controls.LabelHMI capZ1_4;
-        private Kaban.UI.Controls.ButtonHMI btnHeads_3_4_Head_4_Z1_Back;
-        private Kaban.UI.Controls.NumericDisplayHMI dispHeads_3_4_Head_4_Z1_Axis_Position;
-        private Kaban.UI.Controls.ButtonHMI btnHeads_3_4_Head_4_Z1_Forward;
-        private Kaban.UI.Controls.MeterHMI loadHeads_3_4_Head_4_Z1_Actual_Torque;
-        private Kaban.UI.Controls.LabelHMI capZ2_4;
-        private Kaban.UI.Controls.ButtonHMI btnHeads_3_4_Head_4_Z2_Back;
-        private Kaban.UI.Controls.NumericDisplayHMI dispHeads_3_4_Head_4_Z2_Axis_Position;
-        private Kaban.UI.Controls.ButtonHMI btnHeads_3_4_Head_4_Z2_Forward;
-        private Kaban.UI.Controls.MeterHMI loadHeads_3_4_Head_4_Z2_Actual_Torque;
+        private Kaban.UI.Controls.LabelHMI capZ_4;
+        private Kaban.UI.Controls.AxisUnitHMI axHeads_3_4_Head_4_Z_Axis_Unit;
+        private Kaban.UI.Controls.MeterHMI loadHeads_3_4_Head_4_Z_Actual_Torque;
+        private Kaban.UI.Controls.LabelHMI capRZ_4;
+        private Kaban.UI.Controls.AxisUnitHMI axHeads_3_4_Head_4_RZ_Axis_Unit;
+        private Kaban.UI.Controls.MeterHMI loadHeads_3_4_Head_4_RZ_Actual_Torque;
+        private Kaban.UI.Controls.LabelHMI hdAxis_3;
+        private Kaban.UI.Controls.LabelHMI hdAxis_Unit_3;
+        private Kaban.UI.Controls.LabelHMI hdActual_Torque_3;
+        private Kaban.UI.Controls.LabelHMI lblGeneral;
+        private Kaban.UI.Controls.LabelHMI capX1;
+        private Kaban.UI.Controls.AxisUnitHMI axBody_General_X1_Axis_Unit;
+        private Kaban.UI.Controls.LabelHMI capX2;
+        private Kaban.UI.Controls.AxisUnitHMI axBody_General_X2_Axis_Unit;
+        private Kaban.UI.Controls.LabelHMI capY1_5;
+        private Kaban.UI.Controls.AxisUnitHMI axBody_General_Y1_Axis_Unit;
+        private Kaban.UI.Controls.LabelHMI capY2_5;
+        private Kaban.UI.Controls.AxisUnitHMI axBody_General_Y2_Axis_Unit;
         private Kaban.UI.Controls.LabelHMI hdName;
-        private Kaban.UI.Controls.LabelHMI hdBack_3;
-        private Kaban.UI.Controls.LabelHMI hdForward_3;
+        private Kaban.UI.Controls.LabelHMI hdBack;
+        private Kaban.UI.Controls.LabelHMI hdForward;
         private Kaban.UI.Controls.LabelHMI capMilling_Cutters;
         private Kaban.UI.Controls.ButtonHMI btnUnits_Milling_Cutters_Back;
-        private Kaban.UI.Controls.LabelHMI capResistance_Lower_Down_Up;
-        private Kaban.UI.Controls.ButtonHMI btnUnits_Resistance_Lower_Down_Up_Back;
-        private Kaban.UI.Controls.ButtonHMI btnUnits_Resistance_Lower_Down_Up_Forward;
-        private Kaban.UI.Controls.LabelHMI capProfile_Tightening;
-        private Kaban.UI.Controls.ButtonHMI btnUnits_Profile_Tightening_Back;
-        private Kaban.UI.Controls.ButtonHMI btnUnits_Profile_Tightening_Forward;
-        private Kaban.UI.Controls.LabelHMI capFront_Clamping;
-        private Kaban.UI.Controls.ButtonHMI btnUnits_Front_Clamping_Back;
-        private Kaban.UI.Controls.ButtonHMI btnUnits_Front_Clamping_Forward;
-        private Kaban.UI.Controls.LabelHMI capProfile_Emptying;
-        private Kaban.UI.Controls.ButtonHMI btnUnits_Profile_Emptying_Back;
-        private Kaban.UI.Controls.ButtonHMI btnUnits_Profile_Emptying_Forward;
-        private Kaban.UI.Controls.LabelHMI capProfile_Ear_Clamping;
-        private Kaban.UI.Controls.ButtonHMI btnUnits_Profile_Ear_Clamping_Back;
-        private Kaban.UI.Controls.ButtonHMI btnUnits_Profile_Ear_Clamping_Forward;
-        private Kaban.UI.Controls.LabelHMI capMold_Shifting;
-        private Kaban.UI.Controls.ButtonHMI btnUnits_Mold_Shifting_Back;
-        private Kaban.UI.Controls.ButtonHMI btnUnits_Mold_Shifting_Forward;
         private Kaban.UI.Controls.LabelHMI capConveyor_Up_Down;
         private Kaban.UI.Controls.ButtonHMI btnUnits_Conveyor_Up_Down_Back;
         private Kaban.UI.Controls.ButtonHMI btnUnits_Conveyor_Up_Down_Forward;
@@ -3658,64 +1491,5 @@ namespace Kaban.Machines.MD3020.Screens.Manual
         private Kaban.UI.Controls.NumericDisplayHMI dispUnits_Thermocouple_Lower_Back;
         private Kaban.UI.Controls.LabelHMI capThermocouple_Upper;
         private Kaban.UI.Controls.NumericDisplayHMI dispUnits_Thermocouple_Upper_Back;
-        private Kaban.UI.Controls.LabelHMI hdHead_1;
-        private Kaban.UI.Controls.LabelHMI hdHead_2;
-        private Kaban.UI.Controls.LabelHMI hdHead_3;
-        private Kaban.UI.Controls.LabelHMI hdHead_4;
-        private Kaban.UI.Controls.LabelHMI hdPiston_Sensors;
-        private Kaban.UI.Controls.LabelHMI hdLeft;
-        private Kaban.UI.Controls.LabelHMI hdRight;
-        private Kaban.UI.Controls.LabelHMI hdLeft_2;
-        private Kaban.UI.Controls.LabelHMI hdRight_2;
-        private Kaban.UI.Controls.LabelHMI hdLeft_3;
-        private Kaban.UI.Controls.LabelHMI hdRight_3;
-        private Kaban.UI.Controls.LabelHMI hdLeft_4;
-        private Kaban.UI.Controls.LabelHMI hdRight_4;
-        private Kaban.UI.Controls.LabelHMI capUpper_Clamp_Is_Up;
-        private Kaban.UI.Controls.LampHMI lampPiston_Sensors_Upper_Clamp_Is_Up_Head_1_Left;
-        private Kaban.UI.Controls.LampHMI lampPiston_Sensors_Upper_Clamp_Is_Up_Head_1_Right;
-        private Kaban.UI.Controls.LampHMI lampPiston_Sensors_Upper_Clamp_Is_Up_Head_2_Left;
-        private Kaban.UI.Controls.LampHMI lampPiston_Sensors_Upper_Clamp_Is_Up_Head_2_Right;
-        private Kaban.UI.Controls.LampHMI lampPiston_Sensors_Upper_Clamp_Is_Up_Head_3_Left;
-        private Kaban.UI.Controls.LampHMI lampPiston_Sensors_Upper_Clamp_Is_Up_Head_3_Right;
-        private Kaban.UI.Controls.LampHMI lampPiston_Sensors_Upper_Clamp_Is_Up_Head_4_Left;
-        private Kaban.UI.Controls.LampHMI lampPiston_Sensors_Upper_Clamp_Is_Up_Head_4_Right;
-        private Kaban.UI.Controls.LabelHMI capDown_Resistance_Is_Up;
-        private Kaban.UI.Controls.LampHMI lampPiston_Sensors_Down_Resistance_Is_Up_Head_1_Left;
-        private Kaban.UI.Controls.LampHMI lampPiston_Sensors_Down_Resistance_Is_Up_Head_2_Left;
-        private Kaban.UI.Controls.LampHMI lampPiston_Sensors_Down_Resistance_Is_Up_Head_3_Left;
-        private Kaban.UI.Controls.LampHMI lampPiston_Sensors_Down_Resistance_Is_Up_Head_4_Left;
-        private Kaban.UI.Controls.LabelHMI capFront_Clamp_Is_Front;
-        private Kaban.UI.Controls.LampHMI lampPiston_Sensors_Front_Clamp_Is_Front_Head_1_Left;
-        private Kaban.UI.Controls.LampHMI lampPiston_Sensors_Front_Clamp_Is_Front_Head_1_Right;
-        private Kaban.UI.Controls.LampHMI lampPiston_Sensors_Front_Clamp_Is_Front_Head_2_Left;
-        private Kaban.UI.Controls.LampHMI lampPiston_Sensors_Front_Clamp_Is_Front_Head_2_Right;
-        private Kaban.UI.Controls.LampHMI lampPiston_Sensors_Front_Clamp_Is_Front_Head_3_Left;
-        private Kaban.UI.Controls.LampHMI lampPiston_Sensors_Front_Clamp_Is_Front_Head_3_Right;
-        private Kaban.UI.Controls.LampHMI lampPiston_Sensors_Front_Clamp_Is_Front_Head_4_Left;
-        private Kaban.UI.Controls.LampHMI lampPiston_Sensors_Front_Clamp_Is_Front_Head_4_Right;
-        private Kaban.UI.Controls.LabelHMI capEar_Clamp_Is_Down;
-        private Kaban.UI.Controls.LampHMI lampPiston_Sensors_Ear_Clamp_Is_Down_Head_1_Left;
-        private Kaban.UI.Controls.LampHMI lampPiston_Sensors_Ear_Clamp_Is_Down_Head_1_Right;
-        private Kaban.UI.Controls.LampHMI lampPiston_Sensors_Ear_Clamp_Is_Down_Head_2_Left;
-        private Kaban.UI.Controls.LampHMI lampPiston_Sensors_Ear_Clamp_Is_Down_Head_2_Right;
-        private Kaban.UI.Controls.LampHMI lampPiston_Sensors_Ear_Clamp_Is_Down_Head_3_Left;
-        private Kaban.UI.Controls.LampHMI lampPiston_Sensors_Ear_Clamp_Is_Down_Head_3_Right;
-        private Kaban.UI.Controls.LampHMI lampPiston_Sensors_Ear_Clamp_Is_Down_Head_4_Left;
-        private Kaban.UI.Controls.LampHMI lampPiston_Sensors_Ear_Clamp_Is_Down_Head_4_Right;
-        private Kaban.UI.Controls.LabelHMI capMold_Shifting_Is_Back;
-        private Kaban.UI.Controls.LampHMI lampPiston_Sensors_Mold_Shifting_Is_Back_Head_1_Left;
-        private Kaban.UI.Controls.LampHMI lampPiston_Sensors_Mold_Shifting_Is_Back_Head_1_Right;
-        private Kaban.UI.Controls.LampHMI lampPiston_Sensors_Mold_Shifting_Is_Back_Head_2_Left;
-        private Kaban.UI.Controls.LampHMI lampPiston_Sensors_Mold_Shifting_Is_Back_Head_2_Right;
-        private Kaban.UI.Controls.LampHMI lampPiston_Sensors_Mold_Shifting_Is_Back_Head_3_Left;
-        private Kaban.UI.Controls.LampHMI lampPiston_Sensors_Mold_Shifting_Is_Back_Head_3_Right;
-        private Kaban.UI.Controls.LampHMI lampPiston_Sensors_Mold_Shifting_Is_Back_Head_4_Left;
-        private Kaban.UI.Controls.LampHMI lampPiston_Sensors_Mold_Shifting_Is_Back_Head_4_Right;
-        private Kaban.UI.Controls.LabelHMI capProfile_Emptying_Is_Up;
-        private Kaban.UI.Controls.LampHMI lampPiston_Sensors_Profile_Emptying_Is_Up_Head_1_Left;
-        private Kaban.UI.Controls.LampHMI lampPiston_Sensors_Profile_Emptying_Is_Up_Head_2_Left;
-        private Kaban.UI.Controls.LampHMI lampPiston_Sensors_Profile_Emptying_Is_Up_Head_3_Left;
-        private Kaban.UI.Controls.LampHMI lampPiston_Sensors_Profile_Emptying_Is_Up_Head_4_Left;
     }
 }
