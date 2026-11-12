@@ -27,60 +27,175 @@ namespace Kaban.Machines.MK2010.Screens.Parameters
             Kaban.Core.Models.BitAction bitAction1 = new Kaban.Core.Models.BitAction();
             Kaban.Core.Models.BitAction bitAction2 = new Kaban.Core.Models.BitAction();
             Kaban.Core.Models.BitAction bitAction3 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction4 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction5 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction6 = new Kaban.Core.Models.BitAction();
-            this.hdAxis = new Kaban.UI.Controls.LabelHMI();
-            this.hdActual = new Kaban.UI.Controls.LabelHMI();
-            this.hdReal = new Kaban.UI.Controls.LabelHMI();
+            this.lblHeadAxis = new System.Windows.Forms.Label();
+            this.lblHeadPosition = new System.Windows.Forms.Label();
+            this.lblHeadMin = new System.Windows.Forms.Label();
+            this.lblHeadMax = new System.Windows.Forms.Label();
+            this.lblHeadCalibration = new System.Windows.Forms.Label();
+            this.lblHeadCal = new System.Windows.Forms.Label();
+            this.lblHeadZDistance = new System.Windows.Forms.Label();
+            this.axAxis_X = new Kaban.UI.Controls.AxisSettingHMI();
+            this.axAxis_Y1 = new Kaban.UI.Controls.AxisSettingHMI();
+            this.axAxis_Y2 = new Kaban.UI.Controls.AxisSettingHMI();
+            this.hdAxes = new Kaban.UI.Controls.LabelHMI();
             this.hdCalibrate = new Kaban.UI.Controls.LabelHMI();
-            this.capAxis_X = new Kaban.UI.Controls.LabelHMI();
-            this.dispCalibration_Axis_X_Actual = new Kaban.UI.Controls.NumericDisplayHMI();
-            this.numCalibration_Axis_X_Real = new Kaban.UI.Controls.NumericInputHMI();
-            this.btnCalibration_Axis_X_Calibrate = new Kaban.UI.Controls.ButtonHMI();
-            this.capAxis_Y1 = new Kaban.UI.Controls.LabelHMI();
-            this.dispCalibration_Axis_Y1_Actual = new Kaban.UI.Controls.NumericDisplayHMI();
-            this.numCalibration_Axis_Y1_Real = new Kaban.UI.Controls.NumericInputHMI();
-            this.btnCalibration_Axis_Y1_Calibrate = new Kaban.UI.Controls.ButtonHMI();
-            this.capAxis_Y2 = new Kaban.UI.Controls.LabelHMI();
-            this.dispCalibration_Axis_Y2_Actual = new Kaban.UI.Controls.NumericDisplayHMI();
-            this.numCalibration_Axis_Y2_Real = new Kaban.UI.Controls.NumericInputHMI();
-            this.btnCalibration_Axis_Y2_Calibrate = new Kaban.UI.Controls.ButtonHMI();
+            this.capX_Y1_Y2 = new Kaban.UI.Controls.LabelHMI();
             this.btnCalibration_All_Calibrate = new Kaban.UI.Controls.ButtonHMI();
             this.SuspendLayout();
             // 
-            // hdAxis
+            // lblHeadAxis
             // 
-            this.hdAxis.Name = "hdAxis";
-            this.hdAxis.TranslationKey = "Axis";
-            this.hdAxis.Text = "Axis";
-            this.hdAxis.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
-            this.hdAxis.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
-            this.hdAxis.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.hdAxis.Location = new System.Drawing.Point(16, 16);
-            this.hdAxis.Size = new System.Drawing.Size(170, 26);
+            this.lblHeadAxis.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
+            this.lblHeadAxis.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
+            this.lblHeadAxis.Location = new System.Drawing.Point(16, 16);
+            this.lblHeadAxis.Name = "lblHeadAxis";
+            this.lblHeadAxis.Size = new System.Drawing.Size(132, 18);
+            this.lblHeadAxis.Tag = "AxisHeading:Axis";
+            this.lblHeadAxis.Text = "Axis";
+            this.lblHeadAxis.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // hdActual
+            // lblHeadPosition
             // 
-            this.hdActual.Name = "hdActual";
-            this.hdActual.TranslationKey = "Actual";
-            this.hdActual.Text = "Actual";
-            this.hdActual.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
-            this.hdActual.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
-            this.hdActual.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.hdActual.Location = new System.Drawing.Point(192, 16);
-            this.hdActual.Size = new System.Drawing.Size(104, 26);
+            this.lblHeadPosition.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
+            this.lblHeadPosition.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
+            this.lblHeadPosition.Location = new System.Drawing.Point(224, 16);
+            this.lblHeadPosition.Name = "lblHeadPosition";
+            this.lblHeadPosition.Size = new System.Drawing.Size(120, 18);
+            this.lblHeadPosition.Tag = "AxisHeading:Position";
+            this.lblHeadPosition.Text = "Position";
+            this.lblHeadPosition.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // hdReal
+            // lblHeadMin
             // 
-            this.hdReal.Name = "hdReal";
-            this.hdReal.TranslationKey = "Real";
-            this.hdReal.Text = "Real";
-            this.hdReal.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
-            this.hdReal.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
-            this.hdReal.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.hdReal.Location = new System.Drawing.Point(302, 16);
-            this.hdReal.Size = new System.Drawing.Size(104, 26);
+            this.lblHeadMin.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
+            this.lblHeadMin.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
+            this.lblHeadMin.Location = new System.Drawing.Point(500, 16);
+            this.lblHeadMin.Name = "lblHeadMin";
+            this.lblHeadMin.Size = new System.Drawing.Size(86, 18);
+            this.lblHeadMin.Tag = "AxisHeading:Min";
+            this.lblHeadMin.Text = "Min";
+            this.lblHeadMin.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // lblHeadMax
+            // 
+            this.lblHeadMax.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
+            this.lblHeadMax.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
+            this.lblHeadMax.Location = new System.Drawing.Point(590, 16);
+            this.lblHeadMax.Name = "lblHeadMax";
+            this.lblHeadMax.Size = new System.Drawing.Size(86, 18);
+            this.lblHeadMax.Tag = "AxisHeading:Max";
+            this.lblHeadMax.Text = "Max";
+            this.lblHeadMax.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // lblHeadCalibration
+            // 
+            this.lblHeadCalibration.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
+            this.lblHeadCalibration.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
+            this.lblHeadCalibration.Location = new System.Drawing.Point(680, 16);
+            this.lblHeadCalibration.Name = "lblHeadCalibration";
+            this.lblHeadCalibration.Size = new System.Drawing.Size(86, 18);
+            this.lblHeadCalibration.Tag = "AxisHeading:Calibration";
+            this.lblHeadCalibration.Text = "Calibration";
+            this.lblHeadCalibration.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // lblHeadCal
+            // 
+            this.lblHeadCal.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
+            this.lblHeadCal.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
+            this.lblHeadCal.Location = new System.Drawing.Point(770, 16);
+            this.lblHeadCal.Name = "lblHeadCal";
+            this.lblHeadCal.Size = new System.Drawing.Size(44, 18);
+            this.lblHeadCal.Tag = "AxisHeading:Cal";
+            this.lblHeadCal.Text = "Cal";
+            this.lblHeadCal.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // lblHeadZDistance
+            // 
+            this.lblHeadZDistance.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
+            this.lblHeadZDistance.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
+            this.lblHeadZDistance.Location = new System.Drawing.Point(818, 16);
+            this.lblHeadZDistance.Name = "lblHeadZDistance";
+            this.lblHeadZDistance.Size = new System.Drawing.Size(76, 18);
+            this.lblHeadZDistance.Tag = "AxisHeading:ZDistance";
+            this.lblHeadZDistance.Text = "Z distance";
+            this.lblHeadZDistance.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // axAxis_X
+            // 
+            this.axAxis_X.AxisNameKey = "Axis_MK2010_X";
+            this.axAxis_X.BackColor = System.Drawing.Color.White;
+            this.axAxis_X.CommandBackAddress = "M41";
+            this.axAxis_X.CommandForwardAddress = "M40";
+            this.axAxis_X.PositionAddress = "D50";
+            this.axAxis_X.CalibrationAddress = "D154";
+            this.axAxis_X.CalibrateAddress = "M91";
+            this.axAxis_X.DecimalPlaces = 1;
+            this.axAxis_X.Digits = 8;
+            this.axAxis_X.Divisor = 10D;
+            this.axAxis_X.HMIAxisIndex = 1;
+            this.axAxis_X.Location = new System.Drawing.Point(16, 50);
+            this.axAxis_X.Name = "axAxis_X";
+            this.axAxis_X.PlcNumber = 1;
+            this.axAxis_X.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
+            this.axAxis_X.SettingDataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
+            this.axAxis_X.Size = new System.Drawing.Size(1000, 40);
+            this.axAxis_X.Suffix = "mm";
+            this.axAxis_X.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
+            // 
+            // axAxis_Y1
+            // 
+            this.axAxis_Y1.AxisNameKey = "Axis_MK2010_Y1";
+            this.axAxis_Y1.BackColor = System.Drawing.Color.White;
+            this.axAxis_Y1.CommandBackAddress = "M43";
+            this.axAxis_Y1.CommandForwardAddress = "M42";
+            this.axAxis_Y1.PositionAddress = "D52";
+            this.axAxis_Y1.CalibrationAddress = "D156";
+            this.axAxis_Y1.CalibrateAddress = "M92";
+            this.axAxis_Y1.DecimalPlaces = 1;
+            this.axAxis_Y1.Digits = 8;
+            this.axAxis_Y1.Divisor = 10D;
+            this.axAxis_Y1.HMIAxisIndex = 2;
+            this.axAxis_Y1.Location = new System.Drawing.Point(16, 94);
+            this.axAxis_Y1.Name = "axAxis_Y1";
+            this.axAxis_Y1.PlcNumber = 1;
+            this.axAxis_Y1.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
+            this.axAxis_Y1.SettingDataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
+            this.axAxis_Y1.Size = new System.Drawing.Size(1000, 40);
+            this.axAxis_Y1.Suffix = "mm";
+            this.axAxis_Y1.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
+            // 
+            // axAxis_Y2
+            // 
+            this.axAxis_Y2.AxisNameKey = "Axis_MK2010_Y2";
+            this.axAxis_Y2.BackColor = System.Drawing.Color.White;
+            this.axAxis_Y2.CommandBackAddress = "M45";
+            this.axAxis_Y2.CommandForwardAddress = "M44";
+            this.axAxis_Y2.PositionAddress = "D54";
+            this.axAxis_Y2.CalibrationAddress = "D158";
+            this.axAxis_Y2.CalibrateAddress = "M93";
+            this.axAxis_Y2.DecimalPlaces = 1;
+            this.axAxis_Y2.Digits = 8;
+            this.axAxis_Y2.Divisor = 10D;
+            this.axAxis_Y2.HMIAxisIndex = 3;
+            this.axAxis_Y2.Location = new System.Drawing.Point(16, 138);
+            this.axAxis_Y2.Name = "axAxis_Y2";
+            this.axAxis_Y2.PlcNumber = 1;
+            this.axAxis_Y2.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
+            this.axAxis_Y2.SettingDataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
+            this.axAxis_Y2.Size = new System.Drawing.Size(1000, 40);
+            this.axAxis_Y2.Suffix = "mm";
+            this.axAxis_Y2.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
+            // 
+            // hdAxes
+            // 
+            this.hdAxes.Name = "hdAxes";
+            this.hdAxes.TranslationKey = "Axes";
+            this.hdAxes.Text = "Axes";
+            this.hdAxes.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
+            this.hdAxes.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
+            this.hdAxes.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.hdAxes.Location = new System.Drawing.Point(16, 206);
+            this.hdAxes.Size = new System.Drawing.Size(170, 26);
             // 
             // hdCalibrate
             // 
@@ -90,188 +205,20 @@ namespace Kaban.Machines.MK2010.Screens.Parameters
             this.hdCalibrate.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
             this.hdCalibrate.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
             this.hdCalibrate.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.hdCalibrate.Location = new System.Drawing.Point(412, 16);
-            this.hdCalibrate.Size = new System.Drawing.Size(104, 26);
+            this.hdCalibrate.Location = new System.Drawing.Point(192, 206);
+            this.hdCalibrate.Size = new System.Drawing.Size(124, 26);
             // 
-            // capAxis_X
+            // capX_Y1_Y2
             // 
-            this.capAxis_X.Name = "capAxis_X";
-            this.capAxis_X.TranslationKey = "Axis X";
-            this.capAxis_X.Text = "Axis X";
-            this.capAxis_X.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.capAxis_X.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
-            this.capAxis_X.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capAxis_X.Location = new System.Drawing.Point(16, 50);
-            this.capAxis_X.Size = new System.Drawing.Size(170, 40);
-            this.capAxis_X.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            // 
-            // dispCalibration_Axis_X_Actual
-            // 
-            // Axis X Actual: D50, raw / 10.
-            this.dispCalibration_Axis_X_Actual.Name = "dispCalibration_Axis_X_Actual";
-            this.dispCalibration_Axis_X_Actual.PlcNumber = 1;
-            this.dispCalibration_Axis_X_Actual.Address = "D50";
-            this.dispCalibration_Axis_X_Actual.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.dispCalibration_Axis_X_Actual.Divisor = 10D;
-            this.dispCalibration_Axis_X_Actual.DecimalPlaces = 1;
-            this.dispCalibration_Axis_X_Actual.Digits = 7;
-            this.dispCalibration_Axis_X_Actual.Suffix = "mm";
-            this.dispCalibration_Axis_X_Actual.Location = new System.Drawing.Point(192, 53);
-            this.dispCalibration_Axis_X_Actual.Size = new System.Drawing.Size(104, 34);
-            // 
-            // numCalibration_Axis_X_Real  (D154)
-            // 
-            this.numCalibration_Axis_X_Real.BackColor = System.Drawing.Color.White;
-            this.numCalibration_Axis_X_Real.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numCalibration_Axis_X_Real.Name = "numCalibration_Axis_X_Real";
-            this.numCalibration_Axis_X_Real.PlcNumber = 1;
-            this.numCalibration_Axis_X_Real.Address = "D154";
-            this.numCalibration_Axis_X_Real.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.numCalibration_Axis_X_Real.AutoSize = false;
-            this.numCalibration_Axis_X_Real.Digits = 5;
-            this.numCalibration_Axis_X_Real.DecimalPlaces = 1;
-            this.numCalibration_Axis_X_Real.Divisor = 10D;
-            this.numCalibration_Axis_X_Real.Suffix = "mm";
-            this.numCalibration_Axis_X_Real.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numCalibration_Axis_X_Real.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numCalibration_Axis_X_Real.LogAction = true;
-            this.numCalibration_Axis_X_Real.Location = new System.Drawing.Point(302, 54);
-            this.numCalibration_Axis_X_Real.Size = new System.Drawing.Size(104, 32);
-            this.numCalibration_Axis_X_Real.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // btnCalibration_Axis_X_Calibrate
-            // 
-            this.btnCalibration_Axis_X_Calibrate.Name = "btnCalibration_Axis_X_Calibrate";
-            this.btnCalibration_Axis_X_Calibrate.PlcNumber = 1;
-            this.btnCalibration_Axis_X_Calibrate.TranslationKey = "Calibrate";
-            this.btnCalibration_Axis_X_Calibrate.FallbackText = "Calibrate";
-            bitAction1.Address = "M91";
-            bitAction1.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnCalibration_Axis_X_Calibrate.BitActions.Add(bitAction1);
-            this.btnCalibration_Axis_X_Calibrate.Location = new System.Drawing.Point(412, 53);
-            this.btnCalibration_Axis_X_Calibrate.Size = new System.Drawing.Size(104, 34);
-            this.btnCalibration_Axis_X_Calibrate.LogAction = true;
-            this.btnCalibration_Axis_X_Calibrate.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // capAxis_Y1
-            // 
-            this.capAxis_Y1.Name = "capAxis_Y1";
-            this.capAxis_Y1.TranslationKey = "Axis Y1";
-            this.capAxis_Y1.Text = "Axis Y1";
-            this.capAxis_Y1.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.capAxis_Y1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
-            this.capAxis_Y1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capAxis_Y1.Location = new System.Drawing.Point(16, 90);
-            this.capAxis_Y1.Size = new System.Drawing.Size(170, 40);
-            this.capAxis_Y1.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            // 
-            // dispCalibration_Axis_Y1_Actual
-            // 
-            // Axis Y1 Actual: D52, raw / 10.
-            this.dispCalibration_Axis_Y1_Actual.Name = "dispCalibration_Axis_Y1_Actual";
-            this.dispCalibration_Axis_Y1_Actual.PlcNumber = 1;
-            this.dispCalibration_Axis_Y1_Actual.Address = "D52";
-            this.dispCalibration_Axis_Y1_Actual.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.dispCalibration_Axis_Y1_Actual.Divisor = 10D;
-            this.dispCalibration_Axis_Y1_Actual.DecimalPlaces = 1;
-            this.dispCalibration_Axis_Y1_Actual.Digits = 7;
-            this.dispCalibration_Axis_Y1_Actual.Suffix = "mm";
-            this.dispCalibration_Axis_Y1_Actual.Location = new System.Drawing.Point(192, 93);
-            this.dispCalibration_Axis_Y1_Actual.Size = new System.Drawing.Size(104, 34);
-            // 
-            // numCalibration_Axis_Y1_Real  (D156)
-            // 
-            this.numCalibration_Axis_Y1_Real.BackColor = System.Drawing.Color.White;
-            this.numCalibration_Axis_Y1_Real.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numCalibration_Axis_Y1_Real.Name = "numCalibration_Axis_Y1_Real";
-            this.numCalibration_Axis_Y1_Real.PlcNumber = 1;
-            this.numCalibration_Axis_Y1_Real.Address = "D156";
-            this.numCalibration_Axis_Y1_Real.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.numCalibration_Axis_Y1_Real.AutoSize = false;
-            this.numCalibration_Axis_Y1_Real.Digits = 5;
-            this.numCalibration_Axis_Y1_Real.DecimalPlaces = 1;
-            this.numCalibration_Axis_Y1_Real.Divisor = 10D;
-            this.numCalibration_Axis_Y1_Real.Suffix = "mm";
-            this.numCalibration_Axis_Y1_Real.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numCalibration_Axis_Y1_Real.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numCalibration_Axis_Y1_Real.LogAction = true;
-            this.numCalibration_Axis_Y1_Real.Location = new System.Drawing.Point(302, 94);
-            this.numCalibration_Axis_Y1_Real.Size = new System.Drawing.Size(104, 32);
-            this.numCalibration_Axis_Y1_Real.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // btnCalibration_Axis_Y1_Calibrate
-            // 
-            this.btnCalibration_Axis_Y1_Calibrate.Name = "btnCalibration_Axis_Y1_Calibrate";
-            this.btnCalibration_Axis_Y1_Calibrate.PlcNumber = 1;
-            this.btnCalibration_Axis_Y1_Calibrate.TranslationKey = "Calibrate";
-            this.btnCalibration_Axis_Y1_Calibrate.FallbackText = "Calibrate";
-            bitAction2.Address = "M92";
-            bitAction2.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnCalibration_Axis_Y1_Calibrate.BitActions.Add(bitAction2);
-            this.btnCalibration_Axis_Y1_Calibrate.Location = new System.Drawing.Point(412, 93);
-            this.btnCalibration_Axis_Y1_Calibrate.Size = new System.Drawing.Size(104, 34);
-            this.btnCalibration_Axis_Y1_Calibrate.LogAction = true;
-            this.btnCalibration_Axis_Y1_Calibrate.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // capAxis_Y2
-            // 
-            this.capAxis_Y2.Name = "capAxis_Y2";
-            this.capAxis_Y2.TranslationKey = "Axis Y2";
-            this.capAxis_Y2.Text = "Axis Y2";
-            this.capAxis_Y2.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.capAxis_Y2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
-            this.capAxis_Y2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capAxis_Y2.Location = new System.Drawing.Point(16, 130);
-            this.capAxis_Y2.Size = new System.Drawing.Size(170, 40);
-            this.capAxis_Y2.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            // 
-            // dispCalibration_Axis_Y2_Actual
-            // 
-            // Axis Y2 Actual: D54, raw / 10.
-            this.dispCalibration_Axis_Y2_Actual.Name = "dispCalibration_Axis_Y2_Actual";
-            this.dispCalibration_Axis_Y2_Actual.PlcNumber = 1;
-            this.dispCalibration_Axis_Y2_Actual.Address = "D54";
-            this.dispCalibration_Axis_Y2_Actual.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.dispCalibration_Axis_Y2_Actual.Divisor = 10D;
-            this.dispCalibration_Axis_Y2_Actual.DecimalPlaces = 1;
-            this.dispCalibration_Axis_Y2_Actual.Digits = 7;
-            this.dispCalibration_Axis_Y2_Actual.Suffix = "mm";
-            this.dispCalibration_Axis_Y2_Actual.Location = new System.Drawing.Point(192, 133);
-            this.dispCalibration_Axis_Y2_Actual.Size = new System.Drawing.Size(104, 34);
-            // 
-            // numCalibration_Axis_Y2_Real  (D158)
-            // 
-            this.numCalibration_Axis_Y2_Real.BackColor = System.Drawing.Color.White;
-            this.numCalibration_Axis_Y2_Real.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numCalibration_Axis_Y2_Real.Name = "numCalibration_Axis_Y2_Real";
-            this.numCalibration_Axis_Y2_Real.PlcNumber = 1;
-            this.numCalibration_Axis_Y2_Real.Address = "D158";
-            this.numCalibration_Axis_Y2_Real.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.numCalibration_Axis_Y2_Real.AutoSize = false;
-            this.numCalibration_Axis_Y2_Real.Digits = 5;
-            this.numCalibration_Axis_Y2_Real.DecimalPlaces = 1;
-            this.numCalibration_Axis_Y2_Real.Divisor = 10D;
-            this.numCalibration_Axis_Y2_Real.Suffix = "mm";
-            this.numCalibration_Axis_Y2_Real.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numCalibration_Axis_Y2_Real.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numCalibration_Axis_Y2_Real.LogAction = true;
-            this.numCalibration_Axis_Y2_Real.Location = new System.Drawing.Point(302, 134);
-            this.numCalibration_Axis_Y2_Real.Size = new System.Drawing.Size(104, 32);
-            this.numCalibration_Axis_Y2_Real.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // btnCalibration_Axis_Y2_Calibrate
-            // 
-            this.btnCalibration_Axis_Y2_Calibrate.Name = "btnCalibration_Axis_Y2_Calibrate";
-            this.btnCalibration_Axis_Y2_Calibrate.PlcNumber = 1;
-            this.btnCalibration_Axis_Y2_Calibrate.TranslationKey = "Calibrate";
-            this.btnCalibration_Axis_Y2_Calibrate.FallbackText = "Calibrate";
-            bitAction3.Address = "M93";
-            bitAction3.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnCalibration_Axis_Y2_Calibrate.BitActions.Add(bitAction3);
-            this.btnCalibration_Axis_Y2_Calibrate.Location = new System.Drawing.Point(412, 133);
-            this.btnCalibration_Axis_Y2_Calibrate.Size = new System.Drawing.Size(104, 34);
-            this.btnCalibration_Axis_Y2_Calibrate.LogAction = true;
-            this.btnCalibration_Axis_Y2_Calibrate.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
+            this.capX_Y1_Y2.Name = "capX_Y1_Y2";
+            this.capX_Y1_Y2.TranslationKey = "X, Y1, Y2";
+            this.capX_Y1_Y2.Text = "X, Y1, Y2";
+            this.capX_Y1_Y2.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.capX_Y1_Y2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
+            this.capX_Y1_Y2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.capX_Y1_Y2.Location = new System.Drawing.Point(16, 240);
+            this.capX_Y1_Y2.Size = new System.Drawing.Size(170, 40);
+            this.capX_Y1_Y2.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             // 
             // btnCalibration_All_Calibrate
             // 
@@ -279,17 +226,17 @@ namespace Kaban.Machines.MK2010.Screens.Parameters
             this.btnCalibration_All_Calibrate.PlcNumber = 1;
             this.btnCalibration_All_Calibrate.TranslationKey = "Calibrate All";
             this.btnCalibration_All_Calibrate.FallbackText = "Calibrate All";
-            bitAction4.Address = "M91";
-            bitAction4.Action = Kaban.Core.Enums.BitActionType.SET;
-            this.btnCalibration_All_Calibrate.BitActions.Add(bitAction4);
-            bitAction5.Address = "M92";
-            bitAction5.Action = Kaban.Core.Enums.BitActionType.SET;
-            this.btnCalibration_All_Calibrate.BitActions.Add(bitAction5);
-            bitAction6.Address = "M93";
-            bitAction6.Action = Kaban.Core.Enums.BitActionType.SET;
-            this.btnCalibration_All_Calibrate.BitActions.Add(bitAction6);
-            this.btnCalibration_All_Calibrate.Location = new System.Drawing.Point(412, 173);
-            this.btnCalibration_All_Calibrate.Size = new System.Drawing.Size(104, 34);
+            bitAction1.Address = "M91";
+            bitAction1.Action = Kaban.Core.Enums.BitActionType.SET;
+            this.btnCalibration_All_Calibrate.BitActions.Add(bitAction1);
+            bitAction2.Address = "M92";
+            bitAction2.Action = Kaban.Core.Enums.BitActionType.SET;
+            this.btnCalibration_All_Calibrate.BitActions.Add(bitAction2);
+            bitAction3.Address = "M93";
+            bitAction3.Action = Kaban.Core.Enums.BitActionType.SET;
+            this.btnCalibration_All_Calibrate.BitActions.Add(bitAction3);
+            this.btnCalibration_All_Calibrate.Location = new System.Drawing.Point(192, 243);
+            this.btnCalibration_All_Calibrate.Size = new System.Drawing.Size(124, 34);
             this.btnCalibration_All_Calibrate.LogAction = true;
             this.btnCalibration_All_Calibrate.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
             // 
@@ -301,47 +248,41 @@ namespace Kaban.Machines.MK2010.Screens.Parameters
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.AutoScroll = true;
             this.BackColor = System.Drawing.Color.White;
-            this.Controls.Add(this.hdAxis);
-            this.Controls.Add(this.hdActual);
-            this.Controls.Add(this.hdReal);
+            this.Controls.Add(this.lblHeadAxis);
+            this.Controls.Add(this.lblHeadPosition);
+            this.Controls.Add(this.lblHeadMin);
+            this.Controls.Add(this.lblHeadMax);
+            this.Controls.Add(this.lblHeadCalibration);
+            this.Controls.Add(this.lblHeadCal);
+            this.Controls.Add(this.lblHeadZDistance);
+            this.Controls.Add(this.axAxis_X);
+            this.Controls.Add(this.axAxis_Y1);
+            this.Controls.Add(this.axAxis_Y2);
+            this.Controls.Add(this.hdAxes);
             this.Controls.Add(this.hdCalibrate);
-            this.Controls.Add(this.capAxis_X);
-            this.Controls.Add(this.dispCalibration_Axis_X_Actual);
-            this.Controls.Add(this.numCalibration_Axis_X_Real);
-            this.Controls.Add(this.btnCalibration_Axis_X_Calibrate);
-            this.Controls.Add(this.capAxis_Y1);
-            this.Controls.Add(this.dispCalibration_Axis_Y1_Actual);
-            this.Controls.Add(this.numCalibration_Axis_Y1_Real);
-            this.Controls.Add(this.btnCalibration_Axis_Y1_Calibrate);
-            this.Controls.Add(this.capAxis_Y2);
-            this.Controls.Add(this.dispCalibration_Axis_Y2_Actual);
-            this.Controls.Add(this.numCalibration_Axis_Y2_Real);
-            this.Controls.Add(this.btnCalibration_Axis_Y2_Calibrate);
+            this.Controls.Add(this.capX_Y1_Y2);
             this.Controls.Add(this.btnCalibration_All_Calibrate);
             this.Name = "ParamCalibration";
-            this.Size = new System.Drawing.Size(532, 234);
+            this.Size = new System.Drawing.Size(1032, 304);
             this.ResumeLayout(false);
             this.PerformLayout();
         }
 
         #endregion
 
-        private Kaban.UI.Controls.LabelHMI hdAxis;
-        private Kaban.UI.Controls.LabelHMI hdActual;
-        private Kaban.UI.Controls.LabelHMI hdReal;
+        private System.Windows.Forms.Label lblHeadAxis;
+        private System.Windows.Forms.Label lblHeadPosition;
+        private System.Windows.Forms.Label lblHeadMin;
+        private System.Windows.Forms.Label lblHeadMax;
+        private System.Windows.Forms.Label lblHeadCalibration;
+        private System.Windows.Forms.Label lblHeadCal;
+        private System.Windows.Forms.Label lblHeadZDistance;
+        private Kaban.UI.Controls.AxisSettingHMI axAxis_X;
+        private Kaban.UI.Controls.AxisSettingHMI axAxis_Y1;
+        private Kaban.UI.Controls.AxisSettingHMI axAxis_Y2;
+        private Kaban.UI.Controls.LabelHMI hdAxes;
         private Kaban.UI.Controls.LabelHMI hdCalibrate;
-        private Kaban.UI.Controls.LabelHMI capAxis_X;
-        private Kaban.UI.Controls.NumericDisplayHMI dispCalibration_Axis_X_Actual;
-        private Kaban.UI.Controls.NumericInputHMI numCalibration_Axis_X_Real;
-        private Kaban.UI.Controls.ButtonHMI btnCalibration_Axis_X_Calibrate;
-        private Kaban.UI.Controls.LabelHMI capAxis_Y1;
-        private Kaban.UI.Controls.NumericDisplayHMI dispCalibration_Axis_Y1_Actual;
-        private Kaban.UI.Controls.NumericInputHMI numCalibration_Axis_Y1_Real;
-        private Kaban.UI.Controls.ButtonHMI btnCalibration_Axis_Y1_Calibrate;
-        private Kaban.UI.Controls.LabelHMI capAxis_Y2;
-        private Kaban.UI.Controls.NumericDisplayHMI dispCalibration_Axis_Y2_Actual;
-        private Kaban.UI.Controls.NumericInputHMI numCalibration_Axis_Y2_Real;
-        private Kaban.UI.Controls.ButtonHMI btnCalibration_Axis_Y2_Calibrate;
+        private Kaban.UI.Controls.LabelHMI capX_Y1_Y2;
         private Kaban.UI.Controls.ButtonHMI btnCalibration_All_Calibrate;
     }
 }

@@ -36,31 +36,19 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             Kaban.Core.Models.BitAction bitAction10 = new Kaban.Core.Models.BitAction();
             Kaban.Core.Models.BitAction bitAction11 = new Kaban.Core.Models.BitAction();
             Kaban.Core.Models.BitAction bitAction12 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction13 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction14 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction15 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction16 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction17 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction18 = new Kaban.Core.Models.BitAction();
             this.hdName = new Kaban.UI.Controls.LabelHMI();
             this.hdBack = new Kaban.UI.Controls.LabelHMI();
             this.hdForward = new Kaban.UI.Controls.LabelHMI();
             this.hdPositions = new Kaban.UI.Controls.LabelHMI();
             this.hdLimit = new Kaban.UI.Controls.LabelHMI();
             this.capAxis_X = new Kaban.UI.Controls.LabelHMI();
-            this.btnAxes_Axis_X_Back = new Kaban.UI.Controls.ButtonHMI();
-            this.btnAxes_Axis_X_Forward = new Kaban.UI.Controls.ButtonHMI();
-            this.dispAxes_Axis_X_Positions = new Kaban.UI.Controls.NumericDisplayHMI();
+            this.axAxes_Axis_X_Back = new Kaban.UI.Controls.AxisUnitHMI();
             this.lampAxes_Axis_X_Limit = new Kaban.UI.Controls.LampHMI();
             this.capAxis_Y1 = new Kaban.UI.Controls.LabelHMI();
-            this.btnAxes_Axis_Y1_Back = new Kaban.UI.Controls.ButtonHMI();
-            this.btnAxes_Axis_Y1_Forward = new Kaban.UI.Controls.ButtonHMI();
-            this.dispAxes_Axis_Y1_Positions = new Kaban.UI.Controls.NumericDisplayHMI();
+            this.axAxes_Axis_Y1_Back = new Kaban.UI.Controls.AxisUnitHMI();
             this.lampAxes_Axis_Y1_Limit = new Kaban.UI.Controls.LampHMI();
             this.capAxis_Y2 = new Kaban.UI.Controls.LabelHMI();
-            this.btnAxes_Axis_Y2_Back = new Kaban.UI.Controls.ButtonHMI();
-            this.btnAxes_Axis_Y2_Forward = new Kaban.UI.Controls.ButtonHMI();
-            this.dispAxes_Axis_Y2_Positions = new Kaban.UI.Controls.NumericDisplayHMI();
+            this.axAxes_Axis_Y2_Back = new Kaban.UI.Controls.AxisUnitHMI();
             this.lampAxes_Axis_Y2_Limit = new Kaban.UI.Controls.LampHMI();
             this.capHead_1_2_Conveyor = new Kaban.UI.Controls.LabelHMI();
             this.lampAxes_Head_1_2_Conveyor_Back = new Kaban.UI.Controls.LampHMI();
@@ -210,50 +198,18 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.capAxis_X.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
             this.capAxis_X.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.capAxis_X.Location = new System.Drawing.Point(16, 50);
-            this.capAxis_X.Size = new System.Drawing.Size(170, 40);
+            this.capAxis_X.Size = new System.Drawing.Size(170, 72);
             this.capAxis_X.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             // 
-            // btnAxes_Axis_X_Back
+            // axAxes_Axis_X_Back
             // 
-            this.btnAxes_Axis_X_Back.Name = "btnAxes_Axis_X_Back";
-            this.btnAxes_Axis_X_Back.PlcNumber = 1;
-            this.btnAxes_Axis_X_Back.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.Left;
-            bitAction1.Address = "M41";
-            bitAction1.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnAxes_Axis_X_Back.BitActions.Add(bitAction1);
-            this.btnAxes_Axis_X_Back.Lamp1Address = "M41";
-            this.btnAxes_Axis_X_Back.Location = new System.Drawing.Point(192, 53);
-            this.btnAxes_Axis_X_Back.Size = new System.Drawing.Size(96, 34);
-            this.btnAxes_Axis_X_Back.LogAction = true;
-            this.btnAxes_Axis_X_Back.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // btnAxes_Axis_X_Forward
-            // 
-            this.btnAxes_Axis_X_Forward.Name = "btnAxes_Axis_X_Forward";
-            this.btnAxes_Axis_X_Forward.PlcNumber = 1;
-            this.btnAxes_Axis_X_Forward.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.Right;
-            bitAction2.Address = "M40";
-            bitAction2.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnAxes_Axis_X_Forward.BitActions.Add(bitAction2);
-            this.btnAxes_Axis_X_Forward.Lamp1Address = "M40";
-            this.btnAxes_Axis_X_Forward.Location = new System.Drawing.Point(294, 53);
-            this.btnAxes_Axis_X_Forward.Size = new System.Drawing.Size(96, 34);
-            this.btnAxes_Axis_X_Forward.LogAction = true;
-            this.btnAxes_Axis_X_Forward.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // dispAxes_Axis_X_Positions
-            // 
-            // Axis X Positions: D50, raw / 10.
-            this.dispAxes_Axis_X_Positions.Name = "dispAxes_Axis_X_Positions";
-            this.dispAxes_Axis_X_Positions.PlcNumber = 1;
-            this.dispAxes_Axis_X_Positions.Address = "D50";
-            this.dispAxes_Axis_X_Positions.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.dispAxes_Axis_X_Positions.Divisor = 10D;
-            this.dispAxes_Axis_X_Positions.DecimalPlaces = 1;
-            this.dispAxes_Axis_X_Positions.Digits = 7;
-            this.dispAxes_Axis_X_Positions.Suffix = "mm";
-            this.dispAxes_Axis_X_Positions.Location = new System.Drawing.Point(396, 53);
-            this.dispAxes_Axis_X_Positions.Size = new System.Drawing.Size(104, 34);
+            // Axis X: axis 1 of the axis settings page (its buttons, position, reference sensor and error come from there).
+            this.axAxes_Axis_X_Back.BackColor = System.Drawing.Color.White;
+            this.axAxes_Axis_X_Back.Name = "axAxes_Axis_X_Back";
+            this.axAxes_Axis_X_Back.AxisNumber = 1;
+            this.axAxes_Axis_X_Back.PlcNumber = 1;
+            this.axAxes_Axis_X_Back.Location = new System.Drawing.Point(192, 54);
+            this.axAxes_Axis_X_Back.Size = new System.Drawing.Size(308, 64);
             // 
             // lampAxes_Axis_X_Limit
             // 
@@ -262,7 +218,7 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.lampAxes_Axis_X_Limit.Address = "X0006";
             this.lampAxes_Axis_X_Limit.OnColor = System.Drawing.Color.FromArgb(((int)(((byte)(225)))), ((int)(((byte)(225)))), ((int)(((byte)(225)))));
             this.lampAxes_Axis_X_Limit.OffColor = System.Drawing.Color.FromArgb(((int)(((byte)(76)))), ((int)(((byte)(175)))), ((int)(((byte)(80)))));
-            this.lampAxes_Axis_X_Limit.Location = new System.Drawing.Point(526, 55);
+            this.lampAxes_Axis_X_Limit.Location = new System.Drawing.Point(526, 71);
             this.lampAxes_Axis_X_Limit.Size = new System.Drawing.Size(30, 30);
             // 
             // capAxis_Y1
@@ -273,51 +229,19 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.capAxis_Y1.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.capAxis_Y1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
             this.capAxis_Y1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capAxis_Y1.Location = new System.Drawing.Point(16, 90);
-            this.capAxis_Y1.Size = new System.Drawing.Size(170, 40);
+            this.capAxis_Y1.Location = new System.Drawing.Point(16, 122);
+            this.capAxis_Y1.Size = new System.Drawing.Size(170, 72);
             this.capAxis_Y1.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             // 
-            // btnAxes_Axis_Y1_Back
+            // axAxes_Axis_Y1_Back
             // 
-            this.btnAxes_Axis_Y1_Back.Name = "btnAxes_Axis_Y1_Back";
-            this.btnAxes_Axis_Y1_Back.PlcNumber = 1;
-            this.btnAxes_Axis_Y1_Back.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.Left;
-            bitAction3.Address = "M43";
-            bitAction3.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnAxes_Axis_Y1_Back.BitActions.Add(bitAction3);
-            this.btnAxes_Axis_Y1_Back.Lamp1Address = "M43";
-            this.btnAxes_Axis_Y1_Back.Location = new System.Drawing.Point(192, 93);
-            this.btnAxes_Axis_Y1_Back.Size = new System.Drawing.Size(96, 34);
-            this.btnAxes_Axis_Y1_Back.LogAction = true;
-            this.btnAxes_Axis_Y1_Back.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // btnAxes_Axis_Y1_Forward
-            // 
-            this.btnAxes_Axis_Y1_Forward.Name = "btnAxes_Axis_Y1_Forward";
-            this.btnAxes_Axis_Y1_Forward.PlcNumber = 1;
-            this.btnAxes_Axis_Y1_Forward.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.Right;
-            bitAction4.Address = "M42";
-            bitAction4.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnAxes_Axis_Y1_Forward.BitActions.Add(bitAction4);
-            this.btnAxes_Axis_Y1_Forward.Lamp1Address = "M42";
-            this.btnAxes_Axis_Y1_Forward.Location = new System.Drawing.Point(294, 93);
-            this.btnAxes_Axis_Y1_Forward.Size = new System.Drawing.Size(96, 34);
-            this.btnAxes_Axis_Y1_Forward.LogAction = true;
-            this.btnAxes_Axis_Y1_Forward.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // dispAxes_Axis_Y1_Positions
-            // 
-            // Axis Y1 Positions: D52, raw / 10.
-            this.dispAxes_Axis_Y1_Positions.Name = "dispAxes_Axis_Y1_Positions";
-            this.dispAxes_Axis_Y1_Positions.PlcNumber = 1;
-            this.dispAxes_Axis_Y1_Positions.Address = "D52";
-            this.dispAxes_Axis_Y1_Positions.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.dispAxes_Axis_Y1_Positions.Divisor = 10D;
-            this.dispAxes_Axis_Y1_Positions.DecimalPlaces = 1;
-            this.dispAxes_Axis_Y1_Positions.Digits = 7;
-            this.dispAxes_Axis_Y1_Positions.Suffix = "mm";
-            this.dispAxes_Axis_Y1_Positions.Location = new System.Drawing.Point(396, 93);
-            this.dispAxes_Axis_Y1_Positions.Size = new System.Drawing.Size(104, 34);
+            // Axis Y1: axis 2 of the axis settings page (its buttons, position, reference sensor and error come from there).
+            this.axAxes_Axis_Y1_Back.BackColor = System.Drawing.Color.White;
+            this.axAxes_Axis_Y1_Back.Name = "axAxes_Axis_Y1_Back";
+            this.axAxes_Axis_Y1_Back.AxisNumber = 2;
+            this.axAxes_Axis_Y1_Back.PlcNumber = 1;
+            this.axAxes_Axis_Y1_Back.Location = new System.Drawing.Point(192, 126);
+            this.axAxes_Axis_Y1_Back.Size = new System.Drawing.Size(308, 64);
             // 
             // lampAxes_Axis_Y1_Limit
             // 
@@ -326,7 +250,7 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.lampAxes_Axis_Y1_Limit.Address = "X0007";
             this.lampAxes_Axis_Y1_Limit.OnColor = System.Drawing.Color.FromArgb(((int)(((byte)(225)))), ((int)(((byte)(225)))), ((int)(((byte)(225)))));
             this.lampAxes_Axis_Y1_Limit.OffColor = System.Drawing.Color.FromArgb(((int)(((byte)(76)))), ((int)(((byte)(175)))), ((int)(((byte)(80)))));
-            this.lampAxes_Axis_Y1_Limit.Location = new System.Drawing.Point(526, 95);
+            this.lampAxes_Axis_Y1_Limit.Location = new System.Drawing.Point(526, 143);
             this.lampAxes_Axis_Y1_Limit.Size = new System.Drawing.Size(30, 30);
             // 
             // capAxis_Y2
@@ -337,51 +261,19 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.capAxis_Y2.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.capAxis_Y2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
             this.capAxis_Y2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capAxis_Y2.Location = new System.Drawing.Point(16, 130);
-            this.capAxis_Y2.Size = new System.Drawing.Size(170, 40);
+            this.capAxis_Y2.Location = new System.Drawing.Point(16, 194);
+            this.capAxis_Y2.Size = new System.Drawing.Size(170, 72);
             this.capAxis_Y2.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             // 
-            // btnAxes_Axis_Y2_Back
+            // axAxes_Axis_Y2_Back
             // 
-            this.btnAxes_Axis_Y2_Back.Name = "btnAxes_Axis_Y2_Back";
-            this.btnAxes_Axis_Y2_Back.PlcNumber = 1;
-            this.btnAxes_Axis_Y2_Back.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.Left;
-            bitAction5.Address = "M45";
-            bitAction5.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnAxes_Axis_Y2_Back.BitActions.Add(bitAction5);
-            this.btnAxes_Axis_Y2_Back.Lamp1Address = "M45";
-            this.btnAxes_Axis_Y2_Back.Location = new System.Drawing.Point(192, 133);
-            this.btnAxes_Axis_Y2_Back.Size = new System.Drawing.Size(96, 34);
-            this.btnAxes_Axis_Y2_Back.LogAction = true;
-            this.btnAxes_Axis_Y2_Back.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // btnAxes_Axis_Y2_Forward
-            // 
-            this.btnAxes_Axis_Y2_Forward.Name = "btnAxes_Axis_Y2_Forward";
-            this.btnAxes_Axis_Y2_Forward.PlcNumber = 1;
-            this.btnAxes_Axis_Y2_Forward.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.Right;
-            bitAction6.Address = "M44";
-            bitAction6.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnAxes_Axis_Y2_Forward.BitActions.Add(bitAction6);
-            this.btnAxes_Axis_Y2_Forward.Lamp1Address = "M44";
-            this.btnAxes_Axis_Y2_Forward.Location = new System.Drawing.Point(294, 133);
-            this.btnAxes_Axis_Y2_Forward.Size = new System.Drawing.Size(96, 34);
-            this.btnAxes_Axis_Y2_Forward.LogAction = true;
-            this.btnAxes_Axis_Y2_Forward.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // dispAxes_Axis_Y2_Positions
-            // 
-            // Axis Y2 Positions: D54, raw / 10.
-            this.dispAxes_Axis_Y2_Positions.Name = "dispAxes_Axis_Y2_Positions";
-            this.dispAxes_Axis_Y2_Positions.PlcNumber = 1;
-            this.dispAxes_Axis_Y2_Positions.Address = "D54";
-            this.dispAxes_Axis_Y2_Positions.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.dispAxes_Axis_Y2_Positions.Divisor = 10D;
-            this.dispAxes_Axis_Y2_Positions.DecimalPlaces = 1;
-            this.dispAxes_Axis_Y2_Positions.Digits = 7;
-            this.dispAxes_Axis_Y2_Positions.Suffix = "mm";
-            this.dispAxes_Axis_Y2_Positions.Location = new System.Drawing.Point(396, 133);
-            this.dispAxes_Axis_Y2_Positions.Size = new System.Drawing.Size(104, 34);
+            // Axis Y2: axis 3 of the axis settings page (its buttons, position, reference sensor and error come from there).
+            this.axAxes_Axis_Y2_Back.BackColor = System.Drawing.Color.White;
+            this.axAxes_Axis_Y2_Back.Name = "axAxes_Axis_Y2_Back";
+            this.axAxes_Axis_Y2_Back.AxisNumber = 3;
+            this.axAxes_Axis_Y2_Back.PlcNumber = 1;
+            this.axAxes_Axis_Y2_Back.Location = new System.Drawing.Point(192, 198);
+            this.axAxes_Axis_Y2_Back.Size = new System.Drawing.Size(308, 64);
             // 
             // lampAxes_Axis_Y2_Limit
             // 
@@ -390,7 +282,7 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.lampAxes_Axis_Y2_Limit.Address = "X0010";
             this.lampAxes_Axis_Y2_Limit.OnColor = System.Drawing.Color.FromArgb(((int)(((byte)(225)))), ((int)(((byte)(225)))), ((int)(((byte)(225)))));
             this.lampAxes_Axis_Y2_Limit.OffColor = System.Drawing.Color.FromArgb(((int)(((byte)(76)))), ((int)(((byte)(175)))), ((int)(((byte)(80)))));
-            this.lampAxes_Axis_Y2_Limit.Location = new System.Drawing.Point(526, 135);
+            this.lampAxes_Axis_Y2_Limit.Location = new System.Drawing.Point(526, 215);
             this.lampAxes_Axis_Y2_Limit.Size = new System.Drawing.Size(30, 30);
             // 
             // capHead_1_2_Conveyor
@@ -401,7 +293,7 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.capHead_1_2_Conveyor.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.capHead_1_2_Conveyor.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
             this.capHead_1_2_Conveyor.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capHead_1_2_Conveyor.Location = new System.Drawing.Point(16, 170);
+            this.capHead_1_2_Conveyor.Location = new System.Drawing.Point(16, 266);
             this.capHead_1_2_Conveyor.Size = new System.Drawing.Size(170, 40);
             this.capHead_1_2_Conveyor.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             // 
@@ -410,7 +302,7 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.lampAxes_Head_1_2_Conveyor_Back.Name = "lampAxes_Head_1_2_Conveyor_Back";
             this.lampAxes_Head_1_2_Conveyor_Back.PlcNumber = 1;
             this.lampAxes_Head_1_2_Conveyor_Back.Address = "X0031";
-            this.lampAxes_Head_1_2_Conveyor_Back.Location = new System.Drawing.Point(225, 175);
+            this.lampAxes_Head_1_2_Conveyor_Back.Location = new System.Drawing.Point(225, 271);
             this.lampAxes_Head_1_2_Conveyor_Back.Size = new System.Drawing.Size(30, 30);
             // 
             // lampAxes_Head_1_2_Conveyor_Forward
@@ -418,7 +310,7 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.lampAxes_Head_1_2_Conveyor_Forward.Name = "lampAxes_Head_1_2_Conveyor_Forward";
             this.lampAxes_Head_1_2_Conveyor_Forward.PlcNumber = 1;
             this.lampAxes_Head_1_2_Conveyor_Forward.Address = "X0011";
-            this.lampAxes_Head_1_2_Conveyor_Forward.Location = new System.Drawing.Point(327, 175);
+            this.lampAxes_Head_1_2_Conveyor_Forward.Location = new System.Drawing.Point(327, 271);
             this.lampAxes_Head_1_2_Conveyor_Forward.Size = new System.Drawing.Size(30, 30);
             // 
             // capHead_3_4_Conveyor
@@ -429,7 +321,7 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.capHead_3_4_Conveyor.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.capHead_3_4_Conveyor.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
             this.capHead_3_4_Conveyor.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capHead_3_4_Conveyor.Location = new System.Drawing.Point(16, 210);
+            this.capHead_3_4_Conveyor.Location = new System.Drawing.Point(16, 306);
             this.capHead_3_4_Conveyor.Size = new System.Drawing.Size(170, 40);
             this.capHead_3_4_Conveyor.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             // 
@@ -438,7 +330,7 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.lampAxes_Head_3_4_Conveyor_Back.Name = "lampAxes_Head_3_4_Conveyor_Back";
             this.lampAxes_Head_3_4_Conveyor_Back.PlcNumber = 1;
             this.lampAxes_Head_3_4_Conveyor_Back.Address = "X0035";
-            this.lampAxes_Head_3_4_Conveyor_Back.Location = new System.Drawing.Point(225, 215);
+            this.lampAxes_Head_3_4_Conveyor_Back.Location = new System.Drawing.Point(225, 311);
             this.lampAxes_Head_3_4_Conveyor_Back.Size = new System.Drawing.Size(30, 30);
             // 
             // lampAxes_Head_3_4_Conveyor_Forward
@@ -446,7 +338,7 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.lampAxes_Head_3_4_Conveyor_Forward.Name = "lampAxes_Head_3_4_Conveyor_Forward";
             this.lampAxes_Head_3_4_Conveyor_Forward.PlcNumber = 1;
             this.lampAxes_Head_3_4_Conveyor_Forward.Address = "X0025";
-            this.lampAxes_Head_3_4_Conveyor_Forward.Location = new System.Drawing.Point(327, 215);
+            this.lampAxes_Head_3_4_Conveyor_Forward.Location = new System.Drawing.Point(327, 311);
             this.lampAxes_Head_3_4_Conveyor_Forward.Size = new System.Drawing.Size(30, 30);
             // 
             // capGasket_Pressing
@@ -457,7 +349,7 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.capGasket_Pressing.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.capGasket_Pressing.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
             this.capGasket_Pressing.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capGasket_Pressing.Location = new System.Drawing.Point(16, 250);
+            this.capGasket_Pressing.Location = new System.Drawing.Point(16, 346);
             this.capGasket_Pressing.Size = new System.Drawing.Size(170, 40);
             this.capGasket_Pressing.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             // 
@@ -466,7 +358,7 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.lampAxes_Gasket_Pressing_Back.Name = "lampAxes_Gasket_Pressing_Back";
             this.lampAxes_Gasket_Pressing_Back.PlcNumber = 1;
             this.lampAxes_Gasket_Pressing_Back.Address = "M316";
-            this.lampAxes_Gasket_Pressing_Back.Location = new System.Drawing.Point(225, 255);
+            this.lampAxes_Gasket_Pressing_Back.Location = new System.Drawing.Point(225, 351);
             this.lampAxes_Gasket_Pressing_Back.Size = new System.Drawing.Size(30, 30);
             // 
             // lampAxes_Gasket_Pressing_Forward
@@ -474,7 +366,7 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.lampAxes_Gasket_Pressing_Forward.Name = "lampAxes_Gasket_Pressing_Forward";
             this.lampAxes_Gasket_Pressing_Forward.PlcNumber = 1;
             this.lampAxes_Gasket_Pressing_Forward.Address = "M316";
-            this.lampAxes_Gasket_Pressing_Forward.Location = new System.Drawing.Point(327, 255);
+            this.lampAxes_Gasket_Pressing_Forward.Location = new System.Drawing.Point(327, 351);
             this.lampAxes_Gasket_Pressing_Forward.Size = new System.Drawing.Size(30, 30);
             // 
             // capUnit_Up
@@ -485,7 +377,7 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.capUnit_Up.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.capUnit_Up.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
             this.capUnit_Up.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capUnit_Up.Location = new System.Drawing.Point(16, 290);
+            this.capUnit_Up.Location = new System.Drawing.Point(16, 386);
             this.capUnit_Up.Size = new System.Drawing.Size(170, 40);
             this.capUnit_Up.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             // 
@@ -494,7 +386,7 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.lampAxes_Unit_Up_Back.Name = "lampAxes_Unit_Up_Back";
             this.lampAxes_Unit_Up_Back.PlcNumber = 1;
             this.lampAxes_Unit_Up_Back.Address = "X0064";
-            this.lampAxes_Unit_Up_Back.Location = new System.Drawing.Point(225, 295);
+            this.lampAxes_Unit_Up_Back.Location = new System.Drawing.Point(225, 391);
             this.lampAxes_Unit_Up_Back.Size = new System.Drawing.Size(30, 30);
             // 
             // lampAxes_Unit_Up_Forward
@@ -502,7 +394,7 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.lampAxes_Unit_Up_Forward.Name = "lampAxes_Unit_Up_Forward";
             this.lampAxes_Unit_Up_Forward.PlcNumber = 1;
             this.lampAxes_Unit_Up_Forward.Address = "X0065";
-            this.lampAxes_Unit_Up_Forward.Location = new System.Drawing.Point(327, 295);
+            this.lampAxes_Unit_Up_Forward.Location = new System.Drawing.Point(327, 391);
             this.lampAxes_Unit_Up_Forward.Size = new System.Drawing.Size(30, 30);
             // 
             // capHead_Up
@@ -513,7 +405,7 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.capHead_Up.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.capHead_Up.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
             this.capHead_Up.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capHead_Up.Location = new System.Drawing.Point(16, 330);
+            this.capHead_Up.Location = new System.Drawing.Point(16, 426);
             this.capHead_Up.Size = new System.Drawing.Size(170, 40);
             this.capHead_Up.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             // 
@@ -522,7 +414,7 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.lampAxes_Head_Up_Back.Name = "lampAxes_Head_Up_Back";
             this.lampAxes_Head_Up_Back.PlcNumber = 1;
             this.lampAxes_Head_Up_Back.Address = "X0062";
-            this.lampAxes_Head_Up_Back.Location = new System.Drawing.Point(225, 335);
+            this.lampAxes_Head_Up_Back.Location = new System.Drawing.Point(225, 431);
             this.lampAxes_Head_Up_Back.Size = new System.Drawing.Size(30, 30);
             // 
             // lampAxes_Head_Up_Forward
@@ -530,7 +422,7 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.lampAxes_Head_Up_Forward.Name = "lampAxes_Head_Up_Forward";
             this.lampAxes_Head_Up_Forward.PlcNumber = 1;
             this.lampAxes_Head_Up_Forward.Address = "X0063";
-            this.lampAxes_Head_Up_Forward.Location = new System.Drawing.Point(327, 335);
+            this.lampAxes_Head_Up_Forward.Location = new System.Drawing.Point(327, 431);
             this.lampAxes_Head_Up_Forward.Size = new System.Drawing.Size(30, 30);
             // 
             // capUnit_Back
@@ -541,7 +433,7 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.capUnit_Back.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.capUnit_Back.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
             this.capUnit_Back.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capUnit_Back.Location = new System.Drawing.Point(16, 370);
+            this.capUnit_Back.Location = new System.Drawing.Point(16, 466);
             this.capUnit_Back.Size = new System.Drawing.Size(170, 40);
             this.capUnit_Back.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             // 
@@ -550,7 +442,7 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.lampAxes_Unit_Back_Back.Name = "lampAxes_Unit_Back_Back";
             this.lampAxes_Unit_Back_Back.PlcNumber = 1;
             this.lampAxes_Unit_Back_Back.Address = "X0060";
-            this.lampAxes_Unit_Back_Back.Location = new System.Drawing.Point(225, 375);
+            this.lampAxes_Unit_Back_Back.Location = new System.Drawing.Point(225, 471);
             this.lampAxes_Unit_Back_Back.Size = new System.Drawing.Size(30, 30);
             // 
             // lampAxes_Unit_Back_Forward
@@ -558,7 +450,7 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.lampAxes_Unit_Back_Forward.Name = "lampAxes_Unit_Back_Forward";
             this.lampAxes_Unit_Back_Forward.PlcNumber = 1;
             this.lampAxes_Unit_Back_Forward.Address = "X0061";
-            this.lampAxes_Unit_Back_Forward.Location = new System.Drawing.Point(327, 375);
+            this.lampAxes_Unit_Back_Forward.Location = new System.Drawing.Point(327, 471);
             this.lampAxes_Unit_Back_Forward.Size = new System.Drawing.Size(30, 30);
             // 
             // capLubrication
@@ -569,7 +461,7 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.capLubrication.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.capLubrication.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
             this.capLubrication.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capLubrication.Location = new System.Drawing.Point(16, 410);
+            this.capLubrication.Location = new System.Drawing.Point(16, 506);
             this.capLubrication.Size = new System.Drawing.Size(170, 40);
             this.capLubrication.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             // 
@@ -579,11 +471,11 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.btnAxes_Lubrication_Forward.PlcNumber = 1;
             this.btnAxes_Lubrication_Forward.TranslationKey = "Lubrication";
             this.btnAxes_Lubrication_Forward.FallbackText = "Lubrication";
-            bitAction7.Address = "M1005";
-            bitAction7.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnAxes_Lubrication_Forward.BitActions.Add(bitAction7);
+            bitAction1.Address = "M1005";
+            bitAction1.Action = Kaban.Core.Enums.BitActionType.Momentary;
+            this.btnAxes_Lubrication_Forward.BitActions.Add(bitAction1);
             this.btnAxes_Lubrication_Forward.Lamp1Address = "M1005";
-            this.btnAxes_Lubrication_Forward.Location = new System.Drawing.Point(294, 413);
+            this.btnAxes_Lubrication_Forward.Location = new System.Drawing.Point(294, 509);
             this.btnAxes_Lubrication_Forward.Size = new System.Drawing.Size(96, 34);
             this.btnAxes_Lubrication_Forward.LogAction = true;
             this.btnAxes_Lubrication_Forward.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
@@ -672,9 +564,9 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.btnUnits_Supporting_Plate_On_Off.PlcNumber = 1;
             this.btnUnits_Supporting_Plate_On_Off.TranslationKey = "On/Off";
             this.btnUnits_Supporting_Plate_On_Off.FallbackText = "On/Off";
-            bitAction8.Address = "M101";
-            bitAction8.Action = Kaban.Core.Enums.BitActionType.Alternate;
-            this.btnUnits_Supporting_Plate_On_Off.BitActions.Add(bitAction8);
+            bitAction2.Address = "M101";
+            bitAction2.Action = Kaban.Core.Enums.BitActionType.Alternate;
+            this.btnUnits_Supporting_Plate_On_Off.BitActions.Add(bitAction2);
             this.btnUnits_Supporting_Plate_On_Off.Lamp1Address = "M101";
             this.btnUnits_Supporting_Plate_On_Off.Location = new System.Drawing.Point(804, 53);
             this.btnUnits_Supporting_Plate_On_Off.Size = new System.Drawing.Size(70, 34);
@@ -763,9 +655,9 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.btnUnits_Back_Plate_On_Off.PlcNumber = 1;
             this.btnUnits_Back_Plate_On_Off.TranslationKey = "On/Off";
             this.btnUnits_Back_Plate_On_Off.FallbackText = "On/Off";
-            bitAction9.Address = "M102";
-            bitAction9.Action = Kaban.Core.Enums.BitActionType.Alternate;
-            this.btnUnits_Back_Plate_On_Off.BitActions.Add(bitAction9);
+            bitAction3.Address = "M102";
+            bitAction3.Action = Kaban.Core.Enums.BitActionType.Alternate;
+            this.btnUnits_Back_Plate_On_Off.BitActions.Add(bitAction3);
             this.btnUnits_Back_Plate_On_Off.Lamp1Address = "M102";
             this.btnUnits_Back_Plate_On_Off.Location = new System.Drawing.Point(804, 133);
             this.btnUnits_Back_Plate_On_Off.Size = new System.Drawing.Size(70, 34);
@@ -854,9 +746,9 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.btnUnits_Top_Press_On_Off.PlcNumber = 1;
             this.btnUnits_Top_Press_On_Off.TranslationKey = "On/Off";
             this.btnUnits_Top_Press_On_Off.FallbackText = "On/Off";
-            bitAction10.Address = "M103";
-            bitAction10.Action = Kaban.Core.Enums.BitActionType.Alternate;
-            this.btnUnits_Top_Press_On_Off.BitActions.Add(bitAction10);
+            bitAction4.Address = "M103";
+            bitAction4.Action = Kaban.Core.Enums.BitActionType.Alternate;
+            this.btnUnits_Top_Press_On_Off.BitActions.Add(bitAction4);
             this.btnUnits_Top_Press_On_Off.Lamp1Address = "M103";
             this.btnUnits_Top_Press_On_Off.Location = new System.Drawing.Point(804, 213);
             this.btnUnits_Top_Press_On_Off.Size = new System.Drawing.Size(70, 34);
@@ -881,9 +773,9 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.btnUnits_Heater_Plates_On_Off.PlcNumber = 1;
             this.btnUnits_Heater_Plates_On_Off.TranslationKey = "On/Off";
             this.btnUnits_Heater_Plates_On_Off.FallbackText = "On/Off";
-            bitAction11.Address = "M104";
-            bitAction11.Action = Kaban.Core.Enums.BitActionType.Alternate;
-            this.btnUnits_Heater_Plates_On_Off.BitActions.Add(bitAction11);
+            bitAction5.Address = "M104";
+            bitAction5.Action = Kaban.Core.Enums.BitActionType.Alternate;
+            this.btnUnits_Heater_Plates_On_Off.BitActions.Add(bitAction5);
             this.btnUnits_Heater_Plates_On_Off.Lamp1Address = "M104";
             this.btnUnits_Heater_Plates_On_Off.Location = new System.Drawing.Point(804, 253);
             this.btnUnits_Heater_Plates_On_Off.Size = new System.Drawing.Size(70, 34);
@@ -972,9 +864,9 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.btnUnits_Sliding_Sash_Press_On_Off.PlcNumber = 1;
             this.btnUnits_Sliding_Sash_Press_On_Off.TranslationKey = "On/Off";
             this.btnUnits_Sliding_Sash_Press_On_Off.FallbackText = "On/Off";
-            bitAction12.Address = "M196";
-            bitAction12.Action = Kaban.Core.Enums.BitActionType.Alternate;
-            this.btnUnits_Sliding_Sash_Press_On_Off.BitActions.Add(bitAction12);
+            bitAction6.Address = "M196";
+            bitAction6.Action = Kaban.Core.Enums.BitActionType.Alternate;
+            this.btnUnits_Sliding_Sash_Press_On_Off.BitActions.Add(bitAction6);
             this.btnUnits_Sliding_Sash_Press_On_Off.Lamp1Address = "M196";
             this.btnUnits_Sliding_Sash_Press_On_Off.Location = new System.Drawing.Point(804, 333);
             this.btnUnits_Sliding_Sash_Press_On_Off.Size = new System.Drawing.Size(70, 34);
@@ -1031,9 +923,9 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.btnUnits_Automatic_On_Off_On_Off.PlcNumber = 1;
             this.btnUnits_Automatic_On_Off_On_Off.TranslationKey = "On/Off";
             this.btnUnits_Automatic_On_Off_On_Off.FallbackText = "On/Off";
-            bitAction13.Address = "M34";
-            bitAction13.Action = Kaban.Core.Enums.BitActionType.Alternate;
-            this.btnUnits_Automatic_On_Off_On_Off.BitActions.Add(bitAction13);
+            bitAction7.Address = "M34";
+            bitAction7.Action = Kaban.Core.Enums.BitActionType.Alternate;
+            this.btnUnits_Automatic_On_Off_On_Off.BitActions.Add(bitAction7);
             this.btnUnits_Automatic_On_Off_On_Off.Lamp1Address = "M34";
             this.btnUnits_Automatic_On_Off_On_Off.Location = new System.Drawing.Point(804, 413);
             this.btnUnits_Automatic_On_Off_On_Off.Size = new System.Drawing.Size(70, 34);
@@ -1058,9 +950,9 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.btnUnits_Profile_Lifting_On_Off.PlcNumber = 1;
             this.btnUnits_Profile_Lifting_On_Off.TranslationKey = "On/Off";
             this.btnUnits_Profile_Lifting_On_Off.FallbackText = "On/Off";
-            bitAction14.Address = "M105";
-            bitAction14.Action = Kaban.Core.Enums.BitActionType.Alternate;
-            this.btnUnits_Profile_Lifting_On_Off.BitActions.Add(bitAction14);
+            bitAction8.Address = "M105";
+            bitAction8.Action = Kaban.Core.Enums.BitActionType.Alternate;
+            this.btnUnits_Profile_Lifting_On_Off.BitActions.Add(bitAction8);
             this.btnUnits_Profile_Lifting_On_Off.Lamp1Address = "M105";
             this.btnUnits_Profile_Lifting_On_Off.Location = new System.Drawing.Point(804, 453);
             this.btnUnits_Profile_Lifting_On_Off.Size = new System.Drawing.Size(70, 34);
@@ -1085,9 +977,9 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.btnUnits_Profile_Release_On_Off.PlcNumber = 1;
             this.btnUnits_Profile_Release_On_Off.TranslationKey = "On/Off";
             this.btnUnits_Profile_Release_On_Off.FallbackText = "On/Off";
-            bitAction15.Address = "M100";
-            bitAction15.Action = Kaban.Core.Enums.BitActionType.Alternate;
-            this.btnUnits_Profile_Release_On_Off.BitActions.Add(bitAction15);
+            bitAction9.Address = "M100";
+            bitAction9.Action = Kaban.Core.Enums.BitActionType.Alternate;
+            this.btnUnits_Profile_Release_On_Off.BitActions.Add(bitAction9);
             this.btnUnits_Profile_Release_On_Off.Lamp1Address = "M100";
             this.btnUnits_Profile_Release_On_Off.Location = new System.Drawing.Point(804, 493);
             this.btnUnits_Profile_Release_On_Off.Size = new System.Drawing.Size(70, 34);
@@ -1112,9 +1004,9 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.btnUnits_Conveyor_On_Off.PlcNumber = 1;
             this.btnUnits_Conveyor_On_Off.TranslationKey = "On/Off";
             this.btnUnits_Conveyor_On_Off.FallbackText = "On/Off";
-            bitAction16.Address = "M106";
-            bitAction16.Action = Kaban.Core.Enums.BitActionType.Alternate;
-            this.btnUnits_Conveyor_On_Off.BitActions.Add(bitAction16);
+            bitAction10.Address = "M106";
+            bitAction10.Action = Kaban.Core.Enums.BitActionType.Alternate;
+            this.btnUnits_Conveyor_On_Off.BitActions.Add(bitAction10);
             this.btnUnits_Conveyor_On_Off.Lamp1Address = "M106";
             this.btnUnits_Conveyor_On_Off.Location = new System.Drawing.Point(804, 533);
             this.btnUnits_Conveyor_On_Off.Size = new System.Drawing.Size(70, 34);
@@ -1139,9 +1031,9 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.btnUnits_Gasket_Pressing_G_On_Off.PlcNumber = 1;
             this.btnUnits_Gasket_Pressing_G_On_Off.TranslationKey = "On/Off";
             this.btnUnits_Gasket_Pressing_G_On_Off.FallbackText = "On/Off";
-            bitAction17.Address = "M109";
-            bitAction17.Action = Kaban.Core.Enums.BitActionType.Alternate;
-            this.btnUnits_Gasket_Pressing_G_On_Off.BitActions.Add(bitAction17);
+            bitAction11.Address = "M109";
+            bitAction11.Action = Kaban.Core.Enums.BitActionType.Alternate;
+            this.btnUnits_Gasket_Pressing_G_On_Off.BitActions.Add(bitAction11);
             this.btnUnits_Gasket_Pressing_G_On_Off.Lamp1Address = "M109";
             this.btnUnits_Gasket_Pressing_G_On_Off.Location = new System.Drawing.Point(804, 573);
             this.btnUnits_Gasket_Pressing_G_On_Off.Size = new System.Drawing.Size(70, 34);
@@ -1182,9 +1074,9 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.btnUnits_Gasket_Pressing_Y_A_On_Off.PlcNumber = 1;
             this.btnUnits_Gasket_Pressing_Y_A_On_Off.TranslationKey = "On/Off";
             this.btnUnits_Gasket_Pressing_Y_A_On_Off.FallbackText = "On/Off";
-            bitAction18.Address = "M108";
-            bitAction18.Action = Kaban.Core.Enums.BitActionType.Alternate;
-            this.btnUnits_Gasket_Pressing_Y_A_On_Off.BitActions.Add(bitAction18);
+            bitAction12.Address = "M108";
+            bitAction12.Action = Kaban.Core.Enums.BitActionType.Alternate;
+            this.btnUnits_Gasket_Pressing_Y_A_On_Off.BitActions.Add(bitAction12);
             this.btnUnits_Gasket_Pressing_Y_A_On_Off.Lamp1Address = "M108";
             this.btnUnits_Gasket_Pressing_Y_A_On_Off.Location = new System.Drawing.Point(804, 613);
             this.btnUnits_Gasket_Pressing_Y_A_On_Off.Size = new System.Drawing.Size(70, 34);
@@ -1237,19 +1129,13 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.Controls.Add(this.hdPositions);
             this.Controls.Add(this.hdLimit);
             this.Controls.Add(this.capAxis_X);
-            this.Controls.Add(this.btnAxes_Axis_X_Back);
-            this.Controls.Add(this.btnAxes_Axis_X_Forward);
-            this.Controls.Add(this.dispAxes_Axis_X_Positions);
+            this.Controls.Add(this.axAxes_Axis_X_Back);
             this.Controls.Add(this.lampAxes_Axis_X_Limit);
             this.Controls.Add(this.capAxis_Y1);
-            this.Controls.Add(this.btnAxes_Axis_Y1_Back);
-            this.Controls.Add(this.btnAxes_Axis_Y1_Forward);
-            this.Controls.Add(this.dispAxes_Axis_Y1_Positions);
+            this.Controls.Add(this.axAxes_Axis_Y1_Back);
             this.Controls.Add(this.lampAxes_Axis_Y1_Limit);
             this.Controls.Add(this.capAxis_Y2);
-            this.Controls.Add(this.btnAxes_Axis_Y2_Back);
-            this.Controls.Add(this.btnAxes_Axis_Y2_Forward);
-            this.Controls.Add(this.dispAxes_Axis_Y2_Positions);
+            this.Controls.Add(this.axAxes_Axis_Y2_Back);
             this.Controls.Add(this.lampAxes_Axis_Y2_Limit);
             this.Controls.Add(this.capHead_1_2_Conveyor);
             this.Controls.Add(this.lampAxes_Head_1_2_Conveyor_Back);
@@ -1347,19 +1233,13 @@ namespace Kaban.Machines.MK2010.Screens.Manual
         private Kaban.UI.Controls.LabelHMI hdPositions;
         private Kaban.UI.Controls.LabelHMI hdLimit;
         private Kaban.UI.Controls.LabelHMI capAxis_X;
-        private Kaban.UI.Controls.ButtonHMI btnAxes_Axis_X_Back;
-        private Kaban.UI.Controls.ButtonHMI btnAxes_Axis_X_Forward;
-        private Kaban.UI.Controls.NumericDisplayHMI dispAxes_Axis_X_Positions;
+        private Kaban.UI.Controls.AxisUnitHMI axAxes_Axis_X_Back;
         private Kaban.UI.Controls.LampHMI lampAxes_Axis_X_Limit;
         private Kaban.UI.Controls.LabelHMI capAxis_Y1;
-        private Kaban.UI.Controls.ButtonHMI btnAxes_Axis_Y1_Back;
-        private Kaban.UI.Controls.ButtonHMI btnAxes_Axis_Y1_Forward;
-        private Kaban.UI.Controls.NumericDisplayHMI dispAxes_Axis_Y1_Positions;
+        private Kaban.UI.Controls.AxisUnitHMI axAxes_Axis_Y1_Back;
         private Kaban.UI.Controls.LampHMI lampAxes_Axis_Y1_Limit;
         private Kaban.UI.Controls.LabelHMI capAxis_Y2;
-        private Kaban.UI.Controls.ButtonHMI btnAxes_Axis_Y2_Back;
-        private Kaban.UI.Controls.ButtonHMI btnAxes_Axis_Y2_Forward;
-        private Kaban.UI.Controls.NumericDisplayHMI dispAxes_Axis_Y2_Positions;
+        private Kaban.UI.Controls.AxisUnitHMI axAxes_Axis_Y2_Back;
         private Kaban.UI.Controls.LampHMI lampAxes_Axis_Y2_Limit;
         private Kaban.UI.Controls.LabelHMI capHead_1_2_Conveyor;
         private Kaban.UI.Controls.LampHMI lampAxes_Head_1_2_Conveyor_Back;

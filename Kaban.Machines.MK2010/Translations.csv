@@ -123,3 +123,7 @@ Width Y;Width Y;Genişlik Y;;;;
 X Must Be Greater - No / Yes;X Must Be Greater - No / Yes;X Büyük Olmalı - Hayır / Evet;;;;
 X, Y1, Y2;X, Y1, Y2;X, Y1, Y2;;;;
 X1 Feeding with Y - No / Yes;X1 Feeding with Y - No / Yes;Y ile X1 Besleme - Hayır / Evet;;;;
+Axis_MK2010_X;Axis X;X Ekseni;;;;
+Axis_MK2010_Y1;Axis Y1;Y1 Ekseni;;;;
+Axis_MK2010_Y2;Axis Y2;Y2 Ekseni;;;;
+Axes;Axes;Eksenler;;;;

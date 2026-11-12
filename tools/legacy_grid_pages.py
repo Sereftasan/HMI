@@ -471,9 +471,9 @@ class Grid:
             for prop, f in AXIS_FIELDS:
                 if a.get(f): em.p(name, prop, cs(a[f]))
             if a.get('side'): em.p(name, 'ReferenceSensorSide', 'Kaban.UI.Controls.AxisReferenceSide.' + a['side'])
-            em.p(name, 'DecimalPlaces', '2')
+            em.p(name, 'DecimalPlaces', str(a.get('dec', 2)))
             em.p(name, 'Digits', '8')
-            em.p(name, 'Divisor', '10000D')
+            em.p(name, 'Divisor', dnum(a.get('div', 10000)))
             em.p(name, 'HMIAxisIndex', str(a['number']))
             em.p(name, 'Location', 'new System.Drawing.Point(%d, %d)' % (x, y))
             if a.get('motion'):
@@ -594,7 +594,8 @@ def cells(pg):
                     yield dict(kind='axrow', axis=r['axis'])
 
 # an axis's devices an old page showed: its jog buttons, position, limits, calibration, reference sensor and its distance
-# (its error bit and motion module come from the alarm list and the drawings, not from an old page)
+# (its error bit and motion module come from the alarm list and the drawings, not from an old page); div / dec: its
+# values' divisor and decimals (10000 / 2 unless given)
 AXIS_SHOWN = ('back', 'fwd', 'pos', 'min', 'max', 'cal', 'calibrate', 'zdist', 'ref')
 
 def spec_devices(pg):

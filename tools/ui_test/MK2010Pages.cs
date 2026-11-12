@@ -58,11 +58,30 @@ class MKP {
               wx.MaxLimit.TagAddress == "D146" && nums.Any(n => n.Address == "D1202" && n.MaxLimit.TagAddress == "D150") && nums.Any(n => n.Address == "D334"));
         Check("  an operator's to type", nums.All(n => n.RequiredSecurity == SecurityLevel.Operator));
 
+        // 12 November: "We gotta update these controls to axis setting controls first and change their manual movements to axis unit
+        // controls in the manual movement pages" (the user, beside MK2010's Calibration page)
+        Console.WriteLine("--- Calibration: an axis settings row per axis ---");
+        var cal = new ParamCalibration();
+        var rows = Tree(cal).OfType<AxisSettingHMI>().OrderBy(r => r.HMIAxisIndex).ToList();
+        Check("X, Y1, Y2 (1 - 3): their jog M41 / M40, M43 / M42, M45 / M44, positions D50 / D52 / D54 (raw / 10, 1 decimal as the old page)",
+              rows.Count == 3 && rows.Select(r => r.CommandBackAddress + "/" + r.CommandForwardAddress + " " + r.PositionAddress).SequenceEqual(
+                  new[] { "M41/M40 D50", "M43/M42 D52", "M45/M44 D54" }) && rows.All(r => r.Divisor == 10 && r.DecimalPlaces == 1),
+              string.Join(" | ", rows.Select(r => r.CommandBackAddress + "/" + r.CommandForwardAddress + " " + r.PositionAddress)));
+        Check("  the real values D154 / D156 / D158 their calibration, Calibrate M91 / M92 / M93; a Maintenance's",
+              rows.Select(r => r.CalibrationAddress + " " + r.CalibrateAddress).SequenceEqual(new[] { "D154 M91", "D156 M92", "D158 M93" }) &&
+              rows.All(r => r.RequiredSecurity == SecurityLevel.Maintenance));
+        var calAll = Tree(cal).OfType<ButtonHMI>().FirstOrDefault(b => b.FallbackText == "Calibrate All");
+        Check("  Calibrate All sets the three", calAll != null && Bits(calAll) == "M91:SET,M92:SET,M93:SET");
+
         Console.WriteLine("--- Manual Control, References ---");
+        Kaban.UI.Helpers.AlarmHelpLinks.DiscoverAll();
+        Kaban.UI.Helpers.AlarmHelpLinks.Harvest(cal);
         var man = new ManualControl();
-        Check("Axis X: Back M41, Forward M40 (momentary, lit by themselves), position D50 / 10",
-              Bits(Btn(man, "M41")) == "M41:Momentary" && Btn(man, "M41").Lamp1Address == "M41" && Btn(man, "M41").Direction == ButtonGlyphs.Direction.Left &&
-              Btn(man, "M40") != null && Tree(man).OfType<NumericDisplayHMI>().Any(d => d.Address == "D50" && d.Divisor == 10));
+        var axes = Tree(man).OfType<AxisUnitHMI>().OrderBy(u => u.AxisNumber).ToList();
+        Check("X, Y1, Y2 as axis units (1 - 3), each from its row: Axis X Back M41 / Forward M40, position D50 / 10",
+              axes.Count == 3 && axes.All(u => u.IsResolved) && axes[0].Unit.CommandAAddress == "M41" && axes[0].Unit.CommandBAddress == "M40" &&
+              axes[0].Unit.PositionAddress == "D50" && axes[0].Unit.PositionDivisor == 10 && axes[0].Unit.TitleTextKey == "Axis_MK2010_X",
+              axes.Count + " " + string.Join(",", axes.Select(u => u.Unit.TitleTextKey)));
         var lim = Tree(man).OfType<LampHMI>().FirstOrDefault(l => l.Address == "X0006");
         Check("  its limit X0006 lit while the input is OFF (the old negative lamp)", lim != null && lim.OffColor.G > lim.OffColor.R && lim.OnColor.R == lim.OnColor.G);
         Check("the units: Supporting Plate M101, Heater Plates M104, Conveyor M106 ... alternate", new[] { "M101", "M102", "M103", "M104", "M196", "M34", "M105", "M100", "M106", "M109", "M108" }
@@ -77,11 +96,6 @@ class MKP {
               new[] { "M22", "M20", "M21" }.All(a => Tree(refs).OfType<LampHMI>().Any(l => l.Address == a)), all == null ? "-" : Bits(all));
 
         Console.WriteLine("--- Machine Parameters ---");
-        var cal = new ParamCalibration();
-        var calAll = Tree(cal).OfType<ButtonHMI>().FirstOrDefault(b => b.FallbackText == "Calibrate All");
-        Check("Calibration: real values D154 / D156 / D158, Calibrate M91 / M92 / M93, Calibrate All the three",
-              new[] { "D154", "D156", "D158" }.All(a => Tree(cal).OfType<NumericInputHMI>().Any(n => n.Address == a)) && calAll != null &&
-              Bits(calAll) == "M91:SET,M92:SET,M93:SET");
         var sys = new ParamSystem();
         var opts = Tree(sys).OfType<CheckBoxHMI>().Select(o => o.Address).ToList();
         Check("System Parameters: 16 values, the options M1022 M1000 M1026 M1002 M1032 M1024 M1016 M1028",
@@ -112,8 +126,8 @@ class MKP {
         LanguageManager.LoadMachineTranslations(Path.Combine("MK2010", "Translations.csv"));
         var keys = new List<string>();
         foreach (var pg in pages)
-            foreach (var c in Tree(pg))
-                foreach (var pn in new[] { "TranslationKey" }) {
+            foreach (var c in Tree(pg).Where(k => !(k.Parent is AxisUnitHMI)))          // an axis unit's name is its row's
+                foreach (var pn in new[] { "TranslationKey", "AxisNameKey" }) {
                     var pi = c.GetType().GetProperty(pn);
                     var v = pi == null ? null : pi.GetValue(c, null) as string;
                     if (!string.IsNullOrWhiteSpace(v) && !System.Text.RegularExpressions.Regex.IsMatch(v, "^[XYZ][12]?$")) keys.Add(v);
@@ -128,6 +142,7 @@ class MKP {
         if (args.Length > 0) {
             Shot(new HomeJob(), Path.Combine(args[0], "mk_home.png"));
             Shot(new ManualControl(), Path.Combine(args[0], "mk_manual.png"));
+            Shot(new ParamCalibration(), Path.Combine(args[0], "mk_calib.png"));
         }
         Console.WriteLine(fail == 0 ? "\nMK2010 PAGES ALL PASS" : "\nMK2010 PAGES " + fail + " FAILED");
         Environment.Exit(fail == 0 ? 0 : 1);

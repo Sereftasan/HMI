@@ -24,7 +24,7 @@ import os, sys
 sys.dont_write_bytecode = True
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import legacy_grid_pages as G
-from legacy_grid_pages import B, V, N, Lp, P, S, Row, Sec, Panel, page
+from legacy_grid_pages import B, V, N, Lp, P, S, Row, Sec, Panel, page, Ax
 
 G.setup('Kaban.Machines.MK2010', 'MK2010', 'tools/legacy_mk2010_pages.py', '11 November')
 
@@ -51,6 +51,21 @@ page('HomeJob', 'Home', 'ucJobNew', 'Home',
         Row('Quantity', N('D334 16 /1 0', ''), V('D335 16 /10 1', ''))])],
     level='Operator')
 
+# -------------------------------------------------------------- THE AXES ----
+#
+# 12 November (the user, MK2010's Calibration page beside it: "We gotta update these controls to axis setting controls
+# first and change their manual movements to axis unit controls in the manual movement pages"): X, Y1, Y2 as axis
+# settings rows on Calibration - their jog (Manual Control's), position (raw / 10, as the old page), the real value and
+# Calibrate - and axis units on Manual Control. Their motion modules, reference sensors and servo alarms are not on
+# the old pages: they come with the machine's drawings and alarm list.
+for number, cap, en, tr, back, fwd, pos, cal, calibrate in (
+        (1, 'Axis X', 'Axis X', 'X Ekseni', 'M41', 'M40', 'D50', 'D154', 'M91'),
+        (2, 'Axis Y1', 'Axis Y1', 'Y1 Ekseni', 'M43', 'M42', 'D52', 'D156', 'M92'),
+        (3, 'Axis Y2', 'Axis Y2', 'Y2 Ekseni', 'M45', 'M44', 'D54', 'D158', 'M93')):
+    key = 'Axis_MK2010_' + cap.split()[-1]
+    G.AXES[number] = dict(number=number, caption=cap, key=key, back=back, fwd=fwd, pos=pos, cal=cal, calibrate=calibrate, div=10, dec=1)
+    G.TRANSLATIONS[key] = (en, tr)
+
 # ---------------------------------------------------------------- MANUAL ----
 
 # a unit's sensors, a lamp a head (the old page's four small lamps: its hidden rows name them Head 1 ... 4)
@@ -59,9 +74,10 @@ def heads(*addrs):
 
 page('ManualControl', 'Manual', 'ucManuelControl', 'Manual Control',
     [Panel('Axes', [('Name', CAP), ('Back', ARW), ('Forward', ARW), ('Positions', POS), ('Limit', 70)], [
-        Row('Axis X', B('M41/M41', '<'), B('M40/M40', '>'), V('D50 32 /10 1'), Lp('X0006', inv=True)),
-        Row('Axis Y1', B('M43/M43', '<'), B('M42/M42', '>'), V('D52 32 /10 1'), Lp('X0007', inv=True)),
-        Row('Axis Y2', B('M45/M45', '<'), B('M44/M44', '>'), V('D54 32 /10 1'), Lp('X0010', inv=True)),
+        # an axis unit each (12 November): its jog and position from its row on Calibration; the limit switch beside it
+        Row('Axis X', Ax(1, span=3), Lp('X0006', inv=True), h=G.UNIT_ROW_H),
+        Row('Axis Y1', Ax(2, span=3), Lp('X0007', inv=True), h=G.UNIT_ROW_H),
+        Row('Axis Y2', Ax(3, span=3), Lp('X0010', inv=True), h=G.UNIT_ROW_H),
         Row('Head 1-2 Conveyor', Lp('X0031'), Lp('X0011')),
         Row('Head 3-4 Conveyor', Lp('X0035'), Lp('X0025')),
         Row('Gasket Pressing', Lp('M316'), Lp('M316')),
@@ -116,13 +132,15 @@ page('ParamProduction', 'Parameters', 'ucProductionParameters', 'Production Para
         ('Profile - Normal / U', 'M1034'),
         ('Mould - Single / Multiple', 'M1030')]))])
 
+# an axis settings row per axis (12 November): Actual - its position, Real - its calibration value, Calibrate; its jog
+# (Manual Control's) new on this page
+G.EXPECTED['ParamCalibration'] = {'extra': {'M40', 'M41', 'M42', 'M43', 'M44', 'M45'}}
+G.TRANSLATIONS['Axes'] = ('Axes', 'Eksenler')
 page('ParamCalibration', 'Parameters', 'ucCalibration', 'Calibration',
-    [Panel('Calibration', [('Axis', CAP), ('Actual', NUM), ('Real', NUM), ('Calibrate', BTN)], [
-        Row('Axis X', V('D50 32 /10 1'), N('D154 32 /10 1'), B('M91', 'Calibrate')),
-        Row('Axis Y1', V('D52 32 /10 1'), N('D156 32 /10 1'), B('M92', 'Calibrate')),
-        Row('Axis Y2', V('D54 32 /10 1'), N('D158 32 /10 1'), B('M93', 'Calibrate')),
+    [G.AxisRows('Axes', [G.AR(G.AXES[n]) for n in (1, 2, 3)])],
+    [Panel('Calibration', [('Axes', CAP), ('Calibrate', BTN + 20)], [
         # the old page's code sets the three
-        Row('', None, None, B('M91!Set,M92!Set,M93!Set', 'Calibrate All'), key='All')])])
+        Row('X, Y1, Y2', B('M91!Set,M92!Set,M93!Set', 'Calibrate All'), key='All')])])
 
 page('ParamSystem', 'Parameters', 'ucSystemSettings', 'System Parameters',
     [Panel('System', [('Name', 280), ('Value', NUM)], [
