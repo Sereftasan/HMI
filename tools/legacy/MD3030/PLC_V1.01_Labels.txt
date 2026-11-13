@@ -1,0 +1,1549 @@
+# MD3030 PLC program V1.01 (25.07.22) - its global labels (device, label, comment), then its device comments
+
+X20	IN_Rezistanslar_ON	
+X21	IN_StartButonu	
+X22	IN_StopButonu	
+X23	IN_Konveyor_RUN	
+X24	IN_AcilStop	
+X25	IN_BasincSW	
+X26	IN_GovdeY1_ReferansSN	
+X27	IN_GovdeY2_ReferansSN	
+X30	IN_Konveyor_StopSW	
+X31	IN_Pedal	
+Y0	OUT_Rezistans1	
+Y1	OUT_Rezistans2	
+Y2	OUT_Rezistans3	
+Y3	OUT_Rezistans4	
+Y4	OUT_Freze_ArizaReset	
+Y5	OUT_Konveyor_Calis	
+Y6	OUT_VakumMotoru	
+Y7	OUT_YesilLamba	
+Y10	OUT_SariLamba	
+Y11	OUT_KirmiziLamba	
+Y12	OUT_Korna	
+Y13	OUT_GovdeX2_Enkoder_Aktif	
+M0	PC_10mic_Step	
+M1	PC_100mic_Step	
+M2	PC_1000mic_Step	
+M3	PC_GovdeX_ReferansaGit	
+M4	PC_GovdeY1_ReferansaGit	
+M5	PC_GovdeY2_ReferansaGit	
+M6	PC_Z1_ReferansaGit	
+M7	PC_X1_ReferansaGit	
+M8	PC_Y11_ReferansaGit	
+M9	PC_Y12_ReferansaGit	
+M10	PC_Z2_ReferansaGit	
+M11	PC_X2_ReferansaGit	
+M12	PC_Y21_ReferansaGit	
+M13	PC_Y22_ReferansaGit	
+M14	PC_Z3_ReferansaGit	
+M15	PC_X3_ReferansaGit	
+M16	PC_Y31_ReferansaGit	
+M17	PC_Y32_ReferansaGit	
+M18	PC_Z4_ReferansaGit	
+M19	PC_X4_ReferansaGit	
+M20	PC_Y41_ReferansaGit	
+M21	PC_Y42_ReferansaGit	
+M22	PC_GovdeX_Ileri_JOG	
+M23	PC_GovdeY1_Ileri_JOG	
+M24	PC_GovdeY2_Ileri_JOG	
+M25	PC_Z1_Ileri_JOG	
+M26	PC_X1_Ileri_JOG	
+M27	PC_Y11_Ileri_JOG	
+M28	PC_Y12_Ileri_JOG	
+M29	PC_Z2_Ileri_JOG	
+M30	PC_X2_Ileri_JOG	
+M31	PC_Y21_Ileri_JOG	
+M32	PC_Y22_Ileri_JOG	
+M33	PC_Z3_Ileri_JOG	
+M34	PC_X3_Ileri_JOG	
+M35	PC_Y31_Ileri_JOG	
+M36	PC_Y32_Ileri_JOG	
+M37	PC_Z4_Ileri_JOG	
+M38	PC_X4_Ileri_JOG	
+M39	PC_Y41_Ileri_JOG	
+M40	PC_Y42_Ileri_JOG	
+M41	PC_GovdeX_Geri_JOG	
+M42	PC_GovdeY1_Geri_JOG	
+M43	PC_GovdeY2_Geri_JOG	
+M44	PC_Z1_Geri_JOG	
+M45	PC_X1_Geri_JOG	
+M46	PC_Y11_Geri_JOG	
+M47	PC_Y12_Geri_JOG	
+M48	PC_Z2_Geri_JOG	
+M49	PC_X2_Geri_JOG	
+M50	PC_Y21_Geri_JOG	
+M51	PC_Y22_Geri_JOG	
+M52	PC_Z3_Geri_JOG	
+M53	PC_X3_Geri_JOG	
+M54	PC_Y31_Geri_JOG	
+M55	PC_Y32_Geri_JOG	
+M56	PC_Z4_Geri_JOG	
+M57	PC_X4_Geri_JOG	
+M58	PC_Y41_Geri_JOG	
+M59	PC_Y42_Geri_JOG	
+M60	PC_GovdeX_KalibreEt	
+M61	PC_GovdeY1_KalibreEt	
+M62	PC_GovdeY2_KalibreEt	
+M63	PC_Z1_KalibreEt	
+M64	PC_X1_KalibreEt	
+M65	PC_Y11_KalibreEt	
+M66	PC_Y12_KalibreEt	
+M67	PC_Z2_KalibreEt	
+M68	PC_X2_KalibreEt	
+M69	PC_Y21_KalibreEt	
+M70	PC_Y22_KalibreEt	
+M71	PC_Z3_KalibreEt	
+M72	PC_X3_KalibreEt	
+M73	PC_Y31_KalibreEt	
+M74	PC_Y32_KalibreEt	
+M75	PC_Z4_KalibreEt	
+M76	PC_X4_KalibreEt	
+M77	PC_Y41_KalibreEt	
+M78	PC_Y42_KalibreEt	
+M79	PC_RezistansZ1_KalibreEt	
+M80	PC_RezistansZ2_KalibreEt	
+M81	PC_RezistansZ3_KalibreEt	
+M82	PC_RezistansZ4_KalibreEt	
+M83	PC_Baslat	
+M84	PC_Duraklat	
+M85	PC_Iptal	
+M86	PC_ManuelPozisyonla	
+M87	PC_GovdeX2_KalibreEt	
+M88	PC_EnkoderAdresOku	
+M89	PC_EnkoderAdresOku_485BD	
+M100	PC_ReferansaGit	
+M101	PC_ProfilData_Al	
+M102	PC_ProfilData_Alindi	
+M103	AlarmVar	
+M104	UyariVar	
+M105	SayacReset	
+M107	ProfilSecili_Ekrandan	
+M135	OTO_TUNNING	
+M200	MAN_Frezeler_Calis	Momentary
+M201	MAN_UstBaski_SIK	Momentary
+M202	MAN_UstBaski_AC	Momentary
+M203	_MAN_TablaHareket	
+M204	MAN_ProfilBosalt_Ileri	Momentary
+M205	MAN_ProfilBosalt_Geri	Momentary
+M206	_MAN_Konveyor_Yukari	
+M207	_MAN_Konveyor_Asagi	
+M208	MAN_Konveyor_Calis	Momentary
+M209	_MAN_Yaglama	
+M210	MAN_YesilLamba	Momentary
+M211	MAN_SariLamba	Momentary
+M212	MAN_KirmiziLamba	Momentary
+M213	MAN_Korna	Momentary
+M214	MAN_Frezeler_Stop	Momentary
+M215	PC_RezistansZ1_Geri_JOG	
+M215	PC_RezistansZ2_Geri_JOG	M236
+M215	PC_RezistansZ3_Geri_JOG	M238
+M215	PC_RezistansZ4_Geri_JOG	M240
+M216	PC_RezistansZ1_Ileri_JOG	
+M216	PC_RezistansZ2_Ileri_JOG	M237
+M216	PC_RezistansZ3_Ileri_JOG	M239
+M216	PC_RezistansZ4_Ileri_JOG	M241
+M217	MAN_ArkaKucukDikeyBaski_Asagi	Momentary
+M218	MAN_ArkaKucukDikeyBaski_Yukari	Momentary
+M220	MAN_Otomatik_ON_OFF	Alternate
+M222	MAN_Siyirma_Bicak_Ileri	Momentary
+M223	MAN_Siyirma_Bicak_Geri	Momentary
+M224	_MAN_DayamaUnitesi_Geri	
+M225	_MAN_DayamaUnitesi_Ileri	
+M226	_MAN_DayamaPlakasi_Geri	
+M227	_MAN_DayamaPlakasi_Ileri	
+M228	MAN_ArkaKucukYatayBaski_Geri	Momentary
+M229	MAN_ArkaKucukYatayBaski_Ileri	Momentary
+M230	MAN_OnSikma_SIK	Momentary
+M231	MAN_OnSikma_AC	Momentary
+M232	MAN_FrezeUfleme	Momentary
+M233	MAN_Dayama_AltRezistans_Asagi	Momentary
+M234	MAN_Dayama_AltRezistans_Yukari	Momentary
+M235	_MAN_AltRezistans_Yukari	
+M312	RezistansSicaklik_OK	
+M313	Enable	
+M314	PC_Error_Reset	
+M316	OTO_Lamb	
+M500	PC_KonveyorSivicli	
+M600	Kafa1_Freze_Ariza	
+M601	Kafa2_Freze_Ariza	
+M602	Kafa3_Freze_Ariza	
+M603	Kafa4_Freze_Ariza	
+M604	Basinc_Ariza	
+M605	Z1_Servo_Alarm	
+M606	X1_Servo_Alarm	
+M607	Y11_Servo_Alarm	
+M608	Y12_Servo_Alarm	
+M609	Z2_Servo_Alarm	
+M610	X2_Servo_Alarm	
+M611	Y21_Servo_Alarm	
+M612	Y22_Servo_Alarm	
+M613	Z3_Servo_Alarm	
+M614	X3_Servo_Alarm	
+M615	Y31_Servo_Alarm	
+M616	Y32_Servo_Alarm	
+M617	Z4_Servo_Alarm	
+M618	X4_Servo_Alarm	
+M619	Y41_Servo_Alarm	
+M620	Y42_Servo_Alarm	
+M621	GovdeX_Servo_Alarm	
+M622	GovdeY1_Servo_Alarm	
+M623	GovdeY2_Servo_Alarm	
+M624	_Konveyor_Yukari_Cikamadi	
+M625	_Konveyor_Asagi_Inemedi	
+M626	Konveyor_Calismadi	
+M627	YagTanki_Bos	
+M628	Kafa1_SiyirmaBicagi_ileri_Gidemedi	
+M629	Kafa2_SiyirmaBicagi_ileri_Gidemedi	
+M630	Kafa3_SiyirmaBicagi_ileri_Gidemedi	
+M631	Kafa4_SiyirmaBicagi_ileri_Gidemedi	
+M632	Kafa1_SiyirmaBicagi_Geri_Gidemedi	
+M633	Kafa2_SiyirmaBicagi_Geri_Gidemedi	
+M634	Kafa3_SiyirmaBicagi_Geri_Gidemedi	
+M635	Kafa4_SiyirmaBicagi_Geri_Gidemedi	
+M636	Kafa1_AltRezistans_Dayama_Asagi_Inemedi	
+M637	Kafa2_AltRezistans_Dayama_Asagi_Inemedi	
+M638	Kafa3_AltRezistans_Dayama_Asagi_Inemedi	
+M639	Kafa4_AltRezistans_Dayama_Asagi_Inemedi	
+M640	Kafa1_AltRezistans_Dayama_Yukari_Cikamadi	
+M641	Kafa2_AltRezistans_Dayama_Yukari_Cikamadi	
+M642	Kafa3_AltRezistans_Dayama_Yukari_Cikamadi	
+M643	Kafa4_AltRezistans_Dayama_Yukari_Cikamadi	
+M644	Error_M644	
+M645	Error_M645	
+M646	Error_M646	
+M647	Error_M647	
+M648	Error_M648	
+M649	Error_M649	
+M650	Error_M650	
+M651	Error_M651	
+M652	Error_M652	
+M653	Error_M653	
+M654	Error_M654	
+M655	Error_M655	
+M656	Error_M656	
+M657	Error_M657	
+M658	Error_M658	
+M659	Error_M659	
+M660	Sol1_UstBaski_Inemedi	
+M661	Sag1_UstBaski_Inemedi	
+M662	Sol2_UstBaski_Inemedi	
+M663	Sag2_UstBaski_Inemedi	
+M664	Sol3_UstBaski_Inemedi	
+M665	Sag3_UstBaski_Inemedi	
+M666	Sol4_UstBaski_Inemedi	
+M667	Sag4_UstBaski_Inemedi	
+M668	Sol1_UstBaski_Yukari_Cikamadi	
+M669	Sag1_UstBaski_Yukari_Cikamadi	
+M670	Sol2_UstBaski_Yukari_Cikamadi	
+M671	Sag2_UstBaski_Yukari_Cikamadi	
+M672	Sol3_UstBaski_Yukari_Cikamadi	
+M673	Sag3_UstBaski_Yukari_Cikamadi	
+M674	Sol4_UstBaski_Yukari_Cikamadi	
+M675	Sag4_UstBaski_Yukari_Cikamadi	
+M676	Sol1_ArkaKucukYatayBaski_Ileri_Gidemedi	
+M677	Sag1_ArkaKucukYatayBaski_Ileri_Gidemedi	
+M678	Sol2_ArkaKucukYatayBaski_Ileri_Gidemedi	
+M679	Sag2_ArkaKucukYatayBaski_Ileri_Gidemedi	
+M680	Sol3_ArkaKucukYatayBaski_Ileri_Gidemedi	
+M681	Sag3_ArkaKucukYatayBaski_Ileri_Gidemedi	
+M682	Sol4_ArkaKucukYatayBaski_Ileri_Gidemedi	
+M683	Sag4_ArkaKucukYatayBaski_Ileri_Gidemedi	
+M684	Sol1_ArkaKucukYatayBaski_Geri_Gidemedi	
+M685	Sag1_ArkaKucukYatayBaski_Geri_Gidemedi	
+M686	Sol2_ArkaKucukYatayBaski_Geri_Gidemedi	
+M687	Sag2_ArkaKucukYatayBaski_Geri_Gidemedi	
+M688	Sol3_ArkaKucukYatayBaski_Geri_Gidemedi	
+M689	Sag3_ArkaKucukYatayBaski_Geri_Gidemedi	
+M690	Sol4_ArkaKucukYatayBaski_Geri_Gidemedi	
+M691	Sag4_ArkaKucukYatayBaski_Geri_Gidemedi	
+M692	ProfilYuksekligiUygunDegil	
+M693	_DikSiyirma_Yukari_Cakamadi	
+M694	_DikSiyirma_Asagi_Inemedi	
+M695	Makinada_Profil_Var	
+M696	Makinaya_Profil_Yuklenmedi	
+M697	Kafa1_Profil_Uzunluk_Hatasi	
+M698	Kafa2_Profil_Uzunluk_Hatasi	
+M699	Kafa3_Profil_Uzunluk_Hatasi	
+M700	Kafa4_Profil_Uzunluk_Hatasi	
+M701	Error_M701	
+M702	Error_M702	
+M703	Error_M703	
+M704	Error_M704	
+M705	Error_M705	
+M706	Error_M706	
+M707	Error_M707	
+M708	Error_M708	
+M709	Error_M709	
+M710	Error_M710	
+M711	Error_M711	
+M712	Error_M712	
+M713	Error_M713	
+M714	Error_M714	
+M715	Error_M715	
+M716	Error_M716	
+M717	Sol1_OnSikma_Sikamadi	
+M718	Sag1_OnSikma_Sikamadi	
+M719	Sol2_OnSikma_Sikamadi	
+M720	Sag2_OnSikma_Sikamadi	
+M721	Sol3_OnSikma_Sikamadi	
+M722	Sag3_OnSikma_Sikamadi	
+M723	Sol4_OnSikma_Sikamadi	
+M724	Sag4_OnSikma_Sikamadi	
+M725	Sol1_OnSikma_Acamadi	
+M726	Sag1_OnSikma_Acamadi	
+M727	Sol2_OnSikma_Acamadi	
+M728	Sag2_OnSikma_Acamadi	
+M729	Sol3_OnSikma_Acamadi	
+M730	Sag3_OnSikma_Acamadi	
+M731	Sol4_OnSikma_Acamadi	
+M732	Sag4_OnSikma_Acamadi	
+M733	Sol1_ArkaKucukDikeyBaski_Yukari_Cikamadi	
+M734	Sag1_ArkaKucukDikeyBaski_Yukari_Cikamadi	
+M735	Sol2_ArkaKucukDikeyBaski_Yukari_Cikamadi	
+M736	Sag2_ArkaKucukDikeyBaski_Yukari_Cikamadi	
+M737	Sol3_ArkaKucukDikeyBaski_Yukari_Cikamadi	
+M738	Sag3_ArkaKucukDikeyBaski_Yukari_Cikamadi	
+M739	Sol4_ArkaKucukDikeyBaski_Yukari_Cikamadi	
+M740	Sag4_ArkaKucukDikeyBaski_Yukari_Cikamadi	
+M741	Sol1_ArkaKucukDikeyBaski_Asagi_Inemedi	
+M742	Sag1_ArkaKucukDikeyBaski_Asagi_Inemedi	
+M743	Sol2_ArkaKucukDikeyBaski_Asagi_Inemedi	
+M744	Sag2_ArkaKucukDikeyBaski_Asagi_Inemedi	
+M745	Sol3_ArkaKucukDikeyBaski_Asagi_Inemedi	
+M746	Sag3_ArkaKucukDikeyBaski_Asagi_Inemedi	
+M747	Sol4_ArkaKucukDikeyBaski_Asagi_Inemedi	
+M748	Sag4_ArkaKucukDikeyBaski_Asagi_Inemedi	
+M749	GovdeX_Profil_Uzunluk_Hatasi	
+M750	GovdeY1_Profil_Uzunluk_Hatasi	
+M751	GovdeY2_Profil_Uzunluk_Hatasi	
+M752	GovdeX2_Servo_Alarm	
+M753	GovdeX1_EnkoderOkumaHatasi	
+M754	GovdeX2_EnkoderOkumaHatasi	
+M755	GovdeY1_EnkoderOkumaHatasi	
+M756	GovdeY2_EnkoderOkumaHatasi	
+M757	RezistansZ1_Servo_Alarm	
+M758	RezistansZ2_Servo_Alarm	
+M759	RezistansZ3_Servo_Alarm	
+M760	RezistansZ4_Servo_Alarm	
+M761	GovdeX_HedefLİmitDisi	
+M762	GovdeY_HedefLİmitDisi	
+M800	Z1_Error_UYARI	
+M801	X1_Error_UYARI	
+M802	Y11_Error_UYARI	
+M803	Y12_Error_UYARI	
+M804	Z2_Error_UYARI	
+M805	X2_Error_UYARI	
+M806	Y21_Error_UYARI	
+M807	Y22_Error_UYARI	
+M808	Z3_Error_UYARI	
+M809	X3_Error_UYARI	
+M810	Y31_Error_UYARI	
+M811	Y32_Error_UYARI	
+M812	Z4_Error_UYARI	
+M813	X4_Error_UYARI	
+M814	Y41_Error_UYARI	
+M815	Y42_Error_UYARI	
+M816	GovdeX_Error_UYARI	
+M817	GovdeY1_Error_UYARI	
+M818	GovdeY2_Error_UYARI	
+M820	_KaynakMinimumHedefHata	
+L0	PC_OlcuKaynakPayli	
+L3	PC_TestMod	
+L4	_PC_DikBicak	
+L5	PC_BariyerKontrolByPass	
+L6	PC_X1SonraYukleme	
+L7	PC_ProfilUzunlukKontrol	
+L8	PC_ProfilYuklemeKontrolByPass	
+L9	PC_DikBicakTers	
+L10	PC_ArkaKesim	
+L11	PC_FrezeKayisTest	
+L12	PC_OnceProfilYuzeyiTrasla	
+L13	PC_UProfil	
+L15	_PC_ProfilDayamaPistonlu	
+L17	PC_KaynaktanOnceBaski_Rulosuz	
+L18	PC_FrezeTalasTemizleme	
+L19	PC_EritmedenOnceBaski	
+L20	PC_KaynaktaArkaKalipBaski	
+L21	PC_DayamaCitasizProfilDuzeltme	
+L22	PC_Rezistansla_UstBaski	
+L23	PC_GovdeEksenlerEnkoderli	
+L24	PC_Rezistanli_AltBaski	
+L25	PC_YanTablaKontrolPasif	
+L26	PC_TekKafaMakine	
+L27	PC_ProfilYuzeyiTiraslama_UstAltPasif	
+L28	PC_RezistansBaski_Duzeltme	
+L29	PC_AnaKesim_Tekrarla	
+L50	PC_UstSiyirmaAktif	
+L51	PC_AltSiyirmaAktif	
+L52	PC_FrezeAriza_HavaBasinciKontrol_Bypass	
+SM410	Clock_100ms	
+SM412	Clock_1s	
+D4	Kafa1_Rezistans_Sicaklik	
+D5	Kafa2_Rezistans_Sicaklik	
+D6	Kafa3_Rezistans_Sicaklik	
+D7	Kafa4_Rezistans_Sicaklik	
+D8	Kafa1_AltRezistans_Sicaklik	
+D9	Kafa2_AltRezistans_Sicaklik	
+D10	Kafa3_AltRezistans_Sicaklik	
+D11	Kafa4_AltRezistans_Sicaklik	
+D36	PC_ProgramVersiyonu	
+D71	PC_PopUp_No	
+D144	GovdeX_MinimumOlcu	
+D146	GovdeX_MaksimumOlcu	
+D148	GovdeY_MinimumOlcu	
+D150	GovdeY_MaksimumOlcu	
+D328	PC_Adet_Set	
+D346	PC_ProfilGenisligi	
+D347	PC_KalipFarki	
+D349	PC_Sicaklik_Set	
+D358	PC_Adet_Sayac	
+D500	PC_20mA_SicaklikDeğeri	
+D501	PC_Sicaklik_Tolerans	
+D503	PC_Yaglama_BasmaSayisi	
+D504	PC_Yaglama_TankKapasitesi	
+D506	Konveyeor_Gecikme	
+D507	PC_KonveyorSure	
+D508	PC_YaglamaSuresi	
+D510	PC_YaglamaSayaci	
+D512	PC_Yaglama_BasmaSayaci	
+D513	PC_Yaglama_TankSayaci	
+D514	PC_GovdeX_MinimumLimit	
+D516	PC_GovdeY_MinimumLimit	
+D518	PC_GovdeX_MaksimumLimit	
+D520	PC_GovdeY_MaksimumLimit	
+D522	KafaZ_UstLimit	
+D524	KafaZ_AltLimit	
+D526	KafaX_UstLimit	
+D528	KafaX_AltLimit	
+D530	KafaY_UstLimit	
+D532	KafaY_AltLimit	
+D534	RezistansZ_UstLimit	
+D536	RezistansZ_AltLimit	
+D538	RezistansZ_Manuel	
+D600	Kafa1_Sicaklik_Ofset	
+D601	Kafa2_Sicaklik_Ofset	
+D602	Kafa3_Sicaklik_Ofset	
+D603	Kafa4_Sicaklik_Ofset	
+D1200	PC_CerceveOn	
+D1202	PC_CerceveDerinlik	
+D1854	OtoCalismaSureSayici	
+D1856	Kafa1_SolYukseklik_Referans	
+D1858	Kafa1_SagYukseklik_Referans	
+D1860	Kafa2_SolYukseklik_Referans	
+D1862	Kafa2_SagYukseklik_Referans	
+D1864	Kafa3_SolYukseklik_Referans	
+D1866	Kafa3_SagYukseklik_Referans	
+D1868	Kafa4_SolYukseklik_Referans	
+D1870	Kafa4_SagYukseklik_Referans	
+D1900	X_Bicak_Degis_Poz	
+D1902	Z_Bicak_Degis_Poz	
+D1904	X_Rezist_Degis_Poz	
+D1906	Z_Rezist_Degis_Poz	
+D1908	X_Kalip_Degis_Poz	
+D1910	Z_Kalip_Degis_Poz	
+D1912	X_Firca_Degis_Poz	
+D1914	Z_Firca_Degis_Poz	
+D1916	Manuel_Poz_GovdeX	
+D1918	Manuel_Poz_GovdeY1	
+D1920	Manuel_Poz_GovdeY2	
+D1922	KafaX_Manuel_Poz	
+D1924	KafaZ_Manuel_Poz	
+D1926	KafaY_Manuel_Poz	
+D1940	KafaX_Bekleme_Poz	
+D1942	KafaZ_Bekleme_Poz	
+D1944	KafaY_Bekleme_Poz	
+D1988	KafaY_RezistanstanKurtarma_Poz	
+D1992	Profil_Koyma_Ofseti	
+D2000	X1_Home_Pos_Address	
+D2002	Z1_Home_Pos_Address	
+D2004	Y11_Home_Pos_Address	
+D2006	Y12_Home_Pos_Address	
+D2008	X2_Home_Pos_Address	
+D2010	Z2_Home_Pos_Address	
+D2012	Y21_Home_Pos_Address	
+D2014	Y22_Home_Pos_Address	
+D2016	X3_Home_Pos_Address	
+D2018	Z3_Home_Pos_Address	
+D2020	Y31_Home_Pos_Address	
+D2022	Y32_Home_Pos_Address	
+D2024	X4_Home_Pos_Address	
+D2026	Z4_Home_Pos_Address	
+D2028	Y41_Home_Pos_Address	
+D2030	Y42_Home_Pos_Address	
+D2032	GovdeX_Home_Pos_Address	
+D2034	GovdeY1_Home_Pos_Address	
+D2036	GovdeY2_Home_Pos_Address	
+D2038	RezistansZ1_Home_Pos_Address	
+D2040	RezistansZ2_Home_Pos_Address	
+D2042	RezistansZ3_Home_Pos_Address	
+D2044	RezistansZ4_Home_Pos_Address	
+D2048	X1_Prof_Koy_Ofset	
+D2050	Z1_Prof_Koy_Ofset	
+D2052	Y11_Prof_Koy_Ofset	
+D2054	Y12_Prof_Koy_Ofset	
+D2056	Y11_Kesme_Ofset	
+D2058	Y12_Kesme_Ofset	
+D2060	X1_Eritme_Ofset	
+D2062	Z1_Eritme_Ofset	
+D2064	_Y11_Eritme1_Ofset	
+D2066	_Y12_Eritme1_Ofset	
+D2068	Y11_EritmeOfset	
+D2070	Y12_EritmeOfset	
+D2072	_Y11_Kaynak1_Ofset	
+D2074	_Y12_Kaynak1_Ofset	
+D2076	Y11_KaynakOfset	
+D2078	Y12_KaynakOfset	
+D2092	KafaY_YardimciKesim_Ofset	
+D2094	KafaY_YuzeyTemizleme_Ofset	
+D2100	Manuel_Poz_Y11_Ofset	
+D2102	Manuel_Poz_Y12_Ofset	
+D2104	Manuel_Poz_Y21_Ofset	
+D2106	Manuel_Poz_Y22_Ofset	
+D2108	Manuel_Poz_Y31_Ofset	
+D2110	Manuel_Poz_Y32_Ofset	
+D2112	Manuel_Poz_Y41_Ofset	
+D2114	Manuel_Poz_Y42_Ofset	
+D2116	Manuel_Poz_Y11	
+D2118	Manuel_Poz_Y12	
+D2120	Manuel_Poz_Y21	
+D2122	Manuel_Poz_Y22	
+D2124	Manuel_Poz_Y31	
+D2126	Manuel_Poz_Y32	
+D2128	Manuel_Poz_Y41	
+D2130	Manuel_Poz_Y42	
+D2152	Y21_Prof_Koy_Ofset	
+D2154	Y22_Prof_Koy_Ofset	
+D2156	Y21_Kesme_Ofset	
+D2158	Y22_Kesme_Ofset	
+D2160	X2_Eritme_Ofset	
+D2162	Z2_Eritme_Ofset	
+D2164	_Y21_Eritme1_Ofset	
+D2166	_Y22_Eritme1_Ofset	
+D2168	Y21_EritmeOfset	
+D2170	Y22_EritmeOfset	
+D2172	_Y21_Kaynak1_Ofset	
+D2174	_Y22_Kaynak1_Ofset	
+D2176	Y21_KaynakOfset	
+D2178	Y22_KaynakOfset	
+D2252	Y31_Prof_Koy_Ofset	
+D2254	Y32_Prof_Koy_Ofset	
+D2256	Y31_Kesme_Ofset	
+D2258	Y32_Kesme_Ofset	
+D2260	X3_Eritme_Ofset	
+D2262	Z3_Eritme_Ofset	
+D2264	Y31_Eritme1_Ofset	
+D2266	Y32_Eritme1_Ofset	
+D2268	Y31_EritmeOfset	
+D2270	Y32_EritmeOfset	
+D2272	_Y31_Kaynak1_Ofset	
+D2274	_Y32_Kaynak1_Ofset	
+D2276	Y31_KaynakOfset	
+D2278	Y32_KaynakOfset	
+D2352	Y41_Prof_Koy_Ofset	
+D2354	Y42_Prof_Koy_Ofset	
+D2356	Y41_Kesme_Ofset	
+D2358	Y42_Kesme_Ofset	
+D2360	X4_Eritme_Ofset	
+D2362	Z4_Eritme_Ofset	
+D2364	_Y41_Eritme1_Ofset	
+D2366	_Y42_Eritme1_Ofset	
+D2368	Y41_EritmeOfset	
+D2370	Y42_EritmeOfset	
+D2372	_Y41_Kaynak1_Ofset	
+D2374	_Y42_Kaynak1_Ofset	
+D2376	Y41_KaynakOfset	
+D2378	Y42_KaynakOfset	
+D2400	OVERRIDE	
+D2404	Eritme_Yaklasma_Hiz	
+D2406	Eritme_Hiz	
+D2408	Eritme_Süresi	
+D2410	Kaynatma_Yaklasma_Hiz	
+D2412	Kaynatma_Hiz	
+D2414	Kaynak_Suresi	
+D2416	PC_GovdeX_Bosaltma_Ilerleme	
+D2418	Kafa_Manuel_Hiz	
+D2420	Kafa_Bosta_Hiz	
+D2422	Kafa_FrezeYuzeyTemizleme_Hiz	
+D2424	Govde_X_Manuel_Hiz	
+D2426	Govde_Y_Manuel_Hiz	
+D2428	Govde_X_Bosta_Hiz	
+D2430	Govde_X_Bosaltma_Hiz	
+D2432	Govde_Y_Bosta_Hiz	
+D2434	UstRezistansBaski_Hiz	
+D2434	RezistansZ_BostaHiz	
+D2436	UstRezistansBaski_BasmaMiktari	
+D2540	GovdeY_Yukleme_Poz	
+D2548	X1_KalibrasyonPoz	
+D2550	Z1_KalibrasyonPoz	
+D2552	Y11_KalibrasyonPoz	
+D2554	Y12_KalibrasyonPoz	
+D2556	X2_KalibrasyonPoz	
+D2558	Z2_KalibrasyonPoz	
+D2560	Y21_KalibrasyonPoz	
+D2562	Y22_KalibrasyonPoz	
+D2564	X3_KalibrasyonPoz	
+D2566	Z3_KalibrasyonPoz	
+D2568	Y31_KalibrasyonPoz	
+D2570	Y32_KalibrasyonPoz	
+D2572	X4_KalibrasyonPoz	
+D2574	Z4_KalibrasyonPoz	
+D2576	Y41_KalibrasyonPoz	
+D2578	Y42_KalibrasyonPoz	
+D2580	GovdeX_KalibrasyonPoz	
+D2582	GovdeY1_KalibrasyonPoz	
+D2584	GovdeY2_KalibrasyonPoz	
+D2586	PC_EritmeTorku	
+D2587	PC_KaynatmaTorku	
+D2588	PC_UstRezistansBaskiTorku	
+D2589	PC_ArkaKalipBasmaTorku	
+D2590	PC_AnaEksenlerTorkLimit	
+D2592	PC_UProfil_Genislik_Ofseti	
+D2594	PC_Govde_X_Bos_Ilerleme_UProfil	
+D2596	PC_Z_DayamadanKurtarma_Poz	
+D2650	Kafa_Siyirma_Hiz	
+D2652	Ust_Siyirma_ReferenceZ	
+D2654	Alt_Siyirma_ReferenceZ	
+D2656	Z1_Ust_Siyirma_Ofset	
+D2658	Z1_Alt_Siyirma_Ofset	
+D2660	Z2_Ust_Siyirma_Ofset	
+D2662	Z2_Alt_Siyirma_Ofset	
+D2664	Z3_Ust_Siyirma_Ofset	
+D2666	Z3_Alt_Siyirma_Ofset	
+D2668	Z4_Ust_Siyirma_Ofset	
+D2670	Z4_Alt_Siyirma_Ofset	
+D2672	X_Freze_Ust_Siyirma_Mesafesi	
+D2674	ArkaKesme_X_Mesafesi	
+D2676	GovdeX_KonveyorLimit	
+D2678	KafaX_UniteUcuPozisyonu	
+D2680	DikBicak_X_Mesafesi	
+D2682	AltDikBicak_X1_Ofseti	
+D2684	AltDikBicak_X2_Ofseti	
+D2686	AltDikBicak_X3_Ofseti	
+D2688	AltDikBicak_X4_Ofseti	
+D2690	UstDikBicak_X1_Ofseti	
+D2692	UstDikBicak_X2_Ofseti	
+D2694	UstDikBicak_X3_Ofseti	
+D2696	UstDikBicak_X4_Ofseti	
+D2698	ArkaKesme_Z_Mesafesi	
+D2732	Profil_UstSiyirmaBaslangic_X	
+D2734	Profil_AltSiyirmaBaslangic_X	
+D2736	X_Ust_Siyirma_Uzunlugu	
+D2738	X_Alt_Siyirma_Uzunlugu	
+D2740	PC_ProfilYuksekliği	
+D2742	Profil_Z1_Ust_Siyirma_Ofset	
+D2744	Profil_Z1_Alt_Siyirma_Ofset	
+D2746	Profil_Z2_Ust_Siyirma_Ofset	
+D2748	Profil_Z2_Alt_Siyirma_Ofset	
+D2750	Profil_Z3_Ust_Siyirma_Ofset	
+D2752	Profil_Z3_Alt_Siyirma_Ofset	
+D2754	Profil_Z4_Ust_Siyirma_Ofset	
+D2756	Profil_Z4_Alt_Siyirma_Ofset	
+D2758.0	ProfilAltDikBicakAktif	
+D2758.1	ProfilUstDikBicakAktif	
+D2758.2	ProfilAltSiyirmaAktif	
+D2758.3	ProfilUstSiyirmaAktif	
+D2760	Freze_BicakKesimAdimi	
+D2762	Freze_BicakAgizSayisi	
+D2763	Freze_Devir	
+D2764	PC_KaynaktanSonra_SiyirmaGecikme	
+D2766	PC_ArkaKalipBasma_X_Ofseti	
+D2768	PC_ArkaKalipBasma_Z_Ofseti	
+D2770	Y11_RezistansBaski_Ofsetİ	
+D2772	Y12_RezistansBaski_Ofsetİ	
+D2774	Y21_RezistansBaski_Ofsetİ	
+D2776	Y22_RezistansBaski_Ofsetİ	
+D2778	Y31_RezistansBaski_Ofsetİ	
+D2780	Y32_RezistansBaski_Ofsetİ	
+D2782	Y41_RezistansBaski_Ofsetİ	
+D2784	Y42_RezistansBaski_Ofsetİ	
+D2800	PC_GovdeX1_Enkoder	
+D2802	PC_GovdeX2_Enkoder	
+D2804	PC_GovdeY1_Enkoder	
+D2806	PC_GovdeY2_Enkoder	
+D2808	PC_GovdeX1_Offset	
+D2810	PC_GovdeX2_Offset	
+D2812	PC_GovdeY1_Offset	
+D2814	PC_GovdeY2_Offset	
+D2816	PC_GovdeX1_EnkoderAdresi	
+D2817	PC_GovdeX2_EnkoderAdresi	
+D2818	PC_GovdeY1_EnkoderAdresi	
+D2819	PC_GovdeY2_EnkoderAdresi	
+D2820	PC_GovdeX_Encoder_PozisyonToleransi	
+D2822	PC_Okunan_Adress	
+D2824	PC_Alt_Res_Min_Sic	
+D2826	PC_GovdeY_Encoder_PozisyonToleransi	
+D2999	VeriAlma_Index	
+D3000	TABLO_TAKIM	
+D3001	TABLO_KOMUT	
+D3002	TABLO_X_SET_POZ	
+D3004	TABLO_Z_SET_POZ	
+D3006	TABLO_RADUS_Y1_SET_POZ	
+D3008	TABLO_Y2_SET_POZ	
+D3010	TABLO_HIZ_SET	
+D6600	Z1_ZFaz_Fark	
+D6601	X1_ZFaz_Fark	
+D6602	Y11_ZFaz_Fark	
+D6603	Y12_ZFaz_Fark	
+D6604	Z2_ZFaz_Fark	
+D6605	X2_ZFaz_Fark	
+D6606	Y21_ZFaz_Fark	
+D6607	Y22_ZFaz_Fark	
+D6608	Z3_ZFaz_Fark	
+D6609	X3_ZFaz_Fark	
+D6610	Y31_ZFaz_Fark	
+D6611	Y32_ZFaz_Fark	
+D6612	Z4_ZFaz_Fark	
+D6613	X4_ZFaz_Fark	
+D6614	Y41_ZFaz_Fark	
+D6615	Y42_ZFaz_Fark	
+D6616	GovdeX_ZFaz_Fark	
+D6617	GovdeY1_ZFaz_Fark	
+D6618	GovdeY2_ZFaz_Fark	
+D6619	RezistansZ1_ZFaz_Fark	
+D6620	RezistansZ2_ZFaz_Fark	
+D6621	RezistansZ3_ZFaz_Fark	
+D6622	RezistansZ4_ZFaz_Fark	
+D6640	Ax1_Yuklenme	
+D6641	Ax2_Yuklenme	
+D6642	Ax3_Yuklenme	
+D6643	Ax4_Yuklenme	
+D6644	Ax5_Yuklenme	
+D6645	Ax6_Yuklenme	
+D6646	Ax7_Yuklenme	
+D6647	Ax8_Yuklenme	
+D6648	Ax9_Yuklenme	
+D6649	Ax10_Yuklenme	
+D6650	Ax11_Yuklenme	
+D6651	Ax12_Yuklenme	
+D6652	Ax13_Yuklenme	
+D6653	Ax14_Yuklenme	
+D6654	Ax15_Yuklenme	
+D6655	Ax16_Yuklenme	
+D6656	Ax17_Yuklenme	
+D6657	Ax18_Yuklenme	
+D6658	Ax19_Yuklenme	
+D6660	X1_Home_Pos_Address_Yrd	
+D6662	Z1_Home_Pos_Address_Yrd	
+D6664	Y11_Home_Pos_Address_Yrd	
+D6666	Y12_Home_Pos_Address_Yrd	
+D6668	X2_Home_Pos_Address_Yrd	
+D6670	Z2_Home_Pos_Address_Yrd	
+D6672	Y21_Home_Pos_Address_Yrd	
+D6674	Y22_Home_Pos_Address_Yrd	
+D6676	X3_Home_Pos_Address_Yrd	
+D6678	Z3_Home_Pos_Address_Yrd	
+D6680	Y31_Home_Pos_Address_Yrd	
+D6682	Y32_Home_Pos_Address_Yrd	
+D6684	X4_Home_Pos_Address_Yrd	
+D6686	Z4_Home_Pos_Address_Yrd	
+D6688	Y41_Home_Pos_Address_Yrd	
+D6690	Y42_Home_Pos_Address_Yrd	
+D6698	YaglamaUyariSayici	
+D6699	BakimUyariSayici	
+D6700	GenelBakimUyariSayici	
+D7000	ArkaKesim_X1_Ofset	
+D7002	ArkaKesim_X2_Ofset	
+D7004	ArkaKesim_X3_Ofset	
+D7006	ArkaKesim_X4_Ofset	
+D7008	ArkaKesim_Z1_Ofset	
+D7010	ArkaKesim_Z2_Ofset	
+D7012	ArkaKesim_Z3_Ofset	
+D7014	ArkaKesim_Z4_Ofset	
+D7016	BakimPeriyodu	
+D7018	BakimPeriyoduSayac	
+D7020	GenelBakimPeriyodu	
+D7022	GenelBakimPeriyoduSayac	
+D7024	PC_ProfilBoyOlcumTorku	
+D7025	PC_BaskidanSonraEritmeSuresi	
+D7028	PC_Baski_EritmeY_Ofset	
+D7030	PC_Freze_Ufleme_X_Mesafesi	
+D7032	PC_Freze_Ufleme_Z_Mesafesi	
+D7034	PC_FrezeUfleme_Hiz	
+D7036	PC_UstRezistans_BaskiSuresi	
+D7038	PC_AltRezistans_BaskiSuresi	
+D7040	PC_CeneAciklikOfseti	
+D7042	PC_AnaKesimOfseti	
+D7044	RezistansZ1_Kalibrasyon_Poz	
+D7046	RezistansZ2_Kalibrasyon_Poz	
+D7048	RezistansZ3_Kalibrasyon_Poz	
+D7050	RezistansZ4_Kalibrasyon_Poz	
+D7052	GovdeY_EnkoderToleransi	
+D7054	ProfilYukseklikToleransi	
+D7056	CenelerArasiMinimumMesafe	
+D7058	RezistansEritmeMiktari	
+D7060	FrezeKesmeMiktari	
+D7062	RezistansGenisligi	
+D7070	Freze_UctanUcaMesafe	
+D7078	DayamaCitasiGenisligi	
+D7086	KaynaktanOnceBaskiPlakasiGenisligi	
+W0.0	IN_X1_ReferansSN	
+W0.1	IN_Y11_ReferansSN	
+W0.2	IN_Y12_ReferansSN	
+W0.3	IN_Z1_ReferansSN	
+W0.4	IN_RezistansZ1_ReferansSN	
+W0.5	IN_Kafa1_Dayama_Yukarida	
+W0.6	IN_Sol1_UstBaski_GerideSN	
+W0.7	IN_Sag1_UstBaski_GerideSN	
+W1.0	IN_Sol1_OnSikma_GerideSN	
+W1.1	IN_Sag1_OnSikma_GerideSN	
+W1.2	IN_Sol1_ArkaKucukDikeyBaski_AsagidaSN_NC	
+W1.3	IN_Sag1_ArkaKucukDikeyBaski_AsagidaSN_NC	
+W1.4	IN_Sol1_ArkaKucukYatayBaski_GerideSN	
+W1.5	IN_Sag1_ArkaKucukYatayBaski_GerideSN	
+W1.6	IN_Kafa1_Siyirma_GerideSN	
+W1.7	IN_Kafa1_Siyirma_IlerideSN	
+W1.8	IN_Freze1_Ariza	
+W10.0	IN_X2_ReferansSN	
+W10.1	IN_Y21_ReferansSN	
+W10.2	IN_Y22_ReferansSN	
+W10.3	IN_Z2_ReferansSN	
+W10.4	IN_RezistansZ2_ReferansSN	
+W10.5	IN_Kafa2_Dayama_Yukarida	
+W10.6	IN_Sol2_UstBaski_GerideSN	
+W10.7	IN_Sag2_UstBaski_GerideSN	
+W11.0	IN_Sol2_OnSikma_GerideSN	
+W11.1	IN_Sag2_OnSikma_GerideSN	
+W11.2	IN_Sol2_ArkaKucukDikeyBaski_AsagidaSN_NC	
+W11.3	IN_Sag2_ArkaKucukDikeyBaski_AsagidaSN_NC	
+W11.4	IN_Sol2_ArkaKucukYatayBaski_GerideSN	
+W11.5	IN_Sag2_ArkaKucukYatayBaski_GerideSN	
+W11.6	IN_Kafa2_Siyirma_GerideSN	
+W11.7	IN_Kafa2_Siyirma_IlerideSN	
+W11.8	IN_Freze2_Ariza	
+W20.0	IN_X3_ReferansSN	
+W20.1	IN_Y31_ReferansSN	
+W20.2	IN_Y32_ReferansSN	
+W20.3	IN_Z3_ReferansSN	
+W20.4	IN_RezistansZ3_ReferansSN	
+W20.5	IN_Kafa3_Dayama_Yukarida	
+W20.6	IN_Sol3_UstBaski_GerideSN	
+W20.7	IN_Sag3_UstBaski_GerideSN	
+W21.0	IN_Sol3_OnSikma_GerideSN	
+W21.1	IN_Sag3_OnSikma_GerideSN	
+W21.2	IN_Sol3_ArkaKucukDikeyBaski_AsagidaSN_NC	
+W21.3	IN_Sag3_ArkaKucukDikeyBaski_AsagidaSN_NC	
+W21.4	IN_Sol3_ArkaKucukYatayBaski_GerideSN	
+W21.5	IN_Sag3_ArkaKucukYatayBaski_GerideSN	
+W21.6	IN_Kafa3_Siyirma_GerideSN	
+W21.7	IN_Kafa3_Siyirma_IlerideSN	
+W21.8	IN_Freze3_Ariza	
+W30.0	IN_X4_ReferansSN	
+W30.1	IN_Y41_ReferansSN	
+W30.2	IN_Y42_ReferansSN	
+W30.3	IN_Z4_ReferansSN	
+W30.4	IN_RezistansZ4_ReferansSN	
+W30.5	IN_Kafa4_Dayama_Yukarida	
+W30.6	IN_Sol4_UstBaski_GerideSN	
+W30.7	IN_Sag4_UstBaski_GerideSN	
+W31.0	IN_Sol4_OnSikma_GerideSN	
+W31.1	IN_Sag4_OnSikma_GerideSN	
+W31.2	IN_Sol4_ArkaKucukDikeyBaski_AsagidaSN_NC	
+W31.3	IN_Sag4_ArkaKucukDikeyBaski_AsagidaSN_NC	
+W31.4	IN_Sol4_ArkaKucukYatayBaski_GerideSN	
+W31.5	IN_Sag4_ArkaKucukYatayBaski_GerideSN	
+W31.6	IN_Kafa4_Siyirma_GerideSN	
+W31.7	IN_Kafa4_Siyirma_IlerideSN	
+W31.8	IN_Freze4_Ariza	
+W100.0	OUT_Z1_Fren	
+W100.1	OUT_AltRezistans1	
+W100.2	OUT_Freze1_Calis	
+W100.3	OUT_RezistansZ1_Fren	
+W101.0	OUT_UstBaski_Sol1_SIK	
+W101.1	OUT_UstBaski_Sol1_AC	
+W101.2	OUT_UstBaski_Sag1_SIK	
+W101.3	OUT_UstBaski_Sag1_AC	
+W101.4	OUT_OnSikma1_SIK	
+W101.5	OUT_OnSikma1_AC	
+W101.6	OUT_ArkaKucukDikeyBaski1_Yukari	
+W101.7	OUT_ArkaKucukDikeyBaski1_Asagi	
+W101.8	OUT_ArkaKucukYatayBaski1_Ileri	
+W101.9	OUT_ArkaKucukYatayBaski1_Geri	
+W101.A	OUT_Dayama_AltRezistans1_Yukari	
+W101.B	OUT_Dayama_AltRezistans1_Asagi	
+W101.C	OUT_ProfilBosaltma1_Ileri	
+W101.E	OUT_Siyirma_Bicak1_Ileri	
+W110.0	OUT_Z2_Fren	
+W110.1	OUT_AltRezistans2	
+W110.2	OUT_Freze2_Calis	
+W110.3	OUT_RezistansZ2_Fren	
+W111.0	OUT_UstBaski_Sol2_SIK	
+W111.1	OUT_UstBaski_Sol2_AC	
+W111.2	OUT_UstBaski_Sag2_SIK	
+W111.3	OUT_UstBaski_Sag2_AC	
+W111.4	OUT_OnSikma2_SIK	
+W111.5	OUT_OnSikma2_AC	
+W111.6	OUT_ArkaKucukDikeyBaski2_Yukari	
+W111.7	OUT_ArkaKucukDikeyBaski2_Asagi	
+W111.8	OUT_ArkaKucukYatayBaski2_Ileri	
+W111.9	OUT_ArkaKucukYatayBaski2_Geri	
+W111.A	OUT_Dayama_AltRezistans2_Yukari	
+W111.B	OUT_Dayama_AltRezistans2_Asagi	
+W111.C	OUT_ProfilBosaltma2_Ileri	
+W111.E	OUT_Siyirma_Bicak2_Ileri	
+W112.0	OUT_GovdeY1_Fren_AC	
+W120.0	OUT_Z3_Fren	
+W120.1	OUT_AltRezistans3	
+W120.2	OUT_Freze3_Calis	
+W120.3	OUT_RezistansZ3_Fren	
+W121.0	OUT_UstBaski_Sol3_SIK	
+W121.1	OUT_UstBaski_Sol3_AC	
+W121.2	OUT_UstBaski_Sag3_SIK	
+W121.3	OUT_UstBaski_Sag3_AC	
+W121.4	OUT_OnSikma3_SIK	
+W121.5	OUT_OnSikma3_AC	
+W121.6	OUT_ArkaKucukDikeyBaski3_Yukari	
+W121.7	OUT_ArkaKucukDikeyBaski3_Asagi	
+W121.8	OUT_ArkaKucukYatayBaski3_Ileri	
+W121.9	OUT_ArkaKucukYatayBaski3_Geri	
+W121.A	OUT_Dayama_AltRezistans3_Yukari	
+W121.B	OUT_Dayama_AltRezistans3_Asagi	
+W121.C	OUT_ProfilBosaltma3_Ileri	
+W121.E	OUT_Siyirma_Bicak3_Ileri	
+W122.0	OUT_GovdeY2_Fren_AC	
+W130.0	OUT_Z4_Fren	
+W130.1	OUT_AltRezistans4	
+W130.2	OUT_Freze4_Calis	
+W130.3	OUT_RezistansZ4_Fren	
+W131.0	OUT_UstBaski_Sol4_SIK	
+W131.1	OUT_UstBaski_Sol4_AC	
+W131.2	OUT_UstBaski_Sag4_SIK	
+W131.3	OUT_UstBaski_Sag4_AC	
+W131.4	OUT_OnSikma4_SIK	
+W131.5	OUT_OnSikma4_AC	
+W131.6	OUT_ArkaKucukDikeyBaski4_Yukari	
+W131.7	OUT_ArkaKucukDikeyBaski4_Asagi	
+W131.8	OUT_ArkaKucukYatayBaski4_Ileri	
+W131.9	OUT_ArkaKucukYatayBaski4_Geri	
+W131.A	OUT_Dayama_AltRezistans4_Yukari	
+W131.B	OUT_Dayama_AltRezistans4_Asagi	
+W131.C	OUT_ProfilBosaltma4_Ileri	
+W131.E	OUT_Siyirma_Bicak4_Ileri	
+W132.0	OUT_GovdeX_Fren_AC	
+W141.0	MAN_UstBaski_Sol1_SIK	
+W141.1	MAN_UstBaski_Sol1_AC	
+W141.2	MAN_UstBaski_Sag1_SIK	
+W141.3	MAN_UstBaski_Sag1_AC	
+W141.4	MAN_OnSikma1_SIK	
+W141.5	MAN_OnSikma1_AC	
+W141.6	MAN_ArkaKucukDikeyBaski1_Yukari	
+W141.7	MAN_ArkaKucukDikeyBaski1_Asagi	
+W141.8	MAN_ArkaKucukYatayBaski1_Ileri	
+W141.9	MAN_ArkaKucukYatayBaski1_Geri	
+W141.A	MAN_Dayama_AltRezistans1_Yukari	
+W141.B	MAN_Dayama_AltRezistans1_Asagi	
+W141.C	MAN_ProfilBosaltma1_Ileri	
+W141.E	MAN_Siyirma_Bicak1_Ileri	
+W151.0	MAN_UstBaski_Sol2_SIK	
+W151.1	MAN_UstBaski_Sol2_AC	
+W151.2	MAN_UstBaski_Sag2_SIK	
+W151.3	MAN_UstBaski_Sag2_AC	
+W151.4	MAN_OnSikma2_SIK	
+W151.5	MAN_OnSikma2_AC	
+W151.6	MAN_ArkaKucukDikeyBaski2_Yukari	
+W151.7	MAN_ArkaKucukDikeyBaski2_Asagi	
+W151.8	MAN_ArkaKucukYatayBaski2_Ileri	
+W151.9	MAN_ArkaKucukYatayBaski2_Geri	
+W151.A	MAN_Dayama_AltRezistans2_Yukari	
+W151.B	MAN_Dayama_AltRezistans2_Asagi	
+W151.C	MAN_ProfilBosaltma2_Ileri	
+W151.E	MAN_Siyirma_Bicak2_Ileri	
+W161.0	MAN_UstBaski_Sol3_SIK	
+W161.1	MAN_UstBaski_Sol3_AC	
+W161.2	MAN_UstBaski_Sag3_SIK	
+W161.3	MAN_UstBaski_Sag3_AC	
+W161.4	MAN_OnSikma3_SIK	
+W161.5	MAN_OnSikma3_AC	
+W161.6	MAN_ArkaKucukDikeyBaski3_Yukari	
+W161.7	MAN_ArkaKucukDikeyBaski3_Asagi	
+W161.8	MAN_ArkaKucukYatayBaski3_Ileri	
+W161.9	MAN_ArkaKucukYatayBaski3_Geri	
+W161.A	MAN_Dayama_AltRezistans3_Yukari	
+W161.B	MAN_Dayama_AltRezistans3_Asagi	
+W161.C	MAN_ProfilBosaltma3_Ileri	
+W161.E	MAN_Siyirma_Bicak3_Ileri	
+W171.0	MAN_UstBaski_Sol4_SIK	
+W171.1	MAN_UstBaski_Sol4_AC	
+W171.2	MAN_UstBaski_Sag4_SIK	
+W171.3	MAN_UstBaski_Sag4_AC	
+W171.4	MAN_OnSikma4_SIK	
+W171.5	MAN_OnSikma4_AC	
+W171.6	MAN_ArkaKucukDikeyBaski4_Yukari	
+W171.7	MAN_ArkaKucukDikeyBaski4_Asagi	
+W171.8	MAN_ArkaKucukYatayBaski4_Ileri	
+W171.9	MAN_ArkaKucukYatayBaski4_Geri	
+W171.A	MAN_Dayama_AltRezistans4_Yukari	
+W171.B	MAN_Dayama_AltRezistans4_Asagi	
+W171.C	MAN_ProfilBosaltma4_Ileri	
+W171.E	MAN_Siyirma_Bicak4_Ileri	
+U1\G2400	Y11_AxisPoz	
+U1\G2417.3	Y11_HPR_request	
+U1\G2417.4	Y11_HPR_complete	
+U1\G2417.D	Y11_Error	
+U1\G2477.0	Y11_Servo_ready	
+U1\G2477.7	Y11_Servo_Error	
+U1\G2500	Y12_AxisPoz	
+U1\G2517.3	Y12_HPR_request	
+U1\G2517.4	Y12_HPR_complete	
+U1\G2517.D	Y12_Error	
+U1\G2577.0	Y12_Servo_ready	
+U1\G2577.7	Y12_Servo_Error	
+U1\G2600	Y21_AxisPoz	
+U1\G2617.3	Y21_HPR_request	
+U1\G2617.4	Y21_HPR_complete	
+U1\G2617.D	Y21_Error	
+U1\G2677.0	Y21_Servo_ready	
+U1\G2677.7	Y21_Servo_Error	
+U1\G2700	Y22_AxisPoz	
+U1\G2717.3	Y22_HPR_request	
+U1\G2717.4	Y22_HPR_complete	
+U1\G2717.D	Y22_Error	
+U1\G2777.0	Y22_Servo_ready	
+U1\G2777.7	Y22_Servo_Error	
+U1\G2800	Y31_AxisPoz	
+U1\G2817.3	Y31_HPR_request	
+U1\G2817.4	Y31_HPR_complete	
+U1\G2817.D	Y31_Error	
+U1\G2877.0	Y31_Servo_ready	
+U1\G2877.7	Y31_Servo_Error	
+U1\G2900	Y32_AxisPoz	
+U1\G2917.3	Y32_HPR_request	
+U1\G2917.4	Y32_HPR_complete	
+U1\G2917.D	Y32_Error	
+U1\G2977.0	Y32_Servo_ready	
+U1\G2977.7	Y32_Servo_Error	
+U1\G3000	Y41_AxisPoz	
+U1\G3017.3	Y41_HPR_request	
+U1\G3017.4	Y41_HPR_complete	
+U1\G3017.D	Y41_Error	
+U1\G3077.0	Y41_Servo_ready	
+U1\G3077.7	Y41_Servo_Error	
+U1\G3100	Y42_AxisPoz	
+U1\G3117.3	Y42_HPR_request	
+U1\G3117.4	Y42_HPR_complete	
+U1\G3117.D	Y42_Error	
+U1\G3177.0	Y42_Servo_ready	
+U1\G3177.7	Y42_Servo_Error	
+U1\G4300	Y11_Pos_Start_No	
+U1\G4302.0	Y11_Error_Reset	
+U1\G4400	Y12_Pos_Start_No	
+U1\G4402.0	Y12_Error_Reset	
+U1\G4500	Y21_Pos_Start_No	
+U1\G4502.0	Y21_Error_Reset	
+U1\G4600	Y22_Pos_Start_No	
+U1\G4602.0	Y22_Error_Reset	
+U1\G4700	Y31_Pos_Start_No	
+U1\G4702.0	Y31_Error_Reset	
+U1\G4800	Y32_Pos_Start_No	
+U1\G4802.0	Y32_Error_Reset	
+U1\G4900	Y41_Pos_Start_No	
+U1\G4902.0	Y41_Error_Reset	
+U1\G5000	Y42_Pos_Start_No	
+U1\G5002.0	Y42_Error_Reset	
+U1\G30101.0	Y11_Fwd_JOG	
+U1\G30102.0	Y11_Rev_JOG	
+U1\G30104.0	Y11_Pos_Start	
+U1\G30111.0	Y12_Fwd_JOG	
+U1\G30112.0	Y12_Rev_JOG	
+U1\G30114.0	Y12_Pos_Start	
+U1\G30121.0	Y21_Fwd_JOG	
+U1\G30122.0	Y21_Rev_JOG	
+U1\G30124.0	Y21_Pos_Start	
+U1\G30131.0	Y22_Fwd_JOG	
+U1\G30132.0	Y22_Rev_JOG	
+U1\G30134.0	Y22_Pos_Start	
+U1\G30141.0	Y31_Fwd_JOG	
+U1\G30142.0	Y31_Rev_JOG	
+U1\G30144.0	Y31_Pos_Start	
+U1\G30151.0	Y32_Fwd_JOG	
+U1\G30152.0	Y32_Rev_JOG	
+U1\G30154.0	Y32_Pos_Start	
+U1\G30161.0	Y41_Fwd_JOG	
+U1\G30162.0	Y41_Rev_JOG	
+U1\G30164.0	Y41_Pos_Start	
+U1\G30171.0	Y42_Fwd_JOG	
+U1\G30172.0	Y42_Rev_JOG	
+U1\G30174.0	Y42_Pos_Start	
+U1\G31501.0	Y11_Busy	
+U1\G31501.1	Y12_Busy	
+U1\G31501.2	Y21_Busy	
+U1\G31501.3	Y22_Busy	
+U1\G31501.4	Y31_Busy	
+U1\G31501.5	Y32_Busy	
+U1\G31501.6	Y41_Busy	
+U1\G31501.7	Y42_Busy	
+U2\G2400	X1_AxisPoz	
+U2\G2417.3	X1_HPR_request	
+U2\G2417.4	X1_HPR_complete	
+U2\G2417.D	X1_Error	
+U2\G2477.0	X1_Servo_ready	
+U2\G2477.7	X1_Servo_Error	
+U2\G2500	Z1_AxisPoz	
+U2\G2517.3	Z1_HPR_request	
+U2\G2517.4	Z1_HPR_complete	
+U2\G2517.D	Z1_Error	
+U2\G2577.0	Z1_Servo_ready	
+U2\G2577.7	Z1_Servo_Error	
+U2\G2600	X2_AxisPoz	
+U2\G2617.3	X2_HPR_request	
+U2\G2617.4	X2_HPR_complete	
+U2\G2617.D	X2_Error	
+U2\G2677.0	X2_Servo_ready	
+U2\G2677.7	X2_Servo_Error	
+U2\G2700	Z2_AxisPoz	
+U2\G2717.3	Z2_HPR_request	
+U2\G2717.4	Z2_HPR_complete	
+U2\G2717.D	Z2_Error	
+U2\G2777.0	Z2_Servo_ready	
+U2\G2777.7	Z2_Servo_Error	
+U2\G2800	GovdeX1_AxisPoz	
+U2\G2817.3	GOVDE_X_HPR_request	
+U2\G2817.4	GOVDE_X_HPR_complete	
+U2\G2817.D	GOVDE_X_Error	
+U2\G2877.0	GOVDE_X_Servo_ready	
+U2\G2877.7	GOVDE_X_Servo_Error	
+U2\G2900	GovdeX2_AxisPoz	
+U2\G2917.3	GOVDE_X2_HPR_request	
+U2\G2917.D	GOVDE_X2_Error	
+U2\G2977.0	GOVDE_X2_Servo_ready	
+U2\G2977.7	GOVDE_X2_Servo_Error	
+U2\G3000	RezistansZ1_AxisPoz	
+U2\G3017.3	RezistansZ1_HPR_request	
+U2\G3017.4	RezistansZ1_HPR_complete	
+U2\G3017.D	RezistansZ1_Error	
+U2\G3077.0	RezistansZ1_Servo_ready	
+U2\G3077.7	RezistansZ1_Servo_Error	
+U2\G3100	RezistansZ2_AxisPoz	
+U2\G3117.3	RezistansZ2_HPR_request	
+U2\G3117.4	RezistansZ2_HPR_complete	
+U2\G3117.D	RezistansZ2_Error	
+U2\G3177.0	RezistansZ2_Servo_ready	
+U2\G3177.7	RezistansZ2_Servo_Error	
+U2\G4300	X1_Pos_Start_No	
+U2\G4302.0	X1_Error_Reset	
+U2\G4400	Z1_Pos_Start_No	
+U2\G4402.0	Z1_Error_Reset	
+U2\G4500	X2_Pos_Start_No	
+U2\G4502.0	X2_Error_Reset	
+U2\G4600	Z2_Pos_Start_No	
+U2\G4602.0	Z2_Error_Reset	
+U2\G4700	GOVDE_X_Pos_Start_No	
+U2\G4702.0	GOVDE_X_Error_Reset	
+U2\G4802.0	GOVDE_X2_Error_Reset	
+U2\G4900	RezistansZ1_Pos_Start_No	
+U2\G4902.0	RezistansZ1_Error_Reset	
+U2\G5000	RezistansZ2_Pos_Start_No	
+U2\G5002.0	RezistansZ2_Error_Reset	
+U2\G30101.0	X1_Fwd_JOG	
+U2\G30102.0	X1_Rev_JOG	
+U2\G30104.0	X1_Pos_Start	
+U2\G30111.0	Z1_Fwd_JOG	
+U2\G30112.0	Z1_Rev_JOG	
+U2\G30114.0	Z1_Pos_Start	
+U2\G30121.0	X2_Fwd_JOG	
+U2\G30122.0	X2_Rev_JOG	
+U2\G30124.0	X2_Pos_Start	
+U2\G30131.0	Z2_Fwd_JOG	
+U2\G30132.0	Z2_Rev_JOG	
+U2\G30134.0	Z2_Pos_Start	
+U2\G30144.0	GOVDE_X_Pos_Start	
+U2\G30164.0	RezistansZ1_Pos_Start	
+U2\G30174.0	RezistansZ2_Pos_Start	
+U2\G31501.0	X1_Busy	
+U2\G31501.1	Z1_Busy	
+U2\G31501.2	X2_Busy	
+U2\G31501.3	Z2_Busy	
+U2\G31501.4	GOVDE_X_Busy	
+U2\G31501.5	GOVDE_X2_Busy	
+U2\G31501.6	RezistansZ1_Busy	
+U2\G31501.7	RezistansZ2_Busy	
+U3\G2400	RezistansZ3_AxisPoz	
+U3\G2417.3	RezistansZ3_HPR_request	
+U3\G2417.4	RezistansZ3_HPR_complete	
+U3\G2417.D	RezistansZ3_Error	
+U3\G2477.0	RezistansZ3_Servo_ready	
+U3\G2477.7	RezistansZ3_Servo_Error	
+U3\G2500	GovdeY1_AxisPoz	
+U3\G2517.3	GOVDE_Y1_HPR_request	
+U3\G2517.4	GOVDE_Y1_HPR_complete	
+U3\G2517.D	GOVDE_Y1_Error	
+U3\G2577.0	GOVDE_Y1_Servo_ready	
+U3\G2577.7	GOVDE_Y1_Servo_Error	
+U3\G2600	GovdeY2_AxisPoz	
+U3\G2617.3	GOVDE_Y2_HPR_request	
+U3\G2617.4	GOVDE_Y2_HPR_complete	
+U3\G2617.D	GOVDE_Y2_Error	
+U3\G2677.0	GOVDE_Y2_Servo_ready	
+U3\G2677.7	GOVDE_Y2_Servo_Error	
+U3\G2700	RezistansZ4_AxisPoz	
+U3\G2717.3	RezistansZ4_HPR_request	
+U3\G2717.4	RezistansZ4_HPR_complete	
+U3\G2717.D	RezistansZ4_Error	
+U3\G2777.0	RezistansZ4_Servo_ready	
+U3\G2777.7	RezistansZ4_Servo_Error	
+U3\G2800	X3_AxisPoz	
+U3\G2817.3	X3_HPR_request	
+U3\G2817.4	X3_HPR_complete	
+U3\G2817.D	X3_Error	
+U3\G2877.0	X3_Servo_ready	
+U3\G2877.7	X3_Servo_Error	
+U3\G2900	Z3_AxisPoz	
+U3\G2917.3	Z3_HPR_request	
+U3\G2917.4	Z3_HPR_complete	
+U3\G2917.D	Z3_Error	
+U3\G2977.0	Z3_Servo_ready	
+U3\G2977.7	Z3_Servo_Error	
+U3\G3000	X4_AxisPoz	
+U3\G3017.3	X4_HPR_request	
+U3\G3017.4	X4_HPR_complete	
+U3\G3017.D	X4_Error	
+U3\G3077.0	X4_Servo_ready	
+U3\G3077.7	X4_Servo_Error	
+U3\G3100	Z4_AxisPoz	
+U3\G3117.3	Z4_HPR_request	
+U3\G3117.4	Z4_HPR_complete	
+U3\G3117.D	Z4_Error	
+U3\G3177.0	Z4_Servo_ready	
+U3\G3177.7	Z4_Servo_Error	
+U3\G4300	RezistansZ3_Pos_Start_No	
+U3\G4302.0	RezistansZ3_Error_Reset	
+U3\G4400	GOVDE_Y1_Pos_Start_No	
+U3\G4402.0	GOVDE_Y1_Error_Reset	
+U3\G4500	GOVDE_Y2_Pos_Start_No	
+U3\G4502.0	GOVDE_Y2_Error_Reset	
+U3\G4600	RezistansZ4_Pos_Start_No	
+U3\G4602.0	RezistansZ4_Error_Reset	
+U3\G4700	X3_Pos_Start_No	
+U3\G4702.0	X3_Error_Reset	
+U3\G4800	Z3_Pos_Start_No	
+U3\G4802.0	Z3_Error_Reset	
+U3\G4900	X4_Pos_Start_No	
+U3\G4902.0	X4_Error_Reset	
+U3\G5000	Z4_Pos_Start_No	
+U3\G5002.0	Z4_Error_Reset	
+U3\G30104.0	RezistansZ3_Pos_Start	
+U3\G30114.0	GOVDE_Y1_Pos_Start	
+U3\G30124.0	GOVDE_Y2_Pos_Start	
+U3\G30134.0	RezistansZ4_Pos_Start	
+U3\G30141.0	X3_Fwd_JOG	
+U3\G30142.0	X3_Rev_JOG	
+U3\G30144.0	X3_Pos_Start	
+U3\G30151.0	Z3_Fwd_JOG	
+U3\G30152.0	Z3_Rev_JOG	
+U3\G30154.0	Z3_Pos_Start	
+U3\G30161.0	X4_Fwd_JOG	
+U3\G30162.0	X4_Rev_JOG	
+U3\G30164.0	X4_Pos_Start	
+U3\G30171.0	Z4_Fwd_JOG	
+U3\G30172.0	Z4_Rev_JOG	
+U3\G30174.0	Z4_Pos_Start	
+U3\G31501.0	RezistansZ3_Busy	
+U3\G31501.1	GOVDE_Y1_Busy	
+U3\G31501.2	GOVDE_Y2_Busy	
+U3\G31501.3	RezistansZ4_Busy	
+U3\G31501.4	X3_Busy	
+U3\G31501.5	Z3_Busy	
+U3\G31501.6	X4_Busy	
+U3\G31501.7	Z4_Busy	
+SD4500	Kafa1_SolYukseklik_Enkoder	
+SD4530	Kafa1_SagYukseklik_Enkoder	
+SD4560	Kafa2_SolYukseklik_Enkoder	
+SD4590	Kafa2_SagYukseklik_Enkoder	
+SD4620	Kafa3_SolYukseklik_Enkoder	
+SD4650	Kafa3_SagYukseklik_Enkoder	
+SD4680	Kafa4_SolYukseklik_Enkoder	
+SD4710	Kafa4_SagYukseklik_Enkoder	
+SD6301	Kafa1_Rezistans_Okunan_Analog	
+SD6341	Kafa1_AltRezistans_Okunan_Analog	
+SD6381	Kafa2_Rezistans_Okunan_Analog	
+SD6421	Kafa2_AltRezistans_Okunan_Analog	
+SD6661	Kafa3_Rezistans_Okunan_Analog	
+SD6701	Kafa3_AltRezistans_Okunan_Analog	
+SD6741	Kafa4_Rezistans_Okunan_Analog	
+SD6781	Kafa4_AltRezistans_Okunan_Analog	
+
+# the device comments (9790 comments of the modules' buffer memory - the positioning modules' own parameter names - left out)
+SM8561	Sending Request
+SM8562	Receiving Completed
+B0	Konveryor Yukari Profil Var Kontrol
+B1	Bekleme Poz SFS
+B2	Kafa Y'ler Bekleme Poz
+B3	Rezistans Yukari ve Merkeze
+B4	X ve Z'ler Bekleme Pozisyonuna
+B5	Eksen Referansa Hazirla
+B6	Rererans Icin Pistonlar Geri
+B7	Servo ON Bekle
+BA	Kafa1_HPR
+BB	Y11-Y12 HPR_Ok
+BC	Rezistans Merkezleme
+BD	X1 HPR
+BE	X1 HPR OK
+BF	Z1 HPR
+B10	Z1 HPR Ok
+B14	Kafa2_HPR
+B15	Y21-Y22 HPR_Ok
+B16	Rezistans Merkezleme
+B17	X2 HPR
+B18	X2 HPR OK
+B19	Z2 HPR
+B1A	Z2 HPR Ok
+B1E	Kafa3_HPR
+B1F	Y31-Y32 HPR_Ok
+B20	Rezistans Merkezleme
+B21	X3 HPR
+B22	X3 HPR OK
+B23	Z3 HPR
+B24	Z3 HPR Ok
+B28	Kafa4_HPR
+B29	Y41-Y42 HPR_Ok
+B2A	Rezistans Merkezleme
+B2B	X4 HPR
+B2C	X4 HPR OK
+B2D	Z4 HPR
+B2E	Z4 HPR Ok
+B32	GOVDE Y1 HPR
+B33	Y1_Bosluk_Alma
+B34	Y1_Encoder_Okuma
+B35	Y1_Axis_Encoder_Esitleme
+B37	GOVDE Y2 HPR
+B38	Y2_Bosluk_Alma
+B39	Y2_Encoder_Okuma
+B3A	Y2_Axis_Encoder_Esitleme
+B64	MANUEL POSİZYONLAMA
+B65	KAFA Y'LER BEKLEME NOK
+B66	KAFA X VE Z LER MAN POZISYONUNA
+B67	KAFA Y'LER MAN POZİSYONUNA
+B68	Kafa1 Y Manuel Posizyonuna
+B69	KAFA LAR MAN POZDA
+B6A	GOVDE_MAN_POZİSYONLA
+B6B	Govde X_Y1_Y2 İnterpole Man Pozisyonuna
+B6C	GÖVDE MAN POZDA
+BC8	Kafa1 Temizleme
+BC9	Kafa1_Temizleme Frezeler Kontrol
+BCA	Kafa1 Hiz Pozisyon Atama
+BCC	Kafa1 XZ Tablo
+BCD	ABS X1
+BCE	ABS Z1
+BCF	ABS X1-Z1
+BD0	CCW X1-Z1
+BD1	CW X1-Z1
+BD2	Y_Kacma
+BD3	LIN_ABS4-X1-Z1-Y11-Y12
+BD7	Pozisyon Sonu Index Artırma
+BDC	Kafa2 Temizleme
+BDD	Kafa2_Temizleme Frezeler Kontrol
+BDE	Kafa2 Hiz Pozisyon Atama
+BE0	Kafa2 XZ Tablo
+BE1	ABS X2
+BE2	ABS Z2
+BE3	ABS X2-Z2
+BE4	CCW X2-Z2
+BE5	CW X2-Z2
+BE6	Y_Kacma
+BE7	LIN_ABS4-X2-Z2-Y21-Y22
+BEB	Pozisyon Sonu Index Artırma
+BF0	Kafa3 Temizleme
+BF1	Kafa3_Temizleme Frezeler Kontrol
+BF2	Kafa3 Hiz Pozisyon Atama
+BF4	Kafa3 XZ Tablo
+BF5	ABS X3
+BF6	ABS Z3
+BF7	ABS X3-Z3
+BF8	CCW X3-Z3
+BF9	CW X3-Z3
+BFA	Y_Kacma
+BFB	LIN_ABS4-X3-Z3-Y31-Y32
+BFF	Pozisyon Sonu Index Artırma
+B104	Kafa4 Temizleme
+B105	Kafa4_Temizleme Frezeler Kontrol
+B106	Kafa4 Hiz Pozisyon Atama
+B108	Kafa4 XZ Tablo
+B109	ABS X4
+B10A	ABS Z4
+B10B	ABS X4-Z4
+B10C	CCW X4-Z4
+B10D	CW X4-Z4
+B10E	Y_Kacma
+B10F	LIN_ABS4-X4-Z4-Y41-Y42
+B113	Pozisyon Sonu Index Artırma
+B12C	Otomatik Calisma Start
+B12D	Konveyor Asagidaysa
+B12E	Kafa Y Bekleme Poza
+B12F	Rezistans Yukari ve Merkeze
+B130	Kafa XZ Profil Koyma Poza
+B131	Kafa Y Profil Koyma Poza
+B132	Govde X Profil Koyma Y Yukleme Poza
+B133	Tum Eksenler Pozdaysa
+B134	Start Butonuna Bekle
+B135	Govde X Profil Poza Yaklas
+B136	Govde Y Profil Koyma Poz
+B137	In_StartButonu Varsa
+B138	Govde XY Profil Poza
+B139	Encoder Duzeltme
+B13A	Start Butonuna Bekle
+B13B	Frezeler Calis Baskilar Sık
+B13C	Kafa Y Kesme Poza
+B13D	Temizleme SFS Baslat
+B13E	Temizleme Bittiyse
+B13F	Kafa Y Bekleme Poza
+B141	Kafa XZ Freze Ufleme Ust Baslama Poza
+B142	Kafa XZ Freze Ufleme Ust Bitis Poza
+B143	Kafa XZ Freze Ufleme Alt Bitis Poza
+B144	Kafa XZ Freze Ufleme Alt Baslama Poza
+B145	Eritmeden Once Baski Kontrol
+B146	Kafa XZ Ust Yaklasma Poza
+B147	Kafa Y Baski Poza
+B148	Kafa Z Ust Baski Poza
+B149	Ust Baski Bekle
+B14A	Kafa Y Bekleme Poza
+B14B	Kafa XZ Alt Yaklasma Poza
+B14C	Kafa Y Baski Poza
+B14D	Kafa Z Alt Baski Poza
+B14E	Alt Baski Bekle
+B14F	Kafa Y Bekleme Poza
+B150	Kafa XZ Bekleme Poza
+B151	Frezeler Stop Sıcaklık Kontrol
+B152	Start Butonuna Bekle
+B153	Tabla Hareket
+B154	Rezistans Asagi
+B156	Kafa Y Eritme1 Poza
+B157	Kafa Y Eritme2 Poza
+B158	Eritme Suresi Gecikme
+B159	Kafa Y RezistansTemizleme / Bekleme Poza
+B15A	Rezistans Yukari
+B15C	Kafa XZ Ust Baski Yaklasma Poza
+B15D	Kafa Y Rulosuz Baski Yaklasma Poza
+B15E	Kafa XZ Ust Baski Yaklasma Poza
+B15F	Kafa Y Baski Poza
+B160	Kafa XZ Ust Baski Baslama Poza
+B161	Kafa XZ Ust Baski Bitis Poza
+B162	Kafa Y Bekleme Poza
+B163	Kafa XZ Alt Baski Kacis Poza
+B164	Kafa Y Rulosuz Baski Yaklasma Poza
+B165	Kafa XZ Alt Baski Yaklasma Poza
+B166	Kafa Y Baski Poza
+B167	Kafa XZ Alt Baski Bitis Poza
+B168	Kafa XZ Alt Baski Baslama Poza
+B169	Kafa Y Rezistans Temizleme Poza (Rulosuz Baskida)
+B16A	Kafa X Bekleme Poza
+B16B	Kafa Y Rezistans Temizleme Poza
+B16C	Rezistans Asagi YanTabla Ileri
+B16D	Kafa Y Eritme Poza
+B16E	Kafa Y Rezistans Temizleme Poza
+B16F	Rezistans Yukari
+B171	Kafa Y Kaynak1 ve  Z Arka Baski Poza
+B173	Kafa X Arka Baski Poza
+B175	Kafa Y Kaynak2 Poza
+B176	Kaynak Suresi Gecikme
+B177	Kafa X Bekleme Poza
+B178	Kaynaktan Sonra Siyirma Kontrol
+B179	Ust Baski Ac Tabla Hareket
+B17A	Ust Baski Sik
+B17B	Kafa X Bekleme Z Ust Siyirma Yaklasma Poza
+B17C	Kafa XZ Ust SiyirmaYaklasma Poza
+B17D	Kafa XZ Ust Siyirma Baslangic Poza
+B17E	Kafa X Ust Siyirma Bitis Poza
+B17F	Kafa Z Ust Siyirma Yaklasma Poza
+B180	Kafa XZ Ust Dik Bicak Siyirma Poza
+B181	Ust Dik Bicak Kesim icin Z Yukari
+B182	Ust Dik Bicak Asagi
+B183	Kafa X Bekleme  Z Ust Sıyırma Yaklasma Poza
+B184	Kafa Z Alt Siyirma Yaklasma Poza
+B185	Kafa XZ Alt Siyirma Yaklasma Poza
+B186	Kafa XZ Alt Siyirma Baslangıc Poza
+B187	Kafa X Alt Siyirma Bitis Poza
+B188	Kafa Z Alt Siyirma Yaklasma Poza
+B189	Kafa XZ Alt Dik Bicak Siyirma Poza
+B18A	Alt Dik Bicak Kesim icin Kafa Z Asagi
+B18B	Alt Dik Bicak Asagi
+B18C	Kafa XZ Bekleme Poza
+B18D	Temizleme SFC Baslat (Arka Kesme)
+B18E	Arka Kesme Bittiyse
+B18F	Kafa XZ Bekleme Poza
+B192	Ust Baskılar Ac
+B193	Kafa Y Bekleme Poza
+B194	Konveyor Guvenliyse
+B195	Govde X Bosaltma Poza
+B196	Konveyor Yukari
+B197	Profil Bosaltma Ileri Govde X Bosaltma Poza
+B198	Konveyor Start
+B1A4	Govde X Tandem Pro
+B1A5	X1 okuma
+B1A6	X2 Okuma
+B1A7	Otomatik Kontrol
+B1A8	Fark Hesaplama
+B1A9	Duzeltme Yap
+B1AA	Eksenleri Duzeltme
+B1AB	Senkrona Sokma
+B2 (local, program 6)	Bekleme_Poz-SFS
+B9 (local, program 0)	Start Bekleme
+BE (local, program 0)	Start Bekleme 2
+BF (local, program 0)	Eritme 2 Poza
+B16 (local, program 8)	Y1_Encoder_Okuma
+B1E (local, program 0)	Kaynatma 2 Poza
+B2B (local, program 0)	Start Bekleme 3
+B67 (local, program 0)	Ust_Baskilar_Ac
+B68 (local, program 0)	Y_Bekleme_Poza
+D0	Z1 Current Poz
+D10	Z1 Current Poz
+D12	Z1 Tork
+D20	X1_Current_Poz
+D22	X1 Tork
+D36	Program Versiyonu
+D40	Y11 Current Poz
+D42	Y11 Tork
+D60	Y12 Current Poz
+D62	Y12 Tork
+D80	Z2 CURRENT POZ
+D82	Z2 Tork
+D100	X2 CURRENT POZ
+D102	X2 Tork
+D120	Y21 Current Poz
+D122	Y21 Tork
+D140	Y22 Current Poz
+D142	Y22 Tork
+D160	Z3 CURRENT POZ
+D162	Z3 Tork
+D180	X3 CURRENT POZ
+D182	X3 Tork
+D200	Y31 Current Poz
+D202	Sayfa Değişkeni
+D209	Sayfa Değişkeni
+D220	Y32 Current Poz
+D222	Y32 Tork
+D240	Z4 CURRENT POZ
+D242	Z4 Tork
+D260	X4 CURRENT POZ
+D262	X4 Tork
+D280	Y41 Current Poz
+D282	Y41 Tork
+D300	Y42 Current Poz
+D302	Y42 Tork
+D850	Current_X
+D852	Current_Z
+D854	Hedef_X
+D856	Hedef_Z
+D858	Radyus
+D860	yolX
+D862	yolz
+D866	yolx2
+D868	yolz2
+D870	x2+z2
+(device code 101) 1	Kafa1 Tablo Yazma Sonu
+(device code 101) 2	Kafa2 Tablo Yazma Sonu
+(device code 101) 3	Kafa3 Tablo Yazma Sonu
+(device code 101) 4	Kafa4 Tablo Yazma Sonu
+(device code 114) 0	Otomatik Calisma
+(device code 114) 1	Kafa1 Temizleme
+(device code 114) 2	Kafa2 Temizleme
+(device code 114) 3	Kafa3 Temizleme
+(device code 114) 4	Kafa4 Temizleme
+(device code 114) 5	Manuel Pozisyonlama
+(device code 114) 6	Baslangic Konumuna
+(device code 114) 8	Referans
+(device code 114) 10	IPTAL
+(device code 114) 11	GovdeX Tandem
+(device code 114) 12	Govde Y Enkoder Poz Okuma
+(device code 114) 13	GovdeY2 Referans
+(device code 114) 14	Govde Y Enkoder Poz Okuma
+(device code 114) 15	Kafa3 Temizleme
