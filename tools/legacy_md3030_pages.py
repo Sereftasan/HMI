@@ -61,18 +61,32 @@ page('HomeJob', 'Home', ['ucMainControlPanel', 'ucJobDimentions', 'ucActiveJobSc
 # the stripping knife's (the drawings: "Sıyırma Bıçağı" back W1.6 / forward W1.7), so it is a cylinder below; its
 # old calibration values stay on Axis Calibration as they were. The error bits are the alarm list's servo alarms.
 
+# 12 November, the PLC program the user sent (MD3030 V1.01, 25.07.22 - its labels and device comments kept in
+# tools/legacy/MD3030/PLC_V1.01_Labels.txt) set them straight where the old page differed:
+#   - a head's inputs are the island words W0 / W1, W10 / W11, W20 / W21, W30 / W31 (hexadecimal: the old page read
+#     heads 2 - 4 from W2 / W3, W4 / W5, W6 / W7); its coils W101, W111, W121, W131
+#   - the Y axes' jogs: M27 / M28 ... are the PLC's "Ileri" (forward), M46 / M47 ... its "Geri" (back) - the old page had
+#     them the other way round; their reference sensors stay on the same button (now Forward)
+#   - the four resistance Z axes jog together on M215 (back) / M216 (forward) - the old M242 / M243, M236 ... M241 are
+#     its earlier devices
+#   - the old Encoder column of the heads (D2000 ...) is each axis's home position ("X1_Home_Pos_Address"): its Reference;
+#     the body's home positions D2032 / D2034 / D2036 and Z phase distances D6616 ... D6618, its Y references X26 / X27
 def _ax(number, caption, key, en, tr, back, fwd, pos, motion, err, ref=None, side=None, cal=None, calibrate=None,
-        lo=None, hi=None, zdist=None):
+        lo=None, hi=None, zdist=None, home=None):
     G.AXES[number] = dict(number=number, caption=caption, key=key, back=back, fwd=fwd, pos=pos, motion=motion, err=err, ref=ref,
-                          side=side, cal=cal, calibrate=calibrate, min=lo, max=hi, zdist=zdist)
+                          side=side, cal=cal, calibrate=calibrate, min=lo, max=hi, zdist=zdist, home=home)
     G.TRANSLATIONS[key] = (en, tr)
 
 # the body: X1 and X2 one gantry (one pair of jog bits), Y1 and Y2 each its own. X1's position is D400 as on the old
 # General and Servos pages (the old Axis Calibration showed D320, X2's, on both X rows).
-_ax(1, 'Body X1', 'Axis_MD3020_BodyX1', 'Body X1', 'Gövde X1', 'M41', 'M22', 'D400', (2, 5), 'M621', cal='D2580', calibrate='M60')
-_ax(2, 'Body X2', 'Axis_MD3020_BodyX2', 'Body X2', 'Gövde X2', 'M41', 'M22', 'D320', (2, 6), 'M752', cal='D2580', calibrate='M87')
-_ax(3, 'Body Y1', 'Axis_MD3020_BodyY1', 'Body Y1', 'Gövde Y1', 'M42', 'M23', 'D340', (3, 2), 'M622', cal='D2582', calibrate='M61')
-_ax(4, 'Body Y2', 'Axis_MD3020_BodyY2', 'Body Y2', 'Gövde Y2', 'M43', 'M24', 'D360', (3, 3), 'M623', cal='D2584', calibrate='M62')
+_ax(1, 'Body X1', 'Axis_MD3020_BodyX1', 'Body X1', 'Gövde X1', 'M41', 'M22', 'D400', (2, 5), 'M621', cal='D2580', calibrate='M60',
+    home='D2032', zdist='D6616')
+_ax(2, 'Body X2', 'Axis_MD3020_BodyX2', 'Body X2', 'Gövde X2', 'M41', 'M22', 'D320', (2, 6), 'M752', cal='D2580', calibrate='M87',
+    home='D2032', zdist='D6616')
+_ax(3, 'Body Y1', 'Axis_MD3020_BodyY1', 'Body Y1', 'Gövde Y1', 'M42', 'M23', 'D340', (3, 2), 'M622', cal='D2582', calibrate='M61',
+    home='D2034', zdist='D6617', ref='X26', side='Back')
+_ax(4, 'Body Y2', 'Axis_MD3020_BodyY2', 'Body Y2', 'Gövde Y2', 'M43', 'M24', 'D360', (3, 3), 'M623', cal='D2584', calibrate='M62',
+    home='D2036', zdist='D6618', ref='X27', side='Back')
 
 # a head's five servos: (axis, back, position, forward, encoder, measured value, calibrate, starting / end limit,
 # sensor reference distance) as the old Axis Calibration's rows; X2 is the stripping knife's (kept apart)
@@ -114,10 +128,15 @@ AXIS_WORDS = {'X': ('X', 'X'), 'Y1': ('Y1', 'Y1'), 'Y2': ('Y2', 'Y2'), 'Z1': ('Z
 def head_axis(n, ax):
     return 5 + 5 * (n - 1) + HEAD_AXES.index(ax)
 
+def word(n, k):
+    """Head n's island word: k 0 / 1 its inputs (W0, W1 / W10, W11 ...), 0x101 its coils (W101 / W111 ...) - hexadecimal."""
+    return 'W%X' % (k + 0x10 * (n - 1))
+
 for n in (1, 2, 3, 4):
-    w = 2 * (n - 1)
     for ax, back, pos, fwd, enc, meas, cal, lo, hi, dist in HEAD_CAL[n]:
         if ax == 'X2': continue
+        if ax in ('Y1', 'Y2'): back, fwd = fwd, back          # the PLC's Geri / Ileri (the old page had them swapped)
+        if ax == 'Z2': back, fwd = 'M215', 'M216'             # the four resistance Z jog together
         en, tr = AXIS_WORDS[ax]
         motion = (1, 2 * n - 1) if ax == 'Y1' else (1, 2 * n) if ax == 'Y2' else HEAD_MOTION[n][ax]
         # the servo alarms: per head Z, X, Y1, Y2 (M605 ... M620), the resistance Z's M757 ... M760
@@ -126,8 +145,8 @@ for n in (1, 2, 3, 4):
         # the reference sensors on the head's island inputs (Wn.0 X, .1 Y1, .2 Y2 lit on Back; .3 Z, .4 RZ on Forward)
         bit = {'X': 0, 'Y1': 1, 'Y2': 2, 'Z1': 3, 'Z2': 4}[ax]
         _ax(head_axis(n, ax), 'Head %d %s' % (n, ax), 'Axis_MD3020_H%d%s' % (n, ax.replace('Z1', 'Z').replace('Z2', 'RZ')),
-            'Head %d %s' % (n, en), '%d. Kafa %s' % (n, tr), back, fwd, pos, motion, err, ref='W%d.%d' % (w, bit),
-            side='Forward' if ax in ('Z1', 'Z2') else 'Back', cal=meas, calibrate=cal, lo=lo, hi=hi, zdist=dist)
+            'Head %d %s' % (n, en), '%d. Kafa %s' % (n, tr), back, fwd, pos, motion, err, ref='%s.%d' % (word(n, 0), bit),
+            side='Back' if ax == 'X' else 'Forward', cal=meas, calibrate=cal, lo=lo, hi=hi, zdist=dist, home=enc)
 
 # ------------------------------------------------------------ THE CYLINDERS ----
 #
@@ -155,68 +174,79 @@ def _t(key, en, tr):
     return key
 
 def head_units(n):
-    """Head n's cylinders: (row caption, left unit, right unit)."""
-    w0, w1 = 'W%d' % (2 * (n - 1)), 'W%d' % (2 * (n - 1) + 1)
+    """Head n's cylinders: (row caption, left unit, right unit) - the commands, sensors and coils as the PLC program
+    names them (MAN_UstBaski_SIK / _AC, IN_Sol1_UstBaski_GerideSN, OUT_UstBaski_Sol1_SIK ...)."""
+    w0, w1, out = word(n, 0), word(n, 1), word(n, 0x101)
     k = n - 1
-    def two(m): return 2 * k + m            # the alarm list: left, right, head after head
+    def two(m): return 2 * k + m            # the alarm list: Sol1, Sag1, Sol2, Sag2 ... (left, right, head after head)
     isl2, isl1, isl3 = 'IslandDoubleSolenoid', 'IslandSingleSolenoid', 'IslandThreeWayOpenCenter'
     def key(part, en, tr): return _t('Unit_MD3020_H%d%s' % (n, part), 'Head %d %s' % (n, en), '%d. Kafa %s' % (n, tr))
     rows = []
     rows.append(('Top Press',
         Cy(key('TopPressL', 'Left Top Press', 'Sol Üst Baskı'), a='M201', b='M202', lampB=w0 + '.6', valve=isl3,
-           feedback='EncoderPlusReference', errA='M%d' % (660 + two(0)), errB='M%d' % (668 + two(0)),
+           feedback='EncoderPlusReference', errA='M%d' % (660 + two(0)), errB='M%d' % (668 + two(0)), outA=out + '.0', outB=out + '.1',
            pos='SD%d 32 /100 2' % (4500 + 60 * k), arrows='DownUp',
-           note='Y1.%d / Y2.%d (5/3 open centre, on the island): down M201, up M202 - up sensor %s.6, the profile height encoder '
-                'SD%d; down failed M%d, up failed M%d.' % (n, n, w0, 4500 + 60 * k, 660 + two(0), 668 + two(0))),
+           note='Y1.%d / Y2.%d (5/3 open centre, on the island; coils %s.0 down / %s.1 up): down M201, up M202 - up sensor %s.6, the '
+                'profile height encoder SD%d; down failed M%d, up failed M%d.' % (n, n, out, out, w0, 4500 + 60 * k, 660 + two(0), 668 + two(0))),
         Cy(key('TopPressR', 'Right Top Press', 'Sağ Üst Baskı'), a='M201', b='M202', lampB=w0 + '.7', valve=isl3,
-           feedback='EncoderPlusReference', errA='M%d' % (660 + two(1)), errB='M%d' % (668 + two(1)),
+           feedback='EncoderPlusReference', errA='M%d' % (660 + two(1)), errB='M%d' % (668 + two(1)), outA=out + '.2', outB=out + '.3',
            pos='SD%d 32 /100 2' % (4530 + 60 * k), arrows='DownUp',
-           note='Y3.%d / Y4.%d (5/3 open centre, on the island): down M201, up M202 - up sensor %s.7, the encoder SD%d.'
-                % (n, n, w0, 4530 + 60 * k))))
+           note='Y3.%d / Y4.%d (5/3 open centre, on the island; coils %s.2 / %s.3): down M201, up M202 - up sensor %s.7, the encoder SD%d.'
+                % (n, n, out, out, w0, 4530 + 60 * k))))
     rows.append(('Front Clamp',
-        Cy(key('FrontClampL', 'Left Front Clamp', 'Sol Ön Sıkma'), a='M230', b='M231', lampA=w1 + '.0', valve=isl2,
-           feedback='SingleMagnetic', errA='M%d' % (725 + two(0)), errB='M%d' % (717 + two(0)),
-           note='Y5.%d / Y6.%d (5/2 double, on the island, both front clamps): back M230, clamp M231 - back sensor %s.0; '
-                'opening failed M%d, clamping failed M%d.' % (n, n, w1, 725 + two(0), 717 + two(0))),
-        Cy(key('FrontClampR', 'Right Front Clamp', 'Sağ Ön Sıkma'), a='M230', b='M231', lampA=w1 + '.1', valve=isl2,
-           feedback='SingleMagnetic', errA='M%d' % (725 + two(1)), errB='M%d' % (717 + two(1)))))
+        Cy(key('FrontClampL', 'Left Front Clamp', 'Sol Ön Sıkma'), a='M231', b='M230', lampA=w1 + '.0', valve=isl2,
+           feedback='SingleMagnetic', errA='M%d' % (725 + two(0)), errB='M%d' % (717 + two(0)), outA=out + '.5', outB=out + '.4',
+           note='Y5.%d / Y6.%d (5/2 double, on the island, both front clamps; coils %s.5 open / %s.4 clamp): open M231, clamp M230 - '
+                'back sensor %s.0; opening failed M%d, clamping failed M%d.' % (n, n, out, out, w1, 725 + two(0), 717 + two(0))),
+        Cy(key('FrontClampR', 'Right Front Clamp', 'Sağ Ön Sıkma'), a='M231', b='M230', lampA=w1 + '.1', valve=isl2,
+           feedback='SingleMagnetic', errA='M%d' % (725 + two(1)), errB='M%d' % (717 + two(1)), outA=out + '.5', outB=out + '.4')))
     rows.append(('Small Vertical',
-        Cy(key('SmallVerticalL', 'Left Small Vertical', 'Sol Küçük Dikey'), a='M218', b='M217', lampA=w1 + '.2', valve=isl2,
-           feedback='SingleInductive', errA='M%d' % (741 + two(0)), errB='M%d' % (733 + two(0)), arrows='DownUp',
-           note='Y7.%d / Y8.%d (5/2 double, on the island, both small vertical presses - the old Profile Ear Clamping): down M218, '
-                'up M217 - down sensor %s.2; down failed M%d, up failed M%d.' % (n, n, w1, 741 + two(0), 733 + two(0))),
-        Cy(key('SmallVerticalR', 'Right Small Vertical', 'Sağ Küçük Dikey'), a='M218', b='M217', lampA=w1 + '.3', valve=isl2,
-           feedback='SingleInductive', errA='M%d' % (741 + two(1)), errB='M%d' % (733 + two(1)), arrows='DownUp')))
+        Cy(key('SmallVerticalL', 'Left Small Vertical', 'Sol Küçük Dikey'), a='M217', b='M218', lampA=w1 + '.2', valve=isl2,
+           feedback='SingleInductive', errA='M%d' % (741 + two(0)), errB='M%d' % (733 + two(0)), arrows='DownUp', outA=out + '.7', outB=out + '.6',
+           note='Y7.%d / Y8.%d (5/2 double, on the island, both small vertical presses - the old Profile Ear Clamping; coils %s.7 down / '
+                '%s.6 up): down M217, up M218 - down sensor %s.2, NORMALLY CLOSED in the PLC (lit while not down); down failed M%d, '
+                'up failed M%d.' % (n, n, out, out, w1, 741 + two(0), 733 + two(0))),
+        Cy(key('SmallVerticalR', 'Right Small Vertical', 'Sağ Küçük Dikey'), a='M217', b='M218', lampA=w1 + '.3', valve=isl2,
+           feedback='SingleInductive', errA='M%d' % (741 + two(1)), errB='M%d' % (733 + two(1)), arrows='DownUp', outA=out + '.7', outB=out + '.6')))
     rows.append(('Small Horizontal',
         Cy(key('SmallHorizontalL', 'Left Small Horizontal', 'Sol Küçük Yatay'), a='M228', b='M229', lampA=w1 + '.4', valve=isl2,
-           feedback='SingleMagnetic', errA='M%d' % (684 + two(0)), errB='M%d' % (676 + two(0)),
-           note='Y9.%d / Y10.%d (5/2 double, on the island, both small horizontal presses - the old Mould Shifting): back M228, '
-                'forward M229 - back sensor %s.4; back failed M%d, forward failed M%d.' % (n, n, w1, 684 + two(0), 676 + two(0))),
+           feedback='SingleMagnetic', errA='M%d' % (684 + two(0)), errB='M%d' % (676 + two(0)), outA=out + '.9', outB=out + '.8',
+           note='Y9.%d / Y10.%d (5/2 double, on the island, both small horizontal presses - the old Mould Shifting; coils %s.9 back / '
+                '%s.8 forward): back M228, forward M229 - back sensor %s.4; back failed M%d, forward failed M%d.'
+                % (n, n, out, out, w1, 684 + two(0), 676 + two(0))),
         Cy(key('SmallHorizontalR', 'Right Small Horizontal', 'Sağ Küçük Yatay'), a='M228', b='M229', lampA=w1 + '.5', valve=isl2,
-           feedback='SingleMagnetic', errA='M%d' % (684 + two(1)), errB='M%d' % (676 + two(1)))))
-    # one coil each: the old page's two buttons kept (the PLC's commands for each movement) - see the README
+           feedback='SingleMagnetic', errA='M%d' % (684 + two(1)), errB='M%d' % (676 + two(1)), outA=out + '.9', outB=out + '.8')))
+    # one coil each (the drawings): the PLC's two commands kept - see the README
     rows.append(('Support Plate',
-        Cy(key('SupportPlate', 'Support Plate', 'Dayama Plakası'), a='M233', b='M234', lampA=w0 + '.5', valve=isl1,
+        Cy(key('SupportPlate', 'Support Plate', 'Dayama Plakası'), a='M233', b='M234', lampB=w0 + '.5', valve=isl1,
            feedback='SingleInductive', errA='M%d' % (636 + k), errB='M%d' % (640 + k), arrows='DownUp',
-           note='Y11.%d (5/2 spring, on the island - the old Resistance Lower Down / Up): down M233, up M234 - down sensor %s.5; '
-                'down failed M%d, up failed M%d.' % (n, w0, 636 + k, 640 + k)), None))
-    kb, kf = HEAD_CAL[n][1][1], HEAD_CAL[n][1][3]          # the head's own commands (the old page's X2 row)
+           note='Y11.%d (5/2 spring on the drawing, on the island - the old Resistance Lower Down / Up; the PLC has two coils for it, '
+                '%s.B down and %s.A up): down M233, up M234 - its sensor %s.5 is the PLC\'s "Dayama_Yukarida" (up); down failed M%d, '
+                'up failed M%d.' % (n, out, out, w0, 636 + k, 640 + k)), None))
     rows.append(('Stripping Knife',
-        Cy(key('StrippingKnife', 'Stripping Knife', 'Sıyırma Bıçağı'), a=kb, b=kf, lampA=w1 + '.6', lampB=w1 + '.7', valve=isl1,
-           feedback='TwoEndMagnetic', errA='M%d' % (632 + k), errB='M%d' % (628 + k),
-           note='Y13.%d (5/2 spring, on the island - the old page\'s "X2", the head\'s own commands): back %s, forward %s - back %s.6, '
-                'forward %s.7; back failed M%d, forward failed M%d.' % (n, kb, kf, w1, w1, 632 + k, 628 + k)), None))
+        Cy(key('StrippingKnife', 'Stripping Knife', 'Sıyırma Bıçağı'), a='M223', b='M222', lampA=w1 + '.6', lampB=w1 + '.7', valve=isl1,
+           feedback='TwoEndMagnetic', errA='M%d' % (632 + k), errB='M%d' % (628 + k), outB=out + '.E',
+           note='Y13.%d (5/2 spring, on the island - the old page\'s "X2"; its coil %s.E forward): back M223, forward M222 (the PLC\'s, '
+                'common to the heads) - back %s.6, forward %s.7; back failed M%d, forward failed M%d.' % (n, out, w1, w1, 632 + k, 628 + k)), None))
     rows.append(('Profile Emptying',
-        Cy(key('ProfileEmptying', 'Profile Emptying', 'Profil Boşaltma'), a='M204', b='M205', valve=isl1, feedback='NoSensor',
-           note='Y12.%d (5/2 spring, on the island): back M204, forward M205 - no sensor on the drawings (the old page\'s %s.A '
-                'is not there), so no error bit.' % (n, w1)), None))
+        Cy(key('ProfileEmptying', 'Profile Emptying', 'Profil Boşaltma'), a='M205', b='M204', valve=isl1, feedback='NoSensor', outB=out + '.C',
+           note='Y12.%d (5/2 spring, on the island; its coil %s.C forward): back M205, forward M204 - no sensor on the drawings nor in the '
+                'PLC, so no error bit.' % (n, out)), None))
     return rows
 
 CYL_COLS = [('Unit', 104), ('Left', 220), ('Right', 220)]
 G.TRANSLATIONS.update({
+    'Encoder Address': ('Encoder Address', 'Enkoder Adresi'), 'Offset / Tolerance': ('Offset / Tolerance', 'Ofset / Tolerans'),
+    'Body X1': ('Body X1', 'Gövde X1'), 'Body X2': ('Body X2', 'Gövde X2'), 'Body Y1': ('Body Y1', 'Gövde Y1'), 'Body Y2': ('Body Y2', 'Gövde Y2'),
+    'Body X Tolerance': ('Body X Encoder Tolerance', 'Gövde X Enkoder Toleransı'),
+    'Body Y Tolerance': ('Body Y Encoder Tolerance', 'Gövde Y Enkoder Toleransı'),
     'Unit': ('Unit', 'Ünite'), 'Top Press': ('Top Press', 'Üst Baskı'), 'Front Clamp': ('Front Clamp', 'Ön Sıkma'),
     'Small Vertical': ('Small Vertical', 'Küçük Dikey'), 'Small Horizontal': ('Small Horizontal', 'Küçük Yatay'),
     'Support Plate': ('Support Plate', 'Dayama Plakası'), 'Stripping Knife': ('Stripping Knife', 'Sıyırma Bıçağı'),
+    'Signal Lamps': ('Signal Lamps', 'Sinyal Lambaları'), 'Test': ('Test', 'Test'),
+    'Warning Green': ('Warning Green', 'Uyarı Yeşil'), 'Warning Yellow': ('Warning Yellow', 'Uyarı Sarı'),
+    'Warning Red': ('Warning Red', 'Uyarı Kırmızı'), 'Warning Horn': ('Warning Horn', 'Uyarı Kornası'),
+    'Milling Blow': ('Milling Blow', 'Freze Üfleme'),
     'Axis Unit': ('Axis Unit', 'Eksen Ünitesi'), 'RZ': ('RZ', 'RZ'), 'Axes': ('Axes', 'Eksenler'), 'All': ('All', 'Tümü'),
     "Heads X2 (the stripping knife's buttons on the old page)": ("Heads X2 (the stripping knife's buttons on the old page)",
                                                                  "Kafaların X2'si (eski sayfada sıyırma bıçağının butonları)")})
@@ -226,9 +256,10 @@ def head_panel(n):
 
 # ---------------------------------------------------------------- MANUAL ----
 
-def brake(key, en, tr, cmd, valve_tag):
-    return Cy(_t(key, en, tr), a=cmd, valve='IslandSingleSolenoid', feedback='NoSensor', text='Brake Cylinder',
-              note='%s (5/2 spring, on the island) - no sensor on the drawings.' % valve_tag)
+def brake(key, en, tr, cmd, valve_tag, coil):
+    # the PLC's coil: OUT_Govde..._Fren_AC (the brake released) on head 2 / 3 / 4's island
+    return Cy(_t(key, en, tr), a=cmd, valve='IslandSingleSolenoid', feedback='NoSensor', text='Brake Cylinder', outA=coil,
+              note='%s (5/2 spring, on the island; its coil %s releases it) - no sensor on the drawings.' % (valve_tag, coil))
 
 GEN_COLS = [('Name', CAP), ('Axis', 300), ('Overload', LOAD)]
 page('ManualGeneral', 'Manual', 'ucGeneral', 'General',
@@ -236,16 +267,28 @@ page('ManualGeneral', 'Manual', 'ucGeneral', 'General',
         Sec('Servo Engine X'),
         Row('X1', Ax(1), P('D6634'), h=G.UNIT_ROW_H),
         Row('X2', Ax(2), P('D6636'), h=G.UNIT_ROW_H),
-        Row('Brake Cylinder', brake('Unit_MD3020_BrakeX', 'Body X Brake', 'Gövde X Freni', 'M260', 'Y14.4, two cylinders'), h=G.UNIT_ROW_H),
+        Row('Brake Cylinder', brake('Unit_MD3020_BrakeX', 'Body X Brake', 'Gövde X Freni', 'M260', 'Y14.4, two cylinders', 'W132.0'), h=G.UNIT_ROW_H),
         Sec('Servo Engine Y1'),
         Row('Y1', Ax(3), P('D6630'), h=G.UNIT_ROW_H),
-        Row('Brake Cylinder', brake('Unit_MD3020_BrakeY1', 'Body Y1 Brake', 'Gövde Y1 Freni', 'M261', 'Y14.2'), h=G.UNIT_ROW_H),
+        Row('Brake Cylinder', brake('Unit_MD3020_BrakeY1', 'Body Y1 Brake', 'Gövde Y1 Freni', 'M261', 'Y14.2', 'W112.0'), h=G.UNIT_ROW_H),
         Sec('Servo Engine Y2'),
         Row('Y2', Ax(4), P('D6632'), h=G.UNIT_ROW_H),
-        Row('Brake Cylinder', brake('Unit_MD3020_BrakeY2', 'Body Y2 Brake', 'Gövde Y2 Freni', 'M262', 'Y14.3'), h=G.UNIT_ROW_H)]),
+        Row('Brake Cylinder', brake('Unit_MD3020_BrakeY2', 'Body Y2 Brake', 'Gövde Y2 Freni', 'M262', 'Y14.3', 'W122.0'), h=G.UNIT_ROW_H)]),
      Panel('Conveyor', [('Name', CAP), ('Back', ARW), ('Forward', ARW)], [
+        Sec('Conveyor'),
         Row('Conveyor Up/Down', B('M207', '<'), B('M206', '>')),
-        Row('Conveyor Run', B('M208', 'Conveyor Run', span=2))], title='Conveyor')])
+        Row('Conveyor Run', B('M208', 'Conveyor Run', span=2)),
+        # the old page's Warning Green / Yellow / Red / Horn (hidden there): the PLC's MAN_YesilLamba ... MAN_Korna (momentary),
+        # each lit by its output OUT_YesilLamba Y7, OUT_SariLamba Y10, OUT_KirmiziLamba Y11, OUT_Korna Y12
+        Sec('Signal Lamps'),
+        Row('Warning Green', B('M210/Y7', 'Test', span=2)),
+        Row('Warning Yellow', B('M211/Y10', 'Test', span=2)),
+        Row('Warning Red', B('M212/Y11', 'Test', span=2)),
+        Row('Warning Horn', B('M213/Y12', 'Test', span=2))])])
+
+# the body Y axes' reference sensors (the PLC's IN_GovdeY1 / Y2_ReferansSN) and its coils for the brakes: new on General;
+# the signal lamps' outputs (the PLC's) lighting their buttons
+G.EXPECTED['ManualGeneral'] = {'extra': {'X26', 'X27', 'Y7', 'Y10', 'Y11', 'Y12', 'M210', 'M211', 'M212', 'M213'}}
 
 # a head's servos on Manual Movement: an axis unit each (its axis settings row gives it its buttons, position,
 # reference sensor and error) and its torque
@@ -264,6 +307,8 @@ page('ManualMovement', 'Manual', 'ucManualMovement', 'Manual Movement',
     [Panel('Body', AXIS_COLS, [Sec('General')] + [Row(c, Ax(i), None, h=G.UNIT_ROW_H) for i, c in ((1, 'X1'), (2, 'X2'), (3, 'Y1'), (4, 'Y2'))]),
      Panel('Units', [('Name', 190), ('Back', ARW), ('Forward', ARW)], [
         Row('Milling Cutters', B('M200', 'Milling Cutters', span=2)),
+        # the PLC's MAN_FrezeUfleme (momentary): OUT_FrezeUfleme - the milling cutters' air blow, new
+        Row('Milling Blow', B('M232', 'Milling Blow', span=2)),
         Row('Conveyor Up/Down', B('M207', '<'), B('M206', '>')),
         Row('Conveyor Run', B('M208', 'Conveyor Run', span=2)),
         Row('Thermocouple Lower', V('D5 16 /10 1', '°C', span=2)),
@@ -277,9 +322,14 @@ page('ManualCylinders', 'Manual', 'ucManualMovement', 'Cylinders',
 # The old page's head X2 (the stripping knife's buttons), its position and torque: Servos shows them; the
 # profile emptying's lamps W1.A ... W7.A are not on the drawings (no sensor). New from the drawings: the stripping
 # knives' forward sensors (W1.7 ...) and the top presses' encoders (SD4500 ..., the Offset page's). X1's position D400.
+# From the PLC program (12 November): heads 2 - 4's inputs W10 / W11 ... (the old page's W2 / W3 ... left out), the
+# resistance Z's jog M215 / M216 and the stripping knife's M223 / M222 for every head (the old per-head bits left out).
+OLD_HEAD_WORDS = {'W%d.%s' % (w, b) for w in range(2, 8) for b in '01234567A'}
 G.EXPECTED['ManualMovement'] = G.EXPECTED['ManualCylinders'] = {
-    'missing': {'D460', 'D470', 'D480', 'D490', 'D6656', 'D6657', 'D7195', 'D7190', 'W1.A', 'W3.A', 'W5.A', 'W7.A'},
-    'extra': {'D400', 'W1.7', 'W3.7', 'W5.7', 'W7.7'} | {'SD%d' % (4500 + 30 * i) for i in range(8)}}
+    'missing': {'D460', 'D470', 'D480', 'D490', 'D6656', 'D6657', 'D7195', 'D7190', 'W1.A', 'M242', 'M243', 'M236', 'M237', 'M238', 'M239',
+                'M240', 'M241', 'M246', 'M247', 'M248', 'M249', 'M250', 'M251'} | OLD_HEAD_WORDS,
+    'extra': {'D400', 'W1.7', 'M215', 'M216', 'M232', 'X26', 'X27'} | {'SD%d' % (4500 + 30 * i) for i in range(8)} |
+             {'W%X.%s' % (0x10 * h + w, b) for h in (1, 2, 3) for w in (0, 1) for b in '01234567'}}
 
 # The old Servo Situations window (its Home and Manual pages' button): every servo's
 # position, torque and encoder.
@@ -302,40 +352,37 @@ page('ManualServos', 'Manual', 'ucServos', 'Servos',
 # ------------------------------------------------------------ PARAMETERS ----
 
 # Axis Calibration: an axis settings row per servo (12 November) - its jog, position, Starting / End Limit (Min /
-# Max), Measured Value (its calibration) with Calibrate, the Sensor Reference Distance (its Z distance); the
-# motion module and axis, the reference sensor and the error bit added. The old page's Encoder column, the body's
-# Encoder Channel and Offset, and the heads' X2 rows (the stripping knife's) as they were, under them.
+# Max), its home position (Reference - the old page's "Encoder" column of the heads: the PLC's X1_Home_Pos_Address ...),
+# Measured Value (its calibration) with Calibrate, the Sensor Reference Distance (its Z phase distance); the motion
+# module and axis, the reference sensor and the error bit added. Under them the body's encoders as the PLC names them
+# (GovdeX1_Enkoder D2800 ... GovdeY2 D2806, their addresses D2816 ..., offsets D2808 ..., position tolerances D2820 /
+# D2826 - the old page showed Y1's offset D2812 and head 2's D2014 as Y1 / Y2's encoders). The old page's heads' X2 rows
+# are left out: in the PLC program their devices are free or another thing (D2826 is the body Y encoder's tolerance).
 def enc_rows():
-    out = [Sec('General')]
-    for cap, enc, chan, off in (('X1', 'D2800', 'D2816', 'D2808'), ('X2', 'D2802', 'D2817', 'D2810'),
-                                ('Y1', 'D2812', 'D2818', 'D2812'), ('Y2', 'D2014', 'D2819', 'D2814')):
-        out.append(Row(cap, N(enc + ' 32 /10000 2'), N(chan + ' 16 /1 0', ''), N(off + ' 32 /10000 2'), key='Body ' + cap))
-    for n in (1, 2, 3, 4):
-        out.append(Sec('Head %d' % n))
-        for ax, back, pos, fwd, enc, *_ in HEAD_CAL[n]:
-            if ax == 'X2': continue
-            out.append(Row(ax.replace('Z1', 'Z').replace('Z2', 'RZ'), N(enc + ' 32 /10000 2'), key='H%d %s' % (n, ax)))
-    return out
-
-def x2_rows():
     out = []
-    for n in (1, 2, 3, 4):
-        ax, back, pos, fwd, enc, meas, cal, lo, hi, dist = HEAD_CAL[n][1]
-        out.append(Row('Head %d' % n, B(back, '<'), V(pos + ' 32 /10000 2'), B(fwd, '>'), N(enc + ' 32 /10000 2'), N(meas + ' 32 /10000 2'),
-                       B(cal, 'Calibrate'), N(lo + ' 32 /10000 2'), N(hi + ' 32 /10000 2'), P(dist)))
+    for cap, enc, chan, off in (('X1', 'D2800', 'D2816', 'D2808'), ('X2', 'D2802', 'D2817', 'D2810'),
+                                ('Y1', 'D2804', 'D2818', 'D2812'), ('Y2', 'D2806', 'D2819', 'D2814')):
+        out.append(Row('Body ' + cap, N(enc + ' 32 /10000 2'), N(chan + ' 16 /1 0', ''), N(off + ' 32 /10000 2')))
+    out.append(Row('Body X Tolerance', None, None, N('D2820 32 /10000 2'), key='TolX'))
+    out.append(Row('Body Y Tolerance', None, None, N('D2826 32 /10000 2'), key='TolY'))
     return out
 
 page('ParamAxisCalibration', 'Parameters', 'ucAxisParameters', 'Axis Calibration',
     [G.AxisRows('Axes', [G.AR(G.AXES[i]) for i in (1, 2, 3, 4)] +
                 [r for n in (1, 2, 3, 4) for r in [Sec('Head %d' % n)] + [G.AR(G.AXES[head_axis(n, ax)]) for ax in HEAD_AXES]])],
-    [Panel('Encoders', [('Axis', AX), ('Encoder', NUM), ('Encoder Channel', NUM), ('Offset', NUM)], enc_rows(), title='Encoder'),
-     Panel('Reference', [('Axes', 90), ('Send Reference', BTN + 40)], [Row('All', B('M100', 'Send Reference'))], title='Send Reference')],
-    [Panel('Head_X2', [('X2', 70), ('Back', ARW), ('Axis Position', POS), ('Forward', ARW), ('Encoder', NUM), ('Measured Value', NUM),
-                       ('Calibrate', BTN), ('Starting Limit', NUM), ('End Limit', NUM), ('Sensor Reference Distance', 164)], x2_rows(),
-           title='Heads X2 (the stripping knife\'s buttons on the old page)')])
+    [Panel('Encoders', [('Axis', 150), ('Encoder', NUM), ('Encoder Address', NUM), ('Offset / Tolerance', 130)], enc_rows(),
+           title='Encoder'),
+     Panel('Reference', [('Axes', 90), ('Send Reference', BTN + 40)], [Row('All', B('M100', 'Send Reference'))], title='Send Reference')])
 
-# the reference sensors (the drawings) are new on this page; X1's position D400 (see the axes)
-G.EXPECTED['ParamAxisCalibration'] = {'extra': {a['ref'] for a in G.AXES.values() if a.get('ref')} | {'D400'}}
+# new on this page: the reference sensors and Z distances, the body's home positions, its encoders' tolerances (the PLC
+# program); X1's position D400, Y1 / Y2's encoders D2804 / D2806, the resistance Z's jog M215 / M216. Left out: the heads'
+# X2 rows, the old Y encoders D2812 (Y1's offset, still shown) / D2014 (head 2 Y2's reference, still shown).
+G.EXPECTED['ParamAxisCalibration'] = {
+    'extra': {a['ref'] for a in G.AXES.values() if a.get('ref')} | {'D400', 'D2804', 'D2806', 'D2820', 'D2032', 'D2034', 'D2036',
+                                                                      'D6616', 'D6617', 'D6618', 'M215', 'M216'},
+    'missing': {'M223', 'M222', 'M246', 'M247', 'M248', 'M249', 'M250', 'M251', 'D460', 'D470', 'D480', 'D490',
+                'D2828', 'D2830', 'D2832', 'D7096', 'D7098', 'D7100', 'D7102', 'M91', 'M92', 'M93', 'M94', 'D542', 'D540',
+                'D6623', 'D6624', 'D6625', 'D6626', 'M242', 'M243', 'M236', 'M237', 'M238', 'M239', 'M240', 'M241'} | OLD_HEAD_WORDS}
 
 page('ParamGeneral', 'Parameters', 'ucGeneralParameters', 'General',
     [Panel('Frame', [('Name', 220), ('X', NUM), ('Y', NUM)], [
@@ -428,7 +475,7 @@ page('ParamOffset', 'Parameters', 'ucOffset', 'Offset',
 
 # ------------------------------------------------------------ THE ALARMS ----
 #
-# 12 November - the alarm list the user sent (M600 ... M762), the ones the units and axes above own: every servo's
+# 12 November - the alarm list the user sent (M600 ... M762; the PLC program's labels the same), every servo's
 # alarm (its axis row's error bit - its help the servo manual for that axis), every cylinder's failed movements
 # (the unit's error bits - its help the step-by-step page for its valve and feedback), the conveyor's and the oil
 # tank's. Left, right, head after head where the list has a bit for each side.
@@ -458,6 +505,22 @@ def _alarms():
     out['M625'] = ('Conveyor_did_not_go_down', 'Conveyor did not go down', 'Konveyör aşağı inemedi')
     out['M626'] = ('Conveyor_is_not_running', 'Conveyor is not running', 'Konveyör çalışmıyor')
     out['M627'] = ('Oil_tank_empty', 'Oil tank empty', 'Yağ tankı boş')
+    # the rest of the list, as the PLC program's labels name them (12 November: MD3030 V1.01)
+    for h in (1, 2, 3, 4):
+        out['M%d' % (599 + h)] = ('Head_%d_milling_cutter_fault' % h, 'Head %d milling cutter fault' % h, '%d. Kafa freze arızası' % h)
+        out['M%d' % (696 + h)] = ('Head_%d_profile_length_error' % h, 'Head %d profile length error' % h, '%d. Kafa profil uzunluk hatası' % h)
+    out['M604'] = ('Air_pressure_fault', 'Air pressure fault', 'Basınç arızası')
+    out['M692'] = ('Profile_height_not_suitable', 'Profile height not suitable', 'Profil yüksekliği uygun değil')
+    out['M693'] = ('Vertical_stripping_did_not_go_up', 'Vertical stripping did not go up', 'Dik sıyırma yukarı çıkamadı')
+    out['M694'] = ('Vertical_stripping_did_not_go_down', 'Vertical stripping did not go down', 'Dik sıyırma aşağı inemedi')
+    out['M695'] = ('Profile_in_the_machine', 'There is a profile in the machine', 'Makinada profil var')
+    out['M696'] = ('Profile_not_loaded', 'The profile was not loaded into the machine', 'Makinaya profil yüklenmedi')
+    for addr, ax, tr in (('M749', 'X', 'X'), ('M750', 'Y1', 'Y1'), ('M751', 'Y2', 'Y2')):
+        out[addr] = ('Body_%s_profile_length_error' % ax, 'Body %s profile length error' % ax, 'Gövde %s profil uzunluk hatası' % tr)
+    for addr, ax in (('M753', 'X1'), ('M754', 'X2'), ('M755', 'Y1'), ('M756', 'Y2')):
+        out[addr] = ('Body_%s_encoder_read_error' % ax, 'Body %s encoder read error' % ax, 'Gövde %s enkoder okuma hatası' % ax)
+    out['M761'] = ('Body_X_target_out_of_limits', 'Body X target out of its limits', 'Gövde X hedefi limit dışı')
+    out['M762'] = ('Body_Y_target_out_of_limits', 'Body Y target out of its limits', 'Gövde Y hedefi limit dışı')
     G.ALARMS[:] = [(addr,) + out[addr] for addr in sorted(out, key=lambda x: int(x[1:]))]
 
 _alarms()

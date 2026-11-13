@@ -28,6 +28,7 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             Kaban.Core.Models.BitAction bitAction2 = new Kaban.Core.Models.BitAction();
             Kaban.Core.Models.BitAction bitAction3 = new Kaban.Core.Models.BitAction();
             Kaban.Core.Models.BitAction bitAction4 = new Kaban.Core.Models.BitAction();
+            Kaban.Core.Models.BitAction bitAction5 = new Kaban.Core.Models.BitAction();
             this.hdAxis = new Kaban.UI.Controls.LabelHMI();
             this.hdAxis_Unit = new Kaban.UI.Controls.LabelHMI();
             this.hdActual_Torque = new Kaban.UI.Controls.LabelHMI();
@@ -115,6 +116,8 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.hdForward = new Kaban.UI.Controls.LabelHMI();
             this.capMilling_Cutters = new Kaban.UI.Controls.LabelHMI();
             this.btnUnits_Milling_Cutters_Back = new Kaban.UI.Controls.ButtonHMI();
+            this.capMilling_Blow = new Kaban.UI.Controls.LabelHMI();
+            this.btnUnits_Milling_Blow_Back = new Kaban.UI.Controls.ButtonHMI();
             this.capConveyor_Up_Down = new Kaban.UI.Controls.LabelHMI();
             this.btnUnits_Conveyor_Up_Down_Back = new Kaban.UI.Controls.ButtonHMI();
             this.btnUnits_Conveyor_Up_Down_Forward = new Kaban.UI.Controls.ButtonHMI();
@@ -1167,6 +1170,32 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.btnUnits_Milling_Cutters_Back.LogAction = true;
             this.btnUnits_Milling_Cutters_Back.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
             // 
+            // capMilling_Blow
+            // 
+            this.capMilling_Blow.Name = "capMilling_Blow";
+            this.capMilling_Blow.TranslationKey = "Milling Blow";
+            this.capMilling_Blow.Text = "Milling Blow";
+            this.capMilling_Blow.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.capMilling_Blow.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
+            this.capMilling_Blow.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.capMilling_Blow.Location = new System.Drawing.Point(526, 928);
+            this.capMilling_Blow.Size = new System.Drawing.Size(190, 40);
+            this.capMilling_Blow.Font = new System.Drawing.Font("Segoe UI", 9.5F);
+            // 
+            // btnUnits_Milling_Blow_Back
+            // 
+            this.btnUnits_Milling_Blow_Back.Name = "btnUnits_Milling_Blow_Back";
+            this.btnUnits_Milling_Blow_Back.PlcNumber = 1;
+            this.btnUnits_Milling_Blow_Back.TranslationKey = "Milling Blow";
+            this.btnUnits_Milling_Blow_Back.FallbackText = "Milling Blow";
+            bitAction2.Address = "M232";
+            bitAction2.Action = Kaban.Core.Enums.BitActionType.Momentary;
+            this.btnUnits_Milling_Blow_Back.BitActions.Add(bitAction2);
+            this.btnUnits_Milling_Blow_Back.Location = new System.Drawing.Point(722, 931);
+            this.btnUnits_Milling_Blow_Back.Size = new System.Drawing.Size(150, 34);
+            this.btnUnits_Milling_Blow_Back.LogAction = true;
+            this.btnUnits_Milling_Blow_Back.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            // 
             // capConveyor_Up_Down
             // 
             this.capConveyor_Up_Down.Name = "capConveyor_Up_Down";
@@ -1175,7 +1204,7 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.capConveyor_Up_Down.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.capConveyor_Up_Down.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
             this.capConveyor_Up_Down.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capConveyor_Up_Down.Location = new System.Drawing.Point(526, 928);
+            this.capConveyor_Up_Down.Location = new System.Drawing.Point(526, 968);
             this.capConveyor_Up_Down.Size = new System.Drawing.Size(190, 40);
             this.capConveyor_Up_Down.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             // 
@@ -1184,10 +1213,10 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.btnUnits_Conveyor_Up_Down_Back.Name = "btnUnits_Conveyor_Up_Down_Back";
             this.btnUnits_Conveyor_Up_Down_Back.PlcNumber = 1;
             this.btnUnits_Conveyor_Up_Down_Back.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.Left;
-            bitAction2.Address = "M207";
-            bitAction2.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnUnits_Conveyor_Up_Down_Back.BitActions.Add(bitAction2);
-            this.btnUnits_Conveyor_Up_Down_Back.Location = new System.Drawing.Point(722, 931);
+            bitAction3.Address = "M207";
+            bitAction3.Action = Kaban.Core.Enums.BitActionType.Momentary;
+            this.btnUnits_Conveyor_Up_Down_Back.BitActions.Add(bitAction3);
+            this.btnUnits_Conveyor_Up_Down_Back.Location = new System.Drawing.Point(722, 971);
             this.btnUnits_Conveyor_Up_Down_Back.Size = new System.Drawing.Size(72, 34);
             this.btnUnits_Conveyor_Up_Down_Back.LogAction = true;
             this.btnUnits_Conveyor_Up_Down_Back.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
@@ -1197,10 +1226,10 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.btnUnits_Conveyor_Up_Down_Forward.Name = "btnUnits_Conveyor_Up_Down_Forward";
             this.btnUnits_Conveyor_Up_Down_Forward.PlcNumber = 1;
             this.btnUnits_Conveyor_Up_Down_Forward.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.Right;
-            bitAction3.Address = "M206";
-            bitAction3.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnUnits_Conveyor_Up_Down_Forward.BitActions.Add(bitAction3);
-            this.btnUnits_Conveyor_Up_Down_Forward.Location = new System.Drawing.Point(800, 931);
+            bitAction4.Address = "M206";
+            bitAction4.Action = Kaban.Core.Enums.BitActionType.Momentary;
+            this.btnUnits_Conveyor_Up_Down_Forward.BitActions.Add(bitAction4);
+            this.btnUnits_Conveyor_Up_Down_Forward.Location = new System.Drawing.Point(800, 971);
             this.btnUnits_Conveyor_Up_Down_Forward.Size = new System.Drawing.Size(72, 34);
             this.btnUnits_Conveyor_Up_Down_Forward.LogAction = true;
             this.btnUnits_Conveyor_Up_Down_Forward.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
@@ -1213,7 +1242,7 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.capConveyor_Run.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.capConveyor_Run.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
             this.capConveyor_Run.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capConveyor_Run.Location = new System.Drawing.Point(526, 968);
+            this.capConveyor_Run.Location = new System.Drawing.Point(526, 1008);
             this.capConveyor_Run.Size = new System.Drawing.Size(190, 40);
             this.capConveyor_Run.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             // 
@@ -1223,10 +1252,10 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.btnUnits_Conveyor_Run_Back.PlcNumber = 1;
             this.btnUnits_Conveyor_Run_Back.TranslationKey = "Conveyor Run";
             this.btnUnits_Conveyor_Run_Back.FallbackText = "Conveyor Run";
-            bitAction4.Address = "M208";
-            bitAction4.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnUnits_Conveyor_Run_Back.BitActions.Add(bitAction4);
-            this.btnUnits_Conveyor_Run_Back.Location = new System.Drawing.Point(722, 971);
+            bitAction5.Address = "M208";
+            bitAction5.Action = Kaban.Core.Enums.BitActionType.Momentary;
+            this.btnUnits_Conveyor_Run_Back.BitActions.Add(bitAction5);
+            this.btnUnits_Conveyor_Run_Back.Location = new System.Drawing.Point(722, 1011);
             this.btnUnits_Conveyor_Run_Back.Size = new System.Drawing.Size(150, 34);
             this.btnUnits_Conveyor_Run_Back.LogAction = true;
             this.btnUnits_Conveyor_Run_Back.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
@@ -1239,7 +1268,7 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.capThermocouple_Lower.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.capThermocouple_Lower.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
             this.capThermocouple_Lower.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capThermocouple_Lower.Location = new System.Drawing.Point(526, 1008);
+            this.capThermocouple_Lower.Location = new System.Drawing.Point(526, 1048);
             this.capThermocouple_Lower.Size = new System.Drawing.Size(190, 40);
             this.capThermocouple_Lower.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             // 
@@ -1254,7 +1283,7 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.dispUnits_Thermocouple_Lower_Back.DecimalPlaces = 1;
             this.dispUnits_Thermocouple_Lower_Back.Digits = 5;
             this.dispUnits_Thermocouple_Lower_Back.Suffix = "°C";
-            this.dispUnits_Thermocouple_Lower_Back.Location = new System.Drawing.Point(722, 1011);
+            this.dispUnits_Thermocouple_Lower_Back.Location = new System.Drawing.Point(722, 1051);
             this.dispUnits_Thermocouple_Lower_Back.Size = new System.Drawing.Size(150, 34);
             // 
             // capThermocouple_Upper
@@ -1265,7 +1294,7 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.capThermocouple_Upper.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.capThermocouple_Upper.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
             this.capThermocouple_Upper.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capThermocouple_Upper.Location = new System.Drawing.Point(526, 1048);
+            this.capThermocouple_Upper.Location = new System.Drawing.Point(526, 1088);
             this.capThermocouple_Upper.Size = new System.Drawing.Size(190, 40);
             this.capThermocouple_Upper.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             // 
@@ -1280,7 +1309,7 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.dispUnits_Thermocouple_Upper_Back.DecimalPlaces = 1;
             this.dispUnits_Thermocouple_Upper_Back.Digits = 5;
             this.dispUnits_Thermocouple_Upper_Back.Suffix = "°C";
-            this.dispUnits_Thermocouple_Upper_Back.Location = new System.Drawing.Point(722, 1051);
+            this.dispUnits_Thermocouple_Upper_Back.Location = new System.Drawing.Point(722, 1091);
             this.dispUnits_Thermocouple_Upper_Back.Size = new System.Drawing.Size(150, 34);
             // 
             // ManualMovement
@@ -1378,6 +1407,8 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.Controls.Add(this.hdForward);
             this.Controls.Add(this.capMilling_Cutters);
             this.Controls.Add(this.btnUnits_Milling_Cutters_Back);
+            this.Controls.Add(this.capMilling_Blow);
+            this.Controls.Add(this.btnUnits_Milling_Blow_Back);
             this.Controls.Add(this.capConveyor_Up_Down);
             this.Controls.Add(this.btnUnits_Conveyor_Up_Down_Back);
             this.Controls.Add(this.btnUnits_Conveyor_Up_Down_Forward);
@@ -1482,6 +1513,8 @@ namespace Kaban.Machines.MD3020.Screens.Manual
         private Kaban.UI.Controls.LabelHMI hdForward;
         private Kaban.UI.Controls.LabelHMI capMilling_Cutters;
         private Kaban.UI.Controls.ButtonHMI btnUnits_Milling_Cutters_Back;
+        private Kaban.UI.Controls.LabelHMI capMilling_Blow;
+        private Kaban.UI.Controls.ButtonHMI btnUnits_Milling_Blow_Back;
         private Kaban.UI.Controls.LabelHMI capConveyor_Up_Down;
         private Kaban.UI.Controls.ButtonHMI btnUnits_Conveyor_Up_Down_Back;
         private Kaban.UI.Controls.ButtonHMI btnUnits_Conveyor_Up_Down_Forward;

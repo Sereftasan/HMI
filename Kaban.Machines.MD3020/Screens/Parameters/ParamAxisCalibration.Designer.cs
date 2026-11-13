@@ -25,22 +25,11 @@ namespace Kaban.Machines.MD3020.Screens.Parameters
         private void InitializeComponent()
         {
             Kaban.Core.Models.BitAction bitAction1 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction2 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction3 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction4 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction5 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction6 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction7 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction8 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction9 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction10 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction11 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction12 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction13 = new Kaban.Core.Models.BitAction();
             this.lblHeadAxis = new System.Windows.Forms.Label();
             this.lblHeadPosition = new System.Windows.Forms.Label();
             this.lblHeadMin = new System.Windows.Forms.Label();
             this.lblHeadMax = new System.Windows.Forms.Label();
+            this.lblHeadReference = new System.Windows.Forms.Label();
             this.lblHeadCalibration = new System.Windows.Forms.Label();
             this.lblHeadCal = new System.Windows.Forms.Label();
             this.lblHeadZDistance = new System.Windows.Forms.Label();
@@ -75,125 +64,33 @@ namespace Kaban.Machines.MD3020.Screens.Parameters
             this.lblEncoder = new Kaban.UI.Controls.LabelHMI();
             this.hdAxis = new Kaban.UI.Controls.LabelHMI();
             this.hdEncoder = new Kaban.UI.Controls.LabelHMI();
-            this.hdEncoder_Channel = new Kaban.UI.Controls.LabelHMI();
-            this.hdOffset = new Kaban.UI.Controls.LabelHMI();
-            this.lblGeneral = new Kaban.UI.Controls.LabelHMI();
-            this.capX1 = new Kaban.UI.Controls.LabelHMI();
-            this.numEncoders_General_Body_X1_Encoder = new Kaban.UI.Controls.NumericInputHMI();
-            this.numEncoders_General_Body_X1_Encoder_Channel = new Kaban.UI.Controls.NumericInputHMI();
-            this.numEncoders_General_Body_X1_Offset = new Kaban.UI.Controls.NumericInputHMI();
-            this.capX2 = new Kaban.UI.Controls.LabelHMI();
-            this.numEncoders_General_Body_X2_Encoder = new Kaban.UI.Controls.NumericInputHMI();
-            this.numEncoders_General_Body_X2_Encoder_Channel = new Kaban.UI.Controls.NumericInputHMI();
-            this.numEncoders_General_Body_X2_Offset = new Kaban.UI.Controls.NumericInputHMI();
-            this.capY1 = new Kaban.UI.Controls.LabelHMI();
-            this.numEncoders_General_Body_Y1_Encoder = new Kaban.UI.Controls.NumericInputHMI();
-            this.numEncoders_General_Body_Y1_Encoder_Channel = new Kaban.UI.Controls.NumericInputHMI();
-            this.numEncoders_General_Body_Y1_Offset = new Kaban.UI.Controls.NumericInputHMI();
-            this.capY2 = new Kaban.UI.Controls.LabelHMI();
-            this.numEncoders_General_Body_Y2_Encoder = new Kaban.UI.Controls.NumericInputHMI();
-            this.numEncoders_General_Body_Y2_Encoder_Channel = new Kaban.UI.Controls.NumericInputHMI();
-            this.numEncoders_General_Body_Y2_Offset = new Kaban.UI.Controls.NumericInputHMI();
-            this.lblHead_1_2 = new Kaban.UI.Controls.LabelHMI();
-            this.capX = new Kaban.UI.Controls.LabelHMI();
-            this.numEncoders_Head_1_H1_X_Encoder = new Kaban.UI.Controls.NumericInputHMI();
-            this.capY1_2 = new Kaban.UI.Controls.LabelHMI();
-            this.numEncoders_Head_1_H1_Y1_Encoder = new Kaban.UI.Controls.NumericInputHMI();
-            this.capY2_2 = new Kaban.UI.Controls.LabelHMI();
-            this.numEncoders_Head_1_H1_Y2_Encoder = new Kaban.UI.Controls.NumericInputHMI();
-            this.capZ = new Kaban.UI.Controls.LabelHMI();
-            this.numEncoders_Head_1_H1_Z1_Encoder = new Kaban.UI.Controls.NumericInputHMI();
-            this.capRZ = new Kaban.UI.Controls.LabelHMI();
-            this.numEncoders_Head_1_H1_Z2_Encoder = new Kaban.UI.Controls.NumericInputHMI();
-            this.lblHead_2_2 = new Kaban.UI.Controls.LabelHMI();
-            this.capX_2 = new Kaban.UI.Controls.LabelHMI();
-            this.numEncoders_Head_2_H2_X_Encoder = new Kaban.UI.Controls.NumericInputHMI();
-            this.capY1_3 = new Kaban.UI.Controls.LabelHMI();
-            this.numEncoders_Head_2_H2_Y1_Encoder = new Kaban.UI.Controls.NumericInputHMI();
-            this.capY2_3 = new Kaban.UI.Controls.LabelHMI();
-            this.numEncoders_Head_2_H2_Y2_Encoder = new Kaban.UI.Controls.NumericInputHMI();
-            this.capZ_2 = new Kaban.UI.Controls.LabelHMI();
-            this.numEncoders_Head_2_H2_Z1_Encoder = new Kaban.UI.Controls.NumericInputHMI();
-            this.capRZ_2 = new Kaban.UI.Controls.LabelHMI();
-            this.numEncoders_Head_2_H2_Z2_Encoder = new Kaban.UI.Controls.NumericInputHMI();
-            this.lblHead_3_2 = new Kaban.UI.Controls.LabelHMI();
-            this.capX_3 = new Kaban.UI.Controls.LabelHMI();
-            this.numEncoders_Head_3_H3_X_Encoder = new Kaban.UI.Controls.NumericInputHMI();
-            this.capY1_4 = new Kaban.UI.Controls.LabelHMI();
-            this.numEncoders_Head_3_H3_Y1_Encoder = new Kaban.UI.Controls.NumericInputHMI();
-            this.capY2_4 = new Kaban.UI.Controls.LabelHMI();
-            this.numEncoders_Head_3_H3_Y2_Encoder = new Kaban.UI.Controls.NumericInputHMI();
-            this.capZ_3 = new Kaban.UI.Controls.LabelHMI();
-            this.numEncoders_Head_3_H3_Z1_Encoder = new Kaban.UI.Controls.NumericInputHMI();
-            this.capRZ_3 = new Kaban.UI.Controls.LabelHMI();
-            this.numEncoders_Head_3_H3_Z2_Encoder = new Kaban.UI.Controls.NumericInputHMI();
-            this.lblHead_4_2 = new Kaban.UI.Controls.LabelHMI();
-            this.capX_4 = new Kaban.UI.Controls.LabelHMI();
-            this.numEncoders_Head_4_H4_X_Encoder = new Kaban.UI.Controls.NumericInputHMI();
-            this.capY1_5 = new Kaban.UI.Controls.LabelHMI();
-            this.numEncoders_Head_4_H4_Y1_Encoder = new Kaban.UI.Controls.NumericInputHMI();
-            this.capY2_5 = new Kaban.UI.Controls.LabelHMI();
-            this.numEncoders_Head_4_H4_Y2_Encoder = new Kaban.UI.Controls.NumericInputHMI();
-            this.capZ_4 = new Kaban.UI.Controls.LabelHMI();
-            this.numEncoders_Head_4_H4_Z1_Encoder = new Kaban.UI.Controls.NumericInputHMI();
-            this.capRZ_4 = new Kaban.UI.Controls.LabelHMI();
-            this.numEncoders_Head_4_H4_Z2_Encoder = new Kaban.UI.Controls.NumericInputHMI();
+            this.hdEncoder_Address = new Kaban.UI.Controls.LabelHMI();
+            this.hdOffset_Tolerance = new Kaban.UI.Controls.LabelHMI();
+            this.capBody_X1 = new Kaban.UI.Controls.LabelHMI();
+            this.numEncoders_Body_X1_Encoder = new Kaban.UI.Controls.NumericInputHMI();
+            this.numEncoders_Body_X1_Encoder_Address = new Kaban.UI.Controls.NumericInputHMI();
+            this.numEncoders_Body_X1_Offset_Tolerance = new Kaban.UI.Controls.NumericInputHMI();
+            this.capBody_X2 = new Kaban.UI.Controls.LabelHMI();
+            this.numEncoders_Body_X2_Encoder = new Kaban.UI.Controls.NumericInputHMI();
+            this.numEncoders_Body_X2_Encoder_Address = new Kaban.UI.Controls.NumericInputHMI();
+            this.numEncoders_Body_X2_Offset_Tolerance = new Kaban.UI.Controls.NumericInputHMI();
+            this.capBody_Y1 = new Kaban.UI.Controls.LabelHMI();
+            this.numEncoders_Body_Y1_Encoder = new Kaban.UI.Controls.NumericInputHMI();
+            this.numEncoders_Body_Y1_Encoder_Address = new Kaban.UI.Controls.NumericInputHMI();
+            this.numEncoders_Body_Y1_Offset_Tolerance = new Kaban.UI.Controls.NumericInputHMI();
+            this.capBody_Y2 = new Kaban.UI.Controls.LabelHMI();
+            this.numEncoders_Body_Y2_Encoder = new Kaban.UI.Controls.NumericInputHMI();
+            this.numEncoders_Body_Y2_Encoder_Address = new Kaban.UI.Controls.NumericInputHMI();
+            this.numEncoders_Body_Y2_Offset_Tolerance = new Kaban.UI.Controls.NumericInputHMI();
+            this.capBody_X_Tolerance = new Kaban.UI.Controls.LabelHMI();
+            this.numEncoders_TolX_Offset_Tolerance = new Kaban.UI.Controls.NumericInputHMI();
+            this.capBody_Y_Tolerance = new Kaban.UI.Controls.LabelHMI();
+            this.numEncoders_TolY_Offset_Tolerance = new Kaban.UI.Controls.NumericInputHMI();
             this.lblSend_Reference = new Kaban.UI.Controls.LabelHMI();
             this.hdAxes = new Kaban.UI.Controls.LabelHMI();
             this.hdSend_Reference = new Kaban.UI.Controls.LabelHMI();
             this.capAll = new Kaban.UI.Controls.LabelHMI();
             this.btnReference_All_Send_Reference = new Kaban.UI.Controls.ButtonHMI();
-            this.lblHeads_X2_the_stripping_knife_s_buttons_o = new Kaban.UI.Controls.LabelHMI();
-            this.hdX2 = new Kaban.UI.Controls.LabelHMI();
-            this.hdBack = new Kaban.UI.Controls.LabelHMI();
-            this.hdAxis_Position = new Kaban.UI.Controls.LabelHMI();
-            this.hdForward = new Kaban.UI.Controls.LabelHMI();
-            this.hdEncoder_2 = new Kaban.UI.Controls.LabelHMI();
-            this.hdMeasured_Value = new Kaban.UI.Controls.LabelHMI();
-            this.hdCalibrate = new Kaban.UI.Controls.LabelHMI();
-            this.hdStarting_Limit = new Kaban.UI.Controls.LabelHMI();
-            this.hdEnd_Limit = new Kaban.UI.Controls.LabelHMI();
-            this.hdSensor_Reference_Distance = new Kaban.UI.Controls.LabelHMI();
-            this.capHead_1 = new Kaban.UI.Controls.LabelHMI();
-            this.btnHead_X2_Head_1_Back = new Kaban.UI.Controls.ButtonHMI();
-            this.dispHead_X2_Head_1_Axis_Position = new Kaban.UI.Controls.NumericDisplayHMI();
-            this.btnHead_X2_Head_1_Forward = new Kaban.UI.Controls.ButtonHMI();
-            this.numHead_X2_Head_1_Encoder = new Kaban.UI.Controls.NumericInputHMI();
-            this.numHead_X2_Head_1_Measured_Value = new Kaban.UI.Controls.NumericInputHMI();
-            this.btnHead_X2_Head_1_Calibrate = new Kaban.UI.Controls.ButtonHMI();
-            this.numHead_X2_Head_1_Starting_Limit = new Kaban.UI.Controls.NumericInputHMI();
-            this.numHead_X2_Head_1_End_Limit = new Kaban.UI.Controls.NumericInputHMI();
-            this.loadHead_X2_Head_1_Sensor_Reference_Distance = new Kaban.UI.Controls.MeterHMI();
-            this.capHead_2 = new Kaban.UI.Controls.LabelHMI();
-            this.btnHead_X2_Head_2_Back = new Kaban.UI.Controls.ButtonHMI();
-            this.dispHead_X2_Head_2_Axis_Position = new Kaban.UI.Controls.NumericDisplayHMI();
-            this.btnHead_X2_Head_2_Forward = new Kaban.UI.Controls.ButtonHMI();
-            this.numHead_X2_Head_2_Encoder = new Kaban.UI.Controls.NumericInputHMI();
-            this.numHead_X2_Head_2_Measured_Value = new Kaban.UI.Controls.NumericInputHMI();
-            this.btnHead_X2_Head_2_Calibrate = new Kaban.UI.Controls.ButtonHMI();
-            this.numHead_X2_Head_2_Starting_Limit = new Kaban.UI.Controls.NumericInputHMI();
-            this.numHead_X2_Head_2_End_Limit = new Kaban.UI.Controls.NumericInputHMI();
-            this.loadHead_X2_Head_2_Sensor_Reference_Distance = new Kaban.UI.Controls.MeterHMI();
-            this.capHead_3 = new Kaban.UI.Controls.LabelHMI();
-            this.btnHead_X2_Head_3_Back = new Kaban.UI.Controls.ButtonHMI();
-            this.dispHead_X2_Head_3_Axis_Position = new Kaban.UI.Controls.NumericDisplayHMI();
-            this.btnHead_X2_Head_3_Forward = new Kaban.UI.Controls.ButtonHMI();
-            this.numHead_X2_Head_3_Encoder = new Kaban.UI.Controls.NumericInputHMI();
-            this.numHead_X2_Head_3_Measured_Value = new Kaban.UI.Controls.NumericInputHMI();
-            this.btnHead_X2_Head_3_Calibrate = new Kaban.UI.Controls.ButtonHMI();
-            this.numHead_X2_Head_3_Starting_Limit = new Kaban.UI.Controls.NumericInputHMI();
-            this.numHead_X2_Head_3_End_Limit = new Kaban.UI.Controls.NumericInputHMI();
-            this.loadHead_X2_Head_3_Sensor_Reference_Distance = new Kaban.UI.Controls.MeterHMI();
-            this.capHead_4 = new Kaban.UI.Controls.LabelHMI();
-            this.btnHead_X2_Head_4_Back = new Kaban.UI.Controls.ButtonHMI();
-            this.dispHead_X2_Head_4_Axis_Position = new Kaban.UI.Controls.NumericDisplayHMI();
-            this.btnHead_X2_Head_4_Forward = new Kaban.UI.Controls.ButtonHMI();
-            this.numHead_X2_Head_4_Encoder = new Kaban.UI.Controls.NumericInputHMI();
-            this.numHead_X2_Head_4_Measured_Value = new Kaban.UI.Controls.NumericInputHMI();
-            this.btnHead_X2_Head_4_Calibrate = new Kaban.UI.Controls.ButtonHMI();
-            this.numHead_X2_Head_4_Starting_Limit = new Kaban.UI.Controls.NumericInputHMI();
-            this.numHead_X2_Head_4_End_Limit = new Kaban.UI.Controls.NumericInputHMI();
-            this.loadHead_X2_Head_4_Sensor_Reference_Distance = new Kaban.UI.Controls.MeterHMI();
             this.SuspendLayout();
             // 
             // lblHeadAxis
@@ -240,11 +137,22 @@ namespace Kaban.Machines.MD3020.Screens.Parameters
             this.lblHeadMax.Text = "Max";
             this.lblHeadMax.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
+            // lblHeadReference
+            // 
+            this.lblHeadReference.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
+            this.lblHeadReference.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
+            this.lblHeadReference.Location = new System.Drawing.Point(680, 16);
+            this.lblHeadReference.Name = "lblHeadReference";
+            this.lblHeadReference.Size = new System.Drawing.Size(86, 18);
+            this.lblHeadReference.Tag = "AxisHeading:Reference";
+            this.lblHeadReference.Text = "Reference";
+            this.lblHeadReference.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
             // lblHeadCalibration
             // 
             this.lblHeadCalibration.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
             this.lblHeadCalibration.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
-            this.lblHeadCalibration.Location = new System.Drawing.Point(680, 16);
+            this.lblHeadCalibration.Location = new System.Drawing.Point(770, 16);
             this.lblHeadCalibration.Name = "lblHeadCalibration";
             this.lblHeadCalibration.Size = new System.Drawing.Size(86, 18);
             this.lblHeadCalibration.Tag = "AxisHeading:Calibration";
@@ -255,7 +163,7 @@ namespace Kaban.Machines.MD3020.Screens.Parameters
             // 
             this.lblHeadCal.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
             this.lblHeadCal.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
-            this.lblHeadCal.Location = new System.Drawing.Point(770, 16);
+            this.lblHeadCal.Location = new System.Drawing.Point(860, 16);
             this.lblHeadCal.Name = "lblHeadCal";
             this.lblHeadCal.Size = new System.Drawing.Size(44, 18);
             this.lblHeadCal.Tag = "AxisHeading:Cal";
@@ -266,7 +174,7 @@ namespace Kaban.Machines.MD3020.Screens.Parameters
             // 
             this.lblHeadZDistance.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
             this.lblHeadZDistance.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
-            this.lblHeadZDistance.Location = new System.Drawing.Point(818, 16);
+            this.lblHeadZDistance.Location = new System.Drawing.Point(908, 16);
             this.lblHeadZDistance.Name = "lblHeadZDistance";
             this.lblHeadZDistance.Size = new System.Drawing.Size(76, 18);
             this.lblHeadZDistance.Tag = "AxisHeading:ZDistance";
@@ -282,7 +190,9 @@ namespace Kaban.Machines.MD3020.Screens.Parameters
             this.axBody_X1.PositionAddress = "D400";
             this.axBody_X1.CalibrationAddress = "D2580";
             this.axBody_X1.CalibrateAddress = "M60";
+            this.axBody_X1.ZDistanceAddress = "D6616";
             this.axBody_X1.ErrorAddress = "M621";
+            this.axBody_X1.ReferenceAddress = "D2032";
             this.axBody_X1.DecimalPlaces = 2;
             this.axBody_X1.Digits = 8;
             this.axBody_X1.Divisor = 10000D;
@@ -296,6 +206,8 @@ namespace Kaban.Machines.MD3020.Screens.Parameters
             this.axBody_X1.SettingDataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
             this.axBody_X1.Size = new System.Drawing.Size(1000, 40);
             this.axBody_X1.Suffix = "mm";
+            this.axBody_X1.ZDistanceDivisor = 1D;
+            this.axBody_X1.ZDistanceFullScale = 100D;
             this.axBody_X1.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
             // 
             // axBody_X2
@@ -307,7 +219,9 @@ namespace Kaban.Machines.MD3020.Screens.Parameters
             this.axBody_X2.PositionAddress = "D320";
             this.axBody_X2.CalibrationAddress = "D2580";
             this.axBody_X2.CalibrateAddress = "M87";
+            this.axBody_X2.ZDistanceAddress = "D6616";
             this.axBody_X2.ErrorAddress = "M752";
+            this.axBody_X2.ReferenceAddress = "D2032";
             this.axBody_X2.DecimalPlaces = 2;
             this.axBody_X2.Digits = 8;
             this.axBody_X2.Divisor = 10000D;
@@ -321,6 +235,8 @@ namespace Kaban.Machines.MD3020.Screens.Parameters
             this.axBody_X2.SettingDataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
             this.axBody_X2.Size = new System.Drawing.Size(1000, 40);
             this.axBody_X2.Suffix = "mm";
+            this.axBody_X2.ZDistanceDivisor = 1D;
+            this.axBody_X2.ZDistanceFullScale = 100D;
             this.axBody_X2.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
             // 
             // axBody_Y1
@@ -332,7 +248,11 @@ namespace Kaban.Machines.MD3020.Screens.Parameters
             this.axBody_Y1.PositionAddress = "D340";
             this.axBody_Y1.CalibrationAddress = "D2582";
             this.axBody_Y1.CalibrateAddress = "M61";
+            this.axBody_Y1.ZDistanceAddress = "D6617";
+            this.axBody_Y1.ReferenceSensorAddress = "X26";
             this.axBody_Y1.ErrorAddress = "M622";
+            this.axBody_Y1.ReferenceAddress = "D2034";
+            this.axBody_Y1.ReferenceSensorSide = Kaban.UI.Controls.AxisReferenceSide.Back;
             this.axBody_Y1.DecimalPlaces = 2;
             this.axBody_Y1.Digits = 8;
             this.axBody_Y1.Divisor = 10000D;
@@ -346,6 +266,8 @@ namespace Kaban.Machines.MD3020.Screens.Parameters
             this.axBody_Y1.SettingDataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
             this.axBody_Y1.Size = new System.Drawing.Size(1000, 40);
             this.axBody_Y1.Suffix = "mm";
+            this.axBody_Y1.ZDistanceDivisor = 1D;
+            this.axBody_Y1.ZDistanceFullScale = 100D;
             this.axBody_Y1.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
             // 
             // axBody_Y2
@@ -357,7 +279,11 @@ namespace Kaban.Machines.MD3020.Screens.Parameters
             this.axBody_Y2.PositionAddress = "D360";
             this.axBody_Y2.CalibrationAddress = "D2584";
             this.axBody_Y2.CalibrateAddress = "M62";
+            this.axBody_Y2.ZDistanceAddress = "D6618";
+            this.axBody_Y2.ReferenceSensorAddress = "X27";
             this.axBody_Y2.ErrorAddress = "M623";
+            this.axBody_Y2.ReferenceAddress = "D2036";
+            this.axBody_Y2.ReferenceSensorSide = Kaban.UI.Controls.AxisReferenceSide.Back;
             this.axBody_Y2.DecimalPlaces = 2;
             this.axBody_Y2.Digits = 8;
             this.axBody_Y2.Divisor = 10000D;
@@ -371,6 +297,8 @@ namespace Kaban.Machines.MD3020.Screens.Parameters
             this.axBody_Y2.SettingDataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
             this.axBody_Y2.Size = new System.Drawing.Size(1000, 40);
             this.axBody_Y2.Suffix = "mm";
+            this.axBody_Y2.ZDistanceDivisor = 1D;
+            this.axBody_Y2.ZDistanceFullScale = 100D;
             this.axBody_Y2.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
             // 
             // lblHead_1
@@ -398,6 +326,7 @@ namespace Kaban.Machines.MD3020.Screens.Parameters
             this.axHead_1_X.ZDistanceAddress = "D6601";
             this.axHead_1_X.ReferenceSensorAddress = "W0.0";
             this.axHead_1_X.ErrorAddress = "M606";
+            this.axHead_1_X.ReferenceAddress = "D2000";
             this.axHead_1_X.ReferenceSensorSide = Kaban.UI.Controls.AxisReferenceSide.Back;
             this.axHead_1_X.DecimalPlaces = 2;
             this.axHead_1_X.Digits = 8;
@@ -420,8 +349,8 @@ namespace Kaban.Machines.MD3020.Screens.Parameters
             // 
             this.axHead_1_Y1.AxisNameKey = "Axis_MD3020_H1Y1";
             this.axHead_1_Y1.BackColor = System.Drawing.Color.White;
-            this.axHead_1_Y1.CommandBackAddress = "M27";
-            this.axHead_1_Y1.CommandForwardAddress = "M46";
+            this.axHead_1_Y1.CommandBackAddress = "M46";
+            this.axHead_1_Y1.CommandForwardAddress = "M27";
             this.axHead_1_Y1.PositionAddress = "D40";
             this.axHead_1_Y1.MinLimitAddress = "D532";
             this.axHead_1_Y1.MaxLimitAddress = "D530";
@@ -430,7 +359,8 @@ namespace Kaban.Machines.MD3020.Screens.Parameters
             this.axHead_1_Y1.ZDistanceAddress = "D6602";
             this.axHead_1_Y1.ReferenceSensorAddress = "W0.1";
             this.axHead_1_Y1.ErrorAddress = "M607";
-            this.axHead_1_Y1.ReferenceSensorSide = Kaban.UI.Controls.AxisReferenceSide.Back;
+            this.axHead_1_Y1.ReferenceAddress = "D2004";
+            this.axHead_1_Y1.ReferenceSensorSide = Kaban.UI.Controls.AxisReferenceSide.Forward;
             this.axHead_1_Y1.DecimalPlaces = 2;
             this.axHead_1_Y1.Digits = 8;
             this.axHead_1_Y1.Divisor = 10000D;
@@ -452,8 +382,8 @@ namespace Kaban.Machines.MD3020.Screens.Parameters
             // 
             this.axHead_1_Y2.AxisNameKey = "Axis_MD3020_H1Y2";
             this.axHead_1_Y2.BackColor = System.Drawing.Color.White;
-            this.axHead_1_Y2.CommandBackAddress = "M28";
-            this.axHead_1_Y2.CommandForwardAddress = "M47";
+            this.axHead_1_Y2.CommandBackAddress = "M47";
+            this.axHead_1_Y2.CommandForwardAddress = "M28";
             this.axHead_1_Y2.PositionAddress = "D60";
             this.axHead_1_Y2.MinLimitAddress = "D532";
             this.axHead_1_Y2.MaxLimitAddress = "D530";
@@ -462,7 +392,8 @@ namespace Kaban.Machines.MD3020.Screens.Parameters
             this.axHead_1_Y2.ZDistanceAddress = "D6603";
             this.axHead_1_Y2.ReferenceSensorAddress = "W0.2";
             this.axHead_1_Y2.ErrorAddress = "M608";
-            this.axHead_1_Y2.ReferenceSensorSide = Kaban.UI.Controls.AxisReferenceSide.Back;
+            this.axHead_1_Y2.ReferenceAddress = "D2006";
+            this.axHead_1_Y2.ReferenceSensorSide = Kaban.UI.Controls.AxisReferenceSide.Forward;
             this.axHead_1_Y2.DecimalPlaces = 2;
             this.axHead_1_Y2.Digits = 8;
             this.axHead_1_Y2.Divisor = 10000D;
@@ -494,6 +425,7 @@ namespace Kaban.Machines.MD3020.Screens.Parameters
             this.axHead_1_Z1.ZDistanceAddress = "D6600";
             this.axHead_1_Z1.ReferenceSensorAddress = "W0.3";
             this.axHead_1_Z1.ErrorAddress = "M605";
+            this.axHead_1_Z1.ReferenceAddress = "D2002";
             this.axHead_1_Z1.ReferenceSensorSide = Kaban.UI.Controls.AxisReferenceSide.Forward;
             this.axHead_1_Z1.DecimalPlaces = 2;
             this.axHead_1_Z1.Digits = 8;
@@ -516,8 +448,8 @@ namespace Kaban.Machines.MD3020.Screens.Parameters
             // 
             this.axHead_1_Z2.AxisNameKey = "Axis_MD3020_H1RZ";
             this.axHead_1_Z2.BackColor = System.Drawing.Color.White;
-            this.axHead_1_Z2.CommandBackAddress = "M242";
-            this.axHead_1_Z2.CommandForwardAddress = "M243";
+            this.axHead_1_Z2.CommandBackAddress = "M215";
+            this.axHead_1_Z2.CommandForwardAddress = "M216";
             this.axHead_1_Z2.PositionAddress = "D420";
             this.axHead_1_Z2.MinLimitAddress = "D536";
             this.axHead_1_Z2.MaxLimitAddress = "D534";
@@ -526,6 +458,7 @@ namespace Kaban.Machines.MD3020.Screens.Parameters
             this.axHead_1_Z2.ZDistanceAddress = "D6619";
             this.axHead_1_Z2.ReferenceSensorAddress = "W0.4";
             this.axHead_1_Z2.ErrorAddress = "M757";
+            this.axHead_1_Z2.ReferenceAddress = "D2038";
             this.axHead_1_Z2.ReferenceSensorSide = Kaban.UI.Controls.AxisReferenceSide.Forward;
             this.axHead_1_Z2.DecimalPlaces = 2;
             this.axHead_1_Z2.Digits = 8;
@@ -567,8 +500,9 @@ namespace Kaban.Machines.MD3020.Screens.Parameters
             this.axHead_2_X.CalibrationAddress = "D2556";
             this.axHead_2_X.CalibrateAddress = "M68";
             this.axHead_2_X.ZDistanceAddress = "D6605";
-            this.axHead_2_X.ReferenceSensorAddress = "W2.0";
+            this.axHead_2_X.ReferenceSensorAddress = "W10.0";
             this.axHead_2_X.ErrorAddress = "M610";
+            this.axHead_2_X.ReferenceAddress = "D2008";
             this.axHead_2_X.ReferenceSensorSide = Kaban.UI.Controls.AxisReferenceSide.Back;
             this.axHead_2_X.DecimalPlaces = 2;
             this.axHead_2_X.Digits = 8;
@@ -591,17 +525,18 @@ namespace Kaban.Machines.MD3020.Screens.Parameters
             // 
             this.axHead_2_Y1.AxisNameKey = "Axis_MD3020_H2Y1";
             this.axHead_2_Y1.BackColor = System.Drawing.Color.White;
-            this.axHead_2_Y1.CommandBackAddress = "M31";
-            this.axHead_2_Y1.CommandForwardAddress = "M50";
+            this.axHead_2_Y1.CommandBackAddress = "M50";
+            this.axHead_2_Y1.CommandForwardAddress = "M31";
             this.axHead_2_Y1.PositionAddress = "D120";
             this.axHead_2_Y1.MinLimitAddress = "D532";
             this.axHead_2_Y1.MaxLimitAddress = "D530";
             this.axHead_2_Y1.CalibrationAddress = "D2560";
             this.axHead_2_Y1.CalibrateAddress = "M69";
             this.axHead_2_Y1.ZDistanceAddress = "D6606";
-            this.axHead_2_Y1.ReferenceSensorAddress = "W2.1";
+            this.axHead_2_Y1.ReferenceSensorAddress = "W10.1";
             this.axHead_2_Y1.ErrorAddress = "M611";
-            this.axHead_2_Y1.ReferenceSensorSide = Kaban.UI.Controls.AxisReferenceSide.Back;
+            this.axHead_2_Y1.ReferenceAddress = "D2012";
+            this.axHead_2_Y1.ReferenceSensorSide = Kaban.UI.Controls.AxisReferenceSide.Forward;
             this.axHead_2_Y1.DecimalPlaces = 2;
             this.axHead_2_Y1.Digits = 8;
             this.axHead_2_Y1.Divisor = 10000D;
@@ -623,17 +558,18 @@ namespace Kaban.Machines.MD3020.Screens.Parameters
             // 
             this.axHead_2_Y2.AxisNameKey = "Axis_MD3020_H2Y2";
             this.axHead_2_Y2.BackColor = System.Drawing.Color.White;
-            this.axHead_2_Y2.CommandBackAddress = "M32";
-            this.axHead_2_Y2.CommandForwardAddress = "M51";
+            this.axHead_2_Y2.CommandBackAddress = "M51";
+            this.axHead_2_Y2.CommandForwardAddress = "M32";
             this.axHead_2_Y2.PositionAddress = "D140";
             this.axHead_2_Y2.MinLimitAddress = "D532";
             this.axHead_2_Y2.MaxLimitAddress = "D530";
             this.axHead_2_Y2.CalibrationAddress = "D2562";
             this.axHead_2_Y2.CalibrateAddress = "M70";
             this.axHead_2_Y2.ZDistanceAddress = "D6607";
-            this.axHead_2_Y2.ReferenceSensorAddress = "W2.2";
+            this.axHead_2_Y2.ReferenceSensorAddress = "W10.2";
             this.axHead_2_Y2.ErrorAddress = "M612";
-            this.axHead_2_Y2.ReferenceSensorSide = Kaban.UI.Controls.AxisReferenceSide.Back;
+            this.axHead_2_Y2.ReferenceAddress = "D2014";
+            this.axHead_2_Y2.ReferenceSensorSide = Kaban.UI.Controls.AxisReferenceSide.Forward;
             this.axHead_2_Y2.DecimalPlaces = 2;
             this.axHead_2_Y2.Digits = 8;
             this.axHead_2_Y2.Divisor = 10000D;
@@ -663,8 +599,9 @@ namespace Kaban.Machines.MD3020.Screens.Parameters
             this.axHead_2_Z1.CalibrationAddress = "D2558";
             this.axHead_2_Z1.CalibrateAddress = "M67";
             this.axHead_2_Z1.ZDistanceAddress = "D6604";
-            this.axHead_2_Z1.ReferenceSensorAddress = "W2.3";
+            this.axHead_2_Z1.ReferenceSensorAddress = "W10.3";
             this.axHead_2_Z1.ErrorAddress = "M609";
+            this.axHead_2_Z1.ReferenceAddress = "D2010";
             this.axHead_2_Z1.ReferenceSensorSide = Kaban.UI.Controls.AxisReferenceSide.Forward;
             this.axHead_2_Z1.DecimalPlaces = 2;
             this.axHead_2_Z1.Digits = 8;
@@ -687,16 +624,17 @@ namespace Kaban.Machines.MD3020.Screens.Parameters
             // 
             this.axHead_2_Z2.AxisNameKey = "Axis_MD3020_H2RZ";
             this.axHead_2_Z2.BackColor = System.Drawing.Color.White;
-            this.axHead_2_Z2.CommandBackAddress = "M236";
-            this.axHead_2_Z2.CommandForwardAddress = "M237";
+            this.axHead_2_Z2.CommandBackAddress = "M215";
+            this.axHead_2_Z2.CommandForwardAddress = "M216";
             this.axHead_2_Z2.PositionAddress = "D440";
             this.axHead_2_Z2.MinLimitAddress = "D536";
             this.axHead_2_Z2.MaxLimitAddress = "D534";
             this.axHead_2_Z2.CalibrationAddress = "D7046";
             this.axHead_2_Z2.CalibrateAddress = "M80";
             this.axHead_2_Z2.ZDistanceAddress = "D6620";
-            this.axHead_2_Z2.ReferenceSensorAddress = "W2.4";
+            this.axHead_2_Z2.ReferenceSensorAddress = "W10.4";
             this.axHead_2_Z2.ErrorAddress = "M758";
+            this.axHead_2_Z2.ReferenceAddress = "D2040";
             this.axHead_2_Z2.ReferenceSensorSide = Kaban.UI.Controls.AxisReferenceSide.Forward;
             this.axHead_2_Z2.DecimalPlaces = 2;
             this.axHead_2_Z2.Digits = 8;
@@ -738,8 +676,9 @@ namespace Kaban.Machines.MD3020.Screens.Parameters
             this.axHead_3_X.CalibrationAddress = "D2564";
             this.axHead_3_X.CalibrateAddress = "M72";
             this.axHead_3_X.ZDistanceAddress = "D6609";
-            this.axHead_3_X.ReferenceSensorAddress = "W4.0";
+            this.axHead_3_X.ReferenceSensorAddress = "W20.0";
             this.axHead_3_X.ErrorAddress = "M614";
+            this.axHead_3_X.ReferenceAddress = "D2016";
             this.axHead_3_X.ReferenceSensorSide = Kaban.UI.Controls.AxisReferenceSide.Back;
             this.axHead_3_X.DecimalPlaces = 2;
             this.axHead_3_X.Digits = 8;
@@ -762,17 +701,18 @@ namespace Kaban.Machines.MD3020.Screens.Parameters
             // 
             this.axHead_3_Y1.AxisNameKey = "Axis_MD3020_H3Y1";
             this.axHead_3_Y1.BackColor = System.Drawing.Color.White;
-            this.axHead_3_Y1.CommandBackAddress = "M35";
-            this.axHead_3_Y1.CommandForwardAddress = "M54";
+            this.axHead_3_Y1.CommandBackAddress = "M54";
+            this.axHead_3_Y1.CommandForwardAddress = "M35";
             this.axHead_3_Y1.PositionAddress = "D200";
             this.axHead_3_Y1.MinLimitAddress = "D532";
             this.axHead_3_Y1.MaxLimitAddress = "D530";
             this.axHead_3_Y1.CalibrationAddress = "D2568";
             this.axHead_3_Y1.CalibrateAddress = "M73";
             this.axHead_3_Y1.ZDistanceAddress = "D6610";
-            this.axHead_3_Y1.ReferenceSensorAddress = "W4.1";
+            this.axHead_3_Y1.ReferenceSensorAddress = "W20.1";
             this.axHead_3_Y1.ErrorAddress = "M615";
-            this.axHead_3_Y1.ReferenceSensorSide = Kaban.UI.Controls.AxisReferenceSide.Back;
+            this.axHead_3_Y1.ReferenceAddress = "D2020";
+            this.axHead_3_Y1.ReferenceSensorSide = Kaban.UI.Controls.AxisReferenceSide.Forward;
             this.axHead_3_Y1.DecimalPlaces = 2;
             this.axHead_3_Y1.Digits = 8;
             this.axHead_3_Y1.Divisor = 10000D;
@@ -794,17 +734,18 @@ namespace Kaban.Machines.MD3020.Screens.Parameters
             // 
             this.axHead_3_Y2.AxisNameKey = "Axis_MD3020_H3Y2";
             this.axHead_3_Y2.BackColor = System.Drawing.Color.White;
-            this.axHead_3_Y2.CommandBackAddress = "M36";
-            this.axHead_3_Y2.CommandForwardAddress = "M55";
+            this.axHead_3_Y2.CommandBackAddress = "M55";
+            this.axHead_3_Y2.CommandForwardAddress = "M36";
             this.axHead_3_Y2.PositionAddress = "D220";
             this.axHead_3_Y2.MinLimitAddress = "D532";
             this.axHead_3_Y2.MaxLimitAddress = "D530";
             this.axHead_3_Y2.CalibrationAddress = "D2570";
             this.axHead_3_Y2.CalibrateAddress = "M74";
             this.axHead_3_Y2.ZDistanceAddress = "D6611";
-            this.axHead_3_Y2.ReferenceSensorAddress = "W4.2";
+            this.axHead_3_Y2.ReferenceSensorAddress = "W20.2";
             this.axHead_3_Y2.ErrorAddress = "M616";
-            this.axHead_3_Y2.ReferenceSensorSide = Kaban.UI.Controls.AxisReferenceSide.Back;
+            this.axHead_3_Y2.ReferenceAddress = "D2022";
+            this.axHead_3_Y2.ReferenceSensorSide = Kaban.UI.Controls.AxisReferenceSide.Forward;
             this.axHead_3_Y2.DecimalPlaces = 2;
             this.axHead_3_Y2.Digits = 8;
             this.axHead_3_Y2.Divisor = 10000D;
@@ -834,8 +775,9 @@ namespace Kaban.Machines.MD3020.Screens.Parameters
             this.axHead_3_Z1.CalibrationAddress = "D2566";
             this.axHead_3_Z1.CalibrateAddress = "M71";
             this.axHead_3_Z1.ZDistanceAddress = "D6608";
-            this.axHead_3_Z1.ReferenceSensorAddress = "W4.3";
+            this.axHead_3_Z1.ReferenceSensorAddress = "W20.3";
             this.axHead_3_Z1.ErrorAddress = "M613";
+            this.axHead_3_Z1.ReferenceAddress = "D2018";
             this.axHead_3_Z1.ReferenceSensorSide = Kaban.UI.Controls.AxisReferenceSide.Forward;
             this.axHead_3_Z1.DecimalPlaces = 2;
             this.axHead_3_Z1.Digits = 8;
@@ -858,16 +800,17 @@ namespace Kaban.Machines.MD3020.Screens.Parameters
             // 
             this.axHead_3_Z2.AxisNameKey = "Axis_MD3020_H3RZ";
             this.axHead_3_Z2.BackColor = System.Drawing.Color.White;
-            this.axHead_3_Z2.CommandBackAddress = "M238";
-            this.axHead_3_Z2.CommandForwardAddress = "M239";
+            this.axHead_3_Z2.CommandBackAddress = "M215";
+            this.axHead_3_Z2.CommandForwardAddress = "M216";
             this.axHead_3_Z2.PositionAddress = "D492";
             this.axHead_3_Z2.MinLimitAddress = "D536";
             this.axHead_3_Z2.MaxLimitAddress = "D534";
             this.axHead_3_Z2.CalibrationAddress = "D7048";
             this.axHead_3_Z2.CalibrateAddress = "M81";
             this.axHead_3_Z2.ZDistanceAddress = "D6621";
-            this.axHead_3_Z2.ReferenceSensorAddress = "W4.4";
+            this.axHead_3_Z2.ReferenceSensorAddress = "W20.4";
             this.axHead_3_Z2.ErrorAddress = "M759";
+            this.axHead_3_Z2.ReferenceAddress = "D2042";
             this.axHead_3_Z2.ReferenceSensorSide = Kaban.UI.Controls.AxisReferenceSide.Forward;
             this.axHead_3_Z2.DecimalPlaces = 2;
             this.axHead_3_Z2.Digits = 8;
@@ -909,8 +852,9 @@ namespace Kaban.Machines.MD3020.Screens.Parameters
             this.axHead_4_X.CalibrationAddress = "D2572";
             this.axHead_4_X.CalibrateAddress = "M76";
             this.axHead_4_X.ZDistanceAddress = "D6613";
-            this.axHead_4_X.ReferenceSensorAddress = "W6.0";
+            this.axHead_4_X.ReferenceSensorAddress = "W30.0";
             this.axHead_4_X.ErrorAddress = "M618";
+            this.axHead_4_X.ReferenceAddress = "D2024";
             this.axHead_4_X.ReferenceSensorSide = Kaban.UI.Controls.AxisReferenceSide.Back;
             this.axHead_4_X.DecimalPlaces = 2;
             this.axHead_4_X.Digits = 8;
@@ -933,17 +877,18 @@ namespace Kaban.Machines.MD3020.Screens.Parameters
             // 
             this.axHead_4_Y1.AxisNameKey = "Axis_MD3020_H4Y1";
             this.axHead_4_Y1.BackColor = System.Drawing.Color.White;
-            this.axHead_4_Y1.CommandBackAddress = "M39";
-            this.axHead_4_Y1.CommandForwardAddress = "M58";
+            this.axHead_4_Y1.CommandBackAddress = "M58";
+            this.axHead_4_Y1.CommandForwardAddress = "M39";
             this.axHead_4_Y1.PositionAddress = "D280";
             this.axHead_4_Y1.MinLimitAddress = "D532";
             this.axHead_4_Y1.MaxLimitAddress = "D530";
             this.axHead_4_Y1.CalibrationAddress = "D2576";
             this.axHead_4_Y1.CalibrateAddress = "M77";
             this.axHead_4_Y1.ZDistanceAddress = "D6614";
-            this.axHead_4_Y1.ReferenceSensorAddress = "W6.1";
+            this.axHead_4_Y1.ReferenceSensorAddress = "W30.1";
             this.axHead_4_Y1.ErrorAddress = "M619";
-            this.axHead_4_Y1.ReferenceSensorSide = Kaban.UI.Controls.AxisReferenceSide.Back;
+            this.axHead_4_Y1.ReferenceAddress = "D2028";
+            this.axHead_4_Y1.ReferenceSensorSide = Kaban.UI.Controls.AxisReferenceSide.Forward;
             this.axHead_4_Y1.DecimalPlaces = 2;
             this.axHead_4_Y1.Digits = 8;
             this.axHead_4_Y1.Divisor = 10000D;
@@ -965,17 +910,18 @@ namespace Kaban.Machines.MD3020.Screens.Parameters
             // 
             this.axHead_4_Y2.AxisNameKey = "Axis_MD3020_H4Y2";
             this.axHead_4_Y2.BackColor = System.Drawing.Color.White;
-            this.axHead_4_Y2.CommandBackAddress = "M40";
-            this.axHead_4_Y2.CommandForwardAddress = "M59";
+            this.axHead_4_Y2.CommandBackAddress = "M59";
+            this.axHead_4_Y2.CommandForwardAddress = "M40";
             this.axHead_4_Y2.PositionAddress = "D300";
             this.axHead_4_Y2.MinLimitAddress = "D532";
             this.axHead_4_Y2.MaxLimitAddress = "D530";
             this.axHead_4_Y2.CalibrationAddress = "D2578";
             this.axHead_4_Y2.CalibrateAddress = "M78";
             this.axHead_4_Y2.ZDistanceAddress = "D6615";
-            this.axHead_4_Y2.ReferenceSensorAddress = "W6.2";
+            this.axHead_4_Y2.ReferenceSensorAddress = "W30.2";
             this.axHead_4_Y2.ErrorAddress = "M620";
-            this.axHead_4_Y2.ReferenceSensorSide = Kaban.UI.Controls.AxisReferenceSide.Back;
+            this.axHead_4_Y2.ReferenceAddress = "D2030";
+            this.axHead_4_Y2.ReferenceSensorSide = Kaban.UI.Controls.AxisReferenceSide.Forward;
             this.axHead_4_Y2.DecimalPlaces = 2;
             this.axHead_4_Y2.Digits = 8;
             this.axHead_4_Y2.Divisor = 10000D;
@@ -1005,8 +951,9 @@ namespace Kaban.Machines.MD3020.Screens.Parameters
             this.axHead_4_Z1.CalibrationAddress = "D2574";
             this.axHead_4_Z1.CalibrateAddress = "M75";
             this.axHead_4_Z1.ZDistanceAddress = "D6612";
-            this.axHead_4_Z1.ReferenceSensorAddress = "W6.3";
+            this.axHead_4_Z1.ReferenceSensorAddress = "W30.3";
             this.axHead_4_Z1.ErrorAddress = "M617";
+            this.axHead_4_Z1.ReferenceAddress = "D2026";
             this.axHead_4_Z1.ReferenceSensorSide = Kaban.UI.Controls.AxisReferenceSide.Forward;
             this.axHead_4_Z1.DecimalPlaces = 2;
             this.axHead_4_Z1.Digits = 8;
@@ -1029,16 +976,17 @@ namespace Kaban.Machines.MD3020.Screens.Parameters
             // 
             this.axHead_4_Z2.AxisNameKey = "Axis_MD3020_H4RZ";
             this.axHead_4_Z2.BackColor = System.Drawing.Color.White;
-            this.axHead_4_Z2.CommandBackAddress = "M240";
-            this.axHead_4_Z2.CommandForwardAddress = "M241";
+            this.axHead_4_Z2.CommandBackAddress = "M215";
+            this.axHead_4_Z2.CommandForwardAddress = "M216";
             this.axHead_4_Z2.PositionAddress = "D380";
             this.axHead_4_Z2.MinLimitAddress = "D536";
             this.axHead_4_Z2.MaxLimitAddress = "D534";
             this.axHead_4_Z2.CalibrationAddress = "D7050";
             this.axHead_4_Z2.CalibrateAddress = "M82";
             this.axHead_4_Z2.ZDistanceAddress = "D6622";
-            this.axHead_4_Z2.ReferenceSensorAddress = "W6.4";
+            this.axHead_4_Z2.ReferenceSensorAddress = "W30.4";
             this.axHead_4_Z2.ErrorAddress = "M760";
+            this.axHead_4_Z2.ReferenceAddress = "D2044";
             this.axHead_4_Z2.ReferenceSensorSide = Kaban.UI.Controls.AxisReferenceSide.Forward;
             this.axHead_4_Z2.DecimalPlaces = 2;
             this.axHead_4_Z2.Digits = 8;
@@ -1066,7 +1014,7 @@ namespace Kaban.Machines.MD3020.Screens.Parameters
             this.lblEncoder.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
             this.lblEncoder.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.lblEncoder.Location = new System.Drawing.Point(16, 1250);
-            this.lblEncoder.Size = new System.Drawing.Size(376, 26);
+            this.lblEncoder.Size = new System.Drawing.Size(506, 26);
             // 
             // hdAxis
             // 
@@ -1077,7 +1025,7 @@ namespace Kaban.Machines.MD3020.Screens.Parameters
             this.hdAxis.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
             this.hdAxis.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.hdAxis.Location = new System.Drawing.Point(16, 1280);
-            this.hdAxis.Size = new System.Drawing.Size(46, 26);
+            this.hdAxis.Size = new System.Drawing.Size(150, 26);
             // 
             // hdEncoder
             // 
@@ -1087,1013 +1035,382 @@ namespace Kaban.Machines.MD3020.Screens.Parameters
             this.hdEncoder.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
             this.hdEncoder.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
             this.hdEncoder.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.hdEncoder.Location = new System.Drawing.Point(68, 1280);
+            this.hdEncoder.Location = new System.Drawing.Point(172, 1280);
             this.hdEncoder.Size = new System.Drawing.Size(104, 26);
             // 
-            // hdEncoder_Channel
-            // 
-            this.hdEncoder_Channel.Name = "hdEncoder_Channel";
-            this.hdEncoder_Channel.TranslationKey = "Encoder Channel";
-            this.hdEncoder_Channel.Text = "Encoder Channel";
-            this.hdEncoder_Channel.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
-            this.hdEncoder_Channel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
-            this.hdEncoder_Channel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.hdEncoder_Channel.Location = new System.Drawing.Point(178, 1280);
-            this.hdEncoder_Channel.Size = new System.Drawing.Size(104, 26);
-            // 
-            // hdOffset
-            // 
-            this.hdOffset.Name = "hdOffset";
-            this.hdOffset.TranslationKey = "Offset";
-            this.hdOffset.Text = "Offset";
-            this.hdOffset.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
-            this.hdOffset.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
-            this.hdOffset.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.hdOffset.Location = new System.Drawing.Point(288, 1280);
-            this.hdOffset.Size = new System.Drawing.Size(104, 26);
-            // 
-            // lblGeneral
-            // 
-            this.lblGeneral.Name = "lblGeneral";
-            this.lblGeneral.TranslationKey = "General";
-            this.lblGeneral.Text = "General";
-            this.lblGeneral.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.lblGeneral.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
-            this.lblGeneral.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.lblGeneral.Location = new System.Drawing.Point(16, 1316);
-            this.lblGeneral.Size = new System.Drawing.Size(376, 26);
-            // 
-            // capX1
-            // 
-            this.capX1.Name = "capX1";
-            this.capX1.TranslationKey = "X1";
-            this.capX1.Text = "X1";
-            this.capX1.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.capX1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
-            this.capX1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capX1.Location = new System.Drawing.Point(16, 1344);
-            this.capX1.Size = new System.Drawing.Size(46, 40);
-            this.capX1.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            // 
-            // numEncoders_General_Body_X1_Encoder  (D2800)
-            // 
-            this.numEncoders_General_Body_X1_Encoder.BackColor = System.Drawing.Color.White;
-            this.numEncoders_General_Body_X1_Encoder.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numEncoders_General_Body_X1_Encoder.Name = "numEncoders_General_Body_X1_Encoder";
-            this.numEncoders_General_Body_X1_Encoder.PlcNumber = 1;
-            this.numEncoders_General_Body_X1_Encoder.Address = "D2800";
-            this.numEncoders_General_Body_X1_Encoder.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.numEncoders_General_Body_X1_Encoder.AutoSize = false;
-            this.numEncoders_General_Body_X1_Encoder.Digits = 6;
-            this.numEncoders_General_Body_X1_Encoder.DecimalPlaces = 2;
-            this.numEncoders_General_Body_X1_Encoder.Divisor = 10000D;
-            this.numEncoders_General_Body_X1_Encoder.Suffix = "mm";
-            this.numEncoders_General_Body_X1_Encoder.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numEncoders_General_Body_X1_Encoder.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numEncoders_General_Body_X1_Encoder.LogAction = true;
-            this.numEncoders_General_Body_X1_Encoder.Location = new System.Drawing.Point(68, 1348);
-            this.numEncoders_General_Body_X1_Encoder.Size = new System.Drawing.Size(104, 32);
-            this.numEncoders_General_Body_X1_Encoder.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // numEncoders_General_Body_X1_Encoder_Channel  (D2816)
-            // 
-            this.numEncoders_General_Body_X1_Encoder_Channel.BackColor = System.Drawing.Color.White;
-            this.numEncoders_General_Body_X1_Encoder_Channel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numEncoders_General_Body_X1_Encoder_Channel.Name = "numEncoders_General_Body_X1_Encoder_Channel";
-            this.numEncoders_General_Body_X1_Encoder_Channel.PlcNumber = 1;
-            this.numEncoders_General_Body_X1_Encoder_Channel.Address = "D2816";
-            this.numEncoders_General_Body_X1_Encoder_Channel.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.numEncoders_General_Body_X1_Encoder_Channel.AutoSize = false;
-            this.numEncoders_General_Body_X1_Encoder_Channel.Digits = 5;
-            this.numEncoders_General_Body_X1_Encoder_Channel.DecimalPlaces = 0;
-            this.numEncoders_General_Body_X1_Encoder_Channel.Divisor = 1D;
-            this.numEncoders_General_Body_X1_Encoder_Channel.Suffix = "";
-            this.numEncoders_General_Body_X1_Encoder_Channel.UnitType = Kaban.Core.Enums.UnitType.None;
-            this.numEncoders_General_Body_X1_Encoder_Channel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numEncoders_General_Body_X1_Encoder_Channel.LogAction = true;
-            this.numEncoders_General_Body_X1_Encoder_Channel.Location = new System.Drawing.Point(178, 1348);
-            this.numEncoders_General_Body_X1_Encoder_Channel.Size = new System.Drawing.Size(104, 32);
-            this.numEncoders_General_Body_X1_Encoder_Channel.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // numEncoders_General_Body_X1_Offset  (D2808)
-            // 
-            this.numEncoders_General_Body_X1_Offset.BackColor = System.Drawing.Color.White;
-            this.numEncoders_General_Body_X1_Offset.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numEncoders_General_Body_X1_Offset.Name = "numEncoders_General_Body_X1_Offset";
-            this.numEncoders_General_Body_X1_Offset.PlcNumber = 1;
-            this.numEncoders_General_Body_X1_Offset.Address = "D2808";
-            this.numEncoders_General_Body_X1_Offset.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.numEncoders_General_Body_X1_Offset.AutoSize = false;
-            this.numEncoders_General_Body_X1_Offset.Digits = 6;
-            this.numEncoders_General_Body_X1_Offset.DecimalPlaces = 2;
-            this.numEncoders_General_Body_X1_Offset.Divisor = 10000D;
-            this.numEncoders_General_Body_X1_Offset.Suffix = "mm";
-            this.numEncoders_General_Body_X1_Offset.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numEncoders_General_Body_X1_Offset.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numEncoders_General_Body_X1_Offset.LogAction = true;
-            this.numEncoders_General_Body_X1_Offset.Location = new System.Drawing.Point(288, 1348);
-            this.numEncoders_General_Body_X1_Offset.Size = new System.Drawing.Size(104, 32);
-            this.numEncoders_General_Body_X1_Offset.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // capX2
-            // 
-            this.capX2.Name = "capX2";
-            this.capX2.TranslationKey = "X2";
-            this.capX2.Text = "X2";
-            this.capX2.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.capX2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
-            this.capX2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capX2.Location = new System.Drawing.Point(16, 1384);
-            this.capX2.Size = new System.Drawing.Size(46, 40);
-            this.capX2.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            // 
-            // numEncoders_General_Body_X2_Encoder  (D2802)
-            // 
-            this.numEncoders_General_Body_X2_Encoder.BackColor = System.Drawing.Color.White;
-            this.numEncoders_General_Body_X2_Encoder.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numEncoders_General_Body_X2_Encoder.Name = "numEncoders_General_Body_X2_Encoder";
-            this.numEncoders_General_Body_X2_Encoder.PlcNumber = 1;
-            this.numEncoders_General_Body_X2_Encoder.Address = "D2802";
-            this.numEncoders_General_Body_X2_Encoder.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.numEncoders_General_Body_X2_Encoder.AutoSize = false;
-            this.numEncoders_General_Body_X2_Encoder.Digits = 6;
-            this.numEncoders_General_Body_X2_Encoder.DecimalPlaces = 2;
-            this.numEncoders_General_Body_X2_Encoder.Divisor = 10000D;
-            this.numEncoders_General_Body_X2_Encoder.Suffix = "mm";
-            this.numEncoders_General_Body_X2_Encoder.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numEncoders_General_Body_X2_Encoder.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numEncoders_General_Body_X2_Encoder.LogAction = true;
-            this.numEncoders_General_Body_X2_Encoder.Location = new System.Drawing.Point(68, 1388);
-            this.numEncoders_General_Body_X2_Encoder.Size = new System.Drawing.Size(104, 32);
-            this.numEncoders_General_Body_X2_Encoder.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // numEncoders_General_Body_X2_Encoder_Channel  (D2817)
-            // 
-            this.numEncoders_General_Body_X2_Encoder_Channel.BackColor = System.Drawing.Color.White;
-            this.numEncoders_General_Body_X2_Encoder_Channel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numEncoders_General_Body_X2_Encoder_Channel.Name = "numEncoders_General_Body_X2_Encoder_Channel";
-            this.numEncoders_General_Body_X2_Encoder_Channel.PlcNumber = 1;
-            this.numEncoders_General_Body_X2_Encoder_Channel.Address = "D2817";
-            this.numEncoders_General_Body_X2_Encoder_Channel.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.numEncoders_General_Body_X2_Encoder_Channel.AutoSize = false;
-            this.numEncoders_General_Body_X2_Encoder_Channel.Digits = 5;
-            this.numEncoders_General_Body_X2_Encoder_Channel.DecimalPlaces = 0;
-            this.numEncoders_General_Body_X2_Encoder_Channel.Divisor = 1D;
-            this.numEncoders_General_Body_X2_Encoder_Channel.Suffix = "";
-            this.numEncoders_General_Body_X2_Encoder_Channel.UnitType = Kaban.Core.Enums.UnitType.None;
-            this.numEncoders_General_Body_X2_Encoder_Channel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numEncoders_General_Body_X2_Encoder_Channel.LogAction = true;
-            this.numEncoders_General_Body_X2_Encoder_Channel.Location = new System.Drawing.Point(178, 1388);
-            this.numEncoders_General_Body_X2_Encoder_Channel.Size = new System.Drawing.Size(104, 32);
-            this.numEncoders_General_Body_X2_Encoder_Channel.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // numEncoders_General_Body_X2_Offset  (D2810)
-            // 
-            this.numEncoders_General_Body_X2_Offset.BackColor = System.Drawing.Color.White;
-            this.numEncoders_General_Body_X2_Offset.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numEncoders_General_Body_X2_Offset.Name = "numEncoders_General_Body_X2_Offset";
-            this.numEncoders_General_Body_X2_Offset.PlcNumber = 1;
-            this.numEncoders_General_Body_X2_Offset.Address = "D2810";
-            this.numEncoders_General_Body_X2_Offset.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.numEncoders_General_Body_X2_Offset.AutoSize = false;
-            this.numEncoders_General_Body_X2_Offset.Digits = 6;
-            this.numEncoders_General_Body_X2_Offset.DecimalPlaces = 2;
-            this.numEncoders_General_Body_X2_Offset.Divisor = 10000D;
-            this.numEncoders_General_Body_X2_Offset.Suffix = "mm";
-            this.numEncoders_General_Body_X2_Offset.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numEncoders_General_Body_X2_Offset.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numEncoders_General_Body_X2_Offset.LogAction = true;
-            this.numEncoders_General_Body_X2_Offset.Location = new System.Drawing.Point(288, 1388);
-            this.numEncoders_General_Body_X2_Offset.Size = new System.Drawing.Size(104, 32);
-            this.numEncoders_General_Body_X2_Offset.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // capY1
-            // 
-            this.capY1.Name = "capY1";
-            this.capY1.TranslationKey = "Y1";
-            this.capY1.Text = "Y1";
-            this.capY1.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.capY1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
-            this.capY1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capY1.Location = new System.Drawing.Point(16, 1424);
-            this.capY1.Size = new System.Drawing.Size(46, 40);
-            this.capY1.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            // 
-            // numEncoders_General_Body_Y1_Encoder  (D2812)
-            // 
-            this.numEncoders_General_Body_Y1_Encoder.BackColor = System.Drawing.Color.White;
-            this.numEncoders_General_Body_Y1_Encoder.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numEncoders_General_Body_Y1_Encoder.Name = "numEncoders_General_Body_Y1_Encoder";
-            this.numEncoders_General_Body_Y1_Encoder.PlcNumber = 1;
-            this.numEncoders_General_Body_Y1_Encoder.Address = "D2812";
-            this.numEncoders_General_Body_Y1_Encoder.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.numEncoders_General_Body_Y1_Encoder.AutoSize = false;
-            this.numEncoders_General_Body_Y1_Encoder.Digits = 6;
-            this.numEncoders_General_Body_Y1_Encoder.DecimalPlaces = 2;
-            this.numEncoders_General_Body_Y1_Encoder.Divisor = 10000D;
-            this.numEncoders_General_Body_Y1_Encoder.Suffix = "mm";
-            this.numEncoders_General_Body_Y1_Encoder.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numEncoders_General_Body_Y1_Encoder.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numEncoders_General_Body_Y1_Encoder.LogAction = true;
-            this.numEncoders_General_Body_Y1_Encoder.Location = new System.Drawing.Point(68, 1428);
-            this.numEncoders_General_Body_Y1_Encoder.Size = new System.Drawing.Size(104, 32);
-            this.numEncoders_General_Body_Y1_Encoder.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // numEncoders_General_Body_Y1_Encoder_Channel  (D2818)
-            // 
-            this.numEncoders_General_Body_Y1_Encoder_Channel.BackColor = System.Drawing.Color.White;
-            this.numEncoders_General_Body_Y1_Encoder_Channel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numEncoders_General_Body_Y1_Encoder_Channel.Name = "numEncoders_General_Body_Y1_Encoder_Channel";
-            this.numEncoders_General_Body_Y1_Encoder_Channel.PlcNumber = 1;
-            this.numEncoders_General_Body_Y1_Encoder_Channel.Address = "D2818";
-            this.numEncoders_General_Body_Y1_Encoder_Channel.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.numEncoders_General_Body_Y1_Encoder_Channel.AutoSize = false;
-            this.numEncoders_General_Body_Y1_Encoder_Channel.Digits = 5;
-            this.numEncoders_General_Body_Y1_Encoder_Channel.DecimalPlaces = 0;
-            this.numEncoders_General_Body_Y1_Encoder_Channel.Divisor = 1D;
-            this.numEncoders_General_Body_Y1_Encoder_Channel.Suffix = "";
-            this.numEncoders_General_Body_Y1_Encoder_Channel.UnitType = Kaban.Core.Enums.UnitType.None;
-            this.numEncoders_General_Body_Y1_Encoder_Channel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numEncoders_General_Body_Y1_Encoder_Channel.LogAction = true;
-            this.numEncoders_General_Body_Y1_Encoder_Channel.Location = new System.Drawing.Point(178, 1428);
-            this.numEncoders_General_Body_Y1_Encoder_Channel.Size = new System.Drawing.Size(104, 32);
-            this.numEncoders_General_Body_Y1_Encoder_Channel.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // numEncoders_General_Body_Y1_Offset  (D2812)
-            // 
-            this.numEncoders_General_Body_Y1_Offset.BackColor = System.Drawing.Color.White;
-            this.numEncoders_General_Body_Y1_Offset.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numEncoders_General_Body_Y1_Offset.Name = "numEncoders_General_Body_Y1_Offset";
-            this.numEncoders_General_Body_Y1_Offset.PlcNumber = 1;
-            this.numEncoders_General_Body_Y1_Offset.Address = "D2812";
-            this.numEncoders_General_Body_Y1_Offset.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.numEncoders_General_Body_Y1_Offset.AutoSize = false;
-            this.numEncoders_General_Body_Y1_Offset.Digits = 6;
-            this.numEncoders_General_Body_Y1_Offset.DecimalPlaces = 2;
-            this.numEncoders_General_Body_Y1_Offset.Divisor = 10000D;
-            this.numEncoders_General_Body_Y1_Offset.Suffix = "mm";
-            this.numEncoders_General_Body_Y1_Offset.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numEncoders_General_Body_Y1_Offset.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numEncoders_General_Body_Y1_Offset.LogAction = true;
-            this.numEncoders_General_Body_Y1_Offset.Location = new System.Drawing.Point(288, 1428);
-            this.numEncoders_General_Body_Y1_Offset.Size = new System.Drawing.Size(104, 32);
-            this.numEncoders_General_Body_Y1_Offset.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // capY2
-            // 
-            this.capY2.Name = "capY2";
-            this.capY2.TranslationKey = "Y2";
-            this.capY2.Text = "Y2";
-            this.capY2.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.capY2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
-            this.capY2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capY2.Location = new System.Drawing.Point(16, 1464);
-            this.capY2.Size = new System.Drawing.Size(46, 40);
-            this.capY2.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            // 
-            // numEncoders_General_Body_Y2_Encoder  (D2014)
-            // 
-            this.numEncoders_General_Body_Y2_Encoder.BackColor = System.Drawing.Color.White;
-            this.numEncoders_General_Body_Y2_Encoder.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numEncoders_General_Body_Y2_Encoder.Name = "numEncoders_General_Body_Y2_Encoder";
-            this.numEncoders_General_Body_Y2_Encoder.PlcNumber = 1;
-            this.numEncoders_General_Body_Y2_Encoder.Address = "D2014";
-            this.numEncoders_General_Body_Y2_Encoder.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.numEncoders_General_Body_Y2_Encoder.AutoSize = false;
-            this.numEncoders_General_Body_Y2_Encoder.Digits = 6;
-            this.numEncoders_General_Body_Y2_Encoder.DecimalPlaces = 2;
-            this.numEncoders_General_Body_Y2_Encoder.Divisor = 10000D;
-            this.numEncoders_General_Body_Y2_Encoder.Suffix = "mm";
-            this.numEncoders_General_Body_Y2_Encoder.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numEncoders_General_Body_Y2_Encoder.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numEncoders_General_Body_Y2_Encoder.LogAction = true;
-            this.numEncoders_General_Body_Y2_Encoder.Location = new System.Drawing.Point(68, 1468);
-            this.numEncoders_General_Body_Y2_Encoder.Size = new System.Drawing.Size(104, 32);
-            this.numEncoders_General_Body_Y2_Encoder.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // numEncoders_General_Body_Y2_Encoder_Channel  (D2819)
-            // 
-            this.numEncoders_General_Body_Y2_Encoder_Channel.BackColor = System.Drawing.Color.White;
-            this.numEncoders_General_Body_Y2_Encoder_Channel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numEncoders_General_Body_Y2_Encoder_Channel.Name = "numEncoders_General_Body_Y2_Encoder_Channel";
-            this.numEncoders_General_Body_Y2_Encoder_Channel.PlcNumber = 1;
-            this.numEncoders_General_Body_Y2_Encoder_Channel.Address = "D2819";
-            this.numEncoders_General_Body_Y2_Encoder_Channel.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.numEncoders_General_Body_Y2_Encoder_Channel.AutoSize = false;
-            this.numEncoders_General_Body_Y2_Encoder_Channel.Digits = 5;
-            this.numEncoders_General_Body_Y2_Encoder_Channel.DecimalPlaces = 0;
-            this.numEncoders_General_Body_Y2_Encoder_Channel.Divisor = 1D;
-            this.numEncoders_General_Body_Y2_Encoder_Channel.Suffix = "";
-            this.numEncoders_General_Body_Y2_Encoder_Channel.UnitType = Kaban.Core.Enums.UnitType.None;
-            this.numEncoders_General_Body_Y2_Encoder_Channel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numEncoders_General_Body_Y2_Encoder_Channel.LogAction = true;
-            this.numEncoders_General_Body_Y2_Encoder_Channel.Location = new System.Drawing.Point(178, 1468);
-            this.numEncoders_General_Body_Y2_Encoder_Channel.Size = new System.Drawing.Size(104, 32);
-            this.numEncoders_General_Body_Y2_Encoder_Channel.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // numEncoders_General_Body_Y2_Offset  (D2814)
-            // 
-            this.numEncoders_General_Body_Y2_Offset.BackColor = System.Drawing.Color.White;
-            this.numEncoders_General_Body_Y2_Offset.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numEncoders_General_Body_Y2_Offset.Name = "numEncoders_General_Body_Y2_Offset";
-            this.numEncoders_General_Body_Y2_Offset.PlcNumber = 1;
-            this.numEncoders_General_Body_Y2_Offset.Address = "D2814";
-            this.numEncoders_General_Body_Y2_Offset.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.numEncoders_General_Body_Y2_Offset.AutoSize = false;
-            this.numEncoders_General_Body_Y2_Offset.Digits = 6;
-            this.numEncoders_General_Body_Y2_Offset.DecimalPlaces = 2;
-            this.numEncoders_General_Body_Y2_Offset.Divisor = 10000D;
-            this.numEncoders_General_Body_Y2_Offset.Suffix = "mm";
-            this.numEncoders_General_Body_Y2_Offset.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numEncoders_General_Body_Y2_Offset.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numEncoders_General_Body_Y2_Offset.LogAction = true;
-            this.numEncoders_General_Body_Y2_Offset.Location = new System.Drawing.Point(288, 1468);
-            this.numEncoders_General_Body_Y2_Offset.Size = new System.Drawing.Size(104, 32);
-            this.numEncoders_General_Body_Y2_Offset.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // lblHead_1_2
-            // 
-            this.lblHead_1_2.Name = "lblHead_1_2";
-            this.lblHead_1_2.TranslationKey = "Head 1";
-            this.lblHead_1_2.Text = "Head 1";
-            this.lblHead_1_2.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.lblHead_1_2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
-            this.lblHead_1_2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.lblHead_1_2.Location = new System.Drawing.Point(16, 1506);
-            this.lblHead_1_2.Size = new System.Drawing.Size(376, 26);
-            // 
-            // capX
-            // 
-            this.capX.Name = "capX";
-            this.capX.TranslationKey = "X";
-            this.capX.Text = "X";
-            this.capX.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.capX.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
-            this.capX.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capX.Location = new System.Drawing.Point(16, 1534);
-            this.capX.Size = new System.Drawing.Size(46, 40);
-            this.capX.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            // 
-            // numEncoders_Head_1_H1_X_Encoder  (D2000)
-            // 
-            this.numEncoders_Head_1_H1_X_Encoder.BackColor = System.Drawing.Color.White;
-            this.numEncoders_Head_1_H1_X_Encoder.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numEncoders_Head_1_H1_X_Encoder.Name = "numEncoders_Head_1_H1_X_Encoder";
-            this.numEncoders_Head_1_H1_X_Encoder.PlcNumber = 1;
-            this.numEncoders_Head_1_H1_X_Encoder.Address = "D2000";
-            this.numEncoders_Head_1_H1_X_Encoder.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.numEncoders_Head_1_H1_X_Encoder.AutoSize = false;
-            this.numEncoders_Head_1_H1_X_Encoder.Digits = 6;
-            this.numEncoders_Head_1_H1_X_Encoder.DecimalPlaces = 2;
-            this.numEncoders_Head_1_H1_X_Encoder.Divisor = 10000D;
-            this.numEncoders_Head_1_H1_X_Encoder.Suffix = "mm";
-            this.numEncoders_Head_1_H1_X_Encoder.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numEncoders_Head_1_H1_X_Encoder.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numEncoders_Head_1_H1_X_Encoder.LogAction = true;
-            this.numEncoders_Head_1_H1_X_Encoder.Location = new System.Drawing.Point(68, 1538);
-            this.numEncoders_Head_1_H1_X_Encoder.Size = new System.Drawing.Size(104, 32);
-            this.numEncoders_Head_1_H1_X_Encoder.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // capY1_2
-            // 
-            this.capY1_2.Name = "capY1_2";
-            this.capY1_2.TranslationKey = "Y1";
-            this.capY1_2.Text = "Y1";
-            this.capY1_2.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.capY1_2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
-            this.capY1_2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capY1_2.Location = new System.Drawing.Point(16, 1574);
-            this.capY1_2.Size = new System.Drawing.Size(46, 40);
-            this.capY1_2.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            // 
-            // numEncoders_Head_1_H1_Y1_Encoder  (D2004)
-            // 
-            this.numEncoders_Head_1_H1_Y1_Encoder.BackColor = System.Drawing.Color.White;
-            this.numEncoders_Head_1_H1_Y1_Encoder.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numEncoders_Head_1_H1_Y1_Encoder.Name = "numEncoders_Head_1_H1_Y1_Encoder";
-            this.numEncoders_Head_1_H1_Y1_Encoder.PlcNumber = 1;
-            this.numEncoders_Head_1_H1_Y1_Encoder.Address = "D2004";
-            this.numEncoders_Head_1_H1_Y1_Encoder.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.numEncoders_Head_1_H1_Y1_Encoder.AutoSize = false;
-            this.numEncoders_Head_1_H1_Y1_Encoder.Digits = 6;
-            this.numEncoders_Head_1_H1_Y1_Encoder.DecimalPlaces = 2;
-            this.numEncoders_Head_1_H1_Y1_Encoder.Divisor = 10000D;
-            this.numEncoders_Head_1_H1_Y1_Encoder.Suffix = "mm";
-            this.numEncoders_Head_1_H1_Y1_Encoder.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numEncoders_Head_1_H1_Y1_Encoder.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numEncoders_Head_1_H1_Y1_Encoder.LogAction = true;
-            this.numEncoders_Head_1_H1_Y1_Encoder.Location = new System.Drawing.Point(68, 1578);
-            this.numEncoders_Head_1_H1_Y1_Encoder.Size = new System.Drawing.Size(104, 32);
-            this.numEncoders_Head_1_H1_Y1_Encoder.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // capY2_2
-            // 
-            this.capY2_2.Name = "capY2_2";
-            this.capY2_2.TranslationKey = "Y2";
-            this.capY2_2.Text = "Y2";
-            this.capY2_2.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.capY2_2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
-            this.capY2_2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capY2_2.Location = new System.Drawing.Point(16, 1614);
-            this.capY2_2.Size = new System.Drawing.Size(46, 40);
-            this.capY2_2.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            // 
-            // numEncoders_Head_1_H1_Y2_Encoder  (D2006)
-            // 
-            this.numEncoders_Head_1_H1_Y2_Encoder.BackColor = System.Drawing.Color.White;
-            this.numEncoders_Head_1_H1_Y2_Encoder.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numEncoders_Head_1_H1_Y2_Encoder.Name = "numEncoders_Head_1_H1_Y2_Encoder";
-            this.numEncoders_Head_1_H1_Y2_Encoder.PlcNumber = 1;
-            this.numEncoders_Head_1_H1_Y2_Encoder.Address = "D2006";
-            this.numEncoders_Head_1_H1_Y2_Encoder.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.numEncoders_Head_1_H1_Y2_Encoder.AutoSize = false;
-            this.numEncoders_Head_1_H1_Y2_Encoder.Digits = 6;
-            this.numEncoders_Head_1_H1_Y2_Encoder.DecimalPlaces = 2;
-            this.numEncoders_Head_1_H1_Y2_Encoder.Divisor = 10000D;
-            this.numEncoders_Head_1_H1_Y2_Encoder.Suffix = "mm";
-            this.numEncoders_Head_1_H1_Y2_Encoder.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numEncoders_Head_1_H1_Y2_Encoder.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numEncoders_Head_1_H1_Y2_Encoder.LogAction = true;
-            this.numEncoders_Head_1_H1_Y2_Encoder.Location = new System.Drawing.Point(68, 1618);
-            this.numEncoders_Head_1_H1_Y2_Encoder.Size = new System.Drawing.Size(104, 32);
-            this.numEncoders_Head_1_H1_Y2_Encoder.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // capZ
-            // 
-            this.capZ.Name = "capZ";
-            this.capZ.TranslationKey = "Z";
-            this.capZ.Text = "Z";
-            this.capZ.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.capZ.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
-            this.capZ.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capZ.Location = new System.Drawing.Point(16, 1654);
-            this.capZ.Size = new System.Drawing.Size(46, 40);
-            this.capZ.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            // 
-            // numEncoders_Head_1_H1_Z1_Encoder  (D2002)
-            // 
-            this.numEncoders_Head_1_H1_Z1_Encoder.BackColor = System.Drawing.Color.White;
-            this.numEncoders_Head_1_H1_Z1_Encoder.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numEncoders_Head_1_H1_Z1_Encoder.Name = "numEncoders_Head_1_H1_Z1_Encoder";
-            this.numEncoders_Head_1_H1_Z1_Encoder.PlcNumber = 1;
-            this.numEncoders_Head_1_H1_Z1_Encoder.Address = "D2002";
-            this.numEncoders_Head_1_H1_Z1_Encoder.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.numEncoders_Head_1_H1_Z1_Encoder.AutoSize = false;
-            this.numEncoders_Head_1_H1_Z1_Encoder.Digits = 6;
-            this.numEncoders_Head_1_H1_Z1_Encoder.DecimalPlaces = 2;
-            this.numEncoders_Head_1_H1_Z1_Encoder.Divisor = 10000D;
-            this.numEncoders_Head_1_H1_Z1_Encoder.Suffix = "mm";
-            this.numEncoders_Head_1_H1_Z1_Encoder.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numEncoders_Head_1_H1_Z1_Encoder.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numEncoders_Head_1_H1_Z1_Encoder.LogAction = true;
-            this.numEncoders_Head_1_H1_Z1_Encoder.Location = new System.Drawing.Point(68, 1658);
-            this.numEncoders_Head_1_H1_Z1_Encoder.Size = new System.Drawing.Size(104, 32);
-            this.numEncoders_Head_1_H1_Z1_Encoder.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // capRZ
-            // 
-            this.capRZ.Name = "capRZ";
-            this.capRZ.TranslationKey = "RZ";
-            this.capRZ.Text = "RZ";
-            this.capRZ.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.capRZ.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
-            this.capRZ.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capRZ.Location = new System.Drawing.Point(16, 1694);
-            this.capRZ.Size = new System.Drawing.Size(46, 40);
-            this.capRZ.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            // 
-            // numEncoders_Head_1_H1_Z2_Encoder  (D2038)
-            // 
-            this.numEncoders_Head_1_H1_Z2_Encoder.BackColor = System.Drawing.Color.White;
-            this.numEncoders_Head_1_H1_Z2_Encoder.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numEncoders_Head_1_H1_Z2_Encoder.Name = "numEncoders_Head_1_H1_Z2_Encoder";
-            this.numEncoders_Head_1_H1_Z2_Encoder.PlcNumber = 1;
-            this.numEncoders_Head_1_H1_Z2_Encoder.Address = "D2038";
-            this.numEncoders_Head_1_H1_Z2_Encoder.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.numEncoders_Head_1_H1_Z2_Encoder.AutoSize = false;
-            this.numEncoders_Head_1_H1_Z2_Encoder.Digits = 6;
-            this.numEncoders_Head_1_H1_Z2_Encoder.DecimalPlaces = 2;
-            this.numEncoders_Head_1_H1_Z2_Encoder.Divisor = 10000D;
-            this.numEncoders_Head_1_H1_Z2_Encoder.Suffix = "mm";
-            this.numEncoders_Head_1_H1_Z2_Encoder.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numEncoders_Head_1_H1_Z2_Encoder.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numEncoders_Head_1_H1_Z2_Encoder.LogAction = true;
-            this.numEncoders_Head_1_H1_Z2_Encoder.Location = new System.Drawing.Point(68, 1698);
-            this.numEncoders_Head_1_H1_Z2_Encoder.Size = new System.Drawing.Size(104, 32);
-            this.numEncoders_Head_1_H1_Z2_Encoder.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // lblHead_2_2
-            // 
-            this.lblHead_2_2.Name = "lblHead_2_2";
-            this.lblHead_2_2.TranslationKey = "Head 2";
-            this.lblHead_2_2.Text = "Head 2";
-            this.lblHead_2_2.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.lblHead_2_2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
-            this.lblHead_2_2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.lblHead_2_2.Location = new System.Drawing.Point(16, 1736);
-            this.lblHead_2_2.Size = new System.Drawing.Size(376, 26);
-            // 
-            // capX_2
-            // 
-            this.capX_2.Name = "capX_2";
-            this.capX_2.TranslationKey = "X";
-            this.capX_2.Text = "X";
-            this.capX_2.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.capX_2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
-            this.capX_2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capX_2.Location = new System.Drawing.Point(16, 1764);
-            this.capX_2.Size = new System.Drawing.Size(46, 40);
-            this.capX_2.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            // 
-            // numEncoders_Head_2_H2_X_Encoder  (D2008)
-            // 
-            this.numEncoders_Head_2_H2_X_Encoder.BackColor = System.Drawing.Color.White;
-            this.numEncoders_Head_2_H2_X_Encoder.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numEncoders_Head_2_H2_X_Encoder.Name = "numEncoders_Head_2_H2_X_Encoder";
-            this.numEncoders_Head_2_H2_X_Encoder.PlcNumber = 1;
-            this.numEncoders_Head_2_H2_X_Encoder.Address = "D2008";
-            this.numEncoders_Head_2_H2_X_Encoder.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.numEncoders_Head_2_H2_X_Encoder.AutoSize = false;
-            this.numEncoders_Head_2_H2_X_Encoder.Digits = 6;
-            this.numEncoders_Head_2_H2_X_Encoder.DecimalPlaces = 2;
-            this.numEncoders_Head_2_H2_X_Encoder.Divisor = 10000D;
-            this.numEncoders_Head_2_H2_X_Encoder.Suffix = "mm";
-            this.numEncoders_Head_2_H2_X_Encoder.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numEncoders_Head_2_H2_X_Encoder.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numEncoders_Head_2_H2_X_Encoder.LogAction = true;
-            this.numEncoders_Head_2_H2_X_Encoder.Location = new System.Drawing.Point(68, 1768);
-            this.numEncoders_Head_2_H2_X_Encoder.Size = new System.Drawing.Size(104, 32);
-            this.numEncoders_Head_2_H2_X_Encoder.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // capY1_3
-            // 
-            this.capY1_3.Name = "capY1_3";
-            this.capY1_3.TranslationKey = "Y1";
-            this.capY1_3.Text = "Y1";
-            this.capY1_3.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.capY1_3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
-            this.capY1_3.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capY1_3.Location = new System.Drawing.Point(16, 1804);
-            this.capY1_3.Size = new System.Drawing.Size(46, 40);
-            this.capY1_3.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            // 
-            // numEncoders_Head_2_H2_Y1_Encoder  (D2012)
-            // 
-            this.numEncoders_Head_2_H2_Y1_Encoder.BackColor = System.Drawing.Color.White;
-            this.numEncoders_Head_2_H2_Y1_Encoder.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numEncoders_Head_2_H2_Y1_Encoder.Name = "numEncoders_Head_2_H2_Y1_Encoder";
-            this.numEncoders_Head_2_H2_Y1_Encoder.PlcNumber = 1;
-            this.numEncoders_Head_2_H2_Y1_Encoder.Address = "D2012";
-            this.numEncoders_Head_2_H2_Y1_Encoder.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.numEncoders_Head_2_H2_Y1_Encoder.AutoSize = false;
-            this.numEncoders_Head_2_H2_Y1_Encoder.Digits = 6;
-            this.numEncoders_Head_2_H2_Y1_Encoder.DecimalPlaces = 2;
-            this.numEncoders_Head_2_H2_Y1_Encoder.Divisor = 10000D;
-            this.numEncoders_Head_2_H2_Y1_Encoder.Suffix = "mm";
-            this.numEncoders_Head_2_H2_Y1_Encoder.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numEncoders_Head_2_H2_Y1_Encoder.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numEncoders_Head_2_H2_Y1_Encoder.LogAction = true;
-            this.numEncoders_Head_2_H2_Y1_Encoder.Location = new System.Drawing.Point(68, 1808);
-            this.numEncoders_Head_2_H2_Y1_Encoder.Size = new System.Drawing.Size(104, 32);
-            this.numEncoders_Head_2_H2_Y1_Encoder.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // capY2_3
-            // 
-            this.capY2_3.Name = "capY2_3";
-            this.capY2_3.TranslationKey = "Y2";
-            this.capY2_3.Text = "Y2";
-            this.capY2_3.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.capY2_3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
-            this.capY2_3.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capY2_3.Location = new System.Drawing.Point(16, 1844);
-            this.capY2_3.Size = new System.Drawing.Size(46, 40);
-            this.capY2_3.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            // 
-            // numEncoders_Head_2_H2_Y2_Encoder  (D2014)
-            // 
-            this.numEncoders_Head_2_H2_Y2_Encoder.BackColor = System.Drawing.Color.White;
-            this.numEncoders_Head_2_H2_Y2_Encoder.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numEncoders_Head_2_H2_Y2_Encoder.Name = "numEncoders_Head_2_H2_Y2_Encoder";
-            this.numEncoders_Head_2_H2_Y2_Encoder.PlcNumber = 1;
-            this.numEncoders_Head_2_H2_Y2_Encoder.Address = "D2014";
-            this.numEncoders_Head_2_H2_Y2_Encoder.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.numEncoders_Head_2_H2_Y2_Encoder.AutoSize = false;
-            this.numEncoders_Head_2_H2_Y2_Encoder.Digits = 6;
-            this.numEncoders_Head_2_H2_Y2_Encoder.DecimalPlaces = 2;
-            this.numEncoders_Head_2_H2_Y2_Encoder.Divisor = 10000D;
-            this.numEncoders_Head_2_H2_Y2_Encoder.Suffix = "mm";
-            this.numEncoders_Head_2_H2_Y2_Encoder.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numEncoders_Head_2_H2_Y2_Encoder.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numEncoders_Head_2_H2_Y2_Encoder.LogAction = true;
-            this.numEncoders_Head_2_H2_Y2_Encoder.Location = new System.Drawing.Point(68, 1848);
-            this.numEncoders_Head_2_H2_Y2_Encoder.Size = new System.Drawing.Size(104, 32);
-            this.numEncoders_Head_2_H2_Y2_Encoder.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // capZ_2
-            // 
-            this.capZ_2.Name = "capZ_2";
-            this.capZ_2.TranslationKey = "Z";
-            this.capZ_2.Text = "Z";
-            this.capZ_2.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.capZ_2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
-            this.capZ_2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capZ_2.Location = new System.Drawing.Point(16, 1884);
-            this.capZ_2.Size = new System.Drawing.Size(46, 40);
-            this.capZ_2.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            // 
-            // numEncoders_Head_2_H2_Z1_Encoder  (D2010)
-            // 
-            this.numEncoders_Head_2_H2_Z1_Encoder.BackColor = System.Drawing.Color.White;
-            this.numEncoders_Head_2_H2_Z1_Encoder.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numEncoders_Head_2_H2_Z1_Encoder.Name = "numEncoders_Head_2_H2_Z1_Encoder";
-            this.numEncoders_Head_2_H2_Z1_Encoder.PlcNumber = 1;
-            this.numEncoders_Head_2_H2_Z1_Encoder.Address = "D2010";
-            this.numEncoders_Head_2_H2_Z1_Encoder.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.numEncoders_Head_2_H2_Z1_Encoder.AutoSize = false;
-            this.numEncoders_Head_2_H2_Z1_Encoder.Digits = 6;
-            this.numEncoders_Head_2_H2_Z1_Encoder.DecimalPlaces = 2;
-            this.numEncoders_Head_2_H2_Z1_Encoder.Divisor = 10000D;
-            this.numEncoders_Head_2_H2_Z1_Encoder.Suffix = "mm";
-            this.numEncoders_Head_2_H2_Z1_Encoder.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numEncoders_Head_2_H2_Z1_Encoder.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numEncoders_Head_2_H2_Z1_Encoder.LogAction = true;
-            this.numEncoders_Head_2_H2_Z1_Encoder.Location = new System.Drawing.Point(68, 1888);
-            this.numEncoders_Head_2_H2_Z1_Encoder.Size = new System.Drawing.Size(104, 32);
-            this.numEncoders_Head_2_H2_Z1_Encoder.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // capRZ_2
-            // 
-            this.capRZ_2.Name = "capRZ_2";
-            this.capRZ_2.TranslationKey = "RZ";
-            this.capRZ_2.Text = "RZ";
-            this.capRZ_2.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.capRZ_2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
-            this.capRZ_2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capRZ_2.Location = new System.Drawing.Point(16, 1924);
-            this.capRZ_2.Size = new System.Drawing.Size(46, 40);
-            this.capRZ_2.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            // 
-            // numEncoders_Head_2_H2_Z2_Encoder  (D2040)
-            // 
-            this.numEncoders_Head_2_H2_Z2_Encoder.BackColor = System.Drawing.Color.White;
-            this.numEncoders_Head_2_H2_Z2_Encoder.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numEncoders_Head_2_H2_Z2_Encoder.Name = "numEncoders_Head_2_H2_Z2_Encoder";
-            this.numEncoders_Head_2_H2_Z2_Encoder.PlcNumber = 1;
-            this.numEncoders_Head_2_H2_Z2_Encoder.Address = "D2040";
-            this.numEncoders_Head_2_H2_Z2_Encoder.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.numEncoders_Head_2_H2_Z2_Encoder.AutoSize = false;
-            this.numEncoders_Head_2_H2_Z2_Encoder.Digits = 6;
-            this.numEncoders_Head_2_H2_Z2_Encoder.DecimalPlaces = 2;
-            this.numEncoders_Head_2_H2_Z2_Encoder.Divisor = 10000D;
-            this.numEncoders_Head_2_H2_Z2_Encoder.Suffix = "mm";
-            this.numEncoders_Head_2_H2_Z2_Encoder.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numEncoders_Head_2_H2_Z2_Encoder.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numEncoders_Head_2_H2_Z2_Encoder.LogAction = true;
-            this.numEncoders_Head_2_H2_Z2_Encoder.Location = new System.Drawing.Point(68, 1928);
-            this.numEncoders_Head_2_H2_Z2_Encoder.Size = new System.Drawing.Size(104, 32);
-            this.numEncoders_Head_2_H2_Z2_Encoder.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // lblHead_3_2
-            // 
-            this.lblHead_3_2.Name = "lblHead_3_2";
-            this.lblHead_3_2.TranslationKey = "Head 3";
-            this.lblHead_3_2.Text = "Head 3";
-            this.lblHead_3_2.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.lblHead_3_2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
-            this.lblHead_3_2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.lblHead_3_2.Location = new System.Drawing.Point(16, 1966);
-            this.lblHead_3_2.Size = new System.Drawing.Size(376, 26);
-            // 
-            // capX_3
-            // 
-            this.capX_3.Name = "capX_3";
-            this.capX_3.TranslationKey = "X";
-            this.capX_3.Text = "X";
-            this.capX_3.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.capX_3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
-            this.capX_3.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capX_3.Location = new System.Drawing.Point(16, 1994);
-            this.capX_3.Size = new System.Drawing.Size(46, 40);
-            this.capX_3.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            // 
-            // numEncoders_Head_3_H3_X_Encoder  (D2016)
-            // 
-            this.numEncoders_Head_3_H3_X_Encoder.BackColor = System.Drawing.Color.White;
-            this.numEncoders_Head_3_H3_X_Encoder.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numEncoders_Head_3_H3_X_Encoder.Name = "numEncoders_Head_3_H3_X_Encoder";
-            this.numEncoders_Head_3_H3_X_Encoder.PlcNumber = 1;
-            this.numEncoders_Head_3_H3_X_Encoder.Address = "D2016";
-            this.numEncoders_Head_3_H3_X_Encoder.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.numEncoders_Head_3_H3_X_Encoder.AutoSize = false;
-            this.numEncoders_Head_3_H3_X_Encoder.Digits = 6;
-            this.numEncoders_Head_3_H3_X_Encoder.DecimalPlaces = 2;
-            this.numEncoders_Head_3_H3_X_Encoder.Divisor = 10000D;
-            this.numEncoders_Head_3_H3_X_Encoder.Suffix = "mm";
-            this.numEncoders_Head_3_H3_X_Encoder.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numEncoders_Head_3_H3_X_Encoder.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numEncoders_Head_3_H3_X_Encoder.LogAction = true;
-            this.numEncoders_Head_3_H3_X_Encoder.Location = new System.Drawing.Point(68, 1998);
-            this.numEncoders_Head_3_H3_X_Encoder.Size = new System.Drawing.Size(104, 32);
-            this.numEncoders_Head_3_H3_X_Encoder.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // capY1_4
-            // 
-            this.capY1_4.Name = "capY1_4";
-            this.capY1_4.TranslationKey = "Y1";
-            this.capY1_4.Text = "Y1";
-            this.capY1_4.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.capY1_4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
-            this.capY1_4.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capY1_4.Location = new System.Drawing.Point(16, 2034);
-            this.capY1_4.Size = new System.Drawing.Size(46, 40);
-            this.capY1_4.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            // 
-            // numEncoders_Head_3_H3_Y1_Encoder  (D2020)
-            // 
-            this.numEncoders_Head_3_H3_Y1_Encoder.BackColor = System.Drawing.Color.White;
-            this.numEncoders_Head_3_H3_Y1_Encoder.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numEncoders_Head_3_H3_Y1_Encoder.Name = "numEncoders_Head_3_H3_Y1_Encoder";
-            this.numEncoders_Head_3_H3_Y1_Encoder.PlcNumber = 1;
-            this.numEncoders_Head_3_H3_Y1_Encoder.Address = "D2020";
-            this.numEncoders_Head_3_H3_Y1_Encoder.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.numEncoders_Head_3_H3_Y1_Encoder.AutoSize = false;
-            this.numEncoders_Head_3_H3_Y1_Encoder.Digits = 6;
-            this.numEncoders_Head_3_H3_Y1_Encoder.DecimalPlaces = 2;
-            this.numEncoders_Head_3_H3_Y1_Encoder.Divisor = 10000D;
-            this.numEncoders_Head_3_H3_Y1_Encoder.Suffix = "mm";
-            this.numEncoders_Head_3_H3_Y1_Encoder.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numEncoders_Head_3_H3_Y1_Encoder.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numEncoders_Head_3_H3_Y1_Encoder.LogAction = true;
-            this.numEncoders_Head_3_H3_Y1_Encoder.Location = new System.Drawing.Point(68, 2038);
-            this.numEncoders_Head_3_H3_Y1_Encoder.Size = new System.Drawing.Size(104, 32);
-            this.numEncoders_Head_3_H3_Y1_Encoder.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // capY2_4
-            // 
-            this.capY2_4.Name = "capY2_4";
-            this.capY2_4.TranslationKey = "Y2";
-            this.capY2_4.Text = "Y2";
-            this.capY2_4.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.capY2_4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
-            this.capY2_4.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capY2_4.Location = new System.Drawing.Point(16, 2074);
-            this.capY2_4.Size = new System.Drawing.Size(46, 40);
-            this.capY2_4.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            // 
-            // numEncoders_Head_3_H3_Y2_Encoder  (D2022)
-            // 
-            this.numEncoders_Head_3_H3_Y2_Encoder.BackColor = System.Drawing.Color.White;
-            this.numEncoders_Head_3_H3_Y2_Encoder.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numEncoders_Head_3_H3_Y2_Encoder.Name = "numEncoders_Head_3_H3_Y2_Encoder";
-            this.numEncoders_Head_3_H3_Y2_Encoder.PlcNumber = 1;
-            this.numEncoders_Head_3_H3_Y2_Encoder.Address = "D2022";
-            this.numEncoders_Head_3_H3_Y2_Encoder.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.numEncoders_Head_3_H3_Y2_Encoder.AutoSize = false;
-            this.numEncoders_Head_3_H3_Y2_Encoder.Digits = 6;
-            this.numEncoders_Head_3_H3_Y2_Encoder.DecimalPlaces = 2;
-            this.numEncoders_Head_3_H3_Y2_Encoder.Divisor = 10000D;
-            this.numEncoders_Head_3_H3_Y2_Encoder.Suffix = "mm";
-            this.numEncoders_Head_3_H3_Y2_Encoder.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numEncoders_Head_3_H3_Y2_Encoder.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numEncoders_Head_3_H3_Y2_Encoder.LogAction = true;
-            this.numEncoders_Head_3_H3_Y2_Encoder.Location = new System.Drawing.Point(68, 2078);
-            this.numEncoders_Head_3_H3_Y2_Encoder.Size = new System.Drawing.Size(104, 32);
-            this.numEncoders_Head_3_H3_Y2_Encoder.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // capZ_3
-            // 
-            this.capZ_3.Name = "capZ_3";
-            this.capZ_3.TranslationKey = "Z";
-            this.capZ_3.Text = "Z";
-            this.capZ_3.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.capZ_3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
-            this.capZ_3.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capZ_3.Location = new System.Drawing.Point(16, 2114);
-            this.capZ_3.Size = new System.Drawing.Size(46, 40);
-            this.capZ_3.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            // 
-            // numEncoders_Head_3_H3_Z1_Encoder  (D2018)
-            // 
-            this.numEncoders_Head_3_H3_Z1_Encoder.BackColor = System.Drawing.Color.White;
-            this.numEncoders_Head_3_H3_Z1_Encoder.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numEncoders_Head_3_H3_Z1_Encoder.Name = "numEncoders_Head_3_H3_Z1_Encoder";
-            this.numEncoders_Head_3_H3_Z1_Encoder.PlcNumber = 1;
-            this.numEncoders_Head_3_H3_Z1_Encoder.Address = "D2018";
-            this.numEncoders_Head_3_H3_Z1_Encoder.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.numEncoders_Head_3_H3_Z1_Encoder.AutoSize = false;
-            this.numEncoders_Head_3_H3_Z1_Encoder.Digits = 6;
-            this.numEncoders_Head_3_H3_Z1_Encoder.DecimalPlaces = 2;
-            this.numEncoders_Head_3_H3_Z1_Encoder.Divisor = 10000D;
-            this.numEncoders_Head_3_H3_Z1_Encoder.Suffix = "mm";
-            this.numEncoders_Head_3_H3_Z1_Encoder.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numEncoders_Head_3_H3_Z1_Encoder.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numEncoders_Head_3_H3_Z1_Encoder.LogAction = true;
-            this.numEncoders_Head_3_H3_Z1_Encoder.Location = new System.Drawing.Point(68, 2118);
-            this.numEncoders_Head_3_H3_Z1_Encoder.Size = new System.Drawing.Size(104, 32);
-            this.numEncoders_Head_3_H3_Z1_Encoder.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // capRZ_3
-            // 
-            this.capRZ_3.Name = "capRZ_3";
-            this.capRZ_3.TranslationKey = "RZ";
-            this.capRZ_3.Text = "RZ";
-            this.capRZ_3.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.capRZ_3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
-            this.capRZ_3.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capRZ_3.Location = new System.Drawing.Point(16, 2154);
-            this.capRZ_3.Size = new System.Drawing.Size(46, 40);
-            this.capRZ_3.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            // 
-            // numEncoders_Head_3_H3_Z2_Encoder  (D2042)
-            // 
-            this.numEncoders_Head_3_H3_Z2_Encoder.BackColor = System.Drawing.Color.White;
-            this.numEncoders_Head_3_H3_Z2_Encoder.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numEncoders_Head_3_H3_Z2_Encoder.Name = "numEncoders_Head_3_H3_Z2_Encoder";
-            this.numEncoders_Head_3_H3_Z2_Encoder.PlcNumber = 1;
-            this.numEncoders_Head_3_H3_Z2_Encoder.Address = "D2042";
-            this.numEncoders_Head_3_H3_Z2_Encoder.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.numEncoders_Head_3_H3_Z2_Encoder.AutoSize = false;
-            this.numEncoders_Head_3_H3_Z2_Encoder.Digits = 6;
-            this.numEncoders_Head_3_H3_Z2_Encoder.DecimalPlaces = 2;
-            this.numEncoders_Head_3_H3_Z2_Encoder.Divisor = 10000D;
-            this.numEncoders_Head_3_H3_Z2_Encoder.Suffix = "mm";
-            this.numEncoders_Head_3_H3_Z2_Encoder.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numEncoders_Head_3_H3_Z2_Encoder.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numEncoders_Head_3_H3_Z2_Encoder.LogAction = true;
-            this.numEncoders_Head_3_H3_Z2_Encoder.Location = new System.Drawing.Point(68, 2158);
-            this.numEncoders_Head_3_H3_Z2_Encoder.Size = new System.Drawing.Size(104, 32);
-            this.numEncoders_Head_3_H3_Z2_Encoder.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // lblHead_4_2
-            // 
-            this.lblHead_4_2.Name = "lblHead_4_2";
-            this.lblHead_4_2.TranslationKey = "Head 4";
-            this.lblHead_4_2.Text = "Head 4";
-            this.lblHead_4_2.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.lblHead_4_2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
-            this.lblHead_4_2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.lblHead_4_2.Location = new System.Drawing.Point(16, 2196);
-            this.lblHead_4_2.Size = new System.Drawing.Size(376, 26);
-            // 
-            // capX_4
-            // 
-            this.capX_4.Name = "capX_4";
-            this.capX_4.TranslationKey = "X";
-            this.capX_4.Text = "X";
-            this.capX_4.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.capX_4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
-            this.capX_4.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capX_4.Location = new System.Drawing.Point(16, 2224);
-            this.capX_4.Size = new System.Drawing.Size(46, 40);
-            this.capX_4.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            // 
-            // numEncoders_Head_4_H4_X_Encoder  (D2024)
-            // 
-            this.numEncoders_Head_4_H4_X_Encoder.BackColor = System.Drawing.Color.White;
-            this.numEncoders_Head_4_H4_X_Encoder.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numEncoders_Head_4_H4_X_Encoder.Name = "numEncoders_Head_4_H4_X_Encoder";
-            this.numEncoders_Head_4_H4_X_Encoder.PlcNumber = 1;
-            this.numEncoders_Head_4_H4_X_Encoder.Address = "D2024";
-            this.numEncoders_Head_4_H4_X_Encoder.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.numEncoders_Head_4_H4_X_Encoder.AutoSize = false;
-            this.numEncoders_Head_4_H4_X_Encoder.Digits = 6;
-            this.numEncoders_Head_4_H4_X_Encoder.DecimalPlaces = 2;
-            this.numEncoders_Head_4_H4_X_Encoder.Divisor = 10000D;
-            this.numEncoders_Head_4_H4_X_Encoder.Suffix = "mm";
-            this.numEncoders_Head_4_H4_X_Encoder.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numEncoders_Head_4_H4_X_Encoder.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numEncoders_Head_4_H4_X_Encoder.LogAction = true;
-            this.numEncoders_Head_4_H4_X_Encoder.Location = new System.Drawing.Point(68, 2228);
-            this.numEncoders_Head_4_H4_X_Encoder.Size = new System.Drawing.Size(104, 32);
-            this.numEncoders_Head_4_H4_X_Encoder.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // capY1_5
-            // 
-            this.capY1_5.Name = "capY1_5";
-            this.capY1_5.TranslationKey = "Y1";
-            this.capY1_5.Text = "Y1";
-            this.capY1_5.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.capY1_5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
-            this.capY1_5.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capY1_5.Location = new System.Drawing.Point(16, 2264);
-            this.capY1_5.Size = new System.Drawing.Size(46, 40);
-            this.capY1_5.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            // 
-            // numEncoders_Head_4_H4_Y1_Encoder  (D2028)
-            // 
-            this.numEncoders_Head_4_H4_Y1_Encoder.BackColor = System.Drawing.Color.White;
-            this.numEncoders_Head_4_H4_Y1_Encoder.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numEncoders_Head_4_H4_Y1_Encoder.Name = "numEncoders_Head_4_H4_Y1_Encoder";
-            this.numEncoders_Head_4_H4_Y1_Encoder.PlcNumber = 1;
-            this.numEncoders_Head_4_H4_Y1_Encoder.Address = "D2028";
-            this.numEncoders_Head_4_H4_Y1_Encoder.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.numEncoders_Head_4_H4_Y1_Encoder.AutoSize = false;
-            this.numEncoders_Head_4_H4_Y1_Encoder.Digits = 6;
-            this.numEncoders_Head_4_H4_Y1_Encoder.DecimalPlaces = 2;
-            this.numEncoders_Head_4_H4_Y1_Encoder.Divisor = 10000D;
-            this.numEncoders_Head_4_H4_Y1_Encoder.Suffix = "mm";
-            this.numEncoders_Head_4_H4_Y1_Encoder.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numEncoders_Head_4_H4_Y1_Encoder.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numEncoders_Head_4_H4_Y1_Encoder.LogAction = true;
-            this.numEncoders_Head_4_H4_Y1_Encoder.Location = new System.Drawing.Point(68, 2268);
-            this.numEncoders_Head_4_H4_Y1_Encoder.Size = new System.Drawing.Size(104, 32);
-            this.numEncoders_Head_4_H4_Y1_Encoder.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // capY2_5
-            // 
-            this.capY2_5.Name = "capY2_5";
-            this.capY2_5.TranslationKey = "Y2";
-            this.capY2_5.Text = "Y2";
-            this.capY2_5.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.capY2_5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
-            this.capY2_5.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capY2_5.Location = new System.Drawing.Point(16, 2304);
-            this.capY2_5.Size = new System.Drawing.Size(46, 40);
-            this.capY2_5.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            // 
-            // numEncoders_Head_4_H4_Y2_Encoder  (D2030)
-            // 
-            this.numEncoders_Head_4_H4_Y2_Encoder.BackColor = System.Drawing.Color.White;
-            this.numEncoders_Head_4_H4_Y2_Encoder.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numEncoders_Head_4_H4_Y2_Encoder.Name = "numEncoders_Head_4_H4_Y2_Encoder";
-            this.numEncoders_Head_4_H4_Y2_Encoder.PlcNumber = 1;
-            this.numEncoders_Head_4_H4_Y2_Encoder.Address = "D2030";
-            this.numEncoders_Head_4_H4_Y2_Encoder.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.numEncoders_Head_4_H4_Y2_Encoder.AutoSize = false;
-            this.numEncoders_Head_4_H4_Y2_Encoder.Digits = 6;
-            this.numEncoders_Head_4_H4_Y2_Encoder.DecimalPlaces = 2;
-            this.numEncoders_Head_4_H4_Y2_Encoder.Divisor = 10000D;
-            this.numEncoders_Head_4_H4_Y2_Encoder.Suffix = "mm";
-            this.numEncoders_Head_4_H4_Y2_Encoder.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numEncoders_Head_4_H4_Y2_Encoder.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numEncoders_Head_4_H4_Y2_Encoder.LogAction = true;
-            this.numEncoders_Head_4_H4_Y2_Encoder.Location = new System.Drawing.Point(68, 2308);
-            this.numEncoders_Head_4_H4_Y2_Encoder.Size = new System.Drawing.Size(104, 32);
-            this.numEncoders_Head_4_H4_Y2_Encoder.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // capZ_4
-            // 
-            this.capZ_4.Name = "capZ_4";
-            this.capZ_4.TranslationKey = "Z";
-            this.capZ_4.Text = "Z";
-            this.capZ_4.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.capZ_4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
-            this.capZ_4.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capZ_4.Location = new System.Drawing.Point(16, 2344);
-            this.capZ_4.Size = new System.Drawing.Size(46, 40);
-            this.capZ_4.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            // 
-            // numEncoders_Head_4_H4_Z1_Encoder  (D2026)
-            // 
-            this.numEncoders_Head_4_H4_Z1_Encoder.BackColor = System.Drawing.Color.White;
-            this.numEncoders_Head_4_H4_Z1_Encoder.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numEncoders_Head_4_H4_Z1_Encoder.Name = "numEncoders_Head_4_H4_Z1_Encoder";
-            this.numEncoders_Head_4_H4_Z1_Encoder.PlcNumber = 1;
-            this.numEncoders_Head_4_H4_Z1_Encoder.Address = "D2026";
-            this.numEncoders_Head_4_H4_Z1_Encoder.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.numEncoders_Head_4_H4_Z1_Encoder.AutoSize = false;
-            this.numEncoders_Head_4_H4_Z1_Encoder.Digits = 6;
-            this.numEncoders_Head_4_H4_Z1_Encoder.DecimalPlaces = 2;
-            this.numEncoders_Head_4_H4_Z1_Encoder.Divisor = 10000D;
-            this.numEncoders_Head_4_H4_Z1_Encoder.Suffix = "mm";
-            this.numEncoders_Head_4_H4_Z1_Encoder.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numEncoders_Head_4_H4_Z1_Encoder.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numEncoders_Head_4_H4_Z1_Encoder.LogAction = true;
-            this.numEncoders_Head_4_H4_Z1_Encoder.Location = new System.Drawing.Point(68, 2348);
-            this.numEncoders_Head_4_H4_Z1_Encoder.Size = new System.Drawing.Size(104, 32);
-            this.numEncoders_Head_4_H4_Z1_Encoder.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // capRZ_4
-            // 
-            this.capRZ_4.Name = "capRZ_4";
-            this.capRZ_4.TranslationKey = "RZ";
-            this.capRZ_4.Text = "RZ";
-            this.capRZ_4.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.capRZ_4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
-            this.capRZ_4.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capRZ_4.Location = new System.Drawing.Point(16, 2384);
-            this.capRZ_4.Size = new System.Drawing.Size(46, 40);
-            this.capRZ_4.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            // 
-            // numEncoders_Head_4_H4_Z2_Encoder  (D2044)
-            // 
-            this.numEncoders_Head_4_H4_Z2_Encoder.BackColor = System.Drawing.Color.White;
-            this.numEncoders_Head_4_H4_Z2_Encoder.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numEncoders_Head_4_H4_Z2_Encoder.Name = "numEncoders_Head_4_H4_Z2_Encoder";
-            this.numEncoders_Head_4_H4_Z2_Encoder.PlcNumber = 1;
-            this.numEncoders_Head_4_H4_Z2_Encoder.Address = "D2044";
-            this.numEncoders_Head_4_H4_Z2_Encoder.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.numEncoders_Head_4_H4_Z2_Encoder.AutoSize = false;
-            this.numEncoders_Head_4_H4_Z2_Encoder.Digits = 6;
-            this.numEncoders_Head_4_H4_Z2_Encoder.DecimalPlaces = 2;
-            this.numEncoders_Head_4_H4_Z2_Encoder.Divisor = 10000D;
-            this.numEncoders_Head_4_H4_Z2_Encoder.Suffix = "mm";
-            this.numEncoders_Head_4_H4_Z2_Encoder.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numEncoders_Head_4_H4_Z2_Encoder.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numEncoders_Head_4_H4_Z2_Encoder.LogAction = true;
-            this.numEncoders_Head_4_H4_Z2_Encoder.Location = new System.Drawing.Point(68, 2388);
-            this.numEncoders_Head_4_H4_Z2_Encoder.Size = new System.Drawing.Size(104, 32);
-            this.numEncoders_Head_4_H4_Z2_Encoder.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
+            // hdEncoder_Address
+            // 
+            this.hdEncoder_Address.Name = "hdEncoder_Address";
+            this.hdEncoder_Address.TranslationKey = "Encoder Address";
+            this.hdEncoder_Address.Text = "Encoder Address";
+            this.hdEncoder_Address.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
+            this.hdEncoder_Address.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
+            this.hdEncoder_Address.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.hdEncoder_Address.Location = new System.Drawing.Point(282, 1280);
+            this.hdEncoder_Address.Size = new System.Drawing.Size(104, 26);
+            // 
+            // hdOffset_Tolerance
+            // 
+            this.hdOffset_Tolerance.Name = "hdOffset_Tolerance";
+            this.hdOffset_Tolerance.TranslationKey = "Offset / Tolerance";
+            this.hdOffset_Tolerance.Text = "Offset / Tolerance";
+            this.hdOffset_Tolerance.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
+            this.hdOffset_Tolerance.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
+            this.hdOffset_Tolerance.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.hdOffset_Tolerance.Location = new System.Drawing.Point(392, 1280);
+            this.hdOffset_Tolerance.Size = new System.Drawing.Size(130, 26);
+            // 
+            // capBody_X1
+            // 
+            this.capBody_X1.Name = "capBody_X1";
+            this.capBody_X1.TranslationKey = "Body X1";
+            this.capBody_X1.Text = "Body X1";
+            this.capBody_X1.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.capBody_X1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
+            this.capBody_X1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.capBody_X1.Location = new System.Drawing.Point(16, 1314);
+            this.capBody_X1.Size = new System.Drawing.Size(150, 40);
+            this.capBody_X1.Font = new System.Drawing.Font("Segoe UI", 9.5F);
+            // 
+            // numEncoders_Body_X1_Encoder  (D2800)
+            // 
+            this.numEncoders_Body_X1_Encoder.BackColor = System.Drawing.Color.White;
+            this.numEncoders_Body_X1_Encoder.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.numEncoders_Body_X1_Encoder.Name = "numEncoders_Body_X1_Encoder";
+            this.numEncoders_Body_X1_Encoder.PlcNumber = 1;
+            this.numEncoders_Body_X1_Encoder.Address = "D2800";
+            this.numEncoders_Body_X1_Encoder.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
+            this.numEncoders_Body_X1_Encoder.AutoSize = false;
+            this.numEncoders_Body_X1_Encoder.Digits = 6;
+            this.numEncoders_Body_X1_Encoder.DecimalPlaces = 2;
+            this.numEncoders_Body_X1_Encoder.Divisor = 10000D;
+            this.numEncoders_Body_X1_Encoder.Suffix = "mm";
+            this.numEncoders_Body_X1_Encoder.UnitType = Kaban.Core.Enums.UnitType.Length;
+            this.numEncoders_Body_X1_Encoder.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.numEncoders_Body_X1_Encoder.LogAction = true;
+            this.numEncoders_Body_X1_Encoder.Location = new System.Drawing.Point(172, 1318);
+            this.numEncoders_Body_X1_Encoder.Size = new System.Drawing.Size(104, 32);
+            this.numEncoders_Body_X1_Encoder.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
+            // 
+            // numEncoders_Body_X1_Encoder_Address  (D2816)
+            // 
+            this.numEncoders_Body_X1_Encoder_Address.BackColor = System.Drawing.Color.White;
+            this.numEncoders_Body_X1_Encoder_Address.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.numEncoders_Body_X1_Encoder_Address.Name = "numEncoders_Body_X1_Encoder_Address";
+            this.numEncoders_Body_X1_Encoder_Address.PlcNumber = 1;
+            this.numEncoders_Body_X1_Encoder_Address.Address = "D2816";
+            this.numEncoders_Body_X1_Encoder_Address.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+            this.numEncoders_Body_X1_Encoder_Address.AutoSize = false;
+            this.numEncoders_Body_X1_Encoder_Address.Digits = 5;
+            this.numEncoders_Body_X1_Encoder_Address.DecimalPlaces = 0;
+            this.numEncoders_Body_X1_Encoder_Address.Divisor = 1D;
+            this.numEncoders_Body_X1_Encoder_Address.Suffix = "";
+            this.numEncoders_Body_X1_Encoder_Address.UnitType = Kaban.Core.Enums.UnitType.None;
+            this.numEncoders_Body_X1_Encoder_Address.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.numEncoders_Body_X1_Encoder_Address.LogAction = true;
+            this.numEncoders_Body_X1_Encoder_Address.Location = new System.Drawing.Point(282, 1318);
+            this.numEncoders_Body_X1_Encoder_Address.Size = new System.Drawing.Size(104, 32);
+            this.numEncoders_Body_X1_Encoder_Address.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
+            // 
+            // numEncoders_Body_X1_Offset_Tolerance  (D2808)
+            // 
+            this.numEncoders_Body_X1_Offset_Tolerance.BackColor = System.Drawing.Color.White;
+            this.numEncoders_Body_X1_Offset_Tolerance.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.numEncoders_Body_X1_Offset_Tolerance.Name = "numEncoders_Body_X1_Offset_Tolerance";
+            this.numEncoders_Body_X1_Offset_Tolerance.PlcNumber = 1;
+            this.numEncoders_Body_X1_Offset_Tolerance.Address = "D2808";
+            this.numEncoders_Body_X1_Offset_Tolerance.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
+            this.numEncoders_Body_X1_Offset_Tolerance.AutoSize = false;
+            this.numEncoders_Body_X1_Offset_Tolerance.Digits = 6;
+            this.numEncoders_Body_X1_Offset_Tolerance.DecimalPlaces = 2;
+            this.numEncoders_Body_X1_Offset_Tolerance.Divisor = 10000D;
+            this.numEncoders_Body_X1_Offset_Tolerance.Suffix = "mm";
+            this.numEncoders_Body_X1_Offset_Tolerance.UnitType = Kaban.Core.Enums.UnitType.Length;
+            this.numEncoders_Body_X1_Offset_Tolerance.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.numEncoders_Body_X1_Offset_Tolerance.LogAction = true;
+            this.numEncoders_Body_X1_Offset_Tolerance.Location = new System.Drawing.Point(392, 1318);
+            this.numEncoders_Body_X1_Offset_Tolerance.Size = new System.Drawing.Size(130, 32);
+            this.numEncoders_Body_X1_Offset_Tolerance.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
+            // 
+            // capBody_X2
+            // 
+            this.capBody_X2.Name = "capBody_X2";
+            this.capBody_X2.TranslationKey = "Body X2";
+            this.capBody_X2.Text = "Body X2";
+            this.capBody_X2.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.capBody_X2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
+            this.capBody_X2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.capBody_X2.Location = new System.Drawing.Point(16, 1354);
+            this.capBody_X2.Size = new System.Drawing.Size(150, 40);
+            this.capBody_X2.Font = new System.Drawing.Font("Segoe UI", 9.5F);
+            // 
+            // numEncoders_Body_X2_Encoder  (D2802)
+            // 
+            this.numEncoders_Body_X2_Encoder.BackColor = System.Drawing.Color.White;
+            this.numEncoders_Body_X2_Encoder.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.numEncoders_Body_X2_Encoder.Name = "numEncoders_Body_X2_Encoder";
+            this.numEncoders_Body_X2_Encoder.PlcNumber = 1;
+            this.numEncoders_Body_X2_Encoder.Address = "D2802";
+            this.numEncoders_Body_X2_Encoder.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
+            this.numEncoders_Body_X2_Encoder.AutoSize = false;
+            this.numEncoders_Body_X2_Encoder.Digits = 6;
+            this.numEncoders_Body_X2_Encoder.DecimalPlaces = 2;
+            this.numEncoders_Body_X2_Encoder.Divisor = 10000D;
+            this.numEncoders_Body_X2_Encoder.Suffix = "mm";
+            this.numEncoders_Body_X2_Encoder.UnitType = Kaban.Core.Enums.UnitType.Length;
+            this.numEncoders_Body_X2_Encoder.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.numEncoders_Body_X2_Encoder.LogAction = true;
+            this.numEncoders_Body_X2_Encoder.Location = new System.Drawing.Point(172, 1358);
+            this.numEncoders_Body_X2_Encoder.Size = new System.Drawing.Size(104, 32);
+            this.numEncoders_Body_X2_Encoder.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
+            // 
+            // numEncoders_Body_X2_Encoder_Address  (D2817)
+            // 
+            this.numEncoders_Body_X2_Encoder_Address.BackColor = System.Drawing.Color.White;
+            this.numEncoders_Body_X2_Encoder_Address.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.numEncoders_Body_X2_Encoder_Address.Name = "numEncoders_Body_X2_Encoder_Address";
+            this.numEncoders_Body_X2_Encoder_Address.PlcNumber = 1;
+            this.numEncoders_Body_X2_Encoder_Address.Address = "D2817";
+            this.numEncoders_Body_X2_Encoder_Address.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+            this.numEncoders_Body_X2_Encoder_Address.AutoSize = false;
+            this.numEncoders_Body_X2_Encoder_Address.Digits = 5;
+            this.numEncoders_Body_X2_Encoder_Address.DecimalPlaces = 0;
+            this.numEncoders_Body_X2_Encoder_Address.Divisor = 1D;
+            this.numEncoders_Body_X2_Encoder_Address.Suffix = "";
+            this.numEncoders_Body_X2_Encoder_Address.UnitType = Kaban.Core.Enums.UnitType.None;
+            this.numEncoders_Body_X2_Encoder_Address.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.numEncoders_Body_X2_Encoder_Address.LogAction = true;
+            this.numEncoders_Body_X2_Encoder_Address.Location = new System.Drawing.Point(282, 1358);
+            this.numEncoders_Body_X2_Encoder_Address.Size = new System.Drawing.Size(104, 32);
+            this.numEncoders_Body_X2_Encoder_Address.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
+            // 
+            // numEncoders_Body_X2_Offset_Tolerance  (D2810)
+            // 
+            this.numEncoders_Body_X2_Offset_Tolerance.BackColor = System.Drawing.Color.White;
+            this.numEncoders_Body_X2_Offset_Tolerance.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.numEncoders_Body_X2_Offset_Tolerance.Name = "numEncoders_Body_X2_Offset_Tolerance";
+            this.numEncoders_Body_X2_Offset_Tolerance.PlcNumber = 1;
+            this.numEncoders_Body_X2_Offset_Tolerance.Address = "D2810";
+            this.numEncoders_Body_X2_Offset_Tolerance.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
+            this.numEncoders_Body_X2_Offset_Tolerance.AutoSize = false;
+            this.numEncoders_Body_X2_Offset_Tolerance.Digits = 6;
+            this.numEncoders_Body_X2_Offset_Tolerance.DecimalPlaces = 2;
+            this.numEncoders_Body_X2_Offset_Tolerance.Divisor = 10000D;
+            this.numEncoders_Body_X2_Offset_Tolerance.Suffix = "mm";
+            this.numEncoders_Body_X2_Offset_Tolerance.UnitType = Kaban.Core.Enums.UnitType.Length;
+            this.numEncoders_Body_X2_Offset_Tolerance.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.numEncoders_Body_X2_Offset_Tolerance.LogAction = true;
+            this.numEncoders_Body_X2_Offset_Tolerance.Location = new System.Drawing.Point(392, 1358);
+            this.numEncoders_Body_X2_Offset_Tolerance.Size = new System.Drawing.Size(130, 32);
+            this.numEncoders_Body_X2_Offset_Tolerance.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
+            // 
+            // capBody_Y1
+            // 
+            this.capBody_Y1.Name = "capBody_Y1";
+            this.capBody_Y1.TranslationKey = "Body Y1";
+            this.capBody_Y1.Text = "Body Y1";
+            this.capBody_Y1.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.capBody_Y1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
+            this.capBody_Y1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.capBody_Y1.Location = new System.Drawing.Point(16, 1394);
+            this.capBody_Y1.Size = new System.Drawing.Size(150, 40);
+            this.capBody_Y1.Font = new System.Drawing.Font("Segoe UI", 9.5F);
+            // 
+            // numEncoders_Body_Y1_Encoder  (D2804)
+            // 
+            this.numEncoders_Body_Y1_Encoder.BackColor = System.Drawing.Color.White;
+            this.numEncoders_Body_Y1_Encoder.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.numEncoders_Body_Y1_Encoder.Name = "numEncoders_Body_Y1_Encoder";
+            this.numEncoders_Body_Y1_Encoder.PlcNumber = 1;
+            this.numEncoders_Body_Y1_Encoder.Address = "D2804";
+            this.numEncoders_Body_Y1_Encoder.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
+            this.numEncoders_Body_Y1_Encoder.AutoSize = false;
+            this.numEncoders_Body_Y1_Encoder.Digits = 6;
+            this.numEncoders_Body_Y1_Encoder.DecimalPlaces = 2;
+            this.numEncoders_Body_Y1_Encoder.Divisor = 10000D;
+            this.numEncoders_Body_Y1_Encoder.Suffix = "mm";
+            this.numEncoders_Body_Y1_Encoder.UnitType = Kaban.Core.Enums.UnitType.Length;
+            this.numEncoders_Body_Y1_Encoder.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.numEncoders_Body_Y1_Encoder.LogAction = true;
+            this.numEncoders_Body_Y1_Encoder.Location = new System.Drawing.Point(172, 1398);
+            this.numEncoders_Body_Y1_Encoder.Size = new System.Drawing.Size(104, 32);
+            this.numEncoders_Body_Y1_Encoder.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
+            // 
+            // numEncoders_Body_Y1_Encoder_Address  (D2818)
+            // 
+            this.numEncoders_Body_Y1_Encoder_Address.BackColor = System.Drawing.Color.White;
+            this.numEncoders_Body_Y1_Encoder_Address.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.numEncoders_Body_Y1_Encoder_Address.Name = "numEncoders_Body_Y1_Encoder_Address";
+            this.numEncoders_Body_Y1_Encoder_Address.PlcNumber = 1;
+            this.numEncoders_Body_Y1_Encoder_Address.Address = "D2818";
+            this.numEncoders_Body_Y1_Encoder_Address.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+            this.numEncoders_Body_Y1_Encoder_Address.AutoSize = false;
+            this.numEncoders_Body_Y1_Encoder_Address.Digits = 5;
+            this.numEncoders_Body_Y1_Encoder_Address.DecimalPlaces = 0;
+            this.numEncoders_Body_Y1_Encoder_Address.Divisor = 1D;
+            this.numEncoders_Body_Y1_Encoder_Address.Suffix = "";
+            this.numEncoders_Body_Y1_Encoder_Address.UnitType = Kaban.Core.Enums.UnitType.None;
+            this.numEncoders_Body_Y1_Encoder_Address.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.numEncoders_Body_Y1_Encoder_Address.LogAction = true;
+            this.numEncoders_Body_Y1_Encoder_Address.Location = new System.Drawing.Point(282, 1398);
+            this.numEncoders_Body_Y1_Encoder_Address.Size = new System.Drawing.Size(104, 32);
+            this.numEncoders_Body_Y1_Encoder_Address.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
+            // 
+            // numEncoders_Body_Y1_Offset_Tolerance  (D2812)
+            // 
+            this.numEncoders_Body_Y1_Offset_Tolerance.BackColor = System.Drawing.Color.White;
+            this.numEncoders_Body_Y1_Offset_Tolerance.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.numEncoders_Body_Y1_Offset_Tolerance.Name = "numEncoders_Body_Y1_Offset_Tolerance";
+            this.numEncoders_Body_Y1_Offset_Tolerance.PlcNumber = 1;
+            this.numEncoders_Body_Y1_Offset_Tolerance.Address = "D2812";
+            this.numEncoders_Body_Y1_Offset_Tolerance.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
+            this.numEncoders_Body_Y1_Offset_Tolerance.AutoSize = false;
+            this.numEncoders_Body_Y1_Offset_Tolerance.Digits = 6;
+            this.numEncoders_Body_Y1_Offset_Tolerance.DecimalPlaces = 2;
+            this.numEncoders_Body_Y1_Offset_Tolerance.Divisor = 10000D;
+            this.numEncoders_Body_Y1_Offset_Tolerance.Suffix = "mm";
+            this.numEncoders_Body_Y1_Offset_Tolerance.UnitType = Kaban.Core.Enums.UnitType.Length;
+            this.numEncoders_Body_Y1_Offset_Tolerance.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.numEncoders_Body_Y1_Offset_Tolerance.LogAction = true;
+            this.numEncoders_Body_Y1_Offset_Tolerance.Location = new System.Drawing.Point(392, 1398);
+            this.numEncoders_Body_Y1_Offset_Tolerance.Size = new System.Drawing.Size(130, 32);
+            this.numEncoders_Body_Y1_Offset_Tolerance.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
+            // 
+            // capBody_Y2
+            // 
+            this.capBody_Y2.Name = "capBody_Y2";
+            this.capBody_Y2.TranslationKey = "Body Y2";
+            this.capBody_Y2.Text = "Body Y2";
+            this.capBody_Y2.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.capBody_Y2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
+            this.capBody_Y2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.capBody_Y2.Location = new System.Drawing.Point(16, 1434);
+            this.capBody_Y2.Size = new System.Drawing.Size(150, 40);
+            this.capBody_Y2.Font = new System.Drawing.Font("Segoe UI", 9.5F);
+            // 
+            // numEncoders_Body_Y2_Encoder  (D2806)
+            // 
+            this.numEncoders_Body_Y2_Encoder.BackColor = System.Drawing.Color.White;
+            this.numEncoders_Body_Y2_Encoder.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.numEncoders_Body_Y2_Encoder.Name = "numEncoders_Body_Y2_Encoder";
+            this.numEncoders_Body_Y2_Encoder.PlcNumber = 1;
+            this.numEncoders_Body_Y2_Encoder.Address = "D2806";
+            this.numEncoders_Body_Y2_Encoder.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
+            this.numEncoders_Body_Y2_Encoder.AutoSize = false;
+            this.numEncoders_Body_Y2_Encoder.Digits = 6;
+            this.numEncoders_Body_Y2_Encoder.DecimalPlaces = 2;
+            this.numEncoders_Body_Y2_Encoder.Divisor = 10000D;
+            this.numEncoders_Body_Y2_Encoder.Suffix = "mm";
+            this.numEncoders_Body_Y2_Encoder.UnitType = Kaban.Core.Enums.UnitType.Length;
+            this.numEncoders_Body_Y2_Encoder.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.numEncoders_Body_Y2_Encoder.LogAction = true;
+            this.numEncoders_Body_Y2_Encoder.Location = new System.Drawing.Point(172, 1438);
+            this.numEncoders_Body_Y2_Encoder.Size = new System.Drawing.Size(104, 32);
+            this.numEncoders_Body_Y2_Encoder.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
+            // 
+            // numEncoders_Body_Y2_Encoder_Address  (D2819)
+            // 
+            this.numEncoders_Body_Y2_Encoder_Address.BackColor = System.Drawing.Color.White;
+            this.numEncoders_Body_Y2_Encoder_Address.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.numEncoders_Body_Y2_Encoder_Address.Name = "numEncoders_Body_Y2_Encoder_Address";
+            this.numEncoders_Body_Y2_Encoder_Address.PlcNumber = 1;
+            this.numEncoders_Body_Y2_Encoder_Address.Address = "D2819";
+            this.numEncoders_Body_Y2_Encoder_Address.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+            this.numEncoders_Body_Y2_Encoder_Address.AutoSize = false;
+            this.numEncoders_Body_Y2_Encoder_Address.Digits = 5;
+            this.numEncoders_Body_Y2_Encoder_Address.DecimalPlaces = 0;
+            this.numEncoders_Body_Y2_Encoder_Address.Divisor = 1D;
+            this.numEncoders_Body_Y2_Encoder_Address.Suffix = "";
+            this.numEncoders_Body_Y2_Encoder_Address.UnitType = Kaban.Core.Enums.UnitType.None;
+            this.numEncoders_Body_Y2_Encoder_Address.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.numEncoders_Body_Y2_Encoder_Address.LogAction = true;
+            this.numEncoders_Body_Y2_Encoder_Address.Location = new System.Drawing.Point(282, 1438);
+            this.numEncoders_Body_Y2_Encoder_Address.Size = new System.Drawing.Size(104, 32);
+            this.numEncoders_Body_Y2_Encoder_Address.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
+            // 
+            // numEncoders_Body_Y2_Offset_Tolerance  (D2814)
+            // 
+            this.numEncoders_Body_Y2_Offset_Tolerance.BackColor = System.Drawing.Color.White;
+            this.numEncoders_Body_Y2_Offset_Tolerance.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.numEncoders_Body_Y2_Offset_Tolerance.Name = "numEncoders_Body_Y2_Offset_Tolerance";
+            this.numEncoders_Body_Y2_Offset_Tolerance.PlcNumber = 1;
+            this.numEncoders_Body_Y2_Offset_Tolerance.Address = "D2814";
+            this.numEncoders_Body_Y2_Offset_Tolerance.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
+            this.numEncoders_Body_Y2_Offset_Tolerance.AutoSize = false;
+            this.numEncoders_Body_Y2_Offset_Tolerance.Digits = 6;
+            this.numEncoders_Body_Y2_Offset_Tolerance.DecimalPlaces = 2;
+            this.numEncoders_Body_Y2_Offset_Tolerance.Divisor = 10000D;
+            this.numEncoders_Body_Y2_Offset_Tolerance.Suffix = "mm";
+            this.numEncoders_Body_Y2_Offset_Tolerance.UnitType = Kaban.Core.Enums.UnitType.Length;
+            this.numEncoders_Body_Y2_Offset_Tolerance.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.numEncoders_Body_Y2_Offset_Tolerance.LogAction = true;
+            this.numEncoders_Body_Y2_Offset_Tolerance.Location = new System.Drawing.Point(392, 1438);
+            this.numEncoders_Body_Y2_Offset_Tolerance.Size = new System.Drawing.Size(130, 32);
+            this.numEncoders_Body_Y2_Offset_Tolerance.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
+            // 
+            // capBody_X_Tolerance
+            // 
+            this.capBody_X_Tolerance.Name = "capBody_X_Tolerance";
+            this.capBody_X_Tolerance.TranslationKey = "Body X Tolerance";
+            this.capBody_X_Tolerance.Text = "Body X Tolerance";
+            this.capBody_X_Tolerance.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.capBody_X_Tolerance.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
+            this.capBody_X_Tolerance.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.capBody_X_Tolerance.Location = new System.Drawing.Point(16, 1474);
+            this.capBody_X_Tolerance.Size = new System.Drawing.Size(150, 40);
+            this.capBody_X_Tolerance.Font = new System.Drawing.Font("Segoe UI", 9.5F);
+            // 
+            // numEncoders_TolX_Offset_Tolerance  (D2820)
+            // 
+            this.numEncoders_TolX_Offset_Tolerance.BackColor = System.Drawing.Color.White;
+            this.numEncoders_TolX_Offset_Tolerance.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.numEncoders_TolX_Offset_Tolerance.Name = "numEncoders_TolX_Offset_Tolerance";
+            this.numEncoders_TolX_Offset_Tolerance.PlcNumber = 1;
+            this.numEncoders_TolX_Offset_Tolerance.Address = "D2820";
+            this.numEncoders_TolX_Offset_Tolerance.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
+            this.numEncoders_TolX_Offset_Tolerance.AutoSize = false;
+            this.numEncoders_TolX_Offset_Tolerance.Digits = 6;
+            this.numEncoders_TolX_Offset_Tolerance.DecimalPlaces = 2;
+            this.numEncoders_TolX_Offset_Tolerance.Divisor = 10000D;
+            this.numEncoders_TolX_Offset_Tolerance.Suffix = "mm";
+            this.numEncoders_TolX_Offset_Tolerance.UnitType = Kaban.Core.Enums.UnitType.Length;
+            this.numEncoders_TolX_Offset_Tolerance.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.numEncoders_TolX_Offset_Tolerance.LogAction = true;
+            this.numEncoders_TolX_Offset_Tolerance.Location = new System.Drawing.Point(392, 1478);
+            this.numEncoders_TolX_Offset_Tolerance.Size = new System.Drawing.Size(130, 32);
+            this.numEncoders_TolX_Offset_Tolerance.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
+            // 
+            // capBody_Y_Tolerance
+            // 
+            this.capBody_Y_Tolerance.Name = "capBody_Y_Tolerance";
+            this.capBody_Y_Tolerance.TranslationKey = "Body Y Tolerance";
+            this.capBody_Y_Tolerance.Text = "Body Y Tolerance";
+            this.capBody_Y_Tolerance.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.capBody_Y_Tolerance.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
+            this.capBody_Y_Tolerance.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.capBody_Y_Tolerance.Location = new System.Drawing.Point(16, 1514);
+            this.capBody_Y_Tolerance.Size = new System.Drawing.Size(150, 40);
+            this.capBody_Y_Tolerance.Font = new System.Drawing.Font("Segoe UI", 9.5F);
+            // 
+            // numEncoders_TolY_Offset_Tolerance  (D2826)
+            // 
+            this.numEncoders_TolY_Offset_Tolerance.BackColor = System.Drawing.Color.White;
+            this.numEncoders_TolY_Offset_Tolerance.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.numEncoders_TolY_Offset_Tolerance.Name = "numEncoders_TolY_Offset_Tolerance";
+            this.numEncoders_TolY_Offset_Tolerance.PlcNumber = 1;
+            this.numEncoders_TolY_Offset_Tolerance.Address = "D2826";
+            this.numEncoders_TolY_Offset_Tolerance.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
+            this.numEncoders_TolY_Offset_Tolerance.AutoSize = false;
+            this.numEncoders_TolY_Offset_Tolerance.Digits = 6;
+            this.numEncoders_TolY_Offset_Tolerance.DecimalPlaces = 2;
+            this.numEncoders_TolY_Offset_Tolerance.Divisor = 10000D;
+            this.numEncoders_TolY_Offset_Tolerance.Suffix = "mm";
+            this.numEncoders_TolY_Offset_Tolerance.UnitType = Kaban.Core.Enums.UnitType.Length;
+            this.numEncoders_TolY_Offset_Tolerance.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.numEncoders_TolY_Offset_Tolerance.LogAction = true;
+            this.numEncoders_TolY_Offset_Tolerance.Location = new System.Drawing.Point(392, 1518);
+            this.numEncoders_TolY_Offset_Tolerance.Size = new System.Drawing.Size(130, 32);
+            this.numEncoders_TolY_Offset_Tolerance.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
             // 
             // lblSend_Reference
             // 
@@ -2103,7 +1420,7 @@ namespace Kaban.Machines.MD3020.Screens.Parameters
             this.lblSend_Reference.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.lblSend_Reference.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
             this.lblSend_Reference.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.lblSend_Reference.Location = new System.Drawing.Point(424, 1250);
+            this.lblSend_Reference.Location = new System.Drawing.Point(554, 1250);
             this.lblSend_Reference.Size = new System.Drawing.Size(232, 26);
             // 
             // hdAxes
@@ -2114,7 +1431,7 @@ namespace Kaban.Machines.MD3020.Screens.Parameters
             this.hdAxes.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
             this.hdAxes.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
             this.hdAxes.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.hdAxes.Location = new System.Drawing.Point(424, 1280);
+            this.hdAxes.Location = new System.Drawing.Point(554, 1280);
             this.hdAxes.Size = new System.Drawing.Size(90, 26);
             // 
             // hdSend_Reference
@@ -2125,7 +1442,7 @@ namespace Kaban.Machines.MD3020.Screens.Parameters
             this.hdSend_Reference.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
             this.hdSend_Reference.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
             this.hdSend_Reference.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.hdSend_Reference.Location = new System.Drawing.Point(520, 1280);
+            this.hdSend_Reference.Location = new System.Drawing.Point(650, 1280);
             this.hdSend_Reference.Size = new System.Drawing.Size(136, 26);
             // 
             // capAll
@@ -2136,7 +1453,7 @@ namespace Kaban.Machines.MD3020.Screens.Parameters
             this.capAll.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.capAll.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
             this.capAll.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capAll.Location = new System.Drawing.Point(424, 1314);
+            this.capAll.Location = new System.Drawing.Point(554, 1314);
             this.capAll.Size = new System.Drawing.Size(90, 40);
             this.capAll.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             // 
@@ -2149,775 +1466,10 @@ namespace Kaban.Machines.MD3020.Screens.Parameters
             bitAction1.Address = "M100";
             bitAction1.Action = Kaban.Core.Enums.BitActionType.Momentary;
             this.btnReference_All_Send_Reference.BitActions.Add(bitAction1);
-            this.btnReference_All_Send_Reference.Location = new System.Drawing.Point(520, 1317);
+            this.btnReference_All_Send_Reference.Location = new System.Drawing.Point(650, 1317);
             this.btnReference_All_Send_Reference.Size = new System.Drawing.Size(136, 34);
             this.btnReference_All_Send_Reference.LogAction = true;
             this.btnReference_All_Send_Reference.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // lblHeads_X2_the_stripping_knife_s_buttons_o
-            // 
-            this.lblHeads_X2_the_stripping_knife_s_buttons_o.Name = "lblHeads_X2_the_stripping_knife_s_buttons_o";
-            this.lblHeads_X2_the_stripping_knife_s_buttons_o.TranslationKey = "Heads X2 (the stripping knife's buttons on the old page)";
-            this.lblHeads_X2_the_stripping_knife_s_buttons_o.Text = "Heads X2 (the stripping knife's buttons on the old page)";
-            this.lblHeads_X2_the_stripping_knife_s_buttons_o.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.lblHeads_X2_the_stripping_knife_s_buttons_o.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
-            this.lblHeads_X2_the_stripping_knife_s_buttons_o.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.lblHeads_X2_the_stripping_knife_s_buttons_o.Location = new System.Drawing.Point(16, 2448);
-            this.lblHeads_X2_the_stripping_knife_s_buttons_o.Size = new System.Drawing.Size(1048, 26);
-            // 
-            // hdX2
-            // 
-            this.hdX2.Name = "hdX2";
-            this.hdX2.TranslationKey = "X2";
-            this.hdX2.Text = "X2";
-            this.hdX2.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
-            this.hdX2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
-            this.hdX2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.hdX2.Location = new System.Drawing.Point(16, 2478);
-            this.hdX2.Size = new System.Drawing.Size(70, 26);
-            // 
-            // hdBack
-            // 
-            this.hdBack.Name = "hdBack";
-            this.hdBack.TranslationKey = "Back";
-            this.hdBack.Text = "Back";
-            this.hdBack.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
-            this.hdBack.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
-            this.hdBack.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.hdBack.Location = new System.Drawing.Point(92, 2478);
-            this.hdBack.Size = new System.Drawing.Size(72, 26);
-            // 
-            // hdAxis_Position
-            // 
-            this.hdAxis_Position.Name = "hdAxis_Position";
-            this.hdAxis_Position.TranslationKey = "Axis Position";
-            this.hdAxis_Position.Text = "Axis Position";
-            this.hdAxis_Position.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
-            this.hdAxis_Position.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
-            this.hdAxis_Position.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.hdAxis_Position.Location = new System.Drawing.Point(170, 2478);
-            this.hdAxis_Position.Size = new System.Drawing.Size(104, 26);
-            // 
-            // hdForward
-            // 
-            this.hdForward.Name = "hdForward";
-            this.hdForward.TranslationKey = "Forward";
-            this.hdForward.Text = "Forward";
-            this.hdForward.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
-            this.hdForward.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
-            this.hdForward.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.hdForward.Location = new System.Drawing.Point(280, 2478);
-            this.hdForward.Size = new System.Drawing.Size(72, 26);
-            // 
-            // hdEncoder_2
-            // 
-            this.hdEncoder_2.Name = "hdEncoder_2";
-            this.hdEncoder_2.TranslationKey = "Encoder";
-            this.hdEncoder_2.Text = "Encoder";
-            this.hdEncoder_2.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
-            this.hdEncoder_2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
-            this.hdEncoder_2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.hdEncoder_2.Location = new System.Drawing.Point(358, 2478);
-            this.hdEncoder_2.Size = new System.Drawing.Size(104, 26);
-            // 
-            // hdMeasured_Value
-            // 
-            this.hdMeasured_Value.Name = "hdMeasured_Value";
-            this.hdMeasured_Value.TranslationKey = "Measured Value";
-            this.hdMeasured_Value.Text = "Measured Value";
-            this.hdMeasured_Value.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
-            this.hdMeasured_Value.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
-            this.hdMeasured_Value.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.hdMeasured_Value.Location = new System.Drawing.Point(468, 2478);
-            this.hdMeasured_Value.Size = new System.Drawing.Size(104, 26);
-            // 
-            // hdCalibrate
-            // 
-            this.hdCalibrate.Name = "hdCalibrate";
-            this.hdCalibrate.TranslationKey = "Calibrate";
-            this.hdCalibrate.Text = "Calibrate";
-            this.hdCalibrate.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
-            this.hdCalibrate.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
-            this.hdCalibrate.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.hdCalibrate.Location = new System.Drawing.Point(578, 2478);
-            this.hdCalibrate.Size = new System.Drawing.Size(96, 26);
-            // 
-            // hdStarting_Limit
-            // 
-            this.hdStarting_Limit.Name = "hdStarting_Limit";
-            this.hdStarting_Limit.TranslationKey = "Starting Limit";
-            this.hdStarting_Limit.Text = "Starting Limit";
-            this.hdStarting_Limit.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
-            this.hdStarting_Limit.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
-            this.hdStarting_Limit.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.hdStarting_Limit.Location = new System.Drawing.Point(680, 2478);
-            this.hdStarting_Limit.Size = new System.Drawing.Size(104, 26);
-            // 
-            // hdEnd_Limit
-            // 
-            this.hdEnd_Limit.Name = "hdEnd_Limit";
-            this.hdEnd_Limit.TranslationKey = "End Limit";
-            this.hdEnd_Limit.Text = "End Limit";
-            this.hdEnd_Limit.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
-            this.hdEnd_Limit.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
-            this.hdEnd_Limit.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.hdEnd_Limit.Location = new System.Drawing.Point(790, 2478);
-            this.hdEnd_Limit.Size = new System.Drawing.Size(104, 26);
-            // 
-            // hdSensor_Reference_Distance
-            // 
-            this.hdSensor_Reference_Distance.Name = "hdSensor_Reference_Distance";
-            this.hdSensor_Reference_Distance.TranslationKey = "Sensor Reference Distance";
-            this.hdSensor_Reference_Distance.Text = "Sensor Reference Distance";
-            this.hdSensor_Reference_Distance.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
-            this.hdSensor_Reference_Distance.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
-            this.hdSensor_Reference_Distance.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.hdSensor_Reference_Distance.Location = new System.Drawing.Point(900, 2478);
-            this.hdSensor_Reference_Distance.Size = new System.Drawing.Size(164, 26);
-            // 
-            // capHead_1
-            // 
-            this.capHead_1.Name = "capHead_1";
-            this.capHead_1.TranslationKey = "Head 1";
-            this.capHead_1.Text = "Head 1";
-            this.capHead_1.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.capHead_1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
-            this.capHead_1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capHead_1.Location = new System.Drawing.Point(16, 2512);
-            this.capHead_1.Size = new System.Drawing.Size(70, 40);
-            this.capHead_1.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            // 
-            // btnHead_X2_Head_1_Back
-            // 
-            this.btnHead_X2_Head_1_Back.Name = "btnHead_X2_Head_1_Back";
-            this.btnHead_X2_Head_1_Back.PlcNumber = 1;
-            this.btnHead_X2_Head_1_Back.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.Left;
-            bitAction2.Address = "M223";
-            bitAction2.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnHead_X2_Head_1_Back.BitActions.Add(bitAction2);
-            this.btnHead_X2_Head_1_Back.Location = new System.Drawing.Point(92, 2515);
-            this.btnHead_X2_Head_1_Back.Size = new System.Drawing.Size(72, 34);
-            this.btnHead_X2_Head_1_Back.LogAction = true;
-            this.btnHead_X2_Head_1_Back.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // dispHead_X2_Head_1_Axis_Position
-            // 
-            // Heads X2 (the stripping knife's buttons on the old page) Head 1 Axis Position: D460, raw / 10000.
-            this.dispHead_X2_Head_1_Axis_Position.Name = "dispHead_X2_Head_1_Axis_Position";
-            this.dispHead_X2_Head_1_Axis_Position.PlcNumber = 1;
-            this.dispHead_X2_Head_1_Axis_Position.Address = "D460";
-            this.dispHead_X2_Head_1_Axis_Position.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.dispHead_X2_Head_1_Axis_Position.Divisor = 10000D;
-            this.dispHead_X2_Head_1_Axis_Position.DecimalPlaces = 2;
-            this.dispHead_X2_Head_1_Axis_Position.Digits = 7;
-            this.dispHead_X2_Head_1_Axis_Position.Suffix = "mm";
-            this.dispHead_X2_Head_1_Axis_Position.Location = new System.Drawing.Point(170, 2515);
-            this.dispHead_X2_Head_1_Axis_Position.Size = new System.Drawing.Size(104, 34);
-            // 
-            // btnHead_X2_Head_1_Forward
-            // 
-            this.btnHead_X2_Head_1_Forward.Name = "btnHead_X2_Head_1_Forward";
-            this.btnHead_X2_Head_1_Forward.PlcNumber = 1;
-            this.btnHead_X2_Head_1_Forward.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.Right;
-            bitAction3.Address = "M222";
-            bitAction3.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnHead_X2_Head_1_Forward.BitActions.Add(bitAction3);
-            this.btnHead_X2_Head_1_Forward.Location = new System.Drawing.Point(280, 2515);
-            this.btnHead_X2_Head_1_Forward.Size = new System.Drawing.Size(72, 34);
-            this.btnHead_X2_Head_1_Forward.LogAction = true;
-            this.btnHead_X2_Head_1_Forward.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // numHead_X2_Head_1_Encoder  (D2826)
-            // 
-            this.numHead_X2_Head_1_Encoder.BackColor = System.Drawing.Color.White;
-            this.numHead_X2_Head_1_Encoder.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numHead_X2_Head_1_Encoder.Name = "numHead_X2_Head_1_Encoder";
-            this.numHead_X2_Head_1_Encoder.PlcNumber = 1;
-            this.numHead_X2_Head_1_Encoder.Address = "D2826";
-            this.numHead_X2_Head_1_Encoder.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.numHead_X2_Head_1_Encoder.AutoSize = false;
-            this.numHead_X2_Head_1_Encoder.Digits = 6;
-            this.numHead_X2_Head_1_Encoder.DecimalPlaces = 2;
-            this.numHead_X2_Head_1_Encoder.Divisor = 10000D;
-            this.numHead_X2_Head_1_Encoder.Suffix = "mm";
-            this.numHead_X2_Head_1_Encoder.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numHead_X2_Head_1_Encoder.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numHead_X2_Head_1_Encoder.LogAction = true;
-            this.numHead_X2_Head_1_Encoder.Location = new System.Drawing.Point(358, 2516);
-            this.numHead_X2_Head_1_Encoder.Size = new System.Drawing.Size(104, 32);
-            this.numHead_X2_Head_1_Encoder.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // numHead_X2_Head_1_Measured_Value  (D7096)
-            // 
-            this.numHead_X2_Head_1_Measured_Value.BackColor = System.Drawing.Color.White;
-            this.numHead_X2_Head_1_Measured_Value.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numHead_X2_Head_1_Measured_Value.Name = "numHead_X2_Head_1_Measured_Value";
-            this.numHead_X2_Head_1_Measured_Value.PlcNumber = 1;
-            this.numHead_X2_Head_1_Measured_Value.Address = "D7096";
-            this.numHead_X2_Head_1_Measured_Value.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.numHead_X2_Head_1_Measured_Value.AutoSize = false;
-            this.numHead_X2_Head_1_Measured_Value.Digits = 6;
-            this.numHead_X2_Head_1_Measured_Value.DecimalPlaces = 2;
-            this.numHead_X2_Head_1_Measured_Value.Divisor = 10000D;
-            this.numHead_X2_Head_1_Measured_Value.Suffix = "mm";
-            this.numHead_X2_Head_1_Measured_Value.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numHead_X2_Head_1_Measured_Value.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numHead_X2_Head_1_Measured_Value.LogAction = true;
-            this.numHead_X2_Head_1_Measured_Value.Location = new System.Drawing.Point(468, 2516);
-            this.numHead_X2_Head_1_Measured_Value.Size = new System.Drawing.Size(104, 32);
-            this.numHead_X2_Head_1_Measured_Value.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // btnHead_X2_Head_1_Calibrate
-            // 
-            this.btnHead_X2_Head_1_Calibrate.Name = "btnHead_X2_Head_1_Calibrate";
-            this.btnHead_X2_Head_1_Calibrate.PlcNumber = 1;
-            this.btnHead_X2_Head_1_Calibrate.TranslationKey = "Calibrate";
-            this.btnHead_X2_Head_1_Calibrate.FallbackText = "Calibrate";
-            bitAction4.Address = "M91";
-            bitAction4.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnHead_X2_Head_1_Calibrate.BitActions.Add(bitAction4);
-            this.btnHead_X2_Head_1_Calibrate.Location = new System.Drawing.Point(578, 2515);
-            this.btnHead_X2_Head_1_Calibrate.Size = new System.Drawing.Size(96, 34);
-            this.btnHead_X2_Head_1_Calibrate.LogAction = true;
-            this.btnHead_X2_Head_1_Calibrate.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // numHead_X2_Head_1_Starting_Limit  (D542)
-            // 
-            this.numHead_X2_Head_1_Starting_Limit.BackColor = System.Drawing.Color.White;
-            this.numHead_X2_Head_1_Starting_Limit.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numHead_X2_Head_1_Starting_Limit.Name = "numHead_X2_Head_1_Starting_Limit";
-            this.numHead_X2_Head_1_Starting_Limit.PlcNumber = 1;
-            this.numHead_X2_Head_1_Starting_Limit.Address = "D542";
-            this.numHead_X2_Head_1_Starting_Limit.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.numHead_X2_Head_1_Starting_Limit.AutoSize = false;
-            this.numHead_X2_Head_1_Starting_Limit.Digits = 6;
-            this.numHead_X2_Head_1_Starting_Limit.DecimalPlaces = 2;
-            this.numHead_X2_Head_1_Starting_Limit.Divisor = 10000D;
-            this.numHead_X2_Head_1_Starting_Limit.Suffix = "mm";
-            this.numHead_X2_Head_1_Starting_Limit.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numHead_X2_Head_1_Starting_Limit.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numHead_X2_Head_1_Starting_Limit.LogAction = true;
-            this.numHead_X2_Head_1_Starting_Limit.Location = new System.Drawing.Point(680, 2516);
-            this.numHead_X2_Head_1_Starting_Limit.Size = new System.Drawing.Size(104, 32);
-            this.numHead_X2_Head_1_Starting_Limit.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // numHead_X2_Head_1_End_Limit  (D540)
-            // 
-            this.numHead_X2_Head_1_End_Limit.BackColor = System.Drawing.Color.White;
-            this.numHead_X2_Head_1_End_Limit.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numHead_X2_Head_1_End_Limit.Name = "numHead_X2_Head_1_End_Limit";
-            this.numHead_X2_Head_1_End_Limit.PlcNumber = 1;
-            this.numHead_X2_Head_1_End_Limit.Address = "D540";
-            this.numHead_X2_Head_1_End_Limit.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.numHead_X2_Head_1_End_Limit.AutoSize = false;
-            this.numHead_X2_Head_1_End_Limit.Digits = 6;
-            this.numHead_X2_Head_1_End_Limit.DecimalPlaces = 2;
-            this.numHead_X2_Head_1_End_Limit.Divisor = 10000D;
-            this.numHead_X2_Head_1_End_Limit.Suffix = "mm";
-            this.numHead_X2_Head_1_End_Limit.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numHead_X2_Head_1_End_Limit.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numHead_X2_Head_1_End_Limit.LogAction = true;
-            this.numHead_X2_Head_1_End_Limit.Location = new System.Drawing.Point(790, 2516);
-            this.numHead_X2_Head_1_End_Limit.Size = new System.Drawing.Size(104, 32);
-            this.numHead_X2_Head_1_End_Limit.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // loadHead_X2_Head_1_Sensor_Reference_Distance
-            // 
-            // Heads X2 (the stripping knife's buttons on the old page) Head 1 Sensor Reference Distance: D6623, |raw| on 0 - 100 % as the old page's bar.
-            this.loadHead_X2_Head_1_Sensor_Reference_Distance.Name = "loadHead_X2_Head_1_Sensor_Reference_Distance";
-            this.loadHead_X2_Head_1_Sensor_Reference_Distance.PlcNumber = 1;
-            this.loadHead_X2_Head_1_Sensor_Reference_Distance.Address = "D6623";
-            this.loadHead_X2_Head_1_Sensor_Reference_Distance.Divisor = 1D;
-            this.loadHead_X2_Head_1_Sensor_Reference_Distance.DecimalPlaces = 0;
-            this.loadHead_X2_Head_1_Sensor_Reference_Distance.Suffix = "%";
-            this.loadHead_X2_Head_1_Sensor_Reference_Distance.ScaleMinimum = 0D;
-            this.loadHead_X2_Head_1_Sensor_Reference_Distance.ScaleMaximum = 100D;
-            this.loadHead_X2_Head_1_Sensor_Reference_Distance.Signed = true;
-            this.loadHead_X2_Head_1_Sensor_Reference_Distance.Location = new System.Drawing.Point(900, 2519);
-            this.loadHead_X2_Head_1_Sensor_Reference_Distance.Size = new System.Drawing.Size(164, 26);
-            // 
-            // capHead_2
-            // 
-            this.capHead_2.Name = "capHead_2";
-            this.capHead_2.TranslationKey = "Head 2";
-            this.capHead_2.Text = "Head 2";
-            this.capHead_2.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.capHead_2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
-            this.capHead_2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capHead_2.Location = new System.Drawing.Point(16, 2552);
-            this.capHead_2.Size = new System.Drawing.Size(70, 40);
-            this.capHead_2.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            // 
-            // btnHead_X2_Head_2_Back
-            // 
-            this.btnHead_X2_Head_2_Back.Name = "btnHead_X2_Head_2_Back";
-            this.btnHead_X2_Head_2_Back.PlcNumber = 1;
-            this.btnHead_X2_Head_2_Back.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.Left;
-            bitAction5.Address = "M246";
-            bitAction5.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnHead_X2_Head_2_Back.BitActions.Add(bitAction5);
-            this.btnHead_X2_Head_2_Back.Location = new System.Drawing.Point(92, 2555);
-            this.btnHead_X2_Head_2_Back.Size = new System.Drawing.Size(72, 34);
-            this.btnHead_X2_Head_2_Back.LogAction = true;
-            this.btnHead_X2_Head_2_Back.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // dispHead_X2_Head_2_Axis_Position
-            // 
-            // Heads X2 (the stripping knife's buttons on the old page) Head 2 Axis Position: D470, raw / 10000.
-            this.dispHead_X2_Head_2_Axis_Position.Name = "dispHead_X2_Head_2_Axis_Position";
-            this.dispHead_X2_Head_2_Axis_Position.PlcNumber = 1;
-            this.dispHead_X2_Head_2_Axis_Position.Address = "D470";
-            this.dispHead_X2_Head_2_Axis_Position.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.dispHead_X2_Head_2_Axis_Position.Divisor = 10000D;
-            this.dispHead_X2_Head_2_Axis_Position.DecimalPlaces = 2;
-            this.dispHead_X2_Head_2_Axis_Position.Digits = 7;
-            this.dispHead_X2_Head_2_Axis_Position.Suffix = "mm";
-            this.dispHead_X2_Head_2_Axis_Position.Location = new System.Drawing.Point(170, 2555);
-            this.dispHead_X2_Head_2_Axis_Position.Size = new System.Drawing.Size(104, 34);
-            // 
-            // btnHead_X2_Head_2_Forward
-            // 
-            this.btnHead_X2_Head_2_Forward.Name = "btnHead_X2_Head_2_Forward";
-            this.btnHead_X2_Head_2_Forward.PlcNumber = 1;
-            this.btnHead_X2_Head_2_Forward.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.Right;
-            bitAction6.Address = "M247";
-            bitAction6.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnHead_X2_Head_2_Forward.BitActions.Add(bitAction6);
-            this.btnHead_X2_Head_2_Forward.Location = new System.Drawing.Point(280, 2555);
-            this.btnHead_X2_Head_2_Forward.Size = new System.Drawing.Size(72, 34);
-            this.btnHead_X2_Head_2_Forward.LogAction = true;
-            this.btnHead_X2_Head_2_Forward.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // numHead_X2_Head_2_Encoder  (D2828)
-            // 
-            this.numHead_X2_Head_2_Encoder.BackColor = System.Drawing.Color.White;
-            this.numHead_X2_Head_2_Encoder.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numHead_X2_Head_2_Encoder.Name = "numHead_X2_Head_2_Encoder";
-            this.numHead_X2_Head_2_Encoder.PlcNumber = 1;
-            this.numHead_X2_Head_2_Encoder.Address = "D2828";
-            this.numHead_X2_Head_2_Encoder.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.numHead_X2_Head_2_Encoder.AutoSize = false;
-            this.numHead_X2_Head_2_Encoder.Digits = 6;
-            this.numHead_X2_Head_2_Encoder.DecimalPlaces = 2;
-            this.numHead_X2_Head_2_Encoder.Divisor = 10000D;
-            this.numHead_X2_Head_2_Encoder.Suffix = "mm";
-            this.numHead_X2_Head_2_Encoder.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numHead_X2_Head_2_Encoder.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numHead_X2_Head_2_Encoder.LogAction = true;
-            this.numHead_X2_Head_2_Encoder.Location = new System.Drawing.Point(358, 2556);
-            this.numHead_X2_Head_2_Encoder.Size = new System.Drawing.Size(104, 32);
-            this.numHead_X2_Head_2_Encoder.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // numHead_X2_Head_2_Measured_Value  (D7098)
-            // 
-            this.numHead_X2_Head_2_Measured_Value.BackColor = System.Drawing.Color.White;
-            this.numHead_X2_Head_2_Measured_Value.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numHead_X2_Head_2_Measured_Value.Name = "numHead_X2_Head_2_Measured_Value";
-            this.numHead_X2_Head_2_Measured_Value.PlcNumber = 1;
-            this.numHead_X2_Head_2_Measured_Value.Address = "D7098";
-            this.numHead_X2_Head_2_Measured_Value.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.numHead_X2_Head_2_Measured_Value.AutoSize = false;
-            this.numHead_X2_Head_2_Measured_Value.Digits = 6;
-            this.numHead_X2_Head_2_Measured_Value.DecimalPlaces = 2;
-            this.numHead_X2_Head_2_Measured_Value.Divisor = 10000D;
-            this.numHead_X2_Head_2_Measured_Value.Suffix = "mm";
-            this.numHead_X2_Head_2_Measured_Value.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numHead_X2_Head_2_Measured_Value.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numHead_X2_Head_2_Measured_Value.LogAction = true;
-            this.numHead_X2_Head_2_Measured_Value.Location = new System.Drawing.Point(468, 2556);
-            this.numHead_X2_Head_2_Measured_Value.Size = new System.Drawing.Size(104, 32);
-            this.numHead_X2_Head_2_Measured_Value.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // btnHead_X2_Head_2_Calibrate
-            // 
-            this.btnHead_X2_Head_2_Calibrate.Name = "btnHead_X2_Head_2_Calibrate";
-            this.btnHead_X2_Head_2_Calibrate.PlcNumber = 1;
-            this.btnHead_X2_Head_2_Calibrate.TranslationKey = "Calibrate";
-            this.btnHead_X2_Head_2_Calibrate.FallbackText = "Calibrate";
-            bitAction7.Address = "M92";
-            bitAction7.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnHead_X2_Head_2_Calibrate.BitActions.Add(bitAction7);
-            this.btnHead_X2_Head_2_Calibrate.Location = new System.Drawing.Point(578, 2555);
-            this.btnHead_X2_Head_2_Calibrate.Size = new System.Drawing.Size(96, 34);
-            this.btnHead_X2_Head_2_Calibrate.LogAction = true;
-            this.btnHead_X2_Head_2_Calibrate.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // numHead_X2_Head_2_Starting_Limit  (D542)
-            // 
-            this.numHead_X2_Head_2_Starting_Limit.BackColor = System.Drawing.Color.White;
-            this.numHead_X2_Head_2_Starting_Limit.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numHead_X2_Head_2_Starting_Limit.Name = "numHead_X2_Head_2_Starting_Limit";
-            this.numHead_X2_Head_2_Starting_Limit.PlcNumber = 1;
-            this.numHead_X2_Head_2_Starting_Limit.Address = "D542";
-            this.numHead_X2_Head_2_Starting_Limit.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.numHead_X2_Head_2_Starting_Limit.AutoSize = false;
-            this.numHead_X2_Head_2_Starting_Limit.Digits = 6;
-            this.numHead_X2_Head_2_Starting_Limit.DecimalPlaces = 2;
-            this.numHead_X2_Head_2_Starting_Limit.Divisor = 10000D;
-            this.numHead_X2_Head_2_Starting_Limit.Suffix = "mm";
-            this.numHead_X2_Head_2_Starting_Limit.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numHead_X2_Head_2_Starting_Limit.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numHead_X2_Head_2_Starting_Limit.LogAction = true;
-            this.numHead_X2_Head_2_Starting_Limit.Location = new System.Drawing.Point(680, 2556);
-            this.numHead_X2_Head_2_Starting_Limit.Size = new System.Drawing.Size(104, 32);
-            this.numHead_X2_Head_2_Starting_Limit.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // numHead_X2_Head_2_End_Limit  (D540)
-            // 
-            this.numHead_X2_Head_2_End_Limit.BackColor = System.Drawing.Color.White;
-            this.numHead_X2_Head_2_End_Limit.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numHead_X2_Head_2_End_Limit.Name = "numHead_X2_Head_2_End_Limit";
-            this.numHead_X2_Head_2_End_Limit.PlcNumber = 1;
-            this.numHead_X2_Head_2_End_Limit.Address = "D540";
-            this.numHead_X2_Head_2_End_Limit.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.numHead_X2_Head_2_End_Limit.AutoSize = false;
-            this.numHead_X2_Head_2_End_Limit.Digits = 6;
-            this.numHead_X2_Head_2_End_Limit.DecimalPlaces = 2;
-            this.numHead_X2_Head_2_End_Limit.Divisor = 10000D;
-            this.numHead_X2_Head_2_End_Limit.Suffix = "mm";
-            this.numHead_X2_Head_2_End_Limit.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numHead_X2_Head_2_End_Limit.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numHead_X2_Head_2_End_Limit.LogAction = true;
-            this.numHead_X2_Head_2_End_Limit.Location = new System.Drawing.Point(790, 2556);
-            this.numHead_X2_Head_2_End_Limit.Size = new System.Drawing.Size(104, 32);
-            this.numHead_X2_Head_2_End_Limit.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // loadHead_X2_Head_2_Sensor_Reference_Distance
-            // 
-            // Heads X2 (the stripping knife's buttons on the old page) Head 2 Sensor Reference Distance: D6624, |raw| on 0 - 100 % as the old page's bar.
-            this.loadHead_X2_Head_2_Sensor_Reference_Distance.Name = "loadHead_X2_Head_2_Sensor_Reference_Distance";
-            this.loadHead_X2_Head_2_Sensor_Reference_Distance.PlcNumber = 1;
-            this.loadHead_X2_Head_2_Sensor_Reference_Distance.Address = "D6624";
-            this.loadHead_X2_Head_2_Sensor_Reference_Distance.Divisor = 1D;
-            this.loadHead_X2_Head_2_Sensor_Reference_Distance.DecimalPlaces = 0;
-            this.loadHead_X2_Head_2_Sensor_Reference_Distance.Suffix = "%";
-            this.loadHead_X2_Head_2_Sensor_Reference_Distance.ScaleMinimum = 0D;
-            this.loadHead_X2_Head_2_Sensor_Reference_Distance.ScaleMaximum = 100D;
-            this.loadHead_X2_Head_2_Sensor_Reference_Distance.Signed = true;
-            this.loadHead_X2_Head_2_Sensor_Reference_Distance.Location = new System.Drawing.Point(900, 2559);
-            this.loadHead_X2_Head_2_Sensor_Reference_Distance.Size = new System.Drawing.Size(164, 26);
-            // 
-            // capHead_3
-            // 
-            this.capHead_3.Name = "capHead_3";
-            this.capHead_3.TranslationKey = "Head 3";
-            this.capHead_3.Text = "Head 3";
-            this.capHead_3.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.capHead_3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
-            this.capHead_3.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capHead_3.Location = new System.Drawing.Point(16, 2592);
-            this.capHead_3.Size = new System.Drawing.Size(70, 40);
-            this.capHead_3.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            // 
-            // btnHead_X2_Head_3_Back
-            // 
-            this.btnHead_X2_Head_3_Back.Name = "btnHead_X2_Head_3_Back";
-            this.btnHead_X2_Head_3_Back.PlcNumber = 1;
-            this.btnHead_X2_Head_3_Back.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.Left;
-            bitAction8.Address = "M248";
-            bitAction8.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnHead_X2_Head_3_Back.BitActions.Add(bitAction8);
-            this.btnHead_X2_Head_3_Back.Location = new System.Drawing.Point(92, 2595);
-            this.btnHead_X2_Head_3_Back.Size = new System.Drawing.Size(72, 34);
-            this.btnHead_X2_Head_3_Back.LogAction = true;
-            this.btnHead_X2_Head_3_Back.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // dispHead_X2_Head_3_Axis_Position
-            // 
-            // Heads X2 (the stripping knife's buttons on the old page) Head 3 Axis Position: D480, raw / 10000.
-            this.dispHead_X2_Head_3_Axis_Position.Name = "dispHead_X2_Head_3_Axis_Position";
-            this.dispHead_X2_Head_3_Axis_Position.PlcNumber = 1;
-            this.dispHead_X2_Head_3_Axis_Position.Address = "D480";
-            this.dispHead_X2_Head_3_Axis_Position.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.dispHead_X2_Head_3_Axis_Position.Divisor = 10000D;
-            this.dispHead_X2_Head_3_Axis_Position.DecimalPlaces = 2;
-            this.dispHead_X2_Head_3_Axis_Position.Digits = 7;
-            this.dispHead_X2_Head_3_Axis_Position.Suffix = "mm";
-            this.dispHead_X2_Head_3_Axis_Position.Location = new System.Drawing.Point(170, 2595);
-            this.dispHead_X2_Head_3_Axis_Position.Size = new System.Drawing.Size(104, 34);
-            // 
-            // btnHead_X2_Head_3_Forward
-            // 
-            this.btnHead_X2_Head_3_Forward.Name = "btnHead_X2_Head_3_Forward";
-            this.btnHead_X2_Head_3_Forward.PlcNumber = 1;
-            this.btnHead_X2_Head_3_Forward.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.Right;
-            bitAction9.Address = "M249";
-            bitAction9.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnHead_X2_Head_3_Forward.BitActions.Add(bitAction9);
-            this.btnHead_X2_Head_3_Forward.Location = new System.Drawing.Point(280, 2595);
-            this.btnHead_X2_Head_3_Forward.Size = new System.Drawing.Size(72, 34);
-            this.btnHead_X2_Head_3_Forward.LogAction = true;
-            this.btnHead_X2_Head_3_Forward.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // numHead_X2_Head_3_Encoder  (D2830)
-            // 
-            this.numHead_X2_Head_3_Encoder.BackColor = System.Drawing.Color.White;
-            this.numHead_X2_Head_3_Encoder.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numHead_X2_Head_3_Encoder.Name = "numHead_X2_Head_3_Encoder";
-            this.numHead_X2_Head_3_Encoder.PlcNumber = 1;
-            this.numHead_X2_Head_3_Encoder.Address = "D2830";
-            this.numHead_X2_Head_3_Encoder.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.numHead_X2_Head_3_Encoder.AutoSize = false;
-            this.numHead_X2_Head_3_Encoder.Digits = 6;
-            this.numHead_X2_Head_3_Encoder.DecimalPlaces = 2;
-            this.numHead_X2_Head_3_Encoder.Divisor = 10000D;
-            this.numHead_X2_Head_3_Encoder.Suffix = "mm";
-            this.numHead_X2_Head_3_Encoder.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numHead_X2_Head_3_Encoder.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numHead_X2_Head_3_Encoder.LogAction = true;
-            this.numHead_X2_Head_3_Encoder.Location = new System.Drawing.Point(358, 2596);
-            this.numHead_X2_Head_3_Encoder.Size = new System.Drawing.Size(104, 32);
-            this.numHead_X2_Head_3_Encoder.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // numHead_X2_Head_3_Measured_Value  (D7100)
-            // 
-            this.numHead_X2_Head_3_Measured_Value.BackColor = System.Drawing.Color.White;
-            this.numHead_X2_Head_3_Measured_Value.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numHead_X2_Head_3_Measured_Value.Name = "numHead_X2_Head_3_Measured_Value";
-            this.numHead_X2_Head_3_Measured_Value.PlcNumber = 1;
-            this.numHead_X2_Head_3_Measured_Value.Address = "D7100";
-            this.numHead_X2_Head_3_Measured_Value.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.numHead_X2_Head_3_Measured_Value.AutoSize = false;
-            this.numHead_X2_Head_3_Measured_Value.Digits = 6;
-            this.numHead_X2_Head_3_Measured_Value.DecimalPlaces = 2;
-            this.numHead_X2_Head_3_Measured_Value.Divisor = 10000D;
-            this.numHead_X2_Head_3_Measured_Value.Suffix = "mm";
-            this.numHead_X2_Head_3_Measured_Value.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numHead_X2_Head_3_Measured_Value.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numHead_X2_Head_3_Measured_Value.LogAction = true;
-            this.numHead_X2_Head_3_Measured_Value.Location = new System.Drawing.Point(468, 2596);
-            this.numHead_X2_Head_3_Measured_Value.Size = new System.Drawing.Size(104, 32);
-            this.numHead_X2_Head_3_Measured_Value.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // btnHead_X2_Head_3_Calibrate
-            // 
-            this.btnHead_X2_Head_3_Calibrate.Name = "btnHead_X2_Head_3_Calibrate";
-            this.btnHead_X2_Head_3_Calibrate.PlcNumber = 1;
-            this.btnHead_X2_Head_3_Calibrate.TranslationKey = "Calibrate";
-            this.btnHead_X2_Head_3_Calibrate.FallbackText = "Calibrate";
-            bitAction10.Address = "M93";
-            bitAction10.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnHead_X2_Head_3_Calibrate.BitActions.Add(bitAction10);
-            this.btnHead_X2_Head_3_Calibrate.Location = new System.Drawing.Point(578, 2595);
-            this.btnHead_X2_Head_3_Calibrate.Size = new System.Drawing.Size(96, 34);
-            this.btnHead_X2_Head_3_Calibrate.LogAction = true;
-            this.btnHead_X2_Head_3_Calibrate.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // numHead_X2_Head_3_Starting_Limit  (D542)
-            // 
-            this.numHead_X2_Head_3_Starting_Limit.BackColor = System.Drawing.Color.White;
-            this.numHead_X2_Head_3_Starting_Limit.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numHead_X2_Head_3_Starting_Limit.Name = "numHead_X2_Head_3_Starting_Limit";
-            this.numHead_X2_Head_3_Starting_Limit.PlcNumber = 1;
-            this.numHead_X2_Head_3_Starting_Limit.Address = "D542";
-            this.numHead_X2_Head_3_Starting_Limit.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.numHead_X2_Head_3_Starting_Limit.AutoSize = false;
-            this.numHead_X2_Head_3_Starting_Limit.Digits = 6;
-            this.numHead_X2_Head_3_Starting_Limit.DecimalPlaces = 2;
-            this.numHead_X2_Head_3_Starting_Limit.Divisor = 10000D;
-            this.numHead_X2_Head_3_Starting_Limit.Suffix = "mm";
-            this.numHead_X2_Head_3_Starting_Limit.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numHead_X2_Head_3_Starting_Limit.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numHead_X2_Head_3_Starting_Limit.LogAction = true;
-            this.numHead_X2_Head_3_Starting_Limit.Location = new System.Drawing.Point(680, 2596);
-            this.numHead_X2_Head_3_Starting_Limit.Size = new System.Drawing.Size(104, 32);
-            this.numHead_X2_Head_3_Starting_Limit.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // numHead_X2_Head_3_End_Limit  (D540)
-            // 
-            this.numHead_X2_Head_3_End_Limit.BackColor = System.Drawing.Color.White;
-            this.numHead_X2_Head_3_End_Limit.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numHead_X2_Head_3_End_Limit.Name = "numHead_X2_Head_3_End_Limit";
-            this.numHead_X2_Head_3_End_Limit.PlcNumber = 1;
-            this.numHead_X2_Head_3_End_Limit.Address = "D540";
-            this.numHead_X2_Head_3_End_Limit.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.numHead_X2_Head_3_End_Limit.AutoSize = false;
-            this.numHead_X2_Head_3_End_Limit.Digits = 6;
-            this.numHead_X2_Head_3_End_Limit.DecimalPlaces = 2;
-            this.numHead_X2_Head_3_End_Limit.Divisor = 10000D;
-            this.numHead_X2_Head_3_End_Limit.Suffix = "mm";
-            this.numHead_X2_Head_3_End_Limit.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numHead_X2_Head_3_End_Limit.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numHead_X2_Head_3_End_Limit.LogAction = true;
-            this.numHead_X2_Head_3_End_Limit.Location = new System.Drawing.Point(790, 2596);
-            this.numHead_X2_Head_3_End_Limit.Size = new System.Drawing.Size(104, 32);
-            this.numHead_X2_Head_3_End_Limit.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // loadHead_X2_Head_3_Sensor_Reference_Distance
-            // 
-            // Heads X2 (the stripping knife's buttons on the old page) Head 3 Sensor Reference Distance: D6625, |raw| on 0 - 100 % as the old page's bar.
-            this.loadHead_X2_Head_3_Sensor_Reference_Distance.Name = "loadHead_X2_Head_3_Sensor_Reference_Distance";
-            this.loadHead_X2_Head_3_Sensor_Reference_Distance.PlcNumber = 1;
-            this.loadHead_X2_Head_3_Sensor_Reference_Distance.Address = "D6625";
-            this.loadHead_X2_Head_3_Sensor_Reference_Distance.Divisor = 1D;
-            this.loadHead_X2_Head_3_Sensor_Reference_Distance.DecimalPlaces = 0;
-            this.loadHead_X2_Head_3_Sensor_Reference_Distance.Suffix = "%";
-            this.loadHead_X2_Head_3_Sensor_Reference_Distance.ScaleMinimum = 0D;
-            this.loadHead_X2_Head_3_Sensor_Reference_Distance.ScaleMaximum = 100D;
-            this.loadHead_X2_Head_3_Sensor_Reference_Distance.Signed = true;
-            this.loadHead_X2_Head_3_Sensor_Reference_Distance.Location = new System.Drawing.Point(900, 2599);
-            this.loadHead_X2_Head_3_Sensor_Reference_Distance.Size = new System.Drawing.Size(164, 26);
-            // 
-            // capHead_4
-            // 
-            this.capHead_4.Name = "capHead_4";
-            this.capHead_4.TranslationKey = "Head 4";
-            this.capHead_4.Text = "Head 4";
-            this.capHead_4.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.capHead_4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
-            this.capHead_4.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capHead_4.Location = new System.Drawing.Point(16, 2632);
-            this.capHead_4.Size = new System.Drawing.Size(70, 40);
-            this.capHead_4.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            // 
-            // btnHead_X2_Head_4_Back
-            // 
-            this.btnHead_X2_Head_4_Back.Name = "btnHead_X2_Head_4_Back";
-            this.btnHead_X2_Head_4_Back.PlcNumber = 1;
-            this.btnHead_X2_Head_4_Back.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.Left;
-            bitAction11.Address = "M250";
-            bitAction11.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnHead_X2_Head_4_Back.BitActions.Add(bitAction11);
-            this.btnHead_X2_Head_4_Back.Location = new System.Drawing.Point(92, 2635);
-            this.btnHead_X2_Head_4_Back.Size = new System.Drawing.Size(72, 34);
-            this.btnHead_X2_Head_4_Back.LogAction = true;
-            this.btnHead_X2_Head_4_Back.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // dispHead_X2_Head_4_Axis_Position
-            // 
-            // Heads X2 (the stripping knife's buttons on the old page) Head 4 Axis Position: D490, raw / 10000.
-            this.dispHead_X2_Head_4_Axis_Position.Name = "dispHead_X2_Head_4_Axis_Position";
-            this.dispHead_X2_Head_4_Axis_Position.PlcNumber = 1;
-            this.dispHead_X2_Head_4_Axis_Position.Address = "D490";
-            this.dispHead_X2_Head_4_Axis_Position.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.dispHead_X2_Head_4_Axis_Position.Divisor = 10000D;
-            this.dispHead_X2_Head_4_Axis_Position.DecimalPlaces = 2;
-            this.dispHead_X2_Head_4_Axis_Position.Digits = 7;
-            this.dispHead_X2_Head_4_Axis_Position.Suffix = "mm";
-            this.dispHead_X2_Head_4_Axis_Position.Location = new System.Drawing.Point(170, 2635);
-            this.dispHead_X2_Head_4_Axis_Position.Size = new System.Drawing.Size(104, 34);
-            // 
-            // btnHead_X2_Head_4_Forward
-            // 
-            this.btnHead_X2_Head_4_Forward.Name = "btnHead_X2_Head_4_Forward";
-            this.btnHead_X2_Head_4_Forward.PlcNumber = 1;
-            this.btnHead_X2_Head_4_Forward.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.Right;
-            bitAction12.Address = "M251";
-            bitAction12.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnHead_X2_Head_4_Forward.BitActions.Add(bitAction12);
-            this.btnHead_X2_Head_4_Forward.Location = new System.Drawing.Point(280, 2635);
-            this.btnHead_X2_Head_4_Forward.Size = new System.Drawing.Size(72, 34);
-            this.btnHead_X2_Head_4_Forward.LogAction = true;
-            this.btnHead_X2_Head_4_Forward.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // numHead_X2_Head_4_Encoder  (D2832)
-            // 
-            this.numHead_X2_Head_4_Encoder.BackColor = System.Drawing.Color.White;
-            this.numHead_X2_Head_4_Encoder.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numHead_X2_Head_4_Encoder.Name = "numHead_X2_Head_4_Encoder";
-            this.numHead_X2_Head_4_Encoder.PlcNumber = 1;
-            this.numHead_X2_Head_4_Encoder.Address = "D2832";
-            this.numHead_X2_Head_4_Encoder.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.numHead_X2_Head_4_Encoder.AutoSize = false;
-            this.numHead_X2_Head_4_Encoder.Digits = 6;
-            this.numHead_X2_Head_4_Encoder.DecimalPlaces = 2;
-            this.numHead_X2_Head_4_Encoder.Divisor = 10000D;
-            this.numHead_X2_Head_4_Encoder.Suffix = "mm";
-            this.numHead_X2_Head_4_Encoder.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numHead_X2_Head_4_Encoder.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numHead_X2_Head_4_Encoder.LogAction = true;
-            this.numHead_X2_Head_4_Encoder.Location = new System.Drawing.Point(358, 2636);
-            this.numHead_X2_Head_4_Encoder.Size = new System.Drawing.Size(104, 32);
-            this.numHead_X2_Head_4_Encoder.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // numHead_X2_Head_4_Measured_Value  (D7102)
-            // 
-            this.numHead_X2_Head_4_Measured_Value.BackColor = System.Drawing.Color.White;
-            this.numHead_X2_Head_4_Measured_Value.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numHead_X2_Head_4_Measured_Value.Name = "numHead_X2_Head_4_Measured_Value";
-            this.numHead_X2_Head_4_Measured_Value.PlcNumber = 1;
-            this.numHead_X2_Head_4_Measured_Value.Address = "D7102";
-            this.numHead_X2_Head_4_Measured_Value.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.numHead_X2_Head_4_Measured_Value.AutoSize = false;
-            this.numHead_X2_Head_4_Measured_Value.Digits = 6;
-            this.numHead_X2_Head_4_Measured_Value.DecimalPlaces = 2;
-            this.numHead_X2_Head_4_Measured_Value.Divisor = 10000D;
-            this.numHead_X2_Head_4_Measured_Value.Suffix = "mm";
-            this.numHead_X2_Head_4_Measured_Value.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numHead_X2_Head_4_Measured_Value.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numHead_X2_Head_4_Measured_Value.LogAction = true;
-            this.numHead_X2_Head_4_Measured_Value.Location = new System.Drawing.Point(468, 2636);
-            this.numHead_X2_Head_4_Measured_Value.Size = new System.Drawing.Size(104, 32);
-            this.numHead_X2_Head_4_Measured_Value.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // btnHead_X2_Head_4_Calibrate
-            // 
-            this.btnHead_X2_Head_4_Calibrate.Name = "btnHead_X2_Head_4_Calibrate";
-            this.btnHead_X2_Head_4_Calibrate.PlcNumber = 1;
-            this.btnHead_X2_Head_4_Calibrate.TranslationKey = "Calibrate";
-            this.btnHead_X2_Head_4_Calibrate.FallbackText = "Calibrate";
-            bitAction13.Address = "M94";
-            bitAction13.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnHead_X2_Head_4_Calibrate.BitActions.Add(bitAction13);
-            this.btnHead_X2_Head_4_Calibrate.Location = new System.Drawing.Point(578, 2635);
-            this.btnHead_X2_Head_4_Calibrate.Size = new System.Drawing.Size(96, 34);
-            this.btnHead_X2_Head_4_Calibrate.LogAction = true;
-            this.btnHead_X2_Head_4_Calibrate.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // numHead_X2_Head_4_Starting_Limit  (D542)
-            // 
-            this.numHead_X2_Head_4_Starting_Limit.BackColor = System.Drawing.Color.White;
-            this.numHead_X2_Head_4_Starting_Limit.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numHead_X2_Head_4_Starting_Limit.Name = "numHead_X2_Head_4_Starting_Limit";
-            this.numHead_X2_Head_4_Starting_Limit.PlcNumber = 1;
-            this.numHead_X2_Head_4_Starting_Limit.Address = "D542";
-            this.numHead_X2_Head_4_Starting_Limit.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.numHead_X2_Head_4_Starting_Limit.AutoSize = false;
-            this.numHead_X2_Head_4_Starting_Limit.Digits = 6;
-            this.numHead_X2_Head_4_Starting_Limit.DecimalPlaces = 2;
-            this.numHead_X2_Head_4_Starting_Limit.Divisor = 10000D;
-            this.numHead_X2_Head_4_Starting_Limit.Suffix = "mm";
-            this.numHead_X2_Head_4_Starting_Limit.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numHead_X2_Head_4_Starting_Limit.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numHead_X2_Head_4_Starting_Limit.LogAction = true;
-            this.numHead_X2_Head_4_Starting_Limit.Location = new System.Drawing.Point(680, 2636);
-            this.numHead_X2_Head_4_Starting_Limit.Size = new System.Drawing.Size(104, 32);
-            this.numHead_X2_Head_4_Starting_Limit.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // numHead_X2_Head_4_End_Limit  (D540)
-            // 
-            this.numHead_X2_Head_4_End_Limit.BackColor = System.Drawing.Color.White;
-            this.numHead_X2_Head_4_End_Limit.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numHead_X2_Head_4_End_Limit.Name = "numHead_X2_Head_4_End_Limit";
-            this.numHead_X2_Head_4_End_Limit.PlcNumber = 1;
-            this.numHead_X2_Head_4_End_Limit.Address = "D540";
-            this.numHead_X2_Head_4_End_Limit.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.numHead_X2_Head_4_End_Limit.AutoSize = false;
-            this.numHead_X2_Head_4_End_Limit.Digits = 6;
-            this.numHead_X2_Head_4_End_Limit.DecimalPlaces = 2;
-            this.numHead_X2_Head_4_End_Limit.Divisor = 10000D;
-            this.numHead_X2_Head_4_End_Limit.Suffix = "mm";
-            this.numHead_X2_Head_4_End_Limit.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numHead_X2_Head_4_End_Limit.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numHead_X2_Head_4_End_Limit.LogAction = true;
-            this.numHead_X2_Head_4_End_Limit.Location = new System.Drawing.Point(790, 2636);
-            this.numHead_X2_Head_4_End_Limit.Size = new System.Drawing.Size(104, 32);
-            this.numHead_X2_Head_4_End_Limit.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // loadHead_X2_Head_4_Sensor_Reference_Distance
-            // 
-            // Heads X2 (the stripping knife's buttons on the old page) Head 4 Sensor Reference Distance: D6626, |raw| on 0 - 100 % as the old page's bar.
-            this.loadHead_X2_Head_4_Sensor_Reference_Distance.Name = "loadHead_X2_Head_4_Sensor_Reference_Distance";
-            this.loadHead_X2_Head_4_Sensor_Reference_Distance.PlcNumber = 1;
-            this.loadHead_X2_Head_4_Sensor_Reference_Distance.Address = "D6626";
-            this.loadHead_X2_Head_4_Sensor_Reference_Distance.Divisor = 1D;
-            this.loadHead_X2_Head_4_Sensor_Reference_Distance.DecimalPlaces = 0;
-            this.loadHead_X2_Head_4_Sensor_Reference_Distance.Suffix = "%";
-            this.loadHead_X2_Head_4_Sensor_Reference_Distance.ScaleMinimum = 0D;
-            this.loadHead_X2_Head_4_Sensor_Reference_Distance.ScaleMaximum = 100D;
-            this.loadHead_X2_Head_4_Sensor_Reference_Distance.Signed = true;
-            this.loadHead_X2_Head_4_Sensor_Reference_Distance.Location = new System.Drawing.Point(900, 2639);
-            this.loadHead_X2_Head_4_Sensor_Reference_Distance.Size = new System.Drawing.Size(164, 26);
             // 
             // ParamAxisCalibration
             // 
@@ -2931,6 +1483,7 @@ namespace Kaban.Machines.MD3020.Screens.Parameters
             this.Controls.Add(this.lblHeadPosition);
             this.Controls.Add(this.lblHeadMin);
             this.Controls.Add(this.lblHeadMax);
+            this.Controls.Add(this.lblHeadReference);
             this.Controls.Add(this.lblHeadCalibration);
             this.Controls.Add(this.lblHeadCal);
             this.Controls.Add(this.lblHeadZDistance);
@@ -2965,127 +1518,35 @@ namespace Kaban.Machines.MD3020.Screens.Parameters
             this.Controls.Add(this.lblEncoder);
             this.Controls.Add(this.hdAxis);
             this.Controls.Add(this.hdEncoder);
-            this.Controls.Add(this.hdEncoder_Channel);
-            this.Controls.Add(this.hdOffset);
-            this.Controls.Add(this.lblGeneral);
-            this.Controls.Add(this.capX1);
-            this.Controls.Add(this.numEncoders_General_Body_X1_Encoder);
-            this.Controls.Add(this.numEncoders_General_Body_X1_Encoder_Channel);
-            this.Controls.Add(this.numEncoders_General_Body_X1_Offset);
-            this.Controls.Add(this.capX2);
-            this.Controls.Add(this.numEncoders_General_Body_X2_Encoder);
-            this.Controls.Add(this.numEncoders_General_Body_X2_Encoder_Channel);
-            this.Controls.Add(this.numEncoders_General_Body_X2_Offset);
-            this.Controls.Add(this.capY1);
-            this.Controls.Add(this.numEncoders_General_Body_Y1_Encoder);
-            this.Controls.Add(this.numEncoders_General_Body_Y1_Encoder_Channel);
-            this.Controls.Add(this.numEncoders_General_Body_Y1_Offset);
-            this.Controls.Add(this.capY2);
-            this.Controls.Add(this.numEncoders_General_Body_Y2_Encoder);
-            this.Controls.Add(this.numEncoders_General_Body_Y2_Encoder_Channel);
-            this.Controls.Add(this.numEncoders_General_Body_Y2_Offset);
-            this.Controls.Add(this.lblHead_1_2);
-            this.Controls.Add(this.capX);
-            this.Controls.Add(this.numEncoders_Head_1_H1_X_Encoder);
-            this.Controls.Add(this.capY1_2);
-            this.Controls.Add(this.numEncoders_Head_1_H1_Y1_Encoder);
-            this.Controls.Add(this.capY2_2);
-            this.Controls.Add(this.numEncoders_Head_1_H1_Y2_Encoder);
-            this.Controls.Add(this.capZ);
-            this.Controls.Add(this.numEncoders_Head_1_H1_Z1_Encoder);
-            this.Controls.Add(this.capRZ);
-            this.Controls.Add(this.numEncoders_Head_1_H1_Z2_Encoder);
-            this.Controls.Add(this.lblHead_2_2);
-            this.Controls.Add(this.capX_2);
-            this.Controls.Add(this.numEncoders_Head_2_H2_X_Encoder);
-            this.Controls.Add(this.capY1_3);
-            this.Controls.Add(this.numEncoders_Head_2_H2_Y1_Encoder);
-            this.Controls.Add(this.capY2_3);
-            this.Controls.Add(this.numEncoders_Head_2_H2_Y2_Encoder);
-            this.Controls.Add(this.capZ_2);
-            this.Controls.Add(this.numEncoders_Head_2_H2_Z1_Encoder);
-            this.Controls.Add(this.capRZ_2);
-            this.Controls.Add(this.numEncoders_Head_2_H2_Z2_Encoder);
-            this.Controls.Add(this.lblHead_3_2);
-            this.Controls.Add(this.capX_3);
-            this.Controls.Add(this.numEncoders_Head_3_H3_X_Encoder);
-            this.Controls.Add(this.capY1_4);
-            this.Controls.Add(this.numEncoders_Head_3_H3_Y1_Encoder);
-            this.Controls.Add(this.capY2_4);
-            this.Controls.Add(this.numEncoders_Head_3_H3_Y2_Encoder);
-            this.Controls.Add(this.capZ_3);
-            this.Controls.Add(this.numEncoders_Head_3_H3_Z1_Encoder);
-            this.Controls.Add(this.capRZ_3);
-            this.Controls.Add(this.numEncoders_Head_3_H3_Z2_Encoder);
-            this.Controls.Add(this.lblHead_4_2);
-            this.Controls.Add(this.capX_4);
-            this.Controls.Add(this.numEncoders_Head_4_H4_X_Encoder);
-            this.Controls.Add(this.capY1_5);
-            this.Controls.Add(this.numEncoders_Head_4_H4_Y1_Encoder);
-            this.Controls.Add(this.capY2_5);
-            this.Controls.Add(this.numEncoders_Head_4_H4_Y2_Encoder);
-            this.Controls.Add(this.capZ_4);
-            this.Controls.Add(this.numEncoders_Head_4_H4_Z1_Encoder);
-            this.Controls.Add(this.capRZ_4);
-            this.Controls.Add(this.numEncoders_Head_4_H4_Z2_Encoder);
+            this.Controls.Add(this.hdEncoder_Address);
+            this.Controls.Add(this.hdOffset_Tolerance);
+            this.Controls.Add(this.capBody_X1);
+            this.Controls.Add(this.numEncoders_Body_X1_Encoder);
+            this.Controls.Add(this.numEncoders_Body_X1_Encoder_Address);
+            this.Controls.Add(this.numEncoders_Body_X1_Offset_Tolerance);
+            this.Controls.Add(this.capBody_X2);
+            this.Controls.Add(this.numEncoders_Body_X2_Encoder);
+            this.Controls.Add(this.numEncoders_Body_X2_Encoder_Address);
+            this.Controls.Add(this.numEncoders_Body_X2_Offset_Tolerance);
+            this.Controls.Add(this.capBody_Y1);
+            this.Controls.Add(this.numEncoders_Body_Y1_Encoder);
+            this.Controls.Add(this.numEncoders_Body_Y1_Encoder_Address);
+            this.Controls.Add(this.numEncoders_Body_Y1_Offset_Tolerance);
+            this.Controls.Add(this.capBody_Y2);
+            this.Controls.Add(this.numEncoders_Body_Y2_Encoder);
+            this.Controls.Add(this.numEncoders_Body_Y2_Encoder_Address);
+            this.Controls.Add(this.numEncoders_Body_Y2_Offset_Tolerance);
+            this.Controls.Add(this.capBody_X_Tolerance);
+            this.Controls.Add(this.numEncoders_TolX_Offset_Tolerance);
+            this.Controls.Add(this.capBody_Y_Tolerance);
+            this.Controls.Add(this.numEncoders_TolY_Offset_Tolerance);
             this.Controls.Add(this.lblSend_Reference);
             this.Controls.Add(this.hdAxes);
             this.Controls.Add(this.hdSend_Reference);
             this.Controls.Add(this.capAll);
             this.Controls.Add(this.btnReference_All_Send_Reference);
-            this.Controls.Add(this.lblHeads_X2_the_stripping_knife_s_buttons_o);
-            this.Controls.Add(this.hdX2);
-            this.Controls.Add(this.hdBack);
-            this.Controls.Add(this.hdAxis_Position);
-            this.Controls.Add(this.hdForward);
-            this.Controls.Add(this.hdEncoder_2);
-            this.Controls.Add(this.hdMeasured_Value);
-            this.Controls.Add(this.hdCalibrate);
-            this.Controls.Add(this.hdStarting_Limit);
-            this.Controls.Add(this.hdEnd_Limit);
-            this.Controls.Add(this.hdSensor_Reference_Distance);
-            this.Controls.Add(this.capHead_1);
-            this.Controls.Add(this.btnHead_X2_Head_1_Back);
-            this.Controls.Add(this.dispHead_X2_Head_1_Axis_Position);
-            this.Controls.Add(this.btnHead_X2_Head_1_Forward);
-            this.Controls.Add(this.numHead_X2_Head_1_Encoder);
-            this.Controls.Add(this.numHead_X2_Head_1_Measured_Value);
-            this.Controls.Add(this.btnHead_X2_Head_1_Calibrate);
-            this.Controls.Add(this.numHead_X2_Head_1_Starting_Limit);
-            this.Controls.Add(this.numHead_X2_Head_1_End_Limit);
-            this.Controls.Add(this.loadHead_X2_Head_1_Sensor_Reference_Distance);
-            this.Controls.Add(this.capHead_2);
-            this.Controls.Add(this.btnHead_X2_Head_2_Back);
-            this.Controls.Add(this.dispHead_X2_Head_2_Axis_Position);
-            this.Controls.Add(this.btnHead_X2_Head_2_Forward);
-            this.Controls.Add(this.numHead_X2_Head_2_Encoder);
-            this.Controls.Add(this.numHead_X2_Head_2_Measured_Value);
-            this.Controls.Add(this.btnHead_X2_Head_2_Calibrate);
-            this.Controls.Add(this.numHead_X2_Head_2_Starting_Limit);
-            this.Controls.Add(this.numHead_X2_Head_2_End_Limit);
-            this.Controls.Add(this.loadHead_X2_Head_2_Sensor_Reference_Distance);
-            this.Controls.Add(this.capHead_3);
-            this.Controls.Add(this.btnHead_X2_Head_3_Back);
-            this.Controls.Add(this.dispHead_X2_Head_3_Axis_Position);
-            this.Controls.Add(this.btnHead_X2_Head_3_Forward);
-            this.Controls.Add(this.numHead_X2_Head_3_Encoder);
-            this.Controls.Add(this.numHead_X2_Head_3_Measured_Value);
-            this.Controls.Add(this.btnHead_X2_Head_3_Calibrate);
-            this.Controls.Add(this.numHead_X2_Head_3_Starting_Limit);
-            this.Controls.Add(this.numHead_X2_Head_3_End_Limit);
-            this.Controls.Add(this.loadHead_X2_Head_3_Sensor_Reference_Distance);
-            this.Controls.Add(this.capHead_4);
-            this.Controls.Add(this.btnHead_X2_Head_4_Back);
-            this.Controls.Add(this.dispHead_X2_Head_4_Axis_Position);
-            this.Controls.Add(this.btnHead_X2_Head_4_Forward);
-            this.Controls.Add(this.numHead_X2_Head_4_Encoder);
-            this.Controls.Add(this.numHead_X2_Head_4_Measured_Value);
-            this.Controls.Add(this.btnHead_X2_Head_4_Calibrate);
-            this.Controls.Add(this.numHead_X2_Head_4_Starting_Limit);
-            this.Controls.Add(this.numHead_X2_Head_4_End_Limit);
-            this.Controls.Add(this.loadHead_X2_Head_4_Sensor_Reference_Distance);
             this.Name = "ParamAxisCalibration";
-            this.Size = new System.Drawing.Size(1080, 2696);
+            this.Size = new System.Drawing.Size(1032, 1578);
             this.ResumeLayout(false);
             this.PerformLayout();
         }
@@ -3096,6 +1557,7 @@ namespace Kaban.Machines.MD3020.Screens.Parameters
         private System.Windows.Forms.Label lblHeadPosition;
         private System.Windows.Forms.Label lblHeadMin;
         private System.Windows.Forms.Label lblHeadMax;
+        private System.Windows.Forms.Label lblHeadReference;
         private System.Windows.Forms.Label lblHeadCalibration;
         private System.Windows.Forms.Label lblHeadCal;
         private System.Windows.Forms.Label lblHeadZDistance;
@@ -3130,124 +1592,32 @@ namespace Kaban.Machines.MD3020.Screens.Parameters
         private Kaban.UI.Controls.LabelHMI lblEncoder;
         private Kaban.UI.Controls.LabelHMI hdAxis;
         private Kaban.UI.Controls.LabelHMI hdEncoder;
-        private Kaban.UI.Controls.LabelHMI hdEncoder_Channel;
-        private Kaban.UI.Controls.LabelHMI hdOffset;
-        private Kaban.UI.Controls.LabelHMI lblGeneral;
-        private Kaban.UI.Controls.LabelHMI capX1;
-        private Kaban.UI.Controls.NumericInputHMI numEncoders_General_Body_X1_Encoder;
-        private Kaban.UI.Controls.NumericInputHMI numEncoders_General_Body_X1_Encoder_Channel;
-        private Kaban.UI.Controls.NumericInputHMI numEncoders_General_Body_X1_Offset;
-        private Kaban.UI.Controls.LabelHMI capX2;
-        private Kaban.UI.Controls.NumericInputHMI numEncoders_General_Body_X2_Encoder;
-        private Kaban.UI.Controls.NumericInputHMI numEncoders_General_Body_X2_Encoder_Channel;
-        private Kaban.UI.Controls.NumericInputHMI numEncoders_General_Body_X2_Offset;
-        private Kaban.UI.Controls.LabelHMI capY1;
-        private Kaban.UI.Controls.NumericInputHMI numEncoders_General_Body_Y1_Encoder;
-        private Kaban.UI.Controls.NumericInputHMI numEncoders_General_Body_Y1_Encoder_Channel;
-        private Kaban.UI.Controls.NumericInputHMI numEncoders_General_Body_Y1_Offset;
-        private Kaban.UI.Controls.LabelHMI capY2;
-        private Kaban.UI.Controls.NumericInputHMI numEncoders_General_Body_Y2_Encoder;
-        private Kaban.UI.Controls.NumericInputHMI numEncoders_General_Body_Y2_Encoder_Channel;
-        private Kaban.UI.Controls.NumericInputHMI numEncoders_General_Body_Y2_Offset;
-        private Kaban.UI.Controls.LabelHMI lblHead_1_2;
-        private Kaban.UI.Controls.LabelHMI capX;
-        private Kaban.UI.Controls.NumericInputHMI numEncoders_Head_1_H1_X_Encoder;
-        private Kaban.UI.Controls.LabelHMI capY1_2;
-        private Kaban.UI.Controls.NumericInputHMI numEncoders_Head_1_H1_Y1_Encoder;
-        private Kaban.UI.Controls.LabelHMI capY2_2;
-        private Kaban.UI.Controls.NumericInputHMI numEncoders_Head_1_H1_Y2_Encoder;
-        private Kaban.UI.Controls.LabelHMI capZ;
-        private Kaban.UI.Controls.NumericInputHMI numEncoders_Head_1_H1_Z1_Encoder;
-        private Kaban.UI.Controls.LabelHMI capRZ;
-        private Kaban.UI.Controls.NumericInputHMI numEncoders_Head_1_H1_Z2_Encoder;
-        private Kaban.UI.Controls.LabelHMI lblHead_2_2;
-        private Kaban.UI.Controls.LabelHMI capX_2;
-        private Kaban.UI.Controls.NumericInputHMI numEncoders_Head_2_H2_X_Encoder;
-        private Kaban.UI.Controls.LabelHMI capY1_3;
-        private Kaban.UI.Controls.NumericInputHMI numEncoders_Head_2_H2_Y1_Encoder;
-        private Kaban.UI.Controls.LabelHMI capY2_3;
-        private Kaban.UI.Controls.NumericInputHMI numEncoders_Head_2_H2_Y2_Encoder;
-        private Kaban.UI.Controls.LabelHMI capZ_2;
-        private Kaban.UI.Controls.NumericInputHMI numEncoders_Head_2_H2_Z1_Encoder;
-        private Kaban.UI.Controls.LabelHMI capRZ_2;
-        private Kaban.UI.Controls.NumericInputHMI numEncoders_Head_2_H2_Z2_Encoder;
-        private Kaban.UI.Controls.LabelHMI lblHead_3_2;
-        private Kaban.UI.Controls.LabelHMI capX_3;
-        private Kaban.UI.Controls.NumericInputHMI numEncoders_Head_3_H3_X_Encoder;
-        private Kaban.UI.Controls.LabelHMI capY1_4;
-        private Kaban.UI.Controls.NumericInputHMI numEncoders_Head_3_H3_Y1_Encoder;
-        private Kaban.UI.Controls.LabelHMI capY2_4;
-        private Kaban.UI.Controls.NumericInputHMI numEncoders_Head_3_H3_Y2_Encoder;
-        private Kaban.UI.Controls.LabelHMI capZ_3;
-        private Kaban.UI.Controls.NumericInputHMI numEncoders_Head_3_H3_Z1_Encoder;
-        private Kaban.UI.Controls.LabelHMI capRZ_3;
-        private Kaban.UI.Controls.NumericInputHMI numEncoders_Head_3_H3_Z2_Encoder;
-        private Kaban.UI.Controls.LabelHMI lblHead_4_2;
-        private Kaban.UI.Controls.LabelHMI capX_4;
-        private Kaban.UI.Controls.NumericInputHMI numEncoders_Head_4_H4_X_Encoder;
-        private Kaban.UI.Controls.LabelHMI capY1_5;
-        private Kaban.UI.Controls.NumericInputHMI numEncoders_Head_4_H4_Y1_Encoder;
-        private Kaban.UI.Controls.LabelHMI capY2_5;
-        private Kaban.UI.Controls.NumericInputHMI numEncoders_Head_4_H4_Y2_Encoder;
-        private Kaban.UI.Controls.LabelHMI capZ_4;
-        private Kaban.UI.Controls.NumericInputHMI numEncoders_Head_4_H4_Z1_Encoder;
-        private Kaban.UI.Controls.LabelHMI capRZ_4;
-        private Kaban.UI.Controls.NumericInputHMI numEncoders_Head_4_H4_Z2_Encoder;
+        private Kaban.UI.Controls.LabelHMI hdEncoder_Address;
+        private Kaban.UI.Controls.LabelHMI hdOffset_Tolerance;
+        private Kaban.UI.Controls.LabelHMI capBody_X1;
+        private Kaban.UI.Controls.NumericInputHMI numEncoders_Body_X1_Encoder;
+        private Kaban.UI.Controls.NumericInputHMI numEncoders_Body_X1_Encoder_Address;
+        private Kaban.UI.Controls.NumericInputHMI numEncoders_Body_X1_Offset_Tolerance;
+        private Kaban.UI.Controls.LabelHMI capBody_X2;
+        private Kaban.UI.Controls.NumericInputHMI numEncoders_Body_X2_Encoder;
+        private Kaban.UI.Controls.NumericInputHMI numEncoders_Body_X2_Encoder_Address;
+        private Kaban.UI.Controls.NumericInputHMI numEncoders_Body_X2_Offset_Tolerance;
+        private Kaban.UI.Controls.LabelHMI capBody_Y1;
+        private Kaban.UI.Controls.NumericInputHMI numEncoders_Body_Y1_Encoder;
+        private Kaban.UI.Controls.NumericInputHMI numEncoders_Body_Y1_Encoder_Address;
+        private Kaban.UI.Controls.NumericInputHMI numEncoders_Body_Y1_Offset_Tolerance;
+        private Kaban.UI.Controls.LabelHMI capBody_Y2;
+        private Kaban.UI.Controls.NumericInputHMI numEncoders_Body_Y2_Encoder;
+        private Kaban.UI.Controls.NumericInputHMI numEncoders_Body_Y2_Encoder_Address;
+        private Kaban.UI.Controls.NumericInputHMI numEncoders_Body_Y2_Offset_Tolerance;
+        private Kaban.UI.Controls.LabelHMI capBody_X_Tolerance;
+        private Kaban.UI.Controls.NumericInputHMI numEncoders_TolX_Offset_Tolerance;
+        private Kaban.UI.Controls.LabelHMI capBody_Y_Tolerance;
+        private Kaban.UI.Controls.NumericInputHMI numEncoders_TolY_Offset_Tolerance;
         private Kaban.UI.Controls.LabelHMI lblSend_Reference;
         private Kaban.UI.Controls.LabelHMI hdAxes;
         private Kaban.UI.Controls.LabelHMI hdSend_Reference;
         private Kaban.UI.Controls.LabelHMI capAll;
         private Kaban.UI.Controls.ButtonHMI btnReference_All_Send_Reference;
-        private Kaban.UI.Controls.LabelHMI lblHeads_X2_the_stripping_knife_s_buttons_o;
-        private Kaban.UI.Controls.LabelHMI hdX2;
-        private Kaban.UI.Controls.LabelHMI hdBack;
-        private Kaban.UI.Controls.LabelHMI hdAxis_Position;
-        private Kaban.UI.Controls.LabelHMI hdForward;
-        private Kaban.UI.Controls.LabelHMI hdEncoder_2;
-        private Kaban.UI.Controls.LabelHMI hdMeasured_Value;
-        private Kaban.UI.Controls.LabelHMI hdCalibrate;
-        private Kaban.UI.Controls.LabelHMI hdStarting_Limit;
-        private Kaban.UI.Controls.LabelHMI hdEnd_Limit;
-        private Kaban.UI.Controls.LabelHMI hdSensor_Reference_Distance;
-        private Kaban.UI.Controls.LabelHMI capHead_1;
-        private Kaban.UI.Controls.ButtonHMI btnHead_X2_Head_1_Back;
-        private Kaban.UI.Controls.NumericDisplayHMI dispHead_X2_Head_1_Axis_Position;
-        private Kaban.UI.Controls.ButtonHMI btnHead_X2_Head_1_Forward;
-        private Kaban.UI.Controls.NumericInputHMI numHead_X2_Head_1_Encoder;
-        private Kaban.UI.Controls.NumericInputHMI numHead_X2_Head_1_Measured_Value;
-        private Kaban.UI.Controls.ButtonHMI btnHead_X2_Head_1_Calibrate;
-        private Kaban.UI.Controls.NumericInputHMI numHead_X2_Head_1_Starting_Limit;
-        private Kaban.UI.Controls.NumericInputHMI numHead_X2_Head_1_End_Limit;
-        private Kaban.UI.Controls.MeterHMI loadHead_X2_Head_1_Sensor_Reference_Distance;
-        private Kaban.UI.Controls.LabelHMI capHead_2;
-        private Kaban.UI.Controls.ButtonHMI btnHead_X2_Head_2_Back;
-        private Kaban.UI.Controls.NumericDisplayHMI dispHead_X2_Head_2_Axis_Position;
-        private Kaban.UI.Controls.ButtonHMI btnHead_X2_Head_2_Forward;
-        private Kaban.UI.Controls.NumericInputHMI numHead_X2_Head_2_Encoder;
-        private Kaban.UI.Controls.NumericInputHMI numHead_X2_Head_2_Measured_Value;
-        private Kaban.UI.Controls.ButtonHMI btnHead_X2_Head_2_Calibrate;
-        private Kaban.UI.Controls.NumericInputHMI numHead_X2_Head_2_Starting_Limit;
-        private Kaban.UI.Controls.NumericInputHMI numHead_X2_Head_2_End_Limit;
-        private Kaban.UI.Controls.MeterHMI loadHead_X2_Head_2_Sensor_Reference_Distance;
-        private Kaban.UI.Controls.LabelHMI capHead_3;
-        private Kaban.UI.Controls.ButtonHMI btnHead_X2_Head_3_Back;
-        private Kaban.UI.Controls.NumericDisplayHMI dispHead_X2_Head_3_Axis_Position;
-        private Kaban.UI.Controls.ButtonHMI btnHead_X2_Head_3_Forward;
-        private Kaban.UI.Controls.NumericInputHMI numHead_X2_Head_3_Encoder;
-        private Kaban.UI.Controls.NumericInputHMI numHead_X2_Head_3_Measured_Value;
-        private Kaban.UI.Controls.ButtonHMI btnHead_X2_Head_3_Calibrate;
-        private Kaban.UI.Controls.NumericInputHMI numHead_X2_Head_3_Starting_Limit;
-        private Kaban.UI.Controls.NumericInputHMI numHead_X2_Head_3_End_Limit;
-        private Kaban.UI.Controls.MeterHMI loadHead_X2_Head_3_Sensor_Reference_Distance;
-        private Kaban.UI.Controls.LabelHMI capHead_4;
-        private Kaban.UI.Controls.ButtonHMI btnHead_X2_Head_4_Back;
-        private Kaban.UI.Controls.NumericDisplayHMI dispHead_X2_Head_4_Axis_Position;
-        private Kaban.UI.Controls.ButtonHMI btnHead_X2_Head_4_Forward;
-        private Kaban.UI.Controls.NumericInputHMI numHead_X2_Head_4_Encoder;
-        private Kaban.UI.Controls.NumericInputHMI numHead_X2_Head_4_Measured_Value;
-        private Kaban.UI.Controls.ButtonHMI btnHead_X2_Head_4_Calibrate;
-        private Kaban.UI.Controls.NumericInputHMI numHead_X2_Head_4_Starting_Limit;
-        private Kaban.UI.Controls.NumericInputHMI numHead_X2_Head_4_End_Limit;
-        private Kaban.UI.Controls.MeterHMI loadHead_X2_Head_4_Sensor_Reference_Distance;
     }
 }

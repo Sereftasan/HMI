@@ -172,7 +172,7 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             // 
             // unitHead_1_Top_Press_Left
             // 
-            // Y1.1 / Y2.1 (5/3 open centre, on the island): down M201, up M202 - up sensor W0.6, the profile height encoder SD4500; down failed M660, up failed M668.
+            // Y1.1 / Y2.1 (5/3 open centre, on the island; coils W101.0 down / W101.1 up): down M201, up M202 - up sensor W0.6, the profile height encoder SD4500; down failed M660, up failed M668.
             this.unitHead_1_Top_Press_Left.BackColor = System.Drawing.Color.White;
             this.unitHead_1_Top_Press_Left.Name = "unitHead_1_Top_Press_Left";
             this.unitHead_1_Top_Press_Left.PlcNumber = 1;
@@ -195,13 +195,15 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.unitHead_1_Top_Press_Left.PositionUnitType = Kaban.Core.Enums.UnitType.Length;
             this.unitHead_1_Top_Press_Left.ValveType = Kaban.UI.Controls.CylinderValve.IslandThreeWayOpenCenter;
             this.unitHead_1_Top_Press_Left.FeedbackType = Kaban.UI.Controls.CylinderFeedback.EncoderPlusReference;
+            this.unitHead_1_Top_Press_Left.OutputAAddress = "W101.0";
+            this.unitHead_1_Top_Press_Left.OutputBAddress = "W101.1";
             this.unitHead_1_Top_Press_Left.ErrorAAddress = "M660";
             this.unitHead_1_Top_Press_Left.ErrorBAddress = "M668";
             this.unitHead_1_Top_Press_Left.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
             // 
             // unitHead_1_Top_Press_Right
             // 
-            // Y3.1 / Y4.1 (5/3 open centre, on the island): down M201, up M202 - up sensor W0.7, the encoder SD4530.
+            // Y3.1 / Y4.1 (5/3 open centre, on the island; coils W101.2 / W101.3): down M201, up M202 - up sensor W0.7, the encoder SD4530.
             this.unitHead_1_Top_Press_Right.BackColor = System.Drawing.Color.White;
             this.unitHead_1_Top_Press_Right.Name = "unitHead_1_Top_Press_Right";
             this.unitHead_1_Top_Press_Right.PlcNumber = 1;
@@ -224,6 +226,8 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.unitHead_1_Top_Press_Right.PositionUnitType = Kaban.Core.Enums.UnitType.Length;
             this.unitHead_1_Top_Press_Right.ValveType = Kaban.UI.Controls.CylinderValve.IslandThreeWayOpenCenter;
             this.unitHead_1_Top_Press_Right.FeedbackType = Kaban.UI.Controls.CylinderFeedback.EncoderPlusReference;
+            this.unitHead_1_Top_Press_Right.OutputAAddress = "W101.2";
+            this.unitHead_1_Top_Press_Right.OutputBAddress = "W101.3";
             this.unitHead_1_Top_Press_Right.ErrorAAddress = "M661";
             this.unitHead_1_Top_Press_Right.ErrorBAddress = "M669";
             this.unitHead_1_Top_Press_Right.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
@@ -242,7 +246,7 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             // 
             // unitHead_1_Front_Clamp_Left
             // 
-            // Y5.1 / Y6.1 (5/2 double, on the island, both front clamps): back M230, clamp M231 - back sensor W1.0; opening failed M725, clamping failed M717.
+            // Y5.1 / Y6.1 (5/2 double, on the island, both front clamps; coils W101.5 open / W101.4 clamp): open M231, clamp M230 - back sensor W1.0; opening failed M725, clamping failed M717.
             this.unitHead_1_Front_Clamp_Left.BackColor = System.Drawing.Color.White;
             this.unitHead_1_Front_Clamp_Left.Name = "unitHead_1_Front_Clamp_Left";
             this.unitHead_1_Front_Clamp_Left.PlcNumber = 1;
@@ -250,13 +254,15 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.unitHead_1_Front_Clamp_Left.Location = new System.Drawing.Point(126, 156);
             this.unitHead_1_Front_Clamp_Left.Size = new System.Drawing.Size(220, 64);
             this.unitHead_1_Front_Clamp_Left.LogAction = true;
-            this.unitHead_1_Front_Clamp_Left.CommandAAddress = "M230";
+            this.unitHead_1_Front_Clamp_Left.CommandAAddress = "M231";
             this.unitHead_1_Front_Clamp_Left.CommandAAction = Kaban.Core.Enums.BitActionType.Momentary;
             this.unitHead_1_Front_Clamp_Left.Lamp1AAddress = "W1.0";
-            this.unitHead_1_Front_Clamp_Left.CommandBAddress = "M231";
+            this.unitHead_1_Front_Clamp_Left.CommandBAddress = "M230";
             this.unitHead_1_Front_Clamp_Left.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
             this.unitHead_1_Front_Clamp_Left.ValveType = Kaban.UI.Controls.CylinderValve.IslandDoubleSolenoid;
             this.unitHead_1_Front_Clamp_Left.FeedbackType = Kaban.UI.Controls.CylinderFeedback.SingleMagnetic;
+            this.unitHead_1_Front_Clamp_Left.OutputAAddress = "W101.5";
+            this.unitHead_1_Front_Clamp_Left.OutputBAddress = "W101.4";
             this.unitHead_1_Front_Clamp_Left.ErrorAAddress = "M725";
             this.unitHead_1_Front_Clamp_Left.ErrorBAddress = "M717";
             this.unitHead_1_Front_Clamp_Left.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
@@ -270,13 +276,15 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.unitHead_1_Front_Clamp_Right.Location = new System.Drawing.Point(352, 156);
             this.unitHead_1_Front_Clamp_Right.Size = new System.Drawing.Size(220, 64);
             this.unitHead_1_Front_Clamp_Right.LogAction = true;
-            this.unitHead_1_Front_Clamp_Right.CommandAAddress = "M230";
+            this.unitHead_1_Front_Clamp_Right.CommandAAddress = "M231";
             this.unitHead_1_Front_Clamp_Right.CommandAAction = Kaban.Core.Enums.BitActionType.Momentary;
             this.unitHead_1_Front_Clamp_Right.Lamp1AAddress = "W1.1";
-            this.unitHead_1_Front_Clamp_Right.CommandBAddress = "M231";
+            this.unitHead_1_Front_Clamp_Right.CommandBAddress = "M230";
             this.unitHead_1_Front_Clamp_Right.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
             this.unitHead_1_Front_Clamp_Right.ValveType = Kaban.UI.Controls.CylinderValve.IslandDoubleSolenoid;
             this.unitHead_1_Front_Clamp_Right.FeedbackType = Kaban.UI.Controls.CylinderFeedback.SingleMagnetic;
+            this.unitHead_1_Front_Clamp_Right.OutputAAddress = "W101.5";
+            this.unitHead_1_Front_Clamp_Right.OutputBAddress = "W101.4";
             this.unitHead_1_Front_Clamp_Right.ErrorAAddress = "M726";
             this.unitHead_1_Front_Clamp_Right.ErrorBAddress = "M718";
             this.unitHead_1_Front_Clamp_Right.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
@@ -295,7 +303,7 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             // 
             // unitHead_1_Small_Vertical_Left
             // 
-            // Y7.1 / Y8.1 (5/2 double, on the island, both small vertical presses - the old Profile Ear Clamping): down M218, up M217 - down sensor W1.2; down failed M741, up failed M733.
+            // Y7.1 / Y8.1 (5/2 double, on the island, both small vertical presses - the old Profile Ear Clamping; coils W101.7 down / W101.6 up): down M217, up M218 - down sensor W1.2, NORMALLY CLOSED in the PLC (lit while not down); down failed M741, up failed M733.
             this.unitHead_1_Small_Vertical_Left.BackColor = System.Drawing.Color.White;
             this.unitHead_1_Small_Vertical_Left.Name = "unitHead_1_Small_Vertical_Left";
             this.unitHead_1_Small_Vertical_Left.PlcNumber = 1;
@@ -304,13 +312,15 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.unitHead_1_Small_Vertical_Left.Size = new System.Drawing.Size(220, 64);
             this.unitHead_1_Small_Vertical_Left.LogAction = true;
             this.unitHead_1_Small_Vertical_Left.Arrows = Kaban.Core.Enums.ButtonArrowStyle.DownUp;
-            this.unitHead_1_Small_Vertical_Left.CommandAAddress = "M218";
+            this.unitHead_1_Small_Vertical_Left.CommandAAddress = "M217";
             this.unitHead_1_Small_Vertical_Left.CommandAAction = Kaban.Core.Enums.BitActionType.Momentary;
             this.unitHead_1_Small_Vertical_Left.Lamp1AAddress = "W1.2";
-            this.unitHead_1_Small_Vertical_Left.CommandBAddress = "M217";
+            this.unitHead_1_Small_Vertical_Left.CommandBAddress = "M218";
             this.unitHead_1_Small_Vertical_Left.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
             this.unitHead_1_Small_Vertical_Left.ValveType = Kaban.UI.Controls.CylinderValve.IslandDoubleSolenoid;
             this.unitHead_1_Small_Vertical_Left.FeedbackType = Kaban.UI.Controls.CylinderFeedback.SingleInductive;
+            this.unitHead_1_Small_Vertical_Left.OutputAAddress = "W101.7";
+            this.unitHead_1_Small_Vertical_Left.OutputBAddress = "W101.6";
             this.unitHead_1_Small_Vertical_Left.ErrorAAddress = "M741";
             this.unitHead_1_Small_Vertical_Left.ErrorBAddress = "M733";
             this.unitHead_1_Small_Vertical_Left.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
@@ -325,13 +335,15 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.unitHead_1_Small_Vertical_Right.Size = new System.Drawing.Size(220, 64);
             this.unitHead_1_Small_Vertical_Right.LogAction = true;
             this.unitHead_1_Small_Vertical_Right.Arrows = Kaban.Core.Enums.ButtonArrowStyle.DownUp;
-            this.unitHead_1_Small_Vertical_Right.CommandAAddress = "M218";
+            this.unitHead_1_Small_Vertical_Right.CommandAAddress = "M217";
             this.unitHead_1_Small_Vertical_Right.CommandAAction = Kaban.Core.Enums.BitActionType.Momentary;
             this.unitHead_1_Small_Vertical_Right.Lamp1AAddress = "W1.3";
-            this.unitHead_1_Small_Vertical_Right.CommandBAddress = "M217";
+            this.unitHead_1_Small_Vertical_Right.CommandBAddress = "M218";
             this.unitHead_1_Small_Vertical_Right.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
             this.unitHead_1_Small_Vertical_Right.ValveType = Kaban.UI.Controls.CylinderValve.IslandDoubleSolenoid;
             this.unitHead_1_Small_Vertical_Right.FeedbackType = Kaban.UI.Controls.CylinderFeedback.SingleInductive;
+            this.unitHead_1_Small_Vertical_Right.OutputAAddress = "W101.7";
+            this.unitHead_1_Small_Vertical_Right.OutputBAddress = "W101.6";
             this.unitHead_1_Small_Vertical_Right.ErrorAAddress = "M742";
             this.unitHead_1_Small_Vertical_Right.ErrorBAddress = "M734";
             this.unitHead_1_Small_Vertical_Right.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
@@ -350,7 +362,7 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             // 
             // unitHead_1_Small_Horizontal_Left
             // 
-            // Y9.1 / Y10.1 (5/2 double, on the island, both small horizontal presses - the old Mould Shifting): back M228, forward M229 - back sensor W1.4; back failed M684, forward failed M676.
+            // Y9.1 / Y10.1 (5/2 double, on the island, both small horizontal presses - the old Mould Shifting; coils W101.9 back / W101.8 forward): back M228, forward M229 - back sensor W1.4; back failed M684, forward failed M676.
             this.unitHead_1_Small_Horizontal_Left.BackColor = System.Drawing.Color.White;
             this.unitHead_1_Small_Horizontal_Left.Name = "unitHead_1_Small_Horizontal_Left";
             this.unitHead_1_Small_Horizontal_Left.PlcNumber = 1;
@@ -365,6 +377,8 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.unitHead_1_Small_Horizontal_Left.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
             this.unitHead_1_Small_Horizontal_Left.ValveType = Kaban.UI.Controls.CylinderValve.IslandDoubleSolenoid;
             this.unitHead_1_Small_Horizontal_Left.FeedbackType = Kaban.UI.Controls.CylinderFeedback.SingleMagnetic;
+            this.unitHead_1_Small_Horizontal_Left.OutputAAddress = "W101.9";
+            this.unitHead_1_Small_Horizontal_Left.OutputBAddress = "W101.8";
             this.unitHead_1_Small_Horizontal_Left.ErrorAAddress = "M684";
             this.unitHead_1_Small_Horizontal_Left.ErrorBAddress = "M676";
             this.unitHead_1_Small_Horizontal_Left.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
@@ -385,6 +399,8 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.unitHead_1_Small_Horizontal_Right.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
             this.unitHead_1_Small_Horizontal_Right.ValveType = Kaban.UI.Controls.CylinderValve.IslandDoubleSolenoid;
             this.unitHead_1_Small_Horizontal_Right.FeedbackType = Kaban.UI.Controls.CylinderFeedback.SingleMagnetic;
+            this.unitHead_1_Small_Horizontal_Right.OutputAAddress = "W101.9";
+            this.unitHead_1_Small_Horizontal_Right.OutputBAddress = "W101.8";
             this.unitHead_1_Small_Horizontal_Right.ErrorAAddress = "M685";
             this.unitHead_1_Small_Horizontal_Right.ErrorBAddress = "M677";
             this.unitHead_1_Small_Horizontal_Right.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
@@ -403,7 +419,7 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             // 
             // unitHead_1_Support_Plate_Left
             // 
-            // Y11.1 (5/2 spring, on the island - the old Resistance Lower Down / Up): down M233, up M234 - down sensor W0.5; down failed M636, up failed M640.
+            // Y11.1 (5/2 spring on the drawing, on the island - the old Resistance Lower Down / Up; the PLC has two coils for it, W101.B down and W101.A up): down M233, up M234 - its sensor W0.5 is the PLC's "Dayama_Yukarida" (up); down failed M636, up failed M640.
             this.unitHead_1_Support_Plate_Left.BackColor = System.Drawing.Color.White;
             this.unitHead_1_Support_Plate_Left.Name = "unitHead_1_Support_Plate_Left";
             this.unitHead_1_Support_Plate_Left.PlcNumber = 1;
@@ -414,9 +430,9 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.unitHead_1_Support_Plate_Left.Arrows = Kaban.Core.Enums.ButtonArrowStyle.DownUp;
             this.unitHead_1_Support_Plate_Left.CommandAAddress = "M233";
             this.unitHead_1_Support_Plate_Left.CommandAAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitHead_1_Support_Plate_Left.Lamp1AAddress = "W0.5";
             this.unitHead_1_Support_Plate_Left.CommandBAddress = "M234";
             this.unitHead_1_Support_Plate_Left.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
+            this.unitHead_1_Support_Plate_Left.Lamp1BAddress = "W0.5";
             this.unitHead_1_Support_Plate_Left.ValveType = Kaban.UI.Controls.CylinderValve.IslandSingleSolenoid;
             this.unitHead_1_Support_Plate_Left.FeedbackType = Kaban.UI.Controls.CylinderFeedback.SingleInductive;
             this.unitHead_1_Support_Plate_Left.ErrorAAddress = "M636";
@@ -437,7 +453,7 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             // 
             // unitHead_1_Stripping_Knife_Left
             // 
-            // Y13.1 (5/2 spring, on the island - the old page's "X2", the head's own commands): back M223, forward M222 - back W1.6, forward W1.7; back failed M632, forward failed M628.
+            // Y13.1 (5/2 spring, on the island - the old page's "X2"; its coil W101.E forward): back M223, forward M222 (the PLC's, common to the heads) - back W1.6, forward W1.7; back failed M632, forward failed M628.
             this.unitHead_1_Stripping_Knife_Left.BackColor = System.Drawing.Color.White;
             this.unitHead_1_Stripping_Knife_Left.Name = "unitHead_1_Stripping_Knife_Left";
             this.unitHead_1_Stripping_Knife_Left.PlcNumber = 1;
@@ -453,6 +469,7 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.unitHead_1_Stripping_Knife_Left.Lamp1BAddress = "W1.7";
             this.unitHead_1_Stripping_Knife_Left.ValveType = Kaban.UI.Controls.CylinderValve.IslandSingleSolenoid;
             this.unitHead_1_Stripping_Knife_Left.FeedbackType = Kaban.UI.Controls.CylinderFeedback.TwoEndMagnetic;
+            this.unitHead_1_Stripping_Knife_Left.OutputBAddress = "W101.E";
             this.unitHead_1_Stripping_Knife_Left.ErrorAAddress = "M632";
             this.unitHead_1_Stripping_Knife_Left.ErrorBAddress = "M628";
             this.unitHead_1_Stripping_Knife_Left.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
@@ -471,7 +488,7 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             // 
             // unitHead_1_Profile_Emptying_Left
             // 
-            // Y12.1 (5/2 spring, on the island): back M204, forward M205 - no sensor on the drawings (the old page's W1.A is not there), so no error bit.
+            // Y12.1 (5/2 spring, on the island; its coil W101.C forward): back M205, forward M204 - no sensor on the drawings nor in the PLC, so no error bit.
             this.unitHead_1_Profile_Emptying_Left.BackColor = System.Drawing.Color.White;
             this.unitHead_1_Profile_Emptying_Left.Name = "unitHead_1_Profile_Emptying_Left";
             this.unitHead_1_Profile_Emptying_Left.PlcNumber = 1;
@@ -479,12 +496,13 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.unitHead_1_Profile_Emptying_Left.Location = new System.Drawing.Point(126, 516);
             this.unitHead_1_Profile_Emptying_Left.Size = new System.Drawing.Size(220, 64);
             this.unitHead_1_Profile_Emptying_Left.LogAction = true;
-            this.unitHead_1_Profile_Emptying_Left.CommandAAddress = "M204";
+            this.unitHead_1_Profile_Emptying_Left.CommandAAddress = "M205";
             this.unitHead_1_Profile_Emptying_Left.CommandAAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitHead_1_Profile_Emptying_Left.CommandBAddress = "M205";
+            this.unitHead_1_Profile_Emptying_Left.CommandBAddress = "M204";
             this.unitHead_1_Profile_Emptying_Left.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
             this.unitHead_1_Profile_Emptying_Left.ValveType = Kaban.UI.Controls.CylinderValve.IslandSingleSolenoid;
             this.unitHead_1_Profile_Emptying_Left.FeedbackType = Kaban.UI.Controls.CylinderFeedback.NoSensor;
+            this.unitHead_1_Profile_Emptying_Left.OutputBAddress = "W101.C";
             this.unitHead_1_Profile_Emptying_Left.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
             // 
             // lblHead_2
@@ -545,7 +563,7 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             // 
             // unitHead_2_Top_Press_Left
             // 
-            // Y1.2 / Y2.2 (5/3 open centre, on the island): down M201, up M202 - up sensor W2.6, the profile height encoder SD4560; down failed M662, up failed M670.
+            // Y1.2 / Y2.2 (5/3 open centre, on the island; coils W111.0 down / W111.1 up): down M201, up M202 - up sensor W10.6, the profile height encoder SD4560; down failed M662, up failed M670.
             this.unitHead_2_Top_Press_Left.BackColor = System.Drawing.Color.White;
             this.unitHead_2_Top_Press_Left.Name = "unitHead_2_Top_Press_Left";
             this.unitHead_2_Top_Press_Left.PlcNumber = 1;
@@ -558,7 +576,7 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.unitHead_2_Top_Press_Left.CommandAAction = Kaban.Core.Enums.BitActionType.Momentary;
             this.unitHead_2_Top_Press_Left.CommandBAddress = "M202";
             this.unitHead_2_Top_Press_Left.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitHead_2_Top_Press_Left.Lamp1BAddress = "W2.6";
+            this.unitHead_2_Top_Press_Left.Lamp1BAddress = "W10.6";
             this.unitHead_2_Top_Press_Left.PositionAddress = "SD4560";
             this.unitHead_2_Top_Press_Left.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
             this.unitHead_2_Top_Press_Left.PositionDivisor = 100D;
@@ -568,13 +586,15 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.unitHead_2_Top_Press_Left.PositionUnitType = Kaban.Core.Enums.UnitType.Length;
             this.unitHead_2_Top_Press_Left.ValveType = Kaban.UI.Controls.CylinderValve.IslandThreeWayOpenCenter;
             this.unitHead_2_Top_Press_Left.FeedbackType = Kaban.UI.Controls.CylinderFeedback.EncoderPlusReference;
+            this.unitHead_2_Top_Press_Left.OutputAAddress = "W111.0";
+            this.unitHead_2_Top_Press_Left.OutputBAddress = "W111.1";
             this.unitHead_2_Top_Press_Left.ErrorAAddress = "M662";
             this.unitHead_2_Top_Press_Left.ErrorBAddress = "M670";
             this.unitHead_2_Top_Press_Left.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
             // 
             // unitHead_2_Top_Press_Right
             // 
-            // Y3.2 / Y4.2 (5/3 open centre, on the island): down M201, up M202 - up sensor W2.7, the encoder SD4590.
+            // Y3.2 / Y4.2 (5/3 open centre, on the island; coils W111.2 / W111.3): down M201, up M202 - up sensor W10.7, the encoder SD4590.
             this.unitHead_2_Top_Press_Right.BackColor = System.Drawing.Color.White;
             this.unitHead_2_Top_Press_Right.Name = "unitHead_2_Top_Press_Right";
             this.unitHead_2_Top_Press_Right.PlcNumber = 1;
@@ -587,7 +607,7 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.unitHead_2_Top_Press_Right.CommandAAction = Kaban.Core.Enums.BitActionType.Momentary;
             this.unitHead_2_Top_Press_Right.CommandBAddress = "M202";
             this.unitHead_2_Top_Press_Right.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitHead_2_Top_Press_Right.Lamp1BAddress = "W2.7";
+            this.unitHead_2_Top_Press_Right.Lamp1BAddress = "W10.7";
             this.unitHead_2_Top_Press_Right.PositionAddress = "SD4590";
             this.unitHead_2_Top_Press_Right.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
             this.unitHead_2_Top_Press_Right.PositionDivisor = 100D;
@@ -597,6 +617,8 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.unitHead_2_Top_Press_Right.PositionUnitType = Kaban.Core.Enums.UnitType.Length;
             this.unitHead_2_Top_Press_Right.ValveType = Kaban.UI.Controls.CylinderValve.IslandThreeWayOpenCenter;
             this.unitHead_2_Top_Press_Right.FeedbackType = Kaban.UI.Controls.CylinderFeedback.EncoderPlusReference;
+            this.unitHead_2_Top_Press_Right.OutputAAddress = "W111.2";
+            this.unitHead_2_Top_Press_Right.OutputBAddress = "W111.3";
             this.unitHead_2_Top_Press_Right.ErrorAAddress = "M663";
             this.unitHead_2_Top_Press_Right.ErrorBAddress = "M671";
             this.unitHead_2_Top_Press_Right.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
@@ -615,7 +637,7 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             // 
             // unitHead_2_Front_Clamp_Left
             // 
-            // Y5.2 / Y6.2 (5/2 double, on the island, both front clamps): back M230, clamp M231 - back sensor W3.0; opening failed M727, clamping failed M719.
+            // Y5.2 / Y6.2 (5/2 double, on the island, both front clamps; coils W111.5 open / W111.4 clamp): open M231, clamp M230 - back sensor W11.0; opening failed M727, clamping failed M719.
             this.unitHead_2_Front_Clamp_Left.BackColor = System.Drawing.Color.White;
             this.unitHead_2_Front_Clamp_Left.Name = "unitHead_2_Front_Clamp_Left";
             this.unitHead_2_Front_Clamp_Left.PlcNumber = 1;
@@ -623,13 +645,15 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.unitHead_2_Front_Clamp_Left.Location = new System.Drawing.Point(714, 156);
             this.unitHead_2_Front_Clamp_Left.Size = new System.Drawing.Size(220, 64);
             this.unitHead_2_Front_Clamp_Left.LogAction = true;
-            this.unitHead_2_Front_Clamp_Left.CommandAAddress = "M230";
+            this.unitHead_2_Front_Clamp_Left.CommandAAddress = "M231";
             this.unitHead_2_Front_Clamp_Left.CommandAAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitHead_2_Front_Clamp_Left.Lamp1AAddress = "W3.0";
-            this.unitHead_2_Front_Clamp_Left.CommandBAddress = "M231";
+            this.unitHead_2_Front_Clamp_Left.Lamp1AAddress = "W11.0";
+            this.unitHead_2_Front_Clamp_Left.CommandBAddress = "M230";
             this.unitHead_2_Front_Clamp_Left.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
             this.unitHead_2_Front_Clamp_Left.ValveType = Kaban.UI.Controls.CylinderValve.IslandDoubleSolenoid;
             this.unitHead_2_Front_Clamp_Left.FeedbackType = Kaban.UI.Controls.CylinderFeedback.SingleMagnetic;
+            this.unitHead_2_Front_Clamp_Left.OutputAAddress = "W111.5";
+            this.unitHead_2_Front_Clamp_Left.OutputBAddress = "W111.4";
             this.unitHead_2_Front_Clamp_Left.ErrorAAddress = "M727";
             this.unitHead_2_Front_Clamp_Left.ErrorBAddress = "M719";
             this.unitHead_2_Front_Clamp_Left.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
@@ -643,13 +667,15 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.unitHead_2_Front_Clamp_Right.Location = new System.Drawing.Point(940, 156);
             this.unitHead_2_Front_Clamp_Right.Size = new System.Drawing.Size(220, 64);
             this.unitHead_2_Front_Clamp_Right.LogAction = true;
-            this.unitHead_2_Front_Clamp_Right.CommandAAddress = "M230";
+            this.unitHead_2_Front_Clamp_Right.CommandAAddress = "M231";
             this.unitHead_2_Front_Clamp_Right.CommandAAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitHead_2_Front_Clamp_Right.Lamp1AAddress = "W3.1";
-            this.unitHead_2_Front_Clamp_Right.CommandBAddress = "M231";
+            this.unitHead_2_Front_Clamp_Right.Lamp1AAddress = "W11.1";
+            this.unitHead_2_Front_Clamp_Right.CommandBAddress = "M230";
             this.unitHead_2_Front_Clamp_Right.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
             this.unitHead_2_Front_Clamp_Right.ValveType = Kaban.UI.Controls.CylinderValve.IslandDoubleSolenoid;
             this.unitHead_2_Front_Clamp_Right.FeedbackType = Kaban.UI.Controls.CylinderFeedback.SingleMagnetic;
+            this.unitHead_2_Front_Clamp_Right.OutputAAddress = "W111.5";
+            this.unitHead_2_Front_Clamp_Right.OutputBAddress = "W111.4";
             this.unitHead_2_Front_Clamp_Right.ErrorAAddress = "M728";
             this.unitHead_2_Front_Clamp_Right.ErrorBAddress = "M720";
             this.unitHead_2_Front_Clamp_Right.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
@@ -668,7 +694,7 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             // 
             // unitHead_2_Small_Vertical_Left
             // 
-            // Y7.2 / Y8.2 (5/2 double, on the island, both small vertical presses - the old Profile Ear Clamping): down M218, up M217 - down sensor W3.2; down failed M743, up failed M735.
+            // Y7.2 / Y8.2 (5/2 double, on the island, both small vertical presses - the old Profile Ear Clamping; coils W111.7 down / W111.6 up): down M217, up M218 - down sensor W11.2, NORMALLY CLOSED in the PLC (lit while not down); down failed M743, up failed M735.
             this.unitHead_2_Small_Vertical_Left.BackColor = System.Drawing.Color.White;
             this.unitHead_2_Small_Vertical_Left.Name = "unitHead_2_Small_Vertical_Left";
             this.unitHead_2_Small_Vertical_Left.PlcNumber = 1;
@@ -677,13 +703,15 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.unitHead_2_Small_Vertical_Left.Size = new System.Drawing.Size(220, 64);
             this.unitHead_2_Small_Vertical_Left.LogAction = true;
             this.unitHead_2_Small_Vertical_Left.Arrows = Kaban.Core.Enums.ButtonArrowStyle.DownUp;
-            this.unitHead_2_Small_Vertical_Left.CommandAAddress = "M218";
+            this.unitHead_2_Small_Vertical_Left.CommandAAddress = "M217";
             this.unitHead_2_Small_Vertical_Left.CommandAAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitHead_2_Small_Vertical_Left.Lamp1AAddress = "W3.2";
-            this.unitHead_2_Small_Vertical_Left.CommandBAddress = "M217";
+            this.unitHead_2_Small_Vertical_Left.Lamp1AAddress = "W11.2";
+            this.unitHead_2_Small_Vertical_Left.CommandBAddress = "M218";
             this.unitHead_2_Small_Vertical_Left.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
             this.unitHead_2_Small_Vertical_Left.ValveType = Kaban.UI.Controls.CylinderValve.IslandDoubleSolenoid;
             this.unitHead_2_Small_Vertical_Left.FeedbackType = Kaban.UI.Controls.CylinderFeedback.SingleInductive;
+            this.unitHead_2_Small_Vertical_Left.OutputAAddress = "W111.7";
+            this.unitHead_2_Small_Vertical_Left.OutputBAddress = "W111.6";
             this.unitHead_2_Small_Vertical_Left.ErrorAAddress = "M743";
             this.unitHead_2_Small_Vertical_Left.ErrorBAddress = "M735";
             this.unitHead_2_Small_Vertical_Left.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
@@ -698,13 +726,15 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.unitHead_2_Small_Vertical_Right.Size = new System.Drawing.Size(220, 64);
             this.unitHead_2_Small_Vertical_Right.LogAction = true;
             this.unitHead_2_Small_Vertical_Right.Arrows = Kaban.Core.Enums.ButtonArrowStyle.DownUp;
-            this.unitHead_2_Small_Vertical_Right.CommandAAddress = "M218";
+            this.unitHead_2_Small_Vertical_Right.CommandAAddress = "M217";
             this.unitHead_2_Small_Vertical_Right.CommandAAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitHead_2_Small_Vertical_Right.Lamp1AAddress = "W3.3";
-            this.unitHead_2_Small_Vertical_Right.CommandBAddress = "M217";
+            this.unitHead_2_Small_Vertical_Right.Lamp1AAddress = "W11.3";
+            this.unitHead_2_Small_Vertical_Right.CommandBAddress = "M218";
             this.unitHead_2_Small_Vertical_Right.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
             this.unitHead_2_Small_Vertical_Right.ValveType = Kaban.UI.Controls.CylinderValve.IslandDoubleSolenoid;
             this.unitHead_2_Small_Vertical_Right.FeedbackType = Kaban.UI.Controls.CylinderFeedback.SingleInductive;
+            this.unitHead_2_Small_Vertical_Right.OutputAAddress = "W111.7";
+            this.unitHead_2_Small_Vertical_Right.OutputBAddress = "W111.6";
             this.unitHead_2_Small_Vertical_Right.ErrorAAddress = "M744";
             this.unitHead_2_Small_Vertical_Right.ErrorBAddress = "M736";
             this.unitHead_2_Small_Vertical_Right.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
@@ -723,7 +753,7 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             // 
             // unitHead_2_Small_Horizontal_Left
             // 
-            // Y9.2 / Y10.2 (5/2 double, on the island, both small horizontal presses - the old Mould Shifting): back M228, forward M229 - back sensor W3.4; back failed M686, forward failed M678.
+            // Y9.2 / Y10.2 (5/2 double, on the island, both small horizontal presses - the old Mould Shifting; coils W111.9 back / W111.8 forward): back M228, forward M229 - back sensor W11.4; back failed M686, forward failed M678.
             this.unitHead_2_Small_Horizontal_Left.BackColor = System.Drawing.Color.White;
             this.unitHead_2_Small_Horizontal_Left.Name = "unitHead_2_Small_Horizontal_Left";
             this.unitHead_2_Small_Horizontal_Left.PlcNumber = 1;
@@ -733,11 +763,13 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.unitHead_2_Small_Horizontal_Left.LogAction = true;
             this.unitHead_2_Small_Horizontal_Left.CommandAAddress = "M228";
             this.unitHead_2_Small_Horizontal_Left.CommandAAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitHead_2_Small_Horizontal_Left.Lamp1AAddress = "W3.4";
+            this.unitHead_2_Small_Horizontal_Left.Lamp1AAddress = "W11.4";
             this.unitHead_2_Small_Horizontal_Left.CommandBAddress = "M229";
             this.unitHead_2_Small_Horizontal_Left.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
             this.unitHead_2_Small_Horizontal_Left.ValveType = Kaban.UI.Controls.CylinderValve.IslandDoubleSolenoid;
             this.unitHead_2_Small_Horizontal_Left.FeedbackType = Kaban.UI.Controls.CylinderFeedback.SingleMagnetic;
+            this.unitHead_2_Small_Horizontal_Left.OutputAAddress = "W111.9";
+            this.unitHead_2_Small_Horizontal_Left.OutputBAddress = "W111.8";
             this.unitHead_2_Small_Horizontal_Left.ErrorAAddress = "M686";
             this.unitHead_2_Small_Horizontal_Left.ErrorBAddress = "M678";
             this.unitHead_2_Small_Horizontal_Left.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
@@ -753,11 +785,13 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.unitHead_2_Small_Horizontal_Right.LogAction = true;
             this.unitHead_2_Small_Horizontal_Right.CommandAAddress = "M228";
             this.unitHead_2_Small_Horizontal_Right.CommandAAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitHead_2_Small_Horizontal_Right.Lamp1AAddress = "W3.5";
+            this.unitHead_2_Small_Horizontal_Right.Lamp1AAddress = "W11.5";
             this.unitHead_2_Small_Horizontal_Right.CommandBAddress = "M229";
             this.unitHead_2_Small_Horizontal_Right.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
             this.unitHead_2_Small_Horizontal_Right.ValveType = Kaban.UI.Controls.CylinderValve.IslandDoubleSolenoid;
             this.unitHead_2_Small_Horizontal_Right.FeedbackType = Kaban.UI.Controls.CylinderFeedback.SingleMagnetic;
+            this.unitHead_2_Small_Horizontal_Right.OutputAAddress = "W111.9";
+            this.unitHead_2_Small_Horizontal_Right.OutputBAddress = "W111.8";
             this.unitHead_2_Small_Horizontal_Right.ErrorAAddress = "M687";
             this.unitHead_2_Small_Horizontal_Right.ErrorBAddress = "M679";
             this.unitHead_2_Small_Horizontal_Right.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
@@ -776,7 +810,7 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             // 
             // unitHead_2_Support_Plate_Left
             // 
-            // Y11.2 (5/2 spring, on the island - the old Resistance Lower Down / Up): down M233, up M234 - down sensor W2.5; down failed M637, up failed M641.
+            // Y11.2 (5/2 spring on the drawing, on the island - the old Resistance Lower Down / Up; the PLC has two coils for it, W111.B down and W111.A up): down M233, up M234 - its sensor W10.5 is the PLC's "Dayama_Yukarida" (up); down failed M637, up failed M641.
             this.unitHead_2_Support_Plate_Left.BackColor = System.Drawing.Color.White;
             this.unitHead_2_Support_Plate_Left.Name = "unitHead_2_Support_Plate_Left";
             this.unitHead_2_Support_Plate_Left.PlcNumber = 1;
@@ -787,9 +821,9 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.unitHead_2_Support_Plate_Left.Arrows = Kaban.Core.Enums.ButtonArrowStyle.DownUp;
             this.unitHead_2_Support_Plate_Left.CommandAAddress = "M233";
             this.unitHead_2_Support_Plate_Left.CommandAAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitHead_2_Support_Plate_Left.Lamp1AAddress = "W2.5";
             this.unitHead_2_Support_Plate_Left.CommandBAddress = "M234";
             this.unitHead_2_Support_Plate_Left.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
+            this.unitHead_2_Support_Plate_Left.Lamp1BAddress = "W10.5";
             this.unitHead_2_Support_Plate_Left.ValveType = Kaban.UI.Controls.CylinderValve.IslandSingleSolenoid;
             this.unitHead_2_Support_Plate_Left.FeedbackType = Kaban.UI.Controls.CylinderFeedback.SingleInductive;
             this.unitHead_2_Support_Plate_Left.ErrorAAddress = "M637";
@@ -810,7 +844,7 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             // 
             // unitHead_2_Stripping_Knife_Left
             // 
-            // Y13.2 (5/2 spring, on the island - the old page's "X2", the head's own commands): back M246, forward M247 - back W3.6, forward W3.7; back failed M633, forward failed M629.
+            // Y13.2 (5/2 spring, on the island - the old page's "X2"; its coil W111.E forward): back M223, forward M222 (the PLC's, common to the heads) - back W11.6, forward W11.7; back failed M633, forward failed M629.
             this.unitHead_2_Stripping_Knife_Left.BackColor = System.Drawing.Color.White;
             this.unitHead_2_Stripping_Knife_Left.Name = "unitHead_2_Stripping_Knife_Left";
             this.unitHead_2_Stripping_Knife_Left.PlcNumber = 1;
@@ -818,14 +852,15 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.unitHead_2_Stripping_Knife_Left.Location = new System.Drawing.Point(714, 444);
             this.unitHead_2_Stripping_Knife_Left.Size = new System.Drawing.Size(220, 64);
             this.unitHead_2_Stripping_Knife_Left.LogAction = true;
-            this.unitHead_2_Stripping_Knife_Left.CommandAAddress = "M246";
+            this.unitHead_2_Stripping_Knife_Left.CommandAAddress = "M223";
             this.unitHead_2_Stripping_Knife_Left.CommandAAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitHead_2_Stripping_Knife_Left.Lamp1AAddress = "W3.6";
-            this.unitHead_2_Stripping_Knife_Left.CommandBAddress = "M247";
+            this.unitHead_2_Stripping_Knife_Left.Lamp1AAddress = "W11.6";
+            this.unitHead_2_Stripping_Knife_Left.CommandBAddress = "M222";
             this.unitHead_2_Stripping_Knife_Left.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitHead_2_Stripping_Knife_Left.Lamp1BAddress = "W3.7";
+            this.unitHead_2_Stripping_Knife_Left.Lamp1BAddress = "W11.7";
             this.unitHead_2_Stripping_Knife_Left.ValveType = Kaban.UI.Controls.CylinderValve.IslandSingleSolenoid;
             this.unitHead_2_Stripping_Knife_Left.FeedbackType = Kaban.UI.Controls.CylinderFeedback.TwoEndMagnetic;
+            this.unitHead_2_Stripping_Knife_Left.OutputBAddress = "W111.E";
             this.unitHead_2_Stripping_Knife_Left.ErrorAAddress = "M633";
             this.unitHead_2_Stripping_Knife_Left.ErrorBAddress = "M629";
             this.unitHead_2_Stripping_Knife_Left.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
@@ -844,7 +879,7 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             // 
             // unitHead_2_Profile_Emptying_Left
             // 
-            // Y12.2 (5/2 spring, on the island): back M204, forward M205 - no sensor on the drawings (the old page's W3.A is not there), so no error bit.
+            // Y12.2 (5/2 spring, on the island; its coil W111.C forward): back M205, forward M204 - no sensor on the drawings nor in the PLC, so no error bit.
             this.unitHead_2_Profile_Emptying_Left.BackColor = System.Drawing.Color.White;
             this.unitHead_2_Profile_Emptying_Left.Name = "unitHead_2_Profile_Emptying_Left";
             this.unitHead_2_Profile_Emptying_Left.PlcNumber = 1;
@@ -852,12 +887,13 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.unitHead_2_Profile_Emptying_Left.Location = new System.Drawing.Point(714, 516);
             this.unitHead_2_Profile_Emptying_Left.Size = new System.Drawing.Size(220, 64);
             this.unitHead_2_Profile_Emptying_Left.LogAction = true;
-            this.unitHead_2_Profile_Emptying_Left.CommandAAddress = "M204";
+            this.unitHead_2_Profile_Emptying_Left.CommandAAddress = "M205";
             this.unitHead_2_Profile_Emptying_Left.CommandAAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitHead_2_Profile_Emptying_Left.CommandBAddress = "M205";
+            this.unitHead_2_Profile_Emptying_Left.CommandBAddress = "M204";
             this.unitHead_2_Profile_Emptying_Left.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
             this.unitHead_2_Profile_Emptying_Left.ValveType = Kaban.UI.Controls.CylinderValve.IslandSingleSolenoid;
             this.unitHead_2_Profile_Emptying_Left.FeedbackType = Kaban.UI.Controls.CylinderFeedback.NoSensor;
+            this.unitHead_2_Profile_Emptying_Left.OutputBAddress = "W111.C";
             this.unitHead_2_Profile_Emptying_Left.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
             // 
             // lblHead_3
@@ -918,7 +954,7 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             // 
             // unitHead_3_Top_Press_Left
             // 
-            // Y1.3 / Y2.3 (5/3 open centre, on the island): down M201, up M202 - up sensor W4.6, the profile height encoder SD4620; down failed M664, up failed M672.
+            // Y1.3 / Y2.3 (5/3 open centre, on the island; coils W121.0 down / W121.1 up): down M201, up M202 - up sensor W20.6, the profile height encoder SD4620; down failed M664, up failed M672.
             this.unitHead_3_Top_Press_Left.BackColor = System.Drawing.Color.White;
             this.unitHead_3_Top_Press_Left.Name = "unitHead_3_Top_Press_Left";
             this.unitHead_3_Top_Press_Left.PlcNumber = 1;
@@ -931,7 +967,7 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.unitHead_3_Top_Press_Left.CommandAAction = Kaban.Core.Enums.BitActionType.Momentary;
             this.unitHead_3_Top_Press_Left.CommandBAddress = "M202";
             this.unitHead_3_Top_Press_Left.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitHead_3_Top_Press_Left.Lamp1BAddress = "W4.6";
+            this.unitHead_3_Top_Press_Left.Lamp1BAddress = "W20.6";
             this.unitHead_3_Top_Press_Left.PositionAddress = "SD4620";
             this.unitHead_3_Top_Press_Left.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
             this.unitHead_3_Top_Press_Left.PositionDivisor = 100D;
@@ -941,13 +977,15 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.unitHead_3_Top_Press_Left.PositionUnitType = Kaban.Core.Enums.UnitType.Length;
             this.unitHead_3_Top_Press_Left.ValveType = Kaban.UI.Controls.CylinderValve.IslandThreeWayOpenCenter;
             this.unitHead_3_Top_Press_Left.FeedbackType = Kaban.UI.Controls.CylinderFeedback.EncoderPlusReference;
+            this.unitHead_3_Top_Press_Left.OutputAAddress = "W121.0";
+            this.unitHead_3_Top_Press_Left.OutputBAddress = "W121.1";
             this.unitHead_3_Top_Press_Left.ErrorAAddress = "M664";
             this.unitHead_3_Top_Press_Left.ErrorBAddress = "M672";
             this.unitHead_3_Top_Press_Left.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
             // 
             // unitHead_3_Top_Press_Right
             // 
-            // Y3.3 / Y4.3 (5/3 open centre, on the island): down M201, up M202 - up sensor W4.7, the encoder SD4650.
+            // Y3.3 / Y4.3 (5/3 open centre, on the island; coils W121.2 / W121.3): down M201, up M202 - up sensor W20.7, the encoder SD4650.
             this.unitHead_3_Top_Press_Right.BackColor = System.Drawing.Color.White;
             this.unitHead_3_Top_Press_Right.Name = "unitHead_3_Top_Press_Right";
             this.unitHead_3_Top_Press_Right.PlcNumber = 1;
@@ -960,7 +998,7 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.unitHead_3_Top_Press_Right.CommandAAction = Kaban.Core.Enums.BitActionType.Momentary;
             this.unitHead_3_Top_Press_Right.CommandBAddress = "M202";
             this.unitHead_3_Top_Press_Right.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitHead_3_Top_Press_Right.Lamp1BAddress = "W4.7";
+            this.unitHead_3_Top_Press_Right.Lamp1BAddress = "W20.7";
             this.unitHead_3_Top_Press_Right.PositionAddress = "SD4650";
             this.unitHead_3_Top_Press_Right.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
             this.unitHead_3_Top_Press_Right.PositionDivisor = 100D;
@@ -970,6 +1008,8 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.unitHead_3_Top_Press_Right.PositionUnitType = Kaban.Core.Enums.UnitType.Length;
             this.unitHead_3_Top_Press_Right.ValveType = Kaban.UI.Controls.CylinderValve.IslandThreeWayOpenCenter;
             this.unitHead_3_Top_Press_Right.FeedbackType = Kaban.UI.Controls.CylinderFeedback.EncoderPlusReference;
+            this.unitHead_3_Top_Press_Right.OutputAAddress = "W121.2";
+            this.unitHead_3_Top_Press_Right.OutputBAddress = "W121.3";
             this.unitHead_3_Top_Press_Right.ErrorAAddress = "M665";
             this.unitHead_3_Top_Press_Right.ErrorBAddress = "M673";
             this.unitHead_3_Top_Press_Right.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
@@ -988,7 +1028,7 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             // 
             // unitHead_3_Front_Clamp_Left
             // 
-            // Y5.3 / Y6.3 (5/2 double, on the island, both front clamps): back M230, clamp M231 - back sensor W5.0; opening failed M729, clamping failed M721.
+            // Y5.3 / Y6.3 (5/2 double, on the island, both front clamps; coils W121.5 open / W121.4 clamp): open M231, clamp M230 - back sensor W21.0; opening failed M729, clamping failed M721.
             this.unitHead_3_Front_Clamp_Left.BackColor = System.Drawing.Color.White;
             this.unitHead_3_Front_Clamp_Left.Name = "unitHead_3_Front_Clamp_Left";
             this.unitHead_3_Front_Clamp_Left.PlcNumber = 1;
@@ -996,13 +1036,15 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.unitHead_3_Front_Clamp_Left.Location = new System.Drawing.Point(126, 748);
             this.unitHead_3_Front_Clamp_Left.Size = new System.Drawing.Size(220, 64);
             this.unitHead_3_Front_Clamp_Left.LogAction = true;
-            this.unitHead_3_Front_Clamp_Left.CommandAAddress = "M230";
+            this.unitHead_3_Front_Clamp_Left.CommandAAddress = "M231";
             this.unitHead_3_Front_Clamp_Left.CommandAAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitHead_3_Front_Clamp_Left.Lamp1AAddress = "W5.0";
-            this.unitHead_3_Front_Clamp_Left.CommandBAddress = "M231";
+            this.unitHead_3_Front_Clamp_Left.Lamp1AAddress = "W21.0";
+            this.unitHead_3_Front_Clamp_Left.CommandBAddress = "M230";
             this.unitHead_3_Front_Clamp_Left.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
             this.unitHead_3_Front_Clamp_Left.ValveType = Kaban.UI.Controls.CylinderValve.IslandDoubleSolenoid;
             this.unitHead_3_Front_Clamp_Left.FeedbackType = Kaban.UI.Controls.CylinderFeedback.SingleMagnetic;
+            this.unitHead_3_Front_Clamp_Left.OutputAAddress = "W121.5";
+            this.unitHead_3_Front_Clamp_Left.OutputBAddress = "W121.4";
             this.unitHead_3_Front_Clamp_Left.ErrorAAddress = "M729";
             this.unitHead_3_Front_Clamp_Left.ErrorBAddress = "M721";
             this.unitHead_3_Front_Clamp_Left.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
@@ -1016,13 +1058,15 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.unitHead_3_Front_Clamp_Right.Location = new System.Drawing.Point(352, 748);
             this.unitHead_3_Front_Clamp_Right.Size = new System.Drawing.Size(220, 64);
             this.unitHead_3_Front_Clamp_Right.LogAction = true;
-            this.unitHead_3_Front_Clamp_Right.CommandAAddress = "M230";
+            this.unitHead_3_Front_Clamp_Right.CommandAAddress = "M231";
             this.unitHead_3_Front_Clamp_Right.CommandAAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitHead_3_Front_Clamp_Right.Lamp1AAddress = "W5.1";
-            this.unitHead_3_Front_Clamp_Right.CommandBAddress = "M231";
+            this.unitHead_3_Front_Clamp_Right.Lamp1AAddress = "W21.1";
+            this.unitHead_3_Front_Clamp_Right.CommandBAddress = "M230";
             this.unitHead_3_Front_Clamp_Right.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
             this.unitHead_3_Front_Clamp_Right.ValveType = Kaban.UI.Controls.CylinderValve.IslandDoubleSolenoid;
             this.unitHead_3_Front_Clamp_Right.FeedbackType = Kaban.UI.Controls.CylinderFeedback.SingleMagnetic;
+            this.unitHead_3_Front_Clamp_Right.OutputAAddress = "W121.5";
+            this.unitHead_3_Front_Clamp_Right.OutputBAddress = "W121.4";
             this.unitHead_3_Front_Clamp_Right.ErrorAAddress = "M730";
             this.unitHead_3_Front_Clamp_Right.ErrorBAddress = "M722";
             this.unitHead_3_Front_Clamp_Right.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
@@ -1041,7 +1085,7 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             // 
             // unitHead_3_Small_Vertical_Left
             // 
-            // Y7.3 / Y8.3 (5/2 double, on the island, both small vertical presses - the old Profile Ear Clamping): down M218, up M217 - down sensor W5.2; down failed M745, up failed M737.
+            // Y7.3 / Y8.3 (5/2 double, on the island, both small vertical presses - the old Profile Ear Clamping; coils W121.7 down / W121.6 up): down M217, up M218 - down sensor W21.2, NORMALLY CLOSED in the PLC (lit while not down); down failed M745, up failed M737.
             this.unitHead_3_Small_Vertical_Left.BackColor = System.Drawing.Color.White;
             this.unitHead_3_Small_Vertical_Left.Name = "unitHead_3_Small_Vertical_Left";
             this.unitHead_3_Small_Vertical_Left.PlcNumber = 1;
@@ -1050,13 +1094,15 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.unitHead_3_Small_Vertical_Left.Size = new System.Drawing.Size(220, 64);
             this.unitHead_3_Small_Vertical_Left.LogAction = true;
             this.unitHead_3_Small_Vertical_Left.Arrows = Kaban.Core.Enums.ButtonArrowStyle.DownUp;
-            this.unitHead_3_Small_Vertical_Left.CommandAAddress = "M218";
+            this.unitHead_3_Small_Vertical_Left.CommandAAddress = "M217";
             this.unitHead_3_Small_Vertical_Left.CommandAAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitHead_3_Small_Vertical_Left.Lamp1AAddress = "W5.2";
-            this.unitHead_3_Small_Vertical_Left.CommandBAddress = "M217";
+            this.unitHead_3_Small_Vertical_Left.Lamp1AAddress = "W21.2";
+            this.unitHead_3_Small_Vertical_Left.CommandBAddress = "M218";
             this.unitHead_3_Small_Vertical_Left.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
             this.unitHead_3_Small_Vertical_Left.ValveType = Kaban.UI.Controls.CylinderValve.IslandDoubleSolenoid;
             this.unitHead_3_Small_Vertical_Left.FeedbackType = Kaban.UI.Controls.CylinderFeedback.SingleInductive;
+            this.unitHead_3_Small_Vertical_Left.OutputAAddress = "W121.7";
+            this.unitHead_3_Small_Vertical_Left.OutputBAddress = "W121.6";
             this.unitHead_3_Small_Vertical_Left.ErrorAAddress = "M745";
             this.unitHead_3_Small_Vertical_Left.ErrorBAddress = "M737";
             this.unitHead_3_Small_Vertical_Left.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
@@ -1071,13 +1117,15 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.unitHead_3_Small_Vertical_Right.Size = new System.Drawing.Size(220, 64);
             this.unitHead_3_Small_Vertical_Right.LogAction = true;
             this.unitHead_3_Small_Vertical_Right.Arrows = Kaban.Core.Enums.ButtonArrowStyle.DownUp;
-            this.unitHead_3_Small_Vertical_Right.CommandAAddress = "M218";
+            this.unitHead_3_Small_Vertical_Right.CommandAAddress = "M217";
             this.unitHead_3_Small_Vertical_Right.CommandAAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitHead_3_Small_Vertical_Right.Lamp1AAddress = "W5.3";
-            this.unitHead_3_Small_Vertical_Right.CommandBAddress = "M217";
+            this.unitHead_3_Small_Vertical_Right.Lamp1AAddress = "W21.3";
+            this.unitHead_3_Small_Vertical_Right.CommandBAddress = "M218";
             this.unitHead_3_Small_Vertical_Right.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
             this.unitHead_3_Small_Vertical_Right.ValveType = Kaban.UI.Controls.CylinderValve.IslandDoubleSolenoid;
             this.unitHead_3_Small_Vertical_Right.FeedbackType = Kaban.UI.Controls.CylinderFeedback.SingleInductive;
+            this.unitHead_3_Small_Vertical_Right.OutputAAddress = "W121.7";
+            this.unitHead_3_Small_Vertical_Right.OutputBAddress = "W121.6";
             this.unitHead_3_Small_Vertical_Right.ErrorAAddress = "M746";
             this.unitHead_3_Small_Vertical_Right.ErrorBAddress = "M738";
             this.unitHead_3_Small_Vertical_Right.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
@@ -1096,7 +1144,7 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             // 
             // unitHead_3_Small_Horizontal_Left
             // 
-            // Y9.3 / Y10.3 (5/2 double, on the island, both small horizontal presses - the old Mould Shifting): back M228, forward M229 - back sensor W5.4; back failed M688, forward failed M680.
+            // Y9.3 / Y10.3 (5/2 double, on the island, both small horizontal presses - the old Mould Shifting; coils W121.9 back / W121.8 forward): back M228, forward M229 - back sensor W21.4; back failed M688, forward failed M680.
             this.unitHead_3_Small_Horizontal_Left.BackColor = System.Drawing.Color.White;
             this.unitHead_3_Small_Horizontal_Left.Name = "unitHead_3_Small_Horizontal_Left";
             this.unitHead_3_Small_Horizontal_Left.PlcNumber = 1;
@@ -1106,11 +1154,13 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.unitHead_3_Small_Horizontal_Left.LogAction = true;
             this.unitHead_3_Small_Horizontal_Left.CommandAAddress = "M228";
             this.unitHead_3_Small_Horizontal_Left.CommandAAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitHead_3_Small_Horizontal_Left.Lamp1AAddress = "W5.4";
+            this.unitHead_3_Small_Horizontal_Left.Lamp1AAddress = "W21.4";
             this.unitHead_3_Small_Horizontal_Left.CommandBAddress = "M229";
             this.unitHead_3_Small_Horizontal_Left.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
             this.unitHead_3_Small_Horizontal_Left.ValveType = Kaban.UI.Controls.CylinderValve.IslandDoubleSolenoid;
             this.unitHead_3_Small_Horizontal_Left.FeedbackType = Kaban.UI.Controls.CylinderFeedback.SingleMagnetic;
+            this.unitHead_3_Small_Horizontal_Left.OutputAAddress = "W121.9";
+            this.unitHead_3_Small_Horizontal_Left.OutputBAddress = "W121.8";
             this.unitHead_3_Small_Horizontal_Left.ErrorAAddress = "M688";
             this.unitHead_3_Small_Horizontal_Left.ErrorBAddress = "M680";
             this.unitHead_3_Small_Horizontal_Left.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
@@ -1126,11 +1176,13 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.unitHead_3_Small_Horizontal_Right.LogAction = true;
             this.unitHead_3_Small_Horizontal_Right.CommandAAddress = "M228";
             this.unitHead_3_Small_Horizontal_Right.CommandAAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitHead_3_Small_Horizontal_Right.Lamp1AAddress = "W5.5";
+            this.unitHead_3_Small_Horizontal_Right.Lamp1AAddress = "W21.5";
             this.unitHead_3_Small_Horizontal_Right.CommandBAddress = "M229";
             this.unitHead_3_Small_Horizontal_Right.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
             this.unitHead_3_Small_Horizontal_Right.ValveType = Kaban.UI.Controls.CylinderValve.IslandDoubleSolenoid;
             this.unitHead_3_Small_Horizontal_Right.FeedbackType = Kaban.UI.Controls.CylinderFeedback.SingleMagnetic;
+            this.unitHead_3_Small_Horizontal_Right.OutputAAddress = "W121.9";
+            this.unitHead_3_Small_Horizontal_Right.OutputBAddress = "W121.8";
             this.unitHead_3_Small_Horizontal_Right.ErrorAAddress = "M689";
             this.unitHead_3_Small_Horizontal_Right.ErrorBAddress = "M681";
             this.unitHead_3_Small_Horizontal_Right.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
@@ -1149,7 +1201,7 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             // 
             // unitHead_3_Support_Plate_Left
             // 
-            // Y11.3 (5/2 spring, on the island - the old Resistance Lower Down / Up): down M233, up M234 - down sensor W4.5; down failed M638, up failed M642.
+            // Y11.3 (5/2 spring on the drawing, on the island - the old Resistance Lower Down / Up; the PLC has two coils for it, W121.B down and W121.A up): down M233, up M234 - its sensor W20.5 is the PLC's "Dayama_Yukarida" (up); down failed M638, up failed M642.
             this.unitHead_3_Support_Plate_Left.BackColor = System.Drawing.Color.White;
             this.unitHead_3_Support_Plate_Left.Name = "unitHead_3_Support_Plate_Left";
             this.unitHead_3_Support_Plate_Left.PlcNumber = 1;
@@ -1160,9 +1212,9 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.unitHead_3_Support_Plate_Left.Arrows = Kaban.Core.Enums.ButtonArrowStyle.DownUp;
             this.unitHead_3_Support_Plate_Left.CommandAAddress = "M233";
             this.unitHead_3_Support_Plate_Left.CommandAAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitHead_3_Support_Plate_Left.Lamp1AAddress = "W4.5";
             this.unitHead_3_Support_Plate_Left.CommandBAddress = "M234";
             this.unitHead_3_Support_Plate_Left.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
+            this.unitHead_3_Support_Plate_Left.Lamp1BAddress = "W20.5";
             this.unitHead_3_Support_Plate_Left.ValveType = Kaban.UI.Controls.CylinderValve.IslandSingleSolenoid;
             this.unitHead_3_Support_Plate_Left.FeedbackType = Kaban.UI.Controls.CylinderFeedback.SingleInductive;
             this.unitHead_3_Support_Plate_Left.ErrorAAddress = "M638";
@@ -1183,7 +1235,7 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             // 
             // unitHead_3_Stripping_Knife_Left
             // 
-            // Y13.3 (5/2 spring, on the island - the old page's "X2", the head's own commands): back M248, forward M249 - back W5.6, forward W5.7; back failed M634, forward failed M630.
+            // Y13.3 (5/2 spring, on the island - the old page's "X2"; its coil W121.E forward): back M223, forward M222 (the PLC's, common to the heads) - back W21.6, forward W21.7; back failed M634, forward failed M630.
             this.unitHead_3_Stripping_Knife_Left.BackColor = System.Drawing.Color.White;
             this.unitHead_3_Stripping_Knife_Left.Name = "unitHead_3_Stripping_Knife_Left";
             this.unitHead_3_Stripping_Knife_Left.PlcNumber = 1;
@@ -1191,14 +1243,15 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.unitHead_3_Stripping_Knife_Left.Location = new System.Drawing.Point(126, 1036);
             this.unitHead_3_Stripping_Knife_Left.Size = new System.Drawing.Size(220, 64);
             this.unitHead_3_Stripping_Knife_Left.LogAction = true;
-            this.unitHead_3_Stripping_Knife_Left.CommandAAddress = "M248";
+            this.unitHead_3_Stripping_Knife_Left.CommandAAddress = "M223";
             this.unitHead_3_Stripping_Knife_Left.CommandAAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitHead_3_Stripping_Knife_Left.Lamp1AAddress = "W5.6";
-            this.unitHead_3_Stripping_Knife_Left.CommandBAddress = "M249";
+            this.unitHead_3_Stripping_Knife_Left.Lamp1AAddress = "W21.6";
+            this.unitHead_3_Stripping_Knife_Left.CommandBAddress = "M222";
             this.unitHead_3_Stripping_Knife_Left.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitHead_3_Stripping_Knife_Left.Lamp1BAddress = "W5.7";
+            this.unitHead_3_Stripping_Knife_Left.Lamp1BAddress = "W21.7";
             this.unitHead_3_Stripping_Knife_Left.ValveType = Kaban.UI.Controls.CylinderValve.IslandSingleSolenoid;
             this.unitHead_3_Stripping_Knife_Left.FeedbackType = Kaban.UI.Controls.CylinderFeedback.TwoEndMagnetic;
+            this.unitHead_3_Stripping_Knife_Left.OutputBAddress = "W121.E";
             this.unitHead_3_Stripping_Knife_Left.ErrorAAddress = "M634";
             this.unitHead_3_Stripping_Knife_Left.ErrorBAddress = "M630";
             this.unitHead_3_Stripping_Knife_Left.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
@@ -1217,7 +1270,7 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             // 
             // unitHead_3_Profile_Emptying_Left
             // 
-            // Y12.3 (5/2 spring, on the island): back M204, forward M205 - no sensor on the drawings (the old page's W5.A is not there), so no error bit.
+            // Y12.3 (5/2 spring, on the island; its coil W121.C forward): back M205, forward M204 - no sensor on the drawings nor in the PLC, so no error bit.
             this.unitHead_3_Profile_Emptying_Left.BackColor = System.Drawing.Color.White;
             this.unitHead_3_Profile_Emptying_Left.Name = "unitHead_3_Profile_Emptying_Left";
             this.unitHead_3_Profile_Emptying_Left.PlcNumber = 1;
@@ -1225,12 +1278,13 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.unitHead_3_Profile_Emptying_Left.Location = new System.Drawing.Point(126, 1108);
             this.unitHead_3_Profile_Emptying_Left.Size = new System.Drawing.Size(220, 64);
             this.unitHead_3_Profile_Emptying_Left.LogAction = true;
-            this.unitHead_3_Profile_Emptying_Left.CommandAAddress = "M204";
+            this.unitHead_3_Profile_Emptying_Left.CommandAAddress = "M205";
             this.unitHead_3_Profile_Emptying_Left.CommandAAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitHead_3_Profile_Emptying_Left.CommandBAddress = "M205";
+            this.unitHead_3_Profile_Emptying_Left.CommandBAddress = "M204";
             this.unitHead_3_Profile_Emptying_Left.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
             this.unitHead_3_Profile_Emptying_Left.ValveType = Kaban.UI.Controls.CylinderValve.IslandSingleSolenoid;
             this.unitHead_3_Profile_Emptying_Left.FeedbackType = Kaban.UI.Controls.CylinderFeedback.NoSensor;
+            this.unitHead_3_Profile_Emptying_Left.OutputBAddress = "W121.C";
             this.unitHead_3_Profile_Emptying_Left.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
             // 
             // lblHead_4
@@ -1291,7 +1345,7 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             // 
             // unitHead_4_Top_Press_Left
             // 
-            // Y1.4 / Y2.4 (5/3 open centre, on the island): down M201, up M202 - up sensor W6.6, the profile height encoder SD4680; down failed M666, up failed M674.
+            // Y1.4 / Y2.4 (5/3 open centre, on the island; coils W131.0 down / W131.1 up): down M201, up M202 - up sensor W30.6, the profile height encoder SD4680; down failed M666, up failed M674.
             this.unitHead_4_Top_Press_Left.BackColor = System.Drawing.Color.White;
             this.unitHead_4_Top_Press_Left.Name = "unitHead_4_Top_Press_Left";
             this.unitHead_4_Top_Press_Left.PlcNumber = 1;
@@ -1304,7 +1358,7 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.unitHead_4_Top_Press_Left.CommandAAction = Kaban.Core.Enums.BitActionType.Momentary;
             this.unitHead_4_Top_Press_Left.CommandBAddress = "M202";
             this.unitHead_4_Top_Press_Left.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitHead_4_Top_Press_Left.Lamp1BAddress = "W6.6";
+            this.unitHead_4_Top_Press_Left.Lamp1BAddress = "W30.6";
             this.unitHead_4_Top_Press_Left.PositionAddress = "SD4680";
             this.unitHead_4_Top_Press_Left.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
             this.unitHead_4_Top_Press_Left.PositionDivisor = 100D;
@@ -1314,13 +1368,15 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.unitHead_4_Top_Press_Left.PositionUnitType = Kaban.Core.Enums.UnitType.Length;
             this.unitHead_4_Top_Press_Left.ValveType = Kaban.UI.Controls.CylinderValve.IslandThreeWayOpenCenter;
             this.unitHead_4_Top_Press_Left.FeedbackType = Kaban.UI.Controls.CylinderFeedback.EncoderPlusReference;
+            this.unitHead_4_Top_Press_Left.OutputAAddress = "W131.0";
+            this.unitHead_4_Top_Press_Left.OutputBAddress = "W131.1";
             this.unitHead_4_Top_Press_Left.ErrorAAddress = "M666";
             this.unitHead_4_Top_Press_Left.ErrorBAddress = "M674";
             this.unitHead_4_Top_Press_Left.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
             // 
             // unitHead_4_Top_Press_Right
             // 
-            // Y3.4 / Y4.4 (5/3 open centre, on the island): down M201, up M202 - up sensor W6.7, the encoder SD4710.
+            // Y3.4 / Y4.4 (5/3 open centre, on the island; coils W131.2 / W131.3): down M201, up M202 - up sensor W30.7, the encoder SD4710.
             this.unitHead_4_Top_Press_Right.BackColor = System.Drawing.Color.White;
             this.unitHead_4_Top_Press_Right.Name = "unitHead_4_Top_Press_Right";
             this.unitHead_4_Top_Press_Right.PlcNumber = 1;
@@ -1333,7 +1389,7 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.unitHead_4_Top_Press_Right.CommandAAction = Kaban.Core.Enums.BitActionType.Momentary;
             this.unitHead_4_Top_Press_Right.CommandBAddress = "M202";
             this.unitHead_4_Top_Press_Right.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitHead_4_Top_Press_Right.Lamp1BAddress = "W6.7";
+            this.unitHead_4_Top_Press_Right.Lamp1BAddress = "W30.7";
             this.unitHead_4_Top_Press_Right.PositionAddress = "SD4710";
             this.unitHead_4_Top_Press_Right.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
             this.unitHead_4_Top_Press_Right.PositionDivisor = 100D;
@@ -1343,6 +1399,8 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.unitHead_4_Top_Press_Right.PositionUnitType = Kaban.Core.Enums.UnitType.Length;
             this.unitHead_4_Top_Press_Right.ValveType = Kaban.UI.Controls.CylinderValve.IslandThreeWayOpenCenter;
             this.unitHead_4_Top_Press_Right.FeedbackType = Kaban.UI.Controls.CylinderFeedback.EncoderPlusReference;
+            this.unitHead_4_Top_Press_Right.OutputAAddress = "W131.2";
+            this.unitHead_4_Top_Press_Right.OutputBAddress = "W131.3";
             this.unitHead_4_Top_Press_Right.ErrorAAddress = "M667";
             this.unitHead_4_Top_Press_Right.ErrorBAddress = "M675";
             this.unitHead_4_Top_Press_Right.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
@@ -1361,7 +1419,7 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             // 
             // unitHead_4_Front_Clamp_Left
             // 
-            // Y5.4 / Y6.4 (5/2 double, on the island, both front clamps): back M230, clamp M231 - back sensor W7.0; opening failed M731, clamping failed M723.
+            // Y5.4 / Y6.4 (5/2 double, on the island, both front clamps; coils W131.5 open / W131.4 clamp): open M231, clamp M230 - back sensor W31.0; opening failed M731, clamping failed M723.
             this.unitHead_4_Front_Clamp_Left.BackColor = System.Drawing.Color.White;
             this.unitHead_4_Front_Clamp_Left.Name = "unitHead_4_Front_Clamp_Left";
             this.unitHead_4_Front_Clamp_Left.PlcNumber = 1;
@@ -1369,13 +1427,15 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.unitHead_4_Front_Clamp_Left.Location = new System.Drawing.Point(714, 748);
             this.unitHead_4_Front_Clamp_Left.Size = new System.Drawing.Size(220, 64);
             this.unitHead_4_Front_Clamp_Left.LogAction = true;
-            this.unitHead_4_Front_Clamp_Left.CommandAAddress = "M230";
+            this.unitHead_4_Front_Clamp_Left.CommandAAddress = "M231";
             this.unitHead_4_Front_Clamp_Left.CommandAAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitHead_4_Front_Clamp_Left.Lamp1AAddress = "W7.0";
-            this.unitHead_4_Front_Clamp_Left.CommandBAddress = "M231";
+            this.unitHead_4_Front_Clamp_Left.Lamp1AAddress = "W31.0";
+            this.unitHead_4_Front_Clamp_Left.CommandBAddress = "M230";
             this.unitHead_4_Front_Clamp_Left.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
             this.unitHead_4_Front_Clamp_Left.ValveType = Kaban.UI.Controls.CylinderValve.IslandDoubleSolenoid;
             this.unitHead_4_Front_Clamp_Left.FeedbackType = Kaban.UI.Controls.CylinderFeedback.SingleMagnetic;
+            this.unitHead_4_Front_Clamp_Left.OutputAAddress = "W131.5";
+            this.unitHead_4_Front_Clamp_Left.OutputBAddress = "W131.4";
             this.unitHead_4_Front_Clamp_Left.ErrorAAddress = "M731";
             this.unitHead_4_Front_Clamp_Left.ErrorBAddress = "M723";
             this.unitHead_4_Front_Clamp_Left.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
@@ -1389,13 +1449,15 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.unitHead_4_Front_Clamp_Right.Location = new System.Drawing.Point(940, 748);
             this.unitHead_4_Front_Clamp_Right.Size = new System.Drawing.Size(220, 64);
             this.unitHead_4_Front_Clamp_Right.LogAction = true;
-            this.unitHead_4_Front_Clamp_Right.CommandAAddress = "M230";
+            this.unitHead_4_Front_Clamp_Right.CommandAAddress = "M231";
             this.unitHead_4_Front_Clamp_Right.CommandAAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitHead_4_Front_Clamp_Right.Lamp1AAddress = "W7.1";
-            this.unitHead_4_Front_Clamp_Right.CommandBAddress = "M231";
+            this.unitHead_4_Front_Clamp_Right.Lamp1AAddress = "W31.1";
+            this.unitHead_4_Front_Clamp_Right.CommandBAddress = "M230";
             this.unitHead_4_Front_Clamp_Right.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
             this.unitHead_4_Front_Clamp_Right.ValveType = Kaban.UI.Controls.CylinderValve.IslandDoubleSolenoid;
             this.unitHead_4_Front_Clamp_Right.FeedbackType = Kaban.UI.Controls.CylinderFeedback.SingleMagnetic;
+            this.unitHead_4_Front_Clamp_Right.OutputAAddress = "W131.5";
+            this.unitHead_4_Front_Clamp_Right.OutputBAddress = "W131.4";
             this.unitHead_4_Front_Clamp_Right.ErrorAAddress = "M732";
             this.unitHead_4_Front_Clamp_Right.ErrorBAddress = "M724";
             this.unitHead_4_Front_Clamp_Right.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
@@ -1414,7 +1476,7 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             // 
             // unitHead_4_Small_Vertical_Left
             // 
-            // Y7.4 / Y8.4 (5/2 double, on the island, both small vertical presses - the old Profile Ear Clamping): down M218, up M217 - down sensor W7.2; down failed M747, up failed M739.
+            // Y7.4 / Y8.4 (5/2 double, on the island, both small vertical presses - the old Profile Ear Clamping; coils W131.7 down / W131.6 up): down M217, up M218 - down sensor W31.2, NORMALLY CLOSED in the PLC (lit while not down); down failed M747, up failed M739.
             this.unitHead_4_Small_Vertical_Left.BackColor = System.Drawing.Color.White;
             this.unitHead_4_Small_Vertical_Left.Name = "unitHead_4_Small_Vertical_Left";
             this.unitHead_4_Small_Vertical_Left.PlcNumber = 1;
@@ -1423,13 +1485,15 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.unitHead_4_Small_Vertical_Left.Size = new System.Drawing.Size(220, 64);
             this.unitHead_4_Small_Vertical_Left.LogAction = true;
             this.unitHead_4_Small_Vertical_Left.Arrows = Kaban.Core.Enums.ButtonArrowStyle.DownUp;
-            this.unitHead_4_Small_Vertical_Left.CommandAAddress = "M218";
+            this.unitHead_4_Small_Vertical_Left.CommandAAddress = "M217";
             this.unitHead_4_Small_Vertical_Left.CommandAAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitHead_4_Small_Vertical_Left.Lamp1AAddress = "W7.2";
-            this.unitHead_4_Small_Vertical_Left.CommandBAddress = "M217";
+            this.unitHead_4_Small_Vertical_Left.Lamp1AAddress = "W31.2";
+            this.unitHead_4_Small_Vertical_Left.CommandBAddress = "M218";
             this.unitHead_4_Small_Vertical_Left.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
             this.unitHead_4_Small_Vertical_Left.ValveType = Kaban.UI.Controls.CylinderValve.IslandDoubleSolenoid;
             this.unitHead_4_Small_Vertical_Left.FeedbackType = Kaban.UI.Controls.CylinderFeedback.SingleInductive;
+            this.unitHead_4_Small_Vertical_Left.OutputAAddress = "W131.7";
+            this.unitHead_4_Small_Vertical_Left.OutputBAddress = "W131.6";
             this.unitHead_4_Small_Vertical_Left.ErrorAAddress = "M747";
             this.unitHead_4_Small_Vertical_Left.ErrorBAddress = "M739";
             this.unitHead_4_Small_Vertical_Left.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
@@ -1444,13 +1508,15 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.unitHead_4_Small_Vertical_Right.Size = new System.Drawing.Size(220, 64);
             this.unitHead_4_Small_Vertical_Right.LogAction = true;
             this.unitHead_4_Small_Vertical_Right.Arrows = Kaban.Core.Enums.ButtonArrowStyle.DownUp;
-            this.unitHead_4_Small_Vertical_Right.CommandAAddress = "M218";
+            this.unitHead_4_Small_Vertical_Right.CommandAAddress = "M217";
             this.unitHead_4_Small_Vertical_Right.CommandAAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitHead_4_Small_Vertical_Right.Lamp1AAddress = "W7.3";
-            this.unitHead_4_Small_Vertical_Right.CommandBAddress = "M217";
+            this.unitHead_4_Small_Vertical_Right.Lamp1AAddress = "W31.3";
+            this.unitHead_4_Small_Vertical_Right.CommandBAddress = "M218";
             this.unitHead_4_Small_Vertical_Right.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
             this.unitHead_4_Small_Vertical_Right.ValveType = Kaban.UI.Controls.CylinderValve.IslandDoubleSolenoid;
             this.unitHead_4_Small_Vertical_Right.FeedbackType = Kaban.UI.Controls.CylinderFeedback.SingleInductive;
+            this.unitHead_4_Small_Vertical_Right.OutputAAddress = "W131.7";
+            this.unitHead_4_Small_Vertical_Right.OutputBAddress = "W131.6";
             this.unitHead_4_Small_Vertical_Right.ErrorAAddress = "M748";
             this.unitHead_4_Small_Vertical_Right.ErrorBAddress = "M740";
             this.unitHead_4_Small_Vertical_Right.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
@@ -1469,7 +1535,7 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             // 
             // unitHead_4_Small_Horizontal_Left
             // 
-            // Y9.4 / Y10.4 (5/2 double, on the island, both small horizontal presses - the old Mould Shifting): back M228, forward M229 - back sensor W7.4; back failed M690, forward failed M682.
+            // Y9.4 / Y10.4 (5/2 double, on the island, both small horizontal presses - the old Mould Shifting; coils W131.9 back / W131.8 forward): back M228, forward M229 - back sensor W31.4; back failed M690, forward failed M682.
             this.unitHead_4_Small_Horizontal_Left.BackColor = System.Drawing.Color.White;
             this.unitHead_4_Small_Horizontal_Left.Name = "unitHead_4_Small_Horizontal_Left";
             this.unitHead_4_Small_Horizontal_Left.PlcNumber = 1;
@@ -1479,11 +1545,13 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.unitHead_4_Small_Horizontal_Left.LogAction = true;
             this.unitHead_4_Small_Horizontal_Left.CommandAAddress = "M228";
             this.unitHead_4_Small_Horizontal_Left.CommandAAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitHead_4_Small_Horizontal_Left.Lamp1AAddress = "W7.4";
+            this.unitHead_4_Small_Horizontal_Left.Lamp1AAddress = "W31.4";
             this.unitHead_4_Small_Horizontal_Left.CommandBAddress = "M229";
             this.unitHead_4_Small_Horizontal_Left.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
             this.unitHead_4_Small_Horizontal_Left.ValveType = Kaban.UI.Controls.CylinderValve.IslandDoubleSolenoid;
             this.unitHead_4_Small_Horizontal_Left.FeedbackType = Kaban.UI.Controls.CylinderFeedback.SingleMagnetic;
+            this.unitHead_4_Small_Horizontal_Left.OutputAAddress = "W131.9";
+            this.unitHead_4_Small_Horizontal_Left.OutputBAddress = "W131.8";
             this.unitHead_4_Small_Horizontal_Left.ErrorAAddress = "M690";
             this.unitHead_4_Small_Horizontal_Left.ErrorBAddress = "M682";
             this.unitHead_4_Small_Horizontal_Left.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
@@ -1499,11 +1567,13 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.unitHead_4_Small_Horizontal_Right.LogAction = true;
             this.unitHead_4_Small_Horizontal_Right.CommandAAddress = "M228";
             this.unitHead_4_Small_Horizontal_Right.CommandAAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitHead_4_Small_Horizontal_Right.Lamp1AAddress = "W7.5";
+            this.unitHead_4_Small_Horizontal_Right.Lamp1AAddress = "W31.5";
             this.unitHead_4_Small_Horizontal_Right.CommandBAddress = "M229";
             this.unitHead_4_Small_Horizontal_Right.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
             this.unitHead_4_Small_Horizontal_Right.ValveType = Kaban.UI.Controls.CylinderValve.IslandDoubleSolenoid;
             this.unitHead_4_Small_Horizontal_Right.FeedbackType = Kaban.UI.Controls.CylinderFeedback.SingleMagnetic;
+            this.unitHead_4_Small_Horizontal_Right.OutputAAddress = "W131.9";
+            this.unitHead_4_Small_Horizontal_Right.OutputBAddress = "W131.8";
             this.unitHead_4_Small_Horizontal_Right.ErrorAAddress = "M691";
             this.unitHead_4_Small_Horizontal_Right.ErrorBAddress = "M683";
             this.unitHead_4_Small_Horizontal_Right.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
@@ -1522,7 +1592,7 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             // 
             // unitHead_4_Support_Plate_Left
             // 
-            // Y11.4 (5/2 spring, on the island - the old Resistance Lower Down / Up): down M233, up M234 - down sensor W6.5; down failed M639, up failed M643.
+            // Y11.4 (5/2 spring on the drawing, on the island - the old Resistance Lower Down / Up; the PLC has two coils for it, W131.B down and W131.A up): down M233, up M234 - its sensor W30.5 is the PLC's "Dayama_Yukarida" (up); down failed M639, up failed M643.
             this.unitHead_4_Support_Plate_Left.BackColor = System.Drawing.Color.White;
             this.unitHead_4_Support_Plate_Left.Name = "unitHead_4_Support_Plate_Left";
             this.unitHead_4_Support_Plate_Left.PlcNumber = 1;
@@ -1533,9 +1603,9 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.unitHead_4_Support_Plate_Left.Arrows = Kaban.Core.Enums.ButtonArrowStyle.DownUp;
             this.unitHead_4_Support_Plate_Left.CommandAAddress = "M233";
             this.unitHead_4_Support_Plate_Left.CommandAAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitHead_4_Support_Plate_Left.Lamp1AAddress = "W6.5";
             this.unitHead_4_Support_Plate_Left.CommandBAddress = "M234";
             this.unitHead_4_Support_Plate_Left.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
+            this.unitHead_4_Support_Plate_Left.Lamp1BAddress = "W30.5";
             this.unitHead_4_Support_Plate_Left.ValveType = Kaban.UI.Controls.CylinderValve.IslandSingleSolenoid;
             this.unitHead_4_Support_Plate_Left.FeedbackType = Kaban.UI.Controls.CylinderFeedback.SingleInductive;
             this.unitHead_4_Support_Plate_Left.ErrorAAddress = "M639";
@@ -1556,7 +1626,7 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             // 
             // unitHead_4_Stripping_Knife_Left
             // 
-            // Y13.4 (5/2 spring, on the island - the old page's "X2", the head's own commands): back M250, forward M251 - back W7.6, forward W7.7; back failed M635, forward failed M631.
+            // Y13.4 (5/2 spring, on the island - the old page's "X2"; its coil W131.E forward): back M223, forward M222 (the PLC's, common to the heads) - back W31.6, forward W31.7; back failed M635, forward failed M631.
             this.unitHead_4_Stripping_Knife_Left.BackColor = System.Drawing.Color.White;
             this.unitHead_4_Stripping_Knife_Left.Name = "unitHead_4_Stripping_Knife_Left";
             this.unitHead_4_Stripping_Knife_Left.PlcNumber = 1;
@@ -1564,14 +1634,15 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.unitHead_4_Stripping_Knife_Left.Location = new System.Drawing.Point(714, 1036);
             this.unitHead_4_Stripping_Knife_Left.Size = new System.Drawing.Size(220, 64);
             this.unitHead_4_Stripping_Knife_Left.LogAction = true;
-            this.unitHead_4_Stripping_Knife_Left.CommandAAddress = "M250";
+            this.unitHead_4_Stripping_Knife_Left.CommandAAddress = "M223";
             this.unitHead_4_Stripping_Knife_Left.CommandAAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitHead_4_Stripping_Knife_Left.Lamp1AAddress = "W7.6";
-            this.unitHead_4_Stripping_Knife_Left.CommandBAddress = "M251";
+            this.unitHead_4_Stripping_Knife_Left.Lamp1AAddress = "W31.6";
+            this.unitHead_4_Stripping_Knife_Left.CommandBAddress = "M222";
             this.unitHead_4_Stripping_Knife_Left.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitHead_4_Stripping_Knife_Left.Lamp1BAddress = "W7.7";
+            this.unitHead_4_Stripping_Knife_Left.Lamp1BAddress = "W31.7";
             this.unitHead_4_Stripping_Knife_Left.ValveType = Kaban.UI.Controls.CylinderValve.IslandSingleSolenoid;
             this.unitHead_4_Stripping_Knife_Left.FeedbackType = Kaban.UI.Controls.CylinderFeedback.TwoEndMagnetic;
+            this.unitHead_4_Stripping_Knife_Left.OutputBAddress = "W131.E";
             this.unitHead_4_Stripping_Knife_Left.ErrorAAddress = "M635";
             this.unitHead_4_Stripping_Knife_Left.ErrorBAddress = "M631";
             this.unitHead_4_Stripping_Knife_Left.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
@@ -1590,7 +1661,7 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             // 
             // unitHead_4_Profile_Emptying_Left
             // 
-            // Y12.4 (5/2 spring, on the island): back M204, forward M205 - no sensor on the drawings (the old page's W7.A is not there), so no error bit.
+            // Y12.4 (5/2 spring, on the island; its coil W131.C forward): back M205, forward M204 - no sensor on the drawings nor in the PLC, so no error bit.
             this.unitHead_4_Profile_Emptying_Left.BackColor = System.Drawing.Color.White;
             this.unitHead_4_Profile_Emptying_Left.Name = "unitHead_4_Profile_Emptying_Left";
             this.unitHead_4_Profile_Emptying_Left.PlcNumber = 1;
@@ -1598,12 +1669,13 @@ namespace Kaban.Machines.MD3020.Screens.Manual
             this.unitHead_4_Profile_Emptying_Left.Location = new System.Drawing.Point(714, 1108);
             this.unitHead_4_Profile_Emptying_Left.Size = new System.Drawing.Size(220, 64);
             this.unitHead_4_Profile_Emptying_Left.LogAction = true;
-            this.unitHead_4_Profile_Emptying_Left.CommandAAddress = "M204";
+            this.unitHead_4_Profile_Emptying_Left.CommandAAddress = "M205";
             this.unitHead_4_Profile_Emptying_Left.CommandAAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitHead_4_Profile_Emptying_Left.CommandBAddress = "M205";
+            this.unitHead_4_Profile_Emptying_Left.CommandBAddress = "M204";
             this.unitHead_4_Profile_Emptying_Left.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
             this.unitHead_4_Profile_Emptying_Left.ValveType = Kaban.UI.Controls.CylinderValve.IslandSingleSolenoid;
             this.unitHead_4_Profile_Emptying_Left.FeedbackType = Kaban.UI.Controls.CylinderFeedback.NoSensor;
+            this.unitHead_4_Profile_Emptying_Left.OutputBAddress = "W131.C";
             this.unitHead_4_Profile_Emptying_Left.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
             // 
             // ManualCylinders

@@ -77,13 +77,13 @@ L.TYPES['SpeedOverrideHMI'] = 'Kaban.UI.Controls.SpeedOverrideHMI'
 L.OWNED['SpeedOverrideHMI'] = {'Name', 'PlcNumber', 'Address', 'BackColor', 'FallbackText', 'TranslationKey', 'Location', 'Size', 'LogAction', 'TabIndex'}
 L.OWNED['LabelHMI'] = {'Name', 'TranslationKey', 'Text', 'Font', 'ForeColor', 'TextAlign', 'Location', 'Size', 'BackColor'}
 L.OWNED['CylinderUnitHMI'] = L.OWNED['CylinderUnitHMI'] | {'Arrows', 'ButtonATextKey', 'ValveType', 'FeedbackType', 'ErrorAAddress', 'ErrorBAddress',
-                                                           'RequiredSecurity'}
+                                                           'RequiredSecurity', 'OutputAAddress', 'OutputBAddress'}
 L.TYPES['AxisSettingHMI'] = 'Kaban.UI.Controls.AxisSettingHMI'
 L.OWNED['AxisSettingHMI'] = {'Name', 'PlcNumber', 'AxisNameKey', 'HMIAxisIndex', 'MotionNumber', 'MotionAxisIndex', 'CommandBackAddress',
                              'CommandForwardAddress', 'PositionAddress', 'PositionDataType', 'MinLimitAddress', 'MaxLimitAddress',
                              'CalibrationAddress', 'CalibrateAddress', 'ZDistanceAddress', 'ZDistanceDivisor', 'ZDistanceFullScale',
                              'ReferenceSensorAddress', 'ReferenceSensorSide', 'ErrorAddress', 'Divisor', 'DecimalPlaces', 'Digits',
-                             'SettingDataType', 'Suffix', 'BackColor', 'Location', 'Size', 'TabIndex', 'RequiredSecurity'}
+                             'SettingDataType', 'Suffix', 'BackColor', 'Location', 'Size', 'TabIndex', 'RequiredSecurity', 'ReferenceAddress'}
 
 # ============================================================================
 #  THE SPECIFICATION'S PIECES
@@ -133,7 +133,7 @@ def _side(spec):
     return L.side(spec)
 
 def Cy(title, a=None, b=None, lampA=None, lampB=None, valve=None, feedback=None, errA=None, errB=None, pos=None, arrows=None,
-       text=None, span=1, note=None):
+       text=None, span=1, note=None, outA=None, outB=None):
     """A cylinder (CylinderUnitHMI): title - its name's key; a / b - the left and right buttons' commands ('M201', momentary;
     'M200!Alt'); lampA / lampB - the sensor on each; valve / feedback - CylinderValve / CylinderFeedback names; errA / errB -
     the error bits of each movement; pos - a position shown under it ('SD4500 32 /100 2'); arrows - 'DownUp' (A down, B up),
@@ -141,7 +141,7 @@ def Cy(title, a=None, b=None, lampA=None, lampB=None, valve=None, feedback=None,
     sa = _side(a) if a else None
     sb = _side(b) if b else None
     return dict(kind='cyl', title=title, a=sa, b=sb, lampA=lampA, lampB=lampB, valve=valve, feedback=feedback, errA=errA, errB=errB,
-                pos=L.value(pos) if pos else None, arrows=arrows, text=text, span=span, note=note)
+                pos=L.value(pos) if pos else None, arrows=arrows, text=text, span=span, note=note, outA=outA, outB=outB)
 
 def Row(caption, *cells, **kw):
     """A row: its caption, its cells (None: an empty one); key: the names' part when the caption is empty; h: its height
@@ -182,11 +182,12 @@ def page(cls, folder, old, caption, *bands, **kw):
 AXES = {}
 AXIS_FIELDS = [('CommandBackAddress', 'back'), ('CommandForwardAddress', 'fwd'), ('PositionAddress', 'pos'),
                ('MinLimitAddress', 'min'), ('MaxLimitAddress', 'max'), ('CalibrationAddress', 'cal'), ('CalibrateAddress', 'calibrate'),
-               ('ZDistanceAddress', 'zdist'), ('ReferenceSensorAddress', 'ref'), ('ErrorAddress', 'err')]
+               ('ZDistanceAddress', 'zdist'), ('ReferenceSensorAddress', 'ref'), ('ErrorAddress', 'err'), ('ReferenceAddress', 'home')]
 # the axis settings page's headings (AxisSettingHMI.Headings' keys and the old page's words)
 # (key, text, x, width - where the designer shows them; AlignHeaders moves each over its column)
 AXIS_HEADINGS = [('Axis', 'Axis', 0, 132), ('Position', 'Position', 208, 120), ('Min', 'Min', 484, 86), ('Max', 'Max', 574, 86),
-                 ('Calibration', 'Calibration', 664, 86), ('Cal', 'Cal', 754, 44), ('ZDistance', 'Z distance', 802, 76)]
+                 ('Reference', 'Reference', 664, 86), ('Calibration', 'Calibration', 754, 86), ('Cal', 'Cal', 844, 44),
+                 ('ZDistance', 'Z distance', 892, 76)]
 
 # THE MACHINE'S OWN TEXTS (its tool fills them): key -> (EN, TR), added to its Translations.csv when missing
 TRANSLATIONS = {}
@@ -427,6 +428,9 @@ class Grid:
                 em.p(name, 'PositionUnitType', 'Kaban.Core.Enums.UnitType.Length')
             if c.get('valve'): em.p(name, 'ValveType', 'Kaban.UI.Controls.CylinderValve.' + c['valve'])
             if c.get('feedback'): em.p(name, 'FeedbackType', 'Kaban.UI.Controls.CylinderFeedback.' + c['feedback'])
+            # the valve's coils (the step-by-step help's outputs): the PLC's outputs that drive them
+            if c.get('outA'): em.p(name, 'OutputAAddress', cs(c['outA']))
+            if c.get('outB'): em.p(name, 'OutputBAddress', cs(c['outB']))
             if c.get('errA'): em.p(name, 'ErrorAAddress', cs(c['errA']))
             if c.get('errB'): em.p(name, 'ErrorBAddress', cs(c['errB']))
             em.kept(name, 'CylinderUnitHMI', old)
@@ -607,7 +611,7 @@ def cells(pg):
 # an axis's devices an old page showed: its jog buttons, position, limits, calibration, reference sensor and its distance
 # (its error bit and motion module come from the alarm list and the drawings, not from an old page); div / dec: its
 # values' divisor and decimals (10000 / 2 unless given)
-AXIS_SHOWN = ('back', 'fwd', 'pos', 'min', 'max', 'cal', 'calibrate', 'zdist', 'ref')
+AXIS_SHOWN = ('back', 'fwd', 'pos', 'min', 'max', 'cal', 'calibrate', 'zdist', 'ref', 'home')
 
 def spec_devices(pg):
     out = set()

@@ -89,23 +89,29 @@ class MDP {
         Check("  each on its motion module and axis as the image shows them (X1 2.1, Y11 1.1, Y42 1.8, GX1 2.5, RZ3 3.1, Z4 3.8 ...)", wrong.Count == 0 &&
               row(6).MotionNumber == 1 && row(6).MotionAxisIndex == 1 && row(22).MotionNumber == 1 && row(22).MotionAxisIndex == 8, string.Join(", ", wrong));
         var rz3 = row(19);
-        Check("Head 3 RZ (the old Z2): jog M238 / M239, D492, limits D536 / D534, measured value D7048 with Calibrate M81, sensor reference distance D6621",
-              rz3.AxisNameKey == "Axis_MD3020_H3RZ" && rz3.CommandBackAddress == "M238" && rz3.CommandForwardAddress == "M239" && rz3.PositionAddress == "D492" &&
+        Check("Head 3 RZ (the old Z2): jog M215 / M216 (the PLC's, the four together), D492, limits D536 / D534, home D2042, measured value D7048 with Calibrate M81, Z distance D6621",
+              rz3.AxisNameKey == "Axis_MD3020_H3RZ" && rz3.CommandBackAddress == "M215" && rz3.CommandForwardAddress == "M216" && rz3.PositionAddress == "D492" &&
               rz3.MinLimitAddress == "D536" && rz3.MaxLimitAddress == "D534" && rz3.CalibrationAddress == "D7048" && rz3.CalibrateAddress == "M81" &&
-              rz3.ZDistanceAddress == "D6621" && rz3.Divisor == 10000 && rz3.DecimalPlaces == 2 && rz3.PositionDataType == DataTypeEnum.Bin_32);
-        Check("  its reference sensor W4.4 on Forward (the head's island input), its servo alarm M759", rz3.ReferenceSensorAddress == "W4.4" &&
+              rz3.ZDistanceAddress == "D6621" && rz3.ReferenceAddress == "D2042" && rz3.Divisor == 10000 && rz3.DecimalPlaces == 2 && rz3.PositionDataType == DataTypeEnum.Bin_32);
+        Check("  its reference sensor W20.4 on Forward (head 3's island input, as the PLC names it), its servo alarm M759", rz3.ReferenceSensorAddress == "W20.4" &&
               rz3.ReferenceSensorSide == AxisReferenceSide.Forward && rz3.ErrorAddress == "M759");
         Check("  the servo alarms: Head 1 Z / X / Y1 / Y2 M605 - M608 ... Head 4 Y2 M620, the body X1 M621 Y1 M622 Y2 M623 X2 M752",
               row(8).ErrorAddress == "M605" && row(5).ErrorAddress == "M606" && row(6).ErrorAddress == "M607" && row(7).ErrorAddress == "M608" &&
               row(22).ErrorAddress == "M620" && row(1).ErrorAddress == "M621" && row(3).ErrorAddress == "M622" && row(4).ErrorAddress == "M623" &&
               row(2).ErrorAddress == "M752" && row(5).ReferenceSensorAddress == "W0.0" && row(5).ReferenceSensorSide == AxisReferenceSide.Back);
+        Check("  the Y axes' jogs as the PLC names them (Head 1 Y1: back M46, forward M27, its reference W0.1 on Forward - the button it was on)",
+              row(6).CommandBackAddress == "M46" && row(6).CommandForwardAddress == "M27" && row(6).ReferenceSensorAddress == "W0.1" &&
+              row(6).ReferenceSensorSide == AxisReferenceSide.Forward && row(6).ReferenceAddress == "D2004");
+        Check("  the body Y1: home D2034, Z distance D6617, reference X26 (the PLC's GovdeY1_Home_Pos_Address, _ZFaz_Fark, IN_GovdeY1_ReferansSN)",
+              row(3).ReferenceAddress == "D2034" && row(3).ZDistanceAddress == "D6617" && row(3).ReferenceSensorAddress == "X26");
         var nums = Tree(cal).OfType<NumericInputHMI>().ToList();
-        Check("  the old page's Encoder column kept (Head 3 RZ D2042), the body's Encoder Channel D2816 whole and Offset D2808",
-              nums.Any(n => n.Address == "D2042" && n.Divisor == 10000 && n.DecimalPlaces == 2 && n.DataType == DataTypeEnum.Bin_32) &&
-              nums.Any(n => n.Address == "D2816" && n.DecimalPlaces == 0 && n.DataType == DataTypeEnum.Bin_16) && nums.Any(n => n.Address == "D2808"));
-        Check("  Send Reference (M100) once; the heads' X2 rows as the old page's (Head 3: M248 / M249, D2830, D7100, Calibrate M93)",
-              Tree(cal).OfType<ButtonHMI>().Count(b => Bits(b) == "M100:Momentary") == 1 && Btn(cal, "M248") != null && Btn(cal, "M93") != null &&
-              nums.Any(n => n.Address == "D2830") && nums.Any(n => n.Address == "D7100"));
+        Check("  the body's encoders as the PLC names them: Y1 D2804, Y2 D2806 (the old page's D2812 / D2014 were others), addresses D2816 ... whole, offsets D2808 ...",
+              nums.Any(n => n.Address == "D2804" && n.Divisor == 10000 && n.DataType == DataTypeEnum.Bin_32) && nums.Any(n => n.Address == "D2806") &&
+              nums.Any(n => n.Address == "D2816" && n.DecimalPlaces == 0 && n.DataType == DataTypeEnum.Bin_16) && nums.Any(n => n.Address == "D2808") &&
+              !nums.Any(n => n.Address == "D2014"));
+        Check("  Send Reference (M100) once; the heads' X2 rows left out (their devices free in the PLC program, D2826 the body Y encoder's tolerance)",
+              Tree(cal).OfType<ButtonHMI>().Count(b => Bits(b) == "M100:Momentary") == 1 && Btn(cal, "M248") == null && Btn(cal, "M93") == null &&
+              nums.Count(n => n.Address == "D2826") == 1);
 
         Console.WriteLine("--- Manual Movement: an axis unit per servo ---");
         Kaban.UI.Helpers.AlarmHelpLinks.DiscoverAll();
@@ -128,6 +134,8 @@ class MDP {
         Check("the units that are no cylinders: Milling Cutters M200, Conveyor Up/Down M207 / M206, Conveyor Run M208, the thermocouples D5 / D9",
               milling != null && milling.FallbackText == "Milling Cutters" && Btn(mm, "M207") != null && Btn(mm, "M206") != null &&
               Btn(mm, "M208").FallbackText == "Conveyor Run" && Tree(mm).OfType<NumericDisplayHMI>().Any(d => d.Address == "D5" && d.Divisor == 10 && d.Suffix == "°C"));
+        Check("  Milling Blow M232 (the PLC's MAN_FrezeUfleme), momentary", Btn(mm, "M232") != null && Bits(Btn(mm, "M232")) == "M232:Momentary" &&
+              Btn(mm, "M232").FallbackText == "Milling Blow");
 
         Console.WriteLine("--- Cylinders: a cylinder unit each, head by head ---");
         var cyl = new ManualCylinders();
@@ -139,31 +147,40 @@ class MDP {
         Check("Head 1 Left Top Press: Island3WayOpenCenter (Y1.1 / Y2.1), its encoder SD4500 (/ 100) and up sensor W0.6 - EncoderPlusReference",
               tp != null && tp.ValveType == CylinderValve.IslandThreeWayOpenCenter && tp.FeedbackType == CylinderFeedback.EncoderPlusReference &&
               tp.CommandAAddress == "M201" && tp.CommandBAddress == "M202" && tp.Lamp1BAddress == "W0.6" && tp.PositionAddress == "SD4500" &&
-              tp.PositionDivisor == 100 && tp.Arrows == ButtonArrowStyle.DownUp && tp.ErrorAAddress == "M660" && tp.ErrorBAddress == "M668" && tp.TypeCheck == "OK",
+              tp.PositionDivisor == 100 && tp.Arrows == ButtonArrowStyle.DownUp && tp.ErrorAAddress == "M660" && tp.ErrorBAddress == "M668" && tp.TypeCheck == "OK" &&
+              tp.OutputAAddress == "W101.0" && tp.OutputBAddress == "W101.1",
               tp == null ? "-" : tp.TypeCheck);
         var fc = unit("Unit_MD3020_H2FrontClampR");
-        Check("Head 2 Right Front Clamp: IslandDoubleSolenoid (Y5.2 / Y6.2), back sensor W3.1 - SingleMagnetic; open failed M728, clamp failed M720",
+        Check("Head 2 Right Front Clamp: IslandDoubleSolenoid (Y5.2 / Y6.2, coils W111.5 open / W111.4 clamp), open M231 / clamp M230, back sensor W11.1; M728 / M720",
               fc != null && fc.ValveType == CylinderValve.IslandDoubleSolenoid && fc.FeedbackType == CylinderFeedback.SingleMagnetic &&
-              fc.CommandAAddress == "M230" && fc.CommandBAddress == "M231" && fc.Lamp1AAddress == "W3.1" && fc.ErrorAAddress == "M728" && fc.ErrorBAddress == "M720");
+              fc.CommandAAddress == "M231" && fc.CommandBAddress == "M230" && fc.Lamp1AAddress == "W11.1" && fc.ErrorAAddress == "M728" && fc.ErrorBAddress == "M720" &&
+              fc.OutputAAddress == "W111.5" && fc.OutputBAddress == "W111.4" && fc.TypeCheck == "OK");
         var sv = unit("Unit_MD3020_H3SmallVerticalL");
-        Check("Head 3 Left Small Vertical (the old Ear Clamping): down M218 / up M217, down sensor W5.2 - SingleInductive; M745 / M737",
-              sv != null && sv.FeedbackType == CylinderFeedback.SingleInductive && sv.CommandAAddress == "M218" && sv.Lamp1AAddress == "W5.2" &&
+        Check("Head 3 Left Small Vertical (the old Ear Clamping): down M217 / up M218, down sensor W21.2 - SingleInductive; coils W121.7 / W121.6; M745 / M737",
+              sv != null && sv.FeedbackType == CylinderFeedback.SingleInductive && sv.CommandAAddress == "M217" && sv.CommandBAddress == "M218" &&
+              sv.Lamp1AAddress == "W21.2" && sv.OutputAAddress == "W121.7" && sv.OutputBAddress == "W121.6" &&
               sv.ErrorAAddress == "M745" && sv.ErrorBAddress == "M737");
         var sk = unit("Unit_MD3020_H4StrippingKnife");
-        Check("Head 4 Stripping Knife (the old X2): its own M250 / M251, back W7.6 and forward W7.7 - TwoEndMagnetic on IslandSingleSolenoid; M635 / M631",
+        Check("Head 4 Stripping Knife (the old X2): M223 / M222 (the PLC's, every head's), back W31.6 / forward W31.7, its coil W131.E - TwoEndMagnetic; M635 / M631",
               sk != null && sk.ValveType == CylinderValve.IslandSingleSolenoid && sk.FeedbackType == CylinderFeedback.TwoEndMagnetic &&
-              sk.CommandAAddress == "M250" && sk.CommandBAddress == "M251" && sk.Lamp1AAddress == "W7.6" && sk.Lamp1BAddress == "W7.7" &&
+              sk.CommandAAddress == "M223" && sk.CommandBAddress == "M222" && sk.Lamp1AAddress == "W31.6" && sk.Lamp1BAddress == "W31.7" &&
+              sk.OutputBAddress == "W131.E" && string.IsNullOrEmpty(sk.OutputAAddress) &&
               sk.ErrorAAddress == "M635" && sk.ErrorBAddress == "M631");
         var pe = unit("Unit_MD3020_H1ProfileEmptying");
-        Check("Head 1 Profile Emptying: no sensor on the drawings - NoSensor, no lamp, no error bit", pe != null && pe.FeedbackType == CylinderFeedback.NoSensor &&
+        Check("Head 1 Profile Emptying: back M205 / forward M204 (the PLC's), its coil W101.C forward; no sensor - NoSensor, no lamp, no error bit",
+              pe != null && pe.FeedbackType == CylinderFeedback.NoSensor && pe.CommandAAddress == "M205" && pe.CommandBAddress == "M204" && pe.OutputBAddress == "W101.C" &&
               string.IsNullOrEmpty(pe.Lamp1AAddress) && string.IsNullOrEmpty(pe.ErrorAAddress) && pe.TypeCheck.IndexOf("NoSensor", StringComparison.Ordinal) < 0);
+        var sp = unit("Unit_MD3020_H2SupportPlate");
+        Check("Head 2 Support Plate: down M233 / up M234, its sensor W10.5 the PLC's \"Dayama_Yukarida\" - on the up side; M637 / M641",
+              sp != null && sp.Lamp1BAddress == "W10.5" && string.IsNullOrEmpty(sp.Lamp1AAddress) && sp.ErrorAAddress == "M637" && sp.ErrorBAddress == "M641");
         var odd = cu.Where(u => CylinderValves.Base(u.ValveType) != CylinderValve.SingleSolenoid && u.TypeCheck != "OK").Select(u => u.TitleTextKey + ": " + u.TypeCheck).ToList();
         Check("  every unit on a valve island; the two-coil ones' actions, lamps and positions as their valve and feedback ask", odd.Count == 0 &&
               cu.All(u => CylinderValves.OnIsland(u.ValveType)), string.Join(" | ", odd.Take(3)));
         var alarmsJson = File.Exists("Alarms.json") ? File.ReadAllText("Alarms.json") : File.ReadAllText(Path.Combine("MD3020", "Alarms.json"));
         var noAlarm = cu.SelectMany(u => new[] { u.ErrorAAddress, u.ErrorBAddress }).Concat(rows.Select(r => r.ErrorAddress))
                         .Where(a => !string.IsNullOrEmpty(a) && !alarmsJson.Contains("\"" + a + "\"")).ToList();
-        Check("  every error bit on the machine's alarm list (108 alarms)", noAlarm.Count == 0 && System.Text.RegularExpressions.Regex.Matches(alarmsJson, "PlcAddress").Count == 108,
+        Check("  every error bit on the machine's alarm list (131 alarms: the PLC program's M600 ... M762 but its spares)", noAlarm.Count == 0 &&
+              System.Text.RegularExpressions.Regex.Matches(alarmsJson, "PlcAddress").Count == 131,
               string.Join(",", noAlarm.Take(5)));
         Check("  an operator's, their movements logged", cu.All(u => u.RequiredSecurity == SecurityLevel.Operator && u.LogAction));
 
@@ -175,9 +192,13 @@ class MDP {
               ga.SequenceEqual(new[] { 1, 2, 3, 4 }) && new[] { "D6634", "D6636", "D6630", "D6632" }.All(a => Tree(gen).OfType<MeterHMI>().Any(m => m.Address == a)));
         Check("  the brakes M260 (X, Y14.4) / M261 (Y1) / M262 (Y2): IslandSingleSolenoid, no sensor, one button",
               brakes.Count == 3 && brakes.All(b => b.ValveType == CylinderValve.IslandSingleSolenoid && b.FeedbackType == CylinderFeedback.NoSensor &&
-              string.IsNullOrEmpty(b.CommandBAddress) && b.TypeCheck == "OK") && brakes.Select(b => b.CommandAAddress).SequenceEqual(new[] { "M260", "M261", "M262" }),
+              string.IsNullOrEmpty(b.CommandBAddress) && b.TypeCheck == "OK") && brakes.Select(b => b.CommandAAddress).SequenceEqual(new[] { "M260", "M261", "M262" }) &&
+              brakes.Select(b => b.OutputAAddress).SequenceEqual(new[] { "W132.0", "W112.0", "W122.0" }),
               string.Join(" | ", brakes.Select(b => b.CommandAAddress + " " + b.TypeCheck)));
         Check("  Conveyor Up/Down M207 / M206, Conveyor Run M208", Btn(gen, "M207") != null && Btn(gen, "M206") != null && Btn(gen, "M208") != null);
+        Check("  Signal Lamps: Green M210 / Yellow M211 / Red M212 / Horn M213 (momentary), lit by their outputs Y7 / Y10 / Y11 / Y12",
+              new[] { "M210:Y7", "M211:Y10", "M212:Y11", "M213:Y12" }.All(p => { var b = Btn(gen, p.Split(':')[0]); return b != null &&
+              Bits(b) == p.Split(':')[0] + ":Momentary" && b.Lamp1Address == p.Split(':')[1]; }));
         var servos = new ManualServos();
         Check("Servos: 28 servos' position, torque and encoder (Head 1 - 4 and the body)",
               Tree(servos).OfType<MeterHMI>().Count() == 28 && Tree(servos).OfType<NumericDisplayHMI>().Count() == 56 &&
@@ -231,6 +252,18 @@ class MDP {
               new[] { "M90", "M2", "M1", "M0" }.All(a => Btn(bar, a) != null && Bits(Btn(bar, a)) == a + ":SET" && Btn(bar, a).Lamp1Address == a) &&
               Tree(bar).OfType<SpeedOverrideHMI>().Single().Address == "D409");
 
+        Console.WriteLine("--- the PLC program's labels (PlcLabels.csv) ---");
+        int nLabels = PlcLabelTable.Load(File.Exists("PlcLabels.csv") ? "PlcLabels.csv" : Path.Combine("MD3020", "PlcLabels.csv"));
+        Check("1261 labels, beside the exe and in MD3020\\ (" + nLabels + ")", nLabels == 1261 && File.Exists(Path.Combine("MD3020", "PlcLabels.csv")));
+        var lb = PlcLabelTable.ByAddress("M214"); var lp = PlcLabelTable.ByAddress("D2052"); var lg = PlcLabelTable.ByAddress(@"U1\G2417.3");
+        Check("  M214 MAN_Frezeler_Stop (Bit), D2052 Y11_Prof_Koy_Ofset a Double Word shown / 10000 as the pages show it, U1\\G2417.3 Y11_HPR_request",
+              lb != null && lb.Label == "MAN_Frezeler_Stop" && lb.IsBit && lp != null && lp.Label == "Y11_Prof_Koy_Ofset" && lp.Is32Bit && lp.Divisor == 10000 && lp.Decimals == 2 &&
+              lg != null && lg.Label == "Y11_HPR_request", lp == null ? "D2052 none" : lp.Label + " " + lp.DataType + " " + lp.Divisor);
+        var unlabelled = cu.SelectMany(u => new[] { u.CommandAAddress, u.CommandBAddress })
+                           .Where(a => !string.IsNullOrEmpty(a) && PlcLabelTable.ByAddress(a) == null).Distinct().ToList();
+        Check("  every cylinder unit's command is one of the program's labels", unlabelled.Count == 0, string.Join(",", unlabelled.Take(8)));
+        Check("  the PC_ labels (the HMI's writes) - the PLC Monitor's tab HMI -> PLC", PlcLabelTable.Entries.Count(e => e.Label.StartsWith("PC_")) > 100);
+
         Console.WriteLine("--- in Turkish ---");
         LanguageManager.LoadMachineTranslations(Path.Combine("MD3020", "Translations.csv"));
         var keys = new List<string>();
@@ -248,7 +281,7 @@ class MDP {
         Check("every caption of the pages and their tabs has its Turkish (" + keys.Distinct().Count() + ")", missing.Count == 0, string.Join(", ", missing));
         LanguageManager.ChangeLanguage("TR");
         Check("  shown: Kafa 1, Gerçek Tork, Kalibre Et, Eritme Yaklaşma Hızı", LanguageManager.GetString("Head 1", "") == "Kafa 1" &&
-              LanguageManager.GetString("Actual Torque", "") == "Gerçek Tork" && LanguageManager.GetString(Btn(cal, "M93").TranslationKey, "") == "Kalibre Et" &&
+              LanguageManager.GetString("Actual Torque", "") == "Gerçek Tork" && LanguageManager.GetString("Calibrate", "") == "Kalibre Et" &&
               LanguageManager.GetString("Melting Approach Speed", "") == "Eritme Yaklaşma Hızı");
         LanguageManager.ChangeLanguage("EN");
 

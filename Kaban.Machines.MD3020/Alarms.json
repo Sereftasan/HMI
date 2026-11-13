@@ -1,5 +1,35 @@
 [
   {
+    "PlcAddress": "M600",
+    "TagCode": "Head_1_milling_cutter_fault",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M601",
+    "TagCode": "Head_2_milling_cutter_fault",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M602",
+    "TagCode": "Head_3_milling_cutter_fault",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M603",
+    "TagCode": "Head_4_milling_cutter_fault",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M604",
+    "TagCode": "Air_pressure_fault",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
     "PlcAddress": "M605",
     "TagCode": "Head_1_Z_Servo_Alarm",
     "Severity": "Fault",
@@ -426,6 +456,60 @@
     "PlcNumber": 1
   },
   {
+    "PlcAddress": "M692",
+    "TagCode": "Profile_height_not_suitable",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M693",
+    "TagCode": "Vertical_stripping_did_not_go_up",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M694",
+    "TagCode": "Vertical_stripping_did_not_go_down",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M695",
+    "TagCode": "Profile_in_the_machine",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M696",
+    "TagCode": "Profile_not_loaded",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M697",
+    "TagCode": "Head_1_profile_length_error",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M698",
+    "TagCode": "Head_2_profile_length_error",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M699",
+    "TagCode": "Head_3_profile_length_error",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M700",
+    "TagCode": "Head_4_profile_length_error",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
     "PlcAddress": "M717",
     "TagCode": "Head_1_Left_Front_Clamp_did_not_clamp",
     "Severity": "Fault",
@@ -618,8 +702,50 @@
     "PlcNumber": 1
   },
   {
+    "PlcAddress": "M749",
+    "TagCode": "Body_X_profile_length_error",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M750",
+    "TagCode": "Body_Y1_profile_length_error",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M751",
+    "TagCode": "Body_Y2_profile_length_error",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
     "PlcAddress": "M752",
     "TagCode": "Body_X2_Servo_Alarm",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M753",
+    "TagCode": "Body_X1_encoder_read_error",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M754",
+    "TagCode": "Body_X2_encoder_read_error",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M755",
+    "TagCode": "Body_Y1_encoder_read_error",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M756",
+    "TagCode": "Body_Y2_encoder_read_error",
     "Severity": "Fault",
     "PlcNumber": 1
   },
@@ -644,6 +770,18 @@
   {
     "PlcAddress": "M760",
     "TagCode": "Head_4_Resistance_Z_Servo_Alarm",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M761",
+    "TagCode": "Body_X_target_out_of_limits",
+    "Severity": "Fault",
+    "PlcNumber": 1
+  },
+  {
+    "PlcAddress": "M762",
+    "TagCode": "Body_Y_target_out_of_limits",
     "Severity": "Fault",
     "PlcNumber": 1
   }

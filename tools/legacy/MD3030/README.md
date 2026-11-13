@@ -86,3 +86,61 @@ To check (tools/legacy_md3030_pages.py, one table each):
 * The single-coil cylinders (support plate, stripping knife, profile emptying) keep
   the old page's two buttons each: their type check says one coil drives one
   movement - which button is the coil's?
+
+## 12 November: from the PLC program (MD3030_V1.01_25.07.22_Eritme1_Pozisyonuna.gx3)
+
+The user sent the PLC project. What it holds, read with two new tools:
+
+* `PLC_V1.01_Labels.txt` (tools/gx3_labels.py --dump): every global label (device,
+  label, comment), then the device comments (the positioning modules' 9790 buffer
+  memory names left out). `Kaban.Machines.MD3020/PlcLabels.csv` (--csv): the same
+  labels for the HMI - 1261, the PC_ ones (the HMI's writes) in the PLC Monitor's tab
+  HMI -> PLC, the divisor and decimals where the pages show a device scaled. It
+  replaces the invented sample; it is now copied beside the exe and into MD3020\.
+* `PLC_V1.01_Program.txt` (tools/gx3_program.py): the program as text - each ladder
+  rung its condition => what it drives, each inline ST box and ST POU its source,
+  every label with its device. GX Works3 keeps each rung as a grid of contacts and
+  coils; the lines between them are not stored, so the tool tells a blank cell from a
+  line by the vertical links beside it - check a rung that matters in GX Works3.
+  The POUs' own names are not in the files: each is named by its titles.
+
+What the pages took from it (tools/legacy_md3030_pages.py says each):
+
+* Heads 2 - 4's inputs are W10 / W11, W20 / W21, W30 / W31 (the old page used W2 ...
+  W7) and their coils W111, W121, W131 (head 1 W100 / W101).
+* The manual cylinder commands are common: M201 / M202 (top press), M230 / M231
+  (front clamp), M217 / M218 (small vertical), M228 / M229 (small horizontal), M233 /
+  M234 (support plate), M222 / M223 (stripping knife), M204 / M205 (profile emptying)
+  set every active head's side (Kafa<n>_Sol / Sag_Aktif; a single head machine only
+  head 1) - the top press only while that side's front clamp is back. Several of the
+  old page's buttons were the other way round (front clamp, small vertical, profile
+  emptying); the Y jogs were swapped.
+* The resistance Z's jog is common (M215 / M216); the heads' old X2 rows used devices
+  the program does not use - left out (D2826 is the body Y encoder's tolerance).
+* Axis Calibration: each axis's home position (Home_Pos_Address D2000 ...), Z phase
+  distance and reference sensor; the body's encoders as the program names them.
+* Alarms.json: 131 alarms (milling faults M600 - M603, air pressure M604, profile
+  and encoder errors M692 - M700, M749 - M756, targets out of limits M761 / M762).
+* Manual General: Signal Lamps - Warning Green / Yellow / Red / Horn M210 - M213
+  (the old page had them hidden), lit by their outputs Y7 / Y10 / Y11 / Y12. Manual
+  Movement: Milling Blow M232 (MAN_FrezeUfleme).
+
+Questions (the program answers them only in part):
+
+* The small vertical presses' down sensors are normally closed
+  (IN_..._ArkaKucukDikeyBaski_AsagidaSN_NC): their lamps show the bit as it is - an
+  inverted lamp for a cylinder unit?
+* The support plate has two coils in the program (OUT_Dayama_AltRezistans<n>_Yukari
+  W101.A / _Asagi W101.B) where the drawing shows one spring valve.
+* The body brakes: the program releases them by itself out of automatic
+  (OUT_Govde..._Fren_AC) and its manual brake labels have no device - the old page's
+  M260 - M262 are not in the program. Keep the brake buttons?
+* M206 / M207 (conveyor up / down) and M209 (lubrication) are named _MAN_ (unused)
+  and M214 (MAN_Frezeler_Stop) is in no rung - the conveyor's up / down buttons do
+  nothing in V1.01.
+* M220 MAN_Otomatik_ON_OFF (alternate): while it is on, a manual top press command
+  holds the front clamps' command off and the other way round; switching it clears
+  every head's manual commands (W141 ... W171) - not on the pages.
+* The servos' loads Ax17 - Ax19_Yuklenme (D6656 - D6658) follow the alarms' axis order:
+  they look like the body's, not the heads' X2 / RZ the old Servos page showed.
+* Per axis go-to-reference bits (ReferansaGit M3 ... M21) exist - not on the pages.
