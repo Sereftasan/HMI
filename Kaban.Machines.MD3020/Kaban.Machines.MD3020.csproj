@@ -803,6 +803,10 @@
     </None>
     <None Include="Translations.csv" />
     <None Include="Alarms.json" />
+    <!-- the PLC program's global labels (tools/gx3_labels.py): beside the exe for this program, in MD3020\ for a host that mounts it -->
+    <None Include="PlcLabels.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <!-- the machine's structured data types (the PLC Monitor's): written here by the program when it runs from this build -->
     <None Include="StructuredTypes.csv" Condition="Exists('StructuredTypes.csv')">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -824,7 +828,7 @@
        are, copied into bin\Debug\MD3020\ - the same place FA2010 puts them when
        it mounts this machine, so both find them without a virtual folder. -->
   <Target Name="AfterBuild">
-    <Copy SourceFiles="Translations.csv;Alarms.json" DestinationFolder="$(OutDir)MD3020\" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="Translations.csv;Alarms.json;PlcLabels.csv" DestinationFolder="$(OutDir)MD3020\" SkipUnchangedFiles="true" />
   </Target>
   <!-- Shared profile drawings: one source in KabanHMI\Profiles, copied to
        bin\Debug\Profiles\ at build - add a DXF there and every machine has it. -->
