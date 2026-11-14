@@ -955,8 +955,6 @@ namespace Kaban.UI.Controls
         // movement this button commands.
         private const int LampBarInset = 6;   // from the button edge to the lamp
 
-        private const int LampBarGap = 2;     // gap between the two bars (tight, to free text space)
-
         // Slightly shorter than before for the same reason: it buys the same few
         // pixels of clearance at the TOP and BOTTOM edges that LampBarInset buys at
         // the side, so the lamp is inset on every side rather than only two.
@@ -1757,9 +1755,6 @@ namespace Kaban.UI.Controls
 
         private readonly List<KeyValuePair<string, string>> _cycleHeld = new List<KeyValuePair<string, string>>();
         private int _cycleStation;
-
-        /// <summary>True when the back-and-forth movement holds its bits now.</summary>
-        internal bool HoldsCycle { get { return _cycleHeld.Count > 0; } }
 
         /// <summary>True when the button has anything to do (a bit or word action).</summary>
         internal bool HasActions { get { return BitActions.Count > 0 || WordActions.Count > 0; } }

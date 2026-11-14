@@ -720,9 +720,6 @@ namespace Kaban.Machines.FA2010.Screens
             }
         }
 
-        /// <summary>Testability hook: the grouping columns.</summary>
-        internal void SetGroupColumns(IEnumerable<string> cols) { SetGroups(cols.ToList()); ApplyFilterAndSort(); }
-
         private void OnHeaderClick(object sender, DataGridViewCellMouseEventArgs e)
         {
             if (e.Button != MouseButtons.Left) return;     // the right button: the columns' menu (ColumnChooser)

@@ -118,9 +118,6 @@ namespace Kaban.UI.Controls
             if (h != null) h(this, value.HasValue ? value.Value / 100.0 : (double?)null);
         }
 
-        /// <summary>A size set from the program (tests: as the slider let go there, or the keypad).</summary>
-        internal void ChooseFromUser(int percent) { Commit(percent); }
-
         internal string TipText()
         {
             return LanguageManager.GetString("Ttl_Magnifier", "Screen scale") + ": " + Text + "\n" +

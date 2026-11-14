@@ -31,7 +31,6 @@ namespace Kaban.UI.Controls
         private Point _mouseDown;
         private Rectangle _startBounds;
         private ResizeEdge _edge;
-        private int _restoreHeight;
 
         // The bounds to come back to. Held for BOTH minimise and maximise, because
         // a pane can be maximised, then minimised, then restored - and it has to
@@ -354,24 +353,6 @@ namespace Kaban.UI.Controls
             Bounds = b;
         }
 
-        /// <summary>
-        /// Keeps the pane WHOLLY inside the page. The previous version allowed the
-        /// pane to hang past the edge and then pulled it back, so a drag beyond the
-        /// border oscillated between the two positions and flickered. Clamping the
-        /// full rectangle up-front means a drag simply stops at the edge.
-        /// </summary>
-        private void ClampIntoParent()
-        {
-            if (Parent == null) return;
-            int maxW = Math.Max(MinimumSize.Width, Parent.ClientSize.Width);
-            int maxH = Math.Max(MinimumSize.Height, Parent.ClientSize.Height);
-            int w = Math.Min(Width, maxW), h = Math.Min(Height, maxH);
-            int x = Math.Max(0, Math.Min(Left, maxW - w));
-            int y = Math.Max(0, Math.Min(Top, maxH - h));
-            var target = new Rectangle(x, y, w, h);
-            if (Bounds != target) Bounds = target;
-        }
-
         private ResizeEdge EdgeAt(Point p)
         {
             bool l = p.X <= Frame, r = p.X >= Width - Frame;
@@ -434,7 +415,6 @@ namespace Kaban.UI.Controls
             int useH = Math.Max(usable, h);
             Bounds = new Rectangle(x, yy, useW, useH);
             _restoreBounds = Bounds;
-            _restoreHeight = useH;
 
             // Older layouts wrote 0/1 for "minimised"; 1 still means minimised under
             // the new enum, so both shapes load correctly.

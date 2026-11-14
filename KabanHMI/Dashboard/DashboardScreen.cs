@@ -78,7 +78,6 @@ namespace Kaban.UI.Dashboard
         /// <summary>What the filters let through when the shown data was read; the HMI's entries that passed.</summary>
         private DashboardFilter _filter = new DashboardFilter();
         private List<AuditEntry> _hmiEntries = new List<AuditEntry>();
-        private int _hmiRead;
 
         private readonly EventHandler _onLanguage, _onUser, _onConfig;
         private readonly EventHandler<DashboardReports.RunResult> _onReports;
@@ -783,7 +782,6 @@ namespace Kaban.UI.Dashboard
                 finally { _setting = false; }
                 _filter = filter;
                 _hmiEntries = r.Hmi;
-                _hmiRead = r.HmiRead;
                 Show(r.View, message);
                 int records = (r.Data != null ? r.Data.Rows.Count : 0) + r.HmiRead;
                 SetStatus(string.Format(CultureInfo.CurrentCulture, T("Dsh_Records", "{0:#,0} records read in {1:0.0} s"),

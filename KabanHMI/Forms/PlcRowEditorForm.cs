@@ -49,7 +49,6 @@ namespace Kaban.UI.Forms
         private readonly Label _preview = new Label();
         private readonly Label _labelCaption = new Label();
         private readonly Button _structures = new Button();
-        private readonly bool _isNew;
         /// <summary>Filling the fields in from the label list (not the user typing); what the user typed himself.</summary>
         private bool _auto, _labelTyped, _typeTyped, _addressTyped;
         /// <summary>What a label list's entry filled in, and what the fields held before (put back when the text no longer names one).</summary>
@@ -143,7 +142,6 @@ namespace Kaban.UI.Forms
         {
             _lockCount = lockArrayCount;
             Kaban.UI.Controls.UiScale.ApplyOnLoad(this);       // at the magnifying factor
-            _isNew = isNew;
             _station = station;
             Text = LanguageManager.GetString(isNew ? "Ttl_AddDevice" : "Ttl_EditDevice", isNew ? "Add device" : "Edit device")
                    + " - " + caption;

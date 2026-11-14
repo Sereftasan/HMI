@@ -680,9 +680,6 @@ namespace Kaban.UI.Settings
         // THE PREVIEW: beside the list open, for the entry under the pointer
         // ==================================================================
 
-        /// <summary>The preview's subject (tests).</summary>
-        internal string ActiveKey { get { return _preview.Visible ? _preview.Key : null; } }
-
         /// <summary>A list's entry, drawn by the page; the one under the pointer of an open list is previewed.</summary>
         private void DrawEntry(ComboBox combo, string key, DrawItemEventArgs e)
         {
@@ -786,9 +783,6 @@ namespace Kaban.UI.Settings
             _preview.ShowScale(factor, DisplaySettings.PanelFactor);
             PlaceBeside(_scale.RectangleToScreen(_scale.ClientRectangle), _scale.PointToScreen(Point.Empty).Y);
         }
-
-        /// <summary>Test hook: the slider held at a size.</summary>
-        internal void HoverScale(double? factor) { ShowScaleBeside(factor); }
 
         /// <summary>A user's (or everyone's) preferences, line by line: the name, the value, their own or not.</summary>
         private List<PreferencePreview.Line> SummaryOf(string who)

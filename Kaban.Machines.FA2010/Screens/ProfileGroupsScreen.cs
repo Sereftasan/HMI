@@ -44,7 +44,6 @@ namespace Kaban.Machines.FA2010.Screens
         private long _instance;
         /// <summary>The profile group shown on the right (0: none).</summary>
         internal long GroupId { get; private set; }
-        private long _accessoryId;
         private readonly List<Button> _editButtons = new List<Button>();
 
         private static string T(string key, string text) { return LanguageManager.GetString(key, text); }
@@ -403,7 +402,6 @@ namespace Kaban.Machines.FA2010.Screens
         internal void ShowGroup(long groupId)
         {
             GroupId = groupId;
-            _accessoryId = 0;
             var g = Library.Rows(@"SELECT g.name, g.profile_type, s.name AS series, ven.name AS vendor,
                                          (SELECT code FROM profile WHERE id = g.reference_profile_id) AS reference,
                                          (SELECT COUNT(*) FROM profile p WHERE p.group_id = g.id AND p.is_active = 1) AS profiles
@@ -496,7 +494,6 @@ namespace Kaban.Machines.FA2010.Screens
 
         private void ShowAccessory(long id)
         {
-            _accessoryId = id;
             var a = Library.Rows(@"SELECT a.code, a.description, ag.name AS acc_group, ag.accessory_type FROM accessory a JOIN accessory_group ag ON ag.id = a.group_id
                                    WHERE a.id = @p0", id).FirstOrDefault();
             if (a == null) return;

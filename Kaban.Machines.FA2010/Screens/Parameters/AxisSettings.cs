@@ -35,10 +35,6 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             Controls.SetChildIndex(axisJogBar, at);
         }
 
-        private void AxisSettings_Load(object sender, System.EventArgs e)
-        {
-
-        }
     }
 }
 

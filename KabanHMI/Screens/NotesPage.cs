@@ -139,8 +139,6 @@ namespace Kaban.UI.Screens
 
         /// <summary>The details tab's mode (tests).</summary>
         internal DetailMode Mode { get { return _mode; } }
-        /// <summary>The note viewed or edited (tests).</summary>
-        internal Note NoteShown { get { return _note; } }
 
         /// <summary>True when something typed here is not kept yet.</summary>
         internal bool Dirty

@@ -298,43 +298,6 @@ namespace Kaban.Core.Helpers
             return lines;
         }
 
-        /// <summary>
-        /// Translation CSVs.
-        ///
-        /// v1  Key;EN;TR
-        /// v2  Key;EN;TR;RU;DE
-        /// v3  Key;EN;TR;RU;DE;IT;ES
-        /// </summary>
-        private static int DetectCsvVersion(string path)
-        {
-            foreach (var line in File.ReadAllLines(path))
-            {
-                if (line.StartsWith("#") || line.Trim().Length == 0) continue;
-                int cols = line.Split(';').Length;
-                if (cols >= 7) return 3;
-                if (cols >= 5) return 2;
-                return 1;
-            }
-            return 1;
-        }
-
-        private static string[] UpgradeCsv(string[] lines, int from)
-        {
-            var outp = new List<string>();
-            foreach (var line in lines)
-            {
-                if (line.StartsWith("#") || line.Trim().Length == 0) { outp.Add(line); continue; }
-                var p = line.Split(';').ToList();
-
-                // Padded with EMPTY cells, never with the English text. An empty cell
-                // falls back to English at run time and stays visible as untranslated;
-                // a copy of the English looks finished and never gets translated.
-                while (p.Count < 7) p.Add("");
-                outp.Add(string.Join(";", p));
-            }
-            return outp.ToArray();
-        }
-
         // ==================================================================
         private static int CountRows(string path)
         {

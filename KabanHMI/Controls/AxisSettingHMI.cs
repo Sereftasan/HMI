@@ -514,9 +514,6 @@ namespace Kaban.UI.Controls
         private ButtonHMI _back, _forward, _calibrate;
         private CheckBoxHMI _goRef;
         private NumericDisplayHMI _position;
-        private MeterHMI _current, _zdist;
-        private HexCodeHMI _axisAlarm, _axisWarning, _servoAlarm;
-        private BaseNumericHMI _travel, _backlash;
 
         /// <summary>Where each column of this row is, at factor 1: key -> (left, width).</summary>
         private readonly System.Collections.Generic.Dictionary<string, Point> _columns =
@@ -589,10 +586,8 @@ namespace Kaban.UI.Controls
             _columns.Clear();
             _back = _forward = _calibrate = null;
             _position = null;
-            _current = _zdist = null;
-            _min = _max = _reference = _calibration = _travel = _backlash = null;
+            _min = _max = _reference = _calibration = null;
             _goRef = null;
-            _axisAlarm = _axisWarning = _servoAlarm = null;
             var items = PickedItems();
             _itemsBuilt = items == null ? "*" : string.Join(",", ItemKeys.Where(items.Contains));
             Func<string, bool> on = k => items == null || items.Contains(k);
@@ -690,7 +685,7 @@ namespace Kaban.UI.Controls
             if (on("Torque") && PageHas(a => a.CurrentAddress))
             {
                 Column("Current", x, WMeter);
-                _current = AddMeter(CurrentAddress, CurrentDivisor, CurrentFullScale, ref x, current: true);
+                AddMeter(CurrentAddress, CurrentDivisor, CurrentFullScale, ref x, current: true);
             }
 
             if (manual) _forward = AddJog(CommandForwardAddress, ButtonGlyphs.Right, ref x);
@@ -747,7 +742,7 @@ namespace Kaban.UI.Controls
             if (on("ZDistance") && PageHas(a => a.ZDistanceAddress))
             {
                 Column("ZDistance", x, WMeter);
-                _zdist = AddMeter(ZDistanceAddress, ZDistanceDivisor, ZDistanceFullScale, ref x, current: false);
+                AddMeter(ZDistanceAddress, ZDistanceDivisor, ZDistanceFullScale, ref x, current: false);
             }
             x += GroupGap;
 
@@ -760,18 +755,18 @@ namespace Kaban.UI.Controls
                 if (PageHas(a => a.AxisAlarmAddress))
                 {
                     Column("AxisAlarm", x, WCode);
-                    _axisAlarm = AddCode(AxisAlarmAddress, AxisCodeKind.AxisError, ref x);
+                    AddCode(AxisAlarmAddress, AxisCodeKind.AxisError, ref x);
                 }
                 if (PageHas(a => a.AxisWarningAddress))
                 {
                     Column("AxisWarning", x, WCode);
-                    _axisWarning = AddCode(AxisWarningAddress, AxisCodeKind.AxisWarning, ref x,
+                    AddCode(AxisWarningAddress, AxisCodeKind.AxisWarning, ref x,
                                            HexCodeHMI.CodeSeverity.Warning);
                 }
                 if (PageHas(a => a.ServoAlarmAddress))
                 {
                     Column("ServoAlarm", x, WCode);
-                    _servoAlarm = AddCode(ServoAlarmAddress, AxisCodeKind.ServoAlarm, ref x);
+                    AddCode(ServoAlarmAddress, AxisCodeKind.ServoAlarm, ref x);
                 }
             }
 
@@ -782,13 +777,13 @@ namespace Kaban.UI.Controls
             if (travel)
             {
                 Column("TravelPerRev", x, WSetting);
-                _travel = AddFineSetting(TravelPerRevolutionAddress, "Tip_TravelPerRev",
+                AddFineSetting(TravelPerRevolutionAddress, "Tip_TravelPerRev",
                     "Travel per motor revolution, in the axis's unit to its last count.", ref x);
             }
             if (backlash)
             {
                 Column("Backlash", x, WSetting);
-                _backlash = AddFineSetting(BacklashAddress, "Tip_Backlash",
+                AddFineSetting(BacklashAddress, "Tip_Backlash",
                     "Backlash, in the axis's unit to its last count.", ref x);
             }
 

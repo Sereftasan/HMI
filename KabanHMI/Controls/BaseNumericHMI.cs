@@ -380,9 +380,8 @@ namespace Kaban.UI.Controls
 
         private double? _lastRaw, _comparedRaw;
 
-        /// <summary>The raw (undivided) value last read, and the compared device's.</summary>
+        /// <summary>The raw (undivided) value last read.</summary>
         internal double? LastRaw { get { return _lastRaw; } }
-        internal double? ComparedRaw { get { return _comparedRaw; } }
 
         /// <summary>The compared value and the difference - the first lines of the tip.</summary>
         protected virtual string TooltipLead()

@@ -337,7 +337,6 @@ namespace Kaban.UI.Helpers
 
             internal decimal Total { get { return _total.Value; } set { _total.Value = Math.Max(_total.Minimum, Math.Min(_total.Maximum, value)); } }
             internal NumericUpDown WidthOf(string column) { return _rows.First(t => t.Item1.Name == column).Item3; }
-            internal CheckBox ShownOf(string column) { return _rows.First(t => t.Item1.Name == column).Item2; }
 
             /// <summary>
             /// A column ticked that the table will show: one wanted but kept off by

@@ -37,7 +37,6 @@ namespace Kaban.Machines.FA2010.Screens
         private SideProgram.Result _sideResult;
         private DxfDocument.GCodeProgram _endProgram;
         private readonly List<int> _pathLineIndex = new List<int>();   // drawn point -> code line
-        private bool _endMillFromLibrary;
 
         private void BuildPrograms()
         {
@@ -138,7 +137,6 @@ namespace Kaban.Machines.FA2010.Screens
             _txtSide.Text = "";
             _lstNotes.Clear();
             _endProgram = null;
-            _endMillFromLibrary = false;
             _txtEndMill.Text = "";
             if (_current == null || !_libraryOk) return;
             int open = _placements.Count(p => p.Status != "REJECTED");
@@ -159,7 +157,6 @@ namespace Kaban.Machines.FA2010.Screens
                     if (r.HasValue) _numToolRadius.Value = Math.Max(_numToolRadius.Minimum, Math.Min(_numToolRadius.Maximum, (decimal)r.Value));
                     if (d.HasValue) _numCutDepth.Value = Math.Max(_numCutDepth.Minimum, Math.Min(_numCutDepth.Maximum, (decimal)d.Value));
                     _filling = false;
-                    _endMillFromLibrary = true;
                     _txtEndMill.Text = Library.Text(kept, "gcode");
                 }
             }
@@ -230,7 +227,6 @@ namespace Kaban.Machines.FA2010.Screens
             if (_viewer.Document == null || _viewer.Document.Polylines.Count == 0) { Status(T("Prf_NeedDrawing", "The profile has no drawing."), true); return; }
             // every figure on this page is in MILLIMETRES
             _endProgram = _viewer.Document.GenerateBorderProgram((double)_numToolRadius.Value, (double)_numCutDepth.Value, 800, 5, true);
-            _endMillFromLibrary = false;
             _txtEndMill.Text = _endProgram.Code;              // TextChanged rebuilds the path and the line map
             _viewer.ToolDiameter = (double)_numToolRadius.Value * 2;
             _viewer.ShowToolpath = true;
@@ -254,7 +250,6 @@ namespace Kaban.Machines.FA2010.Screens
             if (string.IsNullOrWhiteSpace(_txtEndMill.Text)) { Status(T("Prf_NothingToSave", "Make the program first (\u2699)."), true); return; }
             Library.SaveEndMillProgram(_current.Id, _instance, _txtEndMill.Text, (double)_numToolRadius.Value, (double)_numCutDepth.Value, User);
             AuditLogger.Log("profile library: end milling program of " + _current.Code + " kept.");
-            _endMillFromLibrary = true;
             Status(string.Format(T("Prf_EndSaved", "The end milling program is kept with {0}."), _current.Code));
         }
 

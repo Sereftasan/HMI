@@ -21,7 +21,6 @@ namespace Kaban.UI.Controls
     [System.ComponentModel.TypeDescriptionProvider(typeof(Kaban.UI.Design.PropertyOrder.Provider))]
     public class GroupBoxHMI : Panel, IHmiControl
     {
-        private string _titleText = "Group";
         private string _titleTextKey = "";
         private string _emoji = "";
 

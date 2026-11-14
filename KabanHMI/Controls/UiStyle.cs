@@ -1113,13 +1113,6 @@ namespace Kaban.UI.Controls
             col.Width = col.Width + pad;
         }
 
-        private static int VisibleCount(DataGridView grid)
-        {
-            int n = 0;
-            foreach (DataGridViewColumn c in grid.Columns) if (c.Visible) n++;
-            return n;
-        }
-
         /// <summary>
         /// Sorts by every remembered key at once, least significant applied first.
         ///

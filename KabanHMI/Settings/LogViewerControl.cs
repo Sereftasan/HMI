@@ -54,7 +54,6 @@ namespace Kaban.UI.Settings
         private readonly ComboBox _plc = new ComboBox();
         private readonly ComboBox _kind = new ComboBox();
         private readonly ComboBox _source = new ComboBox();
-        private readonly bool _machines;
 
         /// <summary>Entries come from more than the HMI (the machines, or the host's machine): the Source is shown.</summary>
         private bool HasSources { get { return _sourceNames.Count > 0; } }
@@ -94,7 +93,6 @@ namespace Kaban.UI.Settings
         /// </param>
         public LogViewerControl(AuditKind? kind, Period period, bool machines = false, bool embedded = false)
         {
-            _machines = machines;
             _embedded = embedded;
             Dock = DockStyle.Fill;
             BackColor = Color.White;
