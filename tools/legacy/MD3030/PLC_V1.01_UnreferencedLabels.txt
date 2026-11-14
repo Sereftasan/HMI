@@ -1,0 +1,303 @@
+# MD3030 PLC program V1.01 - the global labels with a device that no rung and no ST line names (299 of 1261).
+# Not proof that a device is unused: the program may reach it by its address, in a block move or through an index, and
+# the HMI reads or writes the ones marked. A list to go through in GX Works3 (Find > Cross reference) before deleting anything.
+
+X26	IN_GovdeY1_ReferansSN	on the HMI
+X27	IN_GovdeY2_ReferansSN	on the HMI
+M3	PC_GovdeX_ReferansaGit
+M4	PC_GovdeY1_ReferansaGit
+M5	PC_GovdeY2_ReferansaGit
+M6	PC_Z1_ReferansaGit
+M7	PC_X1_ReferansaGit
+M8	PC_Y11_ReferansaGit
+M9	PC_Y12_ReferansaGit
+M10	PC_Z2_ReferansaGit
+M11	PC_X2_ReferansaGit
+M12	PC_Y21_ReferansaGit
+M13	PC_Y22_ReferansaGit
+M14	PC_Z3_ReferansaGit
+M15	PC_X3_ReferansaGit
+M16	PC_Y31_ReferansaGit
+M17	PC_Y32_ReferansaGit
+M18	PC_Z4_ReferansaGit
+M19	PC_X4_ReferansaGit
+M20	PC_Y41_ReferansaGit
+M21	PC_Y42_ReferansaGit
+M203	_MAN_TablaHareket
+M206	_MAN_Konveyor_Yukari	on the HMI
+M207	_MAN_Konveyor_Asagi	on the HMI
+M214	MAN_Frezeler_Stop
+M224	_MAN_DayamaUnitesi_Geri
+M225	_MAN_DayamaUnitesi_Ileri
+M226	_MAN_DayamaPlakasi_Geri
+M227	_MAN_DayamaPlakasi_Ileri
+M235	_MAN_AltRezistans_Yukari
+M624	_Konveyor_Yukari_Cikamadi
+M625	_Konveyor_Asagi_Inemedi
+M644	Error_M644
+M645	Error_M645
+M646	Error_M646
+M647	Error_M647
+M648	Error_M648
+M649	Error_M649
+M650	Error_M650
+M651	Error_M651
+M652	Error_M652
+M653	Error_M653
+M654	Error_M654
+M655	Error_M655
+M656	Error_M656
+M657	Error_M657
+M658	Error_M658
+M659	Error_M659
+M692	ProfilYuksekligiUygunDegil
+M693	_DikSiyirma_Yukari_Cakamadi
+M694	_DikSiyirma_Asagi_Inemedi
+M695	Makinada_Profil_Var
+M696	Makinaya_Profil_Yuklenmedi
+M701	Error_M701
+M702	Error_M702
+M703	Error_M703
+M704	Error_M704
+M705	Error_M705
+M706	Error_M706
+M707	Error_M707
+M708	Error_M708
+M709	Error_M709
+M710	Error_M710
+M711	Error_M711
+M712	Error_M712
+M713	Error_M713
+M714	Error_M714
+M715	Error_M715
+M716	Error_M716
+M800	Z1_Error_UYARI
+M801	X1_Error_UYARI
+M802	Y11_Error_UYARI
+M803	Y12_Error_UYARI
+M804	Z2_Error_UYARI
+M805	X2_Error_UYARI
+M806	Y21_Error_UYARI
+M807	Y22_Error_UYARI
+M808	Z3_Error_UYARI
+M809	X3_Error_UYARI
+M810	Y31_Error_UYARI
+M811	Y32_Error_UYARI
+M812	Z4_Error_UYARI
+M813	X4_Error_UYARI
+M814	Y41_Error_UYARI
+M815	Y42_Error_UYARI
+M816	GovdeX_Error_UYARI
+M817	GovdeY1_Error_UYARI
+M818	GovdeY2_Error_UYARI
+M820	_KaynakMinimumHedefHata
+L4	_PC_DikBicak
+L6	PC_X1SonraYukleme	on the HMI
+L8	PC_ProfilYuklemeKontrolByPass
+L9	PC_DikBicakTers
+L15	_PC_ProfilDayamaPistonlu
+L17	PC_KaynaktanOnceBaski_Rulosuz
+L19	PC_EritmedenOnceBaski
+L21	PC_DayamaCitasizProfilDuzeltme
+L23	PC_GovdeEksenlerEnkoderli
+L25	PC_YanTablaKontrolPasif
+L28	PC_RezistansBaski_Duzeltme
+D506	Konveyeor_Gecikme
+D1900	X_Bicak_Degis_Poz
+D1902	Z_Bicak_Degis_Poz
+D1904	X_Rezist_Degis_Poz
+D1906	Z_Rezist_Degis_Poz
+D1908	X_Kalip_Degis_Poz
+D1910	Z_Kalip_Degis_Poz
+D1912	X_Firca_Degis_Poz
+D1914	Z_Firca_Degis_Poz
+D1920	Manuel_Poz_GovdeY2
+D2032	GovdeX_Home_Pos_Address	on the HMI
+D2034	GovdeY1_Home_Pos_Address	on the HMI
+D2036	GovdeY2_Home_Pos_Address	on the HMI
+D2048	X1_Prof_Koy_Ofset
+D2050	Z1_Prof_Koy_Ofset
+D2054	Y12_Prof_Koy_Ofset	on the HMI
+D2060	X1_Eritme_Ofset
+D2062	Z1_Eritme_Ofset
+D2064	_Y11_Eritme1_Ofset
+D2066	_Y12_Eritme1_Ofset
+D2072	_Y11_Kaynak1_Ofset
+D2074	_Y12_Kaynak1_Ofset
+D2116	Manuel_Poz_Y11
+D2118	Manuel_Poz_Y12
+D2120	Manuel_Poz_Y21
+D2122	Manuel_Poz_Y22
+D2124	Manuel_Poz_Y31
+D2126	Manuel_Poz_Y32
+D2128	Manuel_Poz_Y41
+D2130	Manuel_Poz_Y42
+D2160	X2_Eritme_Ofset
+D2162	Z2_Eritme_Ofset
+D2164	_Y21_Eritme1_Ofset
+D2166	_Y22_Eritme1_Ofset
+D2172	_Y21_Kaynak1_Ofset
+D2174	_Y22_Kaynak1_Ofset
+D2260	X3_Eritme_Ofset
+D2262	Z3_Eritme_Ofset
+D2264	Y31_Eritme1_Ofset
+D2266	Y32_Eritme1_Ofset
+D2272	_Y31_Kaynak1_Ofset
+D2274	_Y32_Kaynak1_Ofset
+D2360	X4_Eritme_Ofset
+D2362	Z4_Eritme_Ofset
+D2364	_Y41_Eritme1_Ofset
+D2366	_Y42_Eritme1_Ofset
+D2372	_Y41_Kaynak1_Ofset
+D2374	_Y42_Kaynak1_Ofset
+D2430	Govde_X_Bosaltma_Hiz	on the HMI
+D2590	PC_AnaEksenlerTorkLimit
+D2596	PC_Z_DayamadanKurtarma_Poz
+D2672	X_Freze_Ust_Siyirma_Mesafesi
+D2676	GovdeX_KonveyorLimit
+D2680	DikBicak_X_Mesafesi
+D2682	AltDikBicak_X1_Ofseti
+D2684	AltDikBicak_X2_Ofseti
+D2686	AltDikBicak_X3_Ofseti
+D2688	AltDikBicak_X4_Ofseti
+D2690	UstDikBicak_X1_Ofseti
+D2692	UstDikBicak_X2_Ofseti
+D2694	UstDikBicak_X3_Ofseti
+D2696	UstDikBicak_X4_Ofseti
+D2742	Profil_Z1_Ust_Siyirma_Ofset
+D2744	Profil_Z1_Alt_Siyirma_Ofset
+D2746	Profil_Z2_Ust_Siyirma_Ofset
+D2748	Profil_Z2_Alt_Siyirma_Ofset
+D2750	Profil_Z3_Ust_Siyirma_Ofset
+D2752	Profil_Z3_Alt_Siyirma_Ofset
+D2754	Profil_Z4_Ust_Siyirma_Ofset
+D2756	Profil_Z4_Alt_Siyirma_Ofset
+D2758.0	ProfilAltDikBicakAktif
+D2758.1	ProfilUstDikBicakAktif
+D2758.2	ProfilAltSiyirmaAktif
+D2758.3	ProfilUstSiyirmaAktif
+D2764	PC_KaynaktanSonra_SiyirmaGecikme
+D2826	PC_GovdeY_Encoder_PozisyonToleransi	on the HMI
+D3000	TABLO_TAKIM
+D3001	TABLO_KOMUT
+D3002	TABLO_X_SET_POZ
+D3004	TABLO_Z_SET_POZ
+D3006	TABLO_RADUS_Y1_SET_POZ
+D3008	TABLO_Y2_SET_POZ
+D3010	TABLO_HIZ_SET
+D6640	Ax1_Yuklenme	on the HMI
+D6641	Ax2_Yuklenme	on the HMI
+D6642	Ax3_Yuklenme	on the HMI
+D6643	Ax4_Yuklenme	on the HMI
+D6644	Ax5_Yuklenme	on the HMI
+D6645	Ax6_Yuklenme	on the HMI
+D6646	Ax7_Yuklenme	on the HMI
+D6647	Ax8_Yuklenme	on the HMI
+D6648	Ax9_Yuklenme	on the HMI
+D6649	Ax10_Yuklenme	on the HMI
+D6650	Ax11_Yuklenme	on the HMI
+D6651	Ax12_Yuklenme	on the HMI
+D6652	Ax13_Yuklenme	on the HMI
+D6653	Ax14_Yuklenme	on the HMI
+D6654	Ax15_Yuklenme	on the HMI
+D6655	Ax16_Yuklenme	on the HMI
+D6656	Ax17_Yuklenme	on the HMI
+D6657	Ax18_Yuklenme	on the HMI
+D6658	Ax19_Yuklenme	on the HMI
+D6660	X1_Home_Pos_Address_Yrd
+D6662	Z1_Home_Pos_Address_Yrd
+D6664	Y11_Home_Pos_Address_Yrd
+D6666	Y12_Home_Pos_Address_Yrd
+D6668	X2_Home_Pos_Address_Yrd
+D6670	Z2_Home_Pos_Address_Yrd
+D6672	Y21_Home_Pos_Address_Yrd
+D6674	Y22_Home_Pos_Address_Yrd
+D6676	X3_Home_Pos_Address_Yrd
+D6678	Z3_Home_Pos_Address_Yrd
+D6680	Y31_Home_Pos_Address_Yrd
+D6682	Y32_Home_Pos_Address_Yrd
+D6684	X4_Home_Pos_Address_Yrd
+D6686	Z4_Home_Pos_Address_Yrd
+D6688	Y41_Home_Pos_Address_Yrd
+D6690	Y42_Home_Pos_Address_Yrd
+D7025	PC_BaskidanSonraEritmeSuresi
+D7028	PC_Baski_EritmeY_Ofset
+D7034	PC_FrezeUfleme_Hiz
+D7052	GovdeY_EnkoderToleransi
+W161.E	MAN_Siyirma_Bicak3_Ileri
+W171.E	MAN_Siyirma_Bicak4_Ileri
+U1\G2417.4	Y11_HPR_complete
+U1\G2477.0	Y11_Servo_ready
+U1\G2517.4	Y12_HPR_complete
+U1\G2577.0	Y12_Servo_ready
+U1\G2617.4	Y21_HPR_complete
+U1\G2677.0	Y21_Servo_ready
+U1\G2717.4	Y22_HPR_complete
+U1\G2777.0	Y22_Servo_ready
+U1\G2817.4	Y31_HPR_complete
+U1\G2877.0	Y31_Servo_ready
+U1\G2917.4	Y32_HPR_complete
+U1\G2977.0	Y32_Servo_ready
+U1\G3017.4	Y41_HPR_complete
+U1\G3077.0	Y41_Servo_ready
+U1\G3117.4	Y42_HPR_complete
+U1\G3177.0	Y42_Servo_ready
+U1\G30101.0	Y11_Fwd_JOG
+U1\G30102.0	Y11_Rev_JOG
+U1\G30111.0	Y12_Fwd_JOG
+U1\G30112.0	Y12_Rev_JOG
+U1\G30121.0	Y21_Fwd_JOG
+U1\G30122.0	Y21_Rev_JOG
+U1\G30131.0	Y22_Fwd_JOG
+U1\G30132.0	Y22_Rev_JOG
+U1\G30141.0	Y31_Fwd_JOG
+U1\G30142.0	Y31_Rev_JOG
+U1\G30151.0	Y32_Fwd_JOG
+U1\G30152.0	Y32_Rev_JOG
+U1\G30161.0	Y41_Fwd_JOG
+U1\G30162.0	Y41_Rev_JOG
+U1\G30171.0	Y42_Fwd_JOG
+U1\G30172.0	Y42_Rev_JOG
+U2\G2417.4	X1_HPR_complete
+U2\G2477.0	X1_Servo_ready
+U2\G2517.4	Z1_HPR_complete
+U2\G2617.4	X2_HPR_complete
+U2\G2677.0	X2_Servo_ready
+U2\G2717.4	Z2_HPR_complete
+U2\G2817.3	GOVDE_X_HPR_request
+U2\G2817.4	GOVDE_X_HPR_complete
+U2\G2917.3	GOVDE_X2_HPR_request
+U2\G3017.3	RezistansZ1_HPR_request
+U2\G3017.4	RezistansZ1_HPR_complete
+U2\G3117.3	RezistansZ2_HPR_request
+U2\G3117.4	RezistansZ2_HPR_complete
+U2\G30101.0	X1_Fwd_JOG
+U2\G30102.0	X1_Rev_JOG
+U2\G30111.0	Z1_Fwd_JOG
+U2\G30112.0	Z1_Rev_JOG
+U2\G30121.0	X2_Fwd_JOG
+U2\G30122.0	X2_Rev_JOG
+U2\G30131.0	Z2_Fwd_JOG
+U2\G30132.0	Z2_Rev_JOG
+U3\G2417.3	RezistansZ3_HPR_request
+U3\G2417.4	RezistansZ3_HPR_complete
+U3\G2517.3	GOVDE_Y1_HPR_request
+U3\G2517.4	GOVDE_Y1_HPR_complete
+U3\G2617.3	GOVDE_Y2_HPR_request
+U3\G2617.4	GOVDE_Y2_HPR_complete
+U3\G2717.3	RezistansZ4_HPR_request
+U3\G2717.4	RezistansZ4_HPR_complete
+U3\G2817.4	X3_HPR_complete
+U3\G2877.0	X3_Servo_ready
+U3\G2917.4	Z3_HPR_complete
+U3\G3017.4	X4_HPR_complete
+U3\G3077.0	X4_Servo_ready
+U3\G3117.4	Z4_HPR_complete
+U3\G30141.0	X3_Fwd_JOG
+U3\G30142.0	X3_Rev_JOG
+U3\G30151.0	Z3_Fwd_JOG
+U3\G30152.0	Z3_Rev_JOG
+U3\G30161.0	X4_Fwd_JOG
+U3\G30162.0	X4_Rev_JOG
+U3\G30171.0	Z4_Fwd_JOG
+U3\G30172.0	Z4_Rev_JOG

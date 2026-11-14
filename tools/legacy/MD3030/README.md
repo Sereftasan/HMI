@@ -144,3 +144,6 @@ Questions (the program answers them only in part):
 * The servos' loads Ax17 - Ax19_Yuklenme (D6656 - D6658) follow the alarms' axis order:
   they look like the body's, not the heads' X2 / RZ the old Servos page showed.
 * Per axis go-to-reference bits (ReferansaGit M3 ... M21) exist - not on the pages.
+* The stripping knives of heads 3 and 4 do not follow the manual command M222 / M223 in V1.01
+  (a copy-and-paste slip in the program - `PLC_V1.01_Review.md`, with the rest of what reading
+  the program turned up; `PLC_V1.01_UnreferencedLabels.txt`: the labels no rung names).
