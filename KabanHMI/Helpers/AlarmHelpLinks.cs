@@ -340,16 +340,32 @@ namespace Kaban.UI.Helpers
                         AuditLogger.Log("help link conflict - " + msg);
                     }
                 }
-                else if (!string.IsNullOrEmpty(link.Unit) && !string.Equals(link.Unit, existing.Unit, StringComparison.Ordinal))
+                else if (!string.IsNullOrEmpty(link.Unit) && !string.Equals(link.Unit, existing.Unit, StringComparison.Ordinal) &&
+                         DevicesOf(link) != DevicesOf(existing))
                 {
-                    // another unit with the same bit (one alarm for several heads' cylinders) - kept beside the first
+                    // another unit with the same bit (one alarm for several heads' cylinders) - kept beside the first.
+                    // The same unit on a second page (its devices the same, whatever it is called there) is one unit.
                     List<Link> more;
                     if (!_shared.TryGetValue(key, out more)) _shared[key] = more = new List<Link>();
-                    if (!more.Any(m => string.Equals(m.Unit, link.Unit, StringComparison.Ordinal))) more.Add(link);
+                    string devices = DevicesOf(link);
+                    if (!more.Any(m => string.Equals(m.Unit, link.Unit, StringComparison.Ordinal) || DevicesOf(m) == devices)) more.Add(link);
                 }
                 return;
             }
             _links[key] = link;
+        }
+
+        /// <summary>A unit's movement by its devices (commands, outputs, sensors): what tells two units of one alarm bit apart.</summary>
+        private static string DevicesOf(Link l)
+        {
+            var m = l == null ? null : l.Movement;
+            if (m == null) return "";
+            var parts = new List<string>();
+            foreach (var d in new[] { m.Command, m.Output, m.OtherCommand, m.OtherOutput })
+                if (d != null && !string.IsNullOrWhiteSpace(d.Address)) parts.Add(d.Address.Trim());
+            foreach (var d in m.Feedback.Concat(m.OppositeFeedback))
+                if (d != null && !string.IsNullOrWhiteSpace(d.Address)) parts.Add(d.Address.Trim());
+            return string.Join("|", parts);
         }
 
         public static Link Find(int station, string address)
