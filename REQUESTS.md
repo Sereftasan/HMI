@@ -6,6 +6,24 @@ Claude reads this file at the start of every batch, does the items, and moves ea
 ## To do
 
 ## Done
+- 13 November ("refactor all the program, fix the potential bugs, make it run with the best performance and delete unneeded parts"):
+  - 31f3090 - the same unit on a second page is one help page again (units of one alarm bit are told apart by their devices).
+  - 94bc1e0 - the scan's lookup without a split / trim / upper-case per device; names and codes upper-cased without the Windows
+    language (a Turkish Windows' dotted capital I); 134 fixed-text StartsWith / EndsWith compared as written.
+  - df593a6 - taken out: 14 private / internal members no line names, 14 fields only ever written.
+  - d210db1 - the whole test suite run and brought up to the program: 166 tests, 4722 checks, none failing (10 failed before).
+  - 05ddd1e - MD3030's PLC program reviewed, not changed (a GX Works3 project cannot be written from here):
+    tools/legacy/MD3030/PLC_V1.01_Review.md - what to change in GX Works3 -, PLC_V1.01_UnreferencedLabels.txt.
+  Not done, asked instead: the comments (none is commented-out code - shorten them, or leave them?) and the public members nothing
+  uses (a list in the report).
+- 13 November (MD3030's PLC program, MD3030_V1.01_25.07.22_Eritme1_Pozisyonuna.gx3: "read it to get what you want out of it"):
+  - b9b260d - a GX Works3 project read: tools/gx3_labels.py (its global labels and device comments, a machine's PlcLabels.csv) and
+    tools/gx3_program.py (the program as text: each rung its condition => what it drives, the ST as written).
+    tools/legacy/MD3030: PLC_V1.01_Labels.txt, PLC_V1.01_Program.txt.
+  - 4e1cf24 - MD3020's PlcLabels.csv: the program's 1261 global labels in place of the invented sample.
+  - 4541a8d - MD3020 from the program: the heads' inputs and coils, the cylinder units' commands as named (three were the other way
+    round), the Y jogs, each axis's home position / Z phase distance / reference sensor, the body's encoders, 131 alarms; Signal Lamps
+    (M210 - M213) on Manual General, Milling Blow (M232) on Manual Movement. To check: tools/legacy/MD3030/README.md.
 - 12 November (MK2010's drawings, GOT and PLC projects):
   - b21db44 - cylinder units: one alarm bit for several units (the help offers each one's page); a single coil's toggle as two buttons.
   - 90f55ca - MK2010: the PLC project's device comments read (tools/legacy/MK2010/PLC_V6.4_DeviceComments.txt; the GOT project is
