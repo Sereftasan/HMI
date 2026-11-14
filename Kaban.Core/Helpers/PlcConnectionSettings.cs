@@ -246,7 +246,7 @@ namespace Kaban.Core.Helpers
                 foreach (var raw in File.ReadAllLines(SettingsPath))
                 {
                     var line = raw.Trim();
-                    if (line.Length == 0 || line.StartsWith("#")) continue;
+                    if (line.Length == 0 || line.StartsWith("#", System.StringComparison.Ordinal)) continue;
 
                     int eq = line.IndexOf('=');
                     if (eq <= 0) continue;

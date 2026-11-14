@@ -377,7 +377,7 @@ namespace Kaban.UI.Helpers
         {
             var a = (address ?? "").Trim().ToUpperInvariant();
             foreach (var p in new[] { "SM", "M", "X", "Y", "L", "B", "F", "S" })
-                if (a.StartsWith(p) && a.Length > p.Length && Uri.IsHexDigit(a[p.Length])) return !a.StartsWith("SD") && !a.StartsWith("SW");
+                if (a.StartsWith(p) && a.Length > p.Length && Uri.IsHexDigit(a[p.Length])) return !a.StartsWith("SD", System.StringComparison.Ordinal) && !a.StartsWith("SW", System.StringComparison.Ordinal);
             return false;
         }
 
@@ -529,7 +529,7 @@ namespace Kaban.UI.Helpers
             {
                 if (c == null) return null;
                 Control next = null;
-                if (step.StartsWith("#"))
+                if (step.StartsWith("#", System.StringComparison.Ordinal))
                 {
                     int i;
                     if (int.TryParse(step.Substring(1), out i) && i >= 0 && i < c.Controls.Count) next = c.Controls[i];

@@ -241,8 +241,8 @@ namespace Kaban.Machines.FA2010.Screens
             foreach (var l in _endProgram.Code.Split('\n'))
             {
                 var t = l.TrimStart();
-                if (t.StartsWith("G02") || t.StartsWith("G03")) arcs++;
-                else if (t.StartsWith("G1 X") || t.StartsWith("G0 X")) moves++;
+                if (t.StartsWith("G02", System.StringComparison.Ordinal) || t.StartsWith("G03", System.StringComparison.Ordinal)) arcs++;
+                else if (t.StartsWith("G1 X", System.StringComparison.Ordinal) || t.StartsWith("G0 X", System.StringComparison.Ordinal)) moves++;
             }
             Status(string.Format(T("Prf_EndMade", "End milling program: tool radius {0:F2} mm, cut depth {1:F2} mm, {2} arcs, {3} moves - \uD83D\uDCBE keeps it with the profile."),
                                  _numToolRadius.Value, _numCutDepth.Value, arcs, moves));
@@ -324,8 +324,8 @@ namespace Kaban.Machines.FA2010.Screens
                 for (int i = 0; i < lines.Length; i++)
                 {
                     string line = lines[i].Trim();
-                    if (line.Length == 0 || line.StartsWith("(")) continue;
-                    if (!(line.StartsWith("G0") || line.StartsWith("G1") || line.StartsWith("G2") || line.StartsWith("G3"))) continue;
+                    if (line.Length == 0 || line.StartsWith("(", System.StringComparison.Ordinal)) continue;
+                    if (!(line.StartsWith("G0", System.StringComparison.Ordinal) || line.StartsWith("G1", System.StringComparison.Ordinal) || line.StartsWith("G2", System.StringComparison.Ordinal) || line.StartsWith("G3", System.StringComparison.Ordinal))) continue;
                     bool moved = false;
                     foreach (var tok in line.Split(' '))
                     {

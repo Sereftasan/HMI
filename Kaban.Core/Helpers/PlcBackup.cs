@@ -722,8 +722,8 @@ namespace Kaban.Core.Helpers
                 foreach (var raw in File.ReadLines(path))
                 {
                     var line = raw.TrimEnd();
-                    if (line.Length == 0 || line.StartsWith("#")) continue;
-                    if (line.StartsWith("["))
+                    if (line.Length == 0 || line.StartsWith("#", System.StringComparison.Ordinal)) continue;
+                    if (line.StartsWith("[", System.StringComparison.Ordinal))
                     {
                         if (headerOnly) break;
                         close();
@@ -739,7 +739,7 @@ namespace Kaban.Core.Helpers
                                               .Select(p => p.Split('+').Select(x => int.Parse(x, CultureInfo.InvariantCulture)).ToArray()).ToList();
                         // a backup made before the area's unnamed words were known (the synchronous parameters, 23 October)
                         else area.Pieces = KnownPieces(area.First, area.Points);
-                        if (f.Length > 5 && f[5].Trim().StartsWith("cam="))
+                        if (f.Length > 5 && f[5].Trim().StartsWith("cam=", System.StringComparison.Ordinal))
                         {
                             var c = f[5].Trim().Substring(4).Split(',').Select(x => int.Parse(x, CultureInfo.InvariantCulture)).ToArray();
                             area.Cam = c[0]; area.CamFormat = c[1]; area.CamResolution = c[2]; area.CamStart = c.Length > 3 ? c[3] : 0;

@@ -120,7 +120,7 @@ namespace Kaban.Core.Helpers
         public static int WordsOf(string dataType)
         {
             var d = (dataType ?? "").Trim().ToLowerInvariant();
-            if (d.StartsWith("string"))
+            if (d.StartsWith("string", System.StringComparison.Ordinal))
             {
                 var m = Regex.Match(d, @"\((\d+)\)");
                 int chars;
@@ -398,10 +398,10 @@ namespace Kaban.Core.Helpers
                     current.FormerNames.AddRange(line.Substring(FormerPrefix.Length).Split(';').Select(s => s.Trim()).Where(s => s.Length > 0));
                     continue;
                 }
-                if (line.Length == 0 || line.StartsWith("#")) continue;
+                if (line.Length == 0 || line.StartsWith("#", System.StringComparison.Ordinal)) continue;
                 var f = line.Split(';');
                 int n;
-                if (f[0].StartsWith("[") && f[0].EndsWith("]"))
+                if (f[0].StartsWith("[", System.StringComparison.Ordinal) && f[0].EndsWith("]", System.StringComparison.Ordinal))
                 {
                     current = new Type { Name = f[0].Substring(1, f[0].Length - 2).Trim() };
                     if (f.Length > 1 && int.TryParse(f[1].Trim(), NumberStyles.Integer, CultureInfo.InvariantCulture, out n)) current.Size = n;

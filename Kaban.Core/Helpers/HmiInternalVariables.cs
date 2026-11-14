@@ -11,7 +11,7 @@ namespace Kaban.Core.Helpers
         public static void Set(string name, int value)
         {
             if (string.IsNullOrEmpty(name)) return;
-            string key = name.ToUpper().Trim();
+            string key = name.ToUpperInvariant().Trim();
             if (_variables.ContainsKey(key)) _variables[key] = value;
             else _variables.Add(key, value);
         }
@@ -20,7 +20,7 @@ namespace Kaban.Core.Helpers
         public static int Get(string name)
         {
             if (string.IsNullOrEmpty(name)) return 0;
-            string key = name.ToUpper().Trim();
+            string key = name.ToUpperInvariant().Trim();
 
             if (_variables.ContainsKey(key)) return _variables[key];
             return 0;

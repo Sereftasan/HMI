@@ -96,7 +96,7 @@ namespace Kaban.Core.Helpers
             public static bool TryParse(string line, out Entry e)
             {
                 e = null;
-                if (string.IsNullOrWhiteSpace(line) || line.StartsWith("Time;")) return false;
+                if (string.IsNullOrWhiteSpace(line) || line.StartsWith("Time;", System.StringComparison.Ordinal)) return false;
                 var f = line.Split(';');
                 if (f.Length < 10) return false;
                 DateTime t; int st, v, b;

@@ -144,7 +144,7 @@ namespace Kaban.Core.Helpers
             var match = Regex.Match(baseAddress, @"^([A-Za-z]+)([0-9A-Fa-f]+)$");
             if (!match.Success) return baseAddress;
 
-            string type = match.Groups[1].Value.ToUpper();
+            string type = match.Groups[1].Value.ToUpperInvariant();
             string numberString = match.Groups[2].Value;
 
             try
@@ -246,7 +246,7 @@ namespace Kaban.Core.Helpers
         public static string Compose(string prefix, long number)
         {
             prefix = (prefix ?? "").ToUpperInvariant();
-            if (prefix.EndsWith("\\G")) return prefix + number.ToString(CultureInfo.InvariantCulture);
+            if (prefix.EndsWith("\\G", System.StringComparison.Ordinal)) return prefix + number.ToString(CultureInfo.InvariantCulture);
             int b = GetBase(prefix);
             return prefix + (b == 16 ? number.ToString("X", CultureInfo.InvariantCulture)
                            : b == 8 ? Convert.ToString(number, 8)
@@ -255,7 +255,7 @@ namespace Kaban.Core.Helpers
 
         private static int GetBase(string type)
         {
-            string t = type.ToUpper();
+            string t = type.ToUpperInvariant();
 
             // OCTAL Types (As per your request)
             if (t == "X" || t == "Y" || t == "DX" || t == "DY") return 8;

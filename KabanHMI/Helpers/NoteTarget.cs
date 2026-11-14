@@ -99,7 +99,7 @@ namespace Kaban.UI.Helpers
                 if (!string.IsNullOrWhiteSpace(v)) return T(v, v).TrimEnd(':', ' ');
             }
             var tag = c.Tag as string;
-            if (c is Label && tag != null && tag.StartsWith("AxisHeading:")) return c.Text;
+            if (c is Label && tag != null && tag.StartsWith("AxisHeading:", System.StringComparison.Ordinal)) return c.Text;
             if (!string.IsNullOrWhiteSpace(c.Text)) return c.Text.Trim();
             if (!string.IsNullOrWhiteSpace(c.AccessibleName)) return c.AccessibleName;
             var tip = UiStyle.TipOf(c);
@@ -138,7 +138,7 @@ namespace Kaban.UI.Helpers
             string headingKey;
             if (c is Label && CylinderRowHMI.RowOfHeading((Label)c, out headingKey) != null)
                 return T("Nts_Heading", "Column heading") + ": " + c.Text;
-            if (c is Label && tag != null && tag.StartsWith("AxisHeading:"))
+            if (c is Label && tag != null && tag.StartsWith("AxisHeading:", System.StringComparison.Ordinal))
                 return T("Nts_Heading", "Column heading") + ": " + c.Text;
             return Caption(c);
         }
@@ -180,7 +180,7 @@ namespace Kaban.UI.Helpers
                 if (col != null) return "col:" + col + ":" + c.GetType().Name;
             }
             var tag = c.Tag as string;
-            if (tag != null && tag.StartsWith("AxisHeading:")) return tag;
+            if (tag != null && tag.StartsWith("AxisHeading:", System.StringComparison.Ordinal)) return tag;
             if (c.Parent == null) return c.GetType().Name;
             var same = c.Parent.Controls.Cast<Control>().Where(x => x.GetType() == c.GetType()).ToList();
             return c.GetType().Name + "#" + same.IndexOf(c);
@@ -210,7 +210,7 @@ namespace Kaban.UI.Helpers
                 list.Add(new TextKey { What = what, Key = key.Trim() });
             };
             var tag = c.Tag as string;
-            if (c is Label && tag != null && tag.StartsWith("AxisHeading:"))
+            if (c is Label && tag != null && tag.StartsWith("AxisHeading:", System.StringComparison.Ordinal))
                 add(T("Nts_KeyHeading", "Column heading"), AxisSettingHMI.HeadingKey(tag.Substring("AxisHeading:".Length)));
             string rowHeading = null;
             var headed = c is Label ? CylinderRowHMI.RowOfHeading((Label)c, out rowHeading) : null;
@@ -223,7 +223,7 @@ namespace Kaban.UI.Helpers
             // lists for numerical values")
             add(T("Nts_KeyCaption", "Caption"), Str(c, "DescriptionText"));
             foreach (var p in c.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public)
-                                .Where(p => p.PropertyType == typeof(string) && p.Name.EndsWith("Key") && p.Name != "Key" && p.GetIndexParameters().Length == 0)
+                                .Where(p => p.PropertyType == typeof(string) && p.Name.EndsWith("Key", System.StringComparison.Ordinal) && p.Name != "Key" && p.GetIndexParameters().Length == 0)
                                 // its name first (a unit's title, a button's text), then the rest
                                 .OrderBy(p => p.Name == "TitleTextKey" || p.Name == "TranslationKey" || p.Name == "AxisNameKey" ? 0 : 1).ThenBy(p => p.Name))
             {
@@ -263,7 +263,7 @@ namespace Kaban.UI.Helpers
                 case "AxisNameKey": return T("Nts_KeyAxis", "Axis name");
                 case "TitleTextKey": return T("Nts_KeyTitle", "Title");
                 case "ComparedCaptionKey": return T("Nts_KeyCompared", "Compared value");
-                default: return property.EndsWith("Key") ? property.Substring(0, property.Length - 3) : property;
+                default: return property.EndsWith("Key", System.StringComparison.Ordinal) ? property.Substring(0, property.Length - 3) : property;
             }
         }
     }

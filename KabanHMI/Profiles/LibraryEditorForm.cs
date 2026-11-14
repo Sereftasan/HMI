@@ -406,7 +406,7 @@ namespace Kaban.UI.Profiles
                     object v; values.TryGetValue(k, out v);
                     var tb = new TextBox { Width = 100, Text = v == null ? "" : Convert.ToString(v, CultureInfo.InvariantCulture), ReadOnly = !_canEdit, TextAlign = k == "path" ? HorizontalAlignment.Left : HorizontalAlignment.Right };
                     panel.Controls.Add(tb, 1, r);
-                    panel.Controls.Add(new Label { Text = k.EndsWith("_mm") ? "mm" : k.EndsWith("_deg") ? "\u00B0" : "", AutoSize = true, Margin = new Padding(3, 7, 3, 3), ForeColor = Color.DimGray }, 2, r);
+                    panel.Controls.Add(new Label { Text = k.EndsWith("_mm", System.StringComparison.Ordinal) ? "mm" : k.EndsWith("_deg", System.StringComparison.Ordinal) ? "\u00B0" : "", AutoSize = true, Margin = new Padding(3, 7, 3, 3), ForeColor = Color.DimGray }, 2, r);
                     fields[k] = tb;
                     r++;
                 }

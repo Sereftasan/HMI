@@ -297,7 +297,7 @@ namespace Kaban.UI.Controls
             // A trailing colon is added automatically: every caption in the HMI reads
             // "Width :", and typing it on each control invites inconsistency.
             if (AppendColon && _side == DescriptionSide.Left && !IsRow &&
-                shown.Length > 0 && !shown.TrimEnd().EndsWith(":"))
+                shown.Length > 0 && !shown.TrimEnd().EndsWith(":", System.StringComparison.Ordinal))
                 shown = shown.TrimEnd() + ":";
             _label.Text = shown;
 

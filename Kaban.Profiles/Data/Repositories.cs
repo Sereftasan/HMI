@@ -116,10 +116,10 @@ namespace Kaban.Profiles.Data
             {
                 var line = raw.TrimEnd('\r');
                 var trimmed = line.Trim();
-                if (trimmed.StartsWith("--") || trimmed.Length == 0) continue;
+                if (trimmed.StartsWith("--", System.StringComparison.Ordinal) || trimmed.Length == 0) continue;
 
                 statement.Append(line).Append('\n');
-                if (trimmed.EndsWith(";"))
+                if (trimmed.EndsWith(";", System.StringComparison.Ordinal))
                 {
                     var sql = statement.ToString().Trim();
                     statement.Length = 0;

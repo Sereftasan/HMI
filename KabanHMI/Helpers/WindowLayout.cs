@@ -32,7 +32,7 @@ namespace Kaban.UI.Helpers
                 foreach (var line in File.ReadAllLines(path))
                 {
                     int eq = line.IndexOf('=');
-                    if (eq <= 0 || line.TrimStart().StartsWith("#")) continue;
+                    if (eq <= 0 || line.TrimStart().StartsWith("#", System.StringComparison.Ordinal)) continue;
                     values[line.Substring(0, eq).Trim()] = line.Substring(eq + 1).Trim();
                 }
             }

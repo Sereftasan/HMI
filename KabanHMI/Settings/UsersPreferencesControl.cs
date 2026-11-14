@@ -1079,7 +1079,7 @@ namespace Kaban.UI.Settings
                 case UsersPreferencesControl.ScaleKey: return T("Usr_FactorOwn", "Screen scale");
                 default:
                     // a unit family: "Unit_Length" -> Length
-                    if (key != null && key.StartsWith("Unit_"))
+                    if (key != null && key.StartsWith("Unit_", System.StringComparison.Ordinal))
                     {
                         string fam = key.Substring(5);
                         return T("Unit_Family_" + fam, fam);

@@ -51,7 +51,7 @@ namespace Kaban.UI.Controls
             {
                 int newValue = value - 1;
                 if (value > 0)
-                    Text = _prefix + Convert.ToString(newValue, 16).ToUpper();
+                    Text = _prefix + Convert.ToString(newValue, 16).ToUpperInvariant();
                 else
                     Text = _prefix;
             }
@@ -104,7 +104,7 @@ namespace Kaban.UI.Controls
                 this.SelectionStart = this.Text.Length;
             }
 
-            this.Text = this.Text.ToUpper();
+            this.Text = this.Text.ToUpperInvariant();
         }
     }
 }

@@ -538,7 +538,7 @@ namespace Kaban.Core.Helpers
                 foreach (var raw in File.ReadAllLines(SettingsPath, Encoding.UTF8))
                 {
                     var line = raw.TrimEnd('\r');
-                    if (line.Length == 0 || line.StartsWith("#")) continue;
+                    if (line.Length == 0 || line.StartsWith("#", System.StringComparison.Ordinal)) continue;
                     if (line.StartsWith("Panel.", StringComparison.OrdinalIgnoreCase))
                     {
                         int eq = line.IndexOf('=');

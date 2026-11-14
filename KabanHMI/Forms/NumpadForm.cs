@@ -296,7 +296,7 @@ namespace Kaban.UI.Forms
                 case "\u25C0": if (_caret > 0) _caret--; _selectAll = false; break;
                 case "\u25B6": if (_caret < _text.Length) _caret++; _selectAll = false; break;
                 case "+/-":
-                    if (_text.StartsWith("-")) { _text = _text.Substring(1); _caret = Math.Max(0, _caret - 1); }
+                    if (_text.StartsWith("-", System.StringComparison.Ordinal)) { _text = _text.Substring(1); _caret = Math.Max(0, _caret - 1); }
                     else { _text = "-" + _text; _caret++; }
                     _selectAll = false;
                     break;

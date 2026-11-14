@@ -40,7 +40,7 @@ namespace Kaban.Core.Models
 
         public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
         {
-            if (sourceType == typeof(string) || sourceType.FullName.EndsWith("DynamicValue")) return true;
+            if (sourceType == typeof(string) || sourceType.FullName.EndsWith("DynamicValue", System.StringComparison.Ordinal)) return true;
             return base.CanConvertFrom(context, sourceType);
         }
 
@@ -62,7 +62,7 @@ namespace Kaban.Core.Models
                 // "@name" still means an HMI variable. A bare device name is a tag,
                 // which is what an engineer typing into a limit field means.
                 bool isNumber = double.TryParse(str, NumberStyles.Any, CultureInfo.InvariantCulture, out _);
-                bool isHmiVar = str.StartsWith("@");
+                bool isHmiVar = str.StartsWith("@", System.StringComparison.Ordinal);
 
                 string enumString = string.IsNullOrEmpty(str) || str.Equals("None", StringComparison.OrdinalIgnoreCase) ? "None"
                                   : isNumber ? "Static"
@@ -82,7 +82,7 @@ namespace Kaban.Core.Models
                 }
             }
 
-            if (value.GetType().FullName.EndsWith("DynamicValue"))
+            if (value.GetType().FullName.EndsWith("DynamicValue", System.StringComparison.Ordinal))
             {
                 Type destType = context?.PropertyDescriptor?.PropertyType ?? typeof(DynamicValue);
                 var typeVal = value.GetType().GetProperty("Type")?.GetValue(value)?.ToString() ?? "None";
@@ -103,7 +103,7 @@ namespace Kaban.Core.Models
         {
             if (value == null) return null;
 
-            if (value.GetType().FullName.EndsWith("DynamicValue"))
+            if (value.GetType().FullName.EndsWith("DynamicValue", System.StringComparison.Ordinal))
             {
                 var typeVal = value.GetType().GetProperty("Type")?.GetValue(value)?.ToString() ?? "None";
                 var staticVal = value.GetType().GetProperty("StaticValue")?.GetValue(value) ?? 0.0;

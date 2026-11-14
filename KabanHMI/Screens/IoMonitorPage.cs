@@ -344,7 +344,7 @@ namespace Kaban.UI.Screens
                 foreach (var raw in File.ReadAllLines(path))
                 {
                     var line = raw.Trim();
-                    if (line.Length == 0 || line.StartsWith("#")) continue;
+                    if (line.Length == 0 || line.StartsWith("#", System.StringComparison.Ordinal)) continue;
                     var f = line.Split(';');
                     if (f.Length < 3 || f[0].Trim().Equals("Label", StringComparison.OrdinalIgnoreCase)) continue;
                     string address = f[2].Trim().ToUpperInvariant();
@@ -357,7 +357,7 @@ namespace Kaban.UI.Screens
                     {
                         Label = f[0].Trim(),
                         IsInput = kind.StartsWith("I", StringComparison.OrdinalIgnoreCase) ||
-                                  (kind.Length == 0 && address.StartsWith("X")),
+                                  (kind.Length == 0 && address.StartsWith("X", System.StringComparison.Ordinal)),
                         Address = address,
                         Read = read.Length > 0 ? read : address,
                         Station = station != null ? station(Math.Max(1, plc)) : Math.Max(1, plc)

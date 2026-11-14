@@ -1067,7 +1067,7 @@ namespace Kaban.UI.Controls
         /// <summary>A column heading's translation key ("Col_MinLimit", "MotH_Busy"), or null.</summary>
         public static string HeadingKey(string columnKey)
         {
-            if (columnKey != null && columnKey.StartsWith("Mot:"))
+            if (columnKey != null && columnKey.StartsWith("Mot:", System.StringComparison.Ordinal))
             {
                 var item = SimpleMotion.Find(columnKey.Substring(4));
                 return item == null ? null : "MotH_" + item.Key;
@@ -1093,7 +1093,7 @@ namespace Kaban.UI.Controls
 
         public static string HeadingText(string columnKey)
         {
-            if (columnKey != null && columnKey.StartsWith("Mot:"))
+            if (columnKey != null && columnKey.StartsWith("Mot:", System.StringComparison.Ordinal))
             {
                 var item = SimpleMotion.Find(columnKey.Substring(4));
                 return item == null ? columnKey : LanguageManager.GetString("MotH_" + item.Key, ShortHeading(item));
@@ -1106,7 +1106,7 @@ namespace Kaban.UI.Controls
         /// <summary>A column's full name for the heading's tooltip (Motion monitor columns), or null.</summary>
         public static string HeadingTip(string columnKey)
         {
-            if (columnKey == null || !columnKey.StartsWith("Mot:")) return null;
+            if (columnKey == null || !columnKey.StartsWith("Mot:", System.StringComparison.Ordinal)) return null;
             var item = SimpleMotion.Find(columnKey.Substring(4));
             return item == null ? null : LanguageManager.GetString(item.TitleKey, item.Title) + " (" + item.Ref + ")";
         }
@@ -1445,7 +1445,7 @@ namespace Kaban.UI.Controls
             }
             foreach (var kv in _columns)
             {
-                if (!kv.Key.StartsWith("Mot:")) continue;
+                if (!kv.Key.StartsWith("Mot:", System.StringComparison.Ordinal)) continue;
                 var item = SimpleMotion.Find(kv.Key.Substring(4));
                 if (item == null) continue;
                 Label l;

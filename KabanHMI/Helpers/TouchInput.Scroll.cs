@@ -147,7 +147,7 @@ namespace Kaban.UI.Helpers
         {
             if (c is IHandlesTouch) return true;
             string n = c.GetType().Name;
-            return n == "DxfViewerControl" || n == "DashboardTimeline" || n.EndsWith("Chart");
+            return n == "DxfViewerControl" || n == "DashboardTimeline" || n.EndsWith("Chart", System.StringComparison.Ordinal);
         }
 
         // ---- a table ---------------------------------------------------------------------------------

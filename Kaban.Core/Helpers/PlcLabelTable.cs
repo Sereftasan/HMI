@@ -149,7 +149,7 @@ namespace Kaban.Core.Helpers
                     if (line.StartsWith("#heading;", StringComparison.OrdinalIgnoreCase)) { heading = line.Substring(9).Trim(); notSent = false; continue; }
                     // "#conditions;text": the same, for the machine's options and conditions - not sent by the HMI
                     if (line.StartsWith("#conditions;", StringComparison.OrdinalIgnoreCase)) { heading = line.Substring(12).Trim(); notSent = true; continue; }
-                    if (line.Length == 0 || line.StartsWith("#")) continue;
+                    if (line.Length == 0 || line.StartsWith("#", System.StringComparison.Ordinal)) continue;
 
                     // tolerate ; or TAB - the list is pasted out of GX Works and Excel
                     var f = line.Split(line.Contains(";") ? ';' : '\t');

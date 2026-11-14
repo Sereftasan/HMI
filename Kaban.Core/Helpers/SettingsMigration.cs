@@ -246,7 +246,7 @@ namespace Kaban.Core.Helpers
         {
             foreach (var line in File.ReadAllLines(path))
             {
-                if (line.StartsWith("#") || line.Trim().Length == 0) continue;
+                if (line.StartsWith("#", System.StringComparison.Ordinal) || line.Trim().Length == 0) continue;
                 int cols = line.Split('\t').Length;
                 if (cols >= 5) return 3;
                 if (cols == 4) return 2;
@@ -260,7 +260,7 @@ namespace Kaban.Core.Helpers
             var outp = new List<string>();
             foreach (var line in lines)
             {
-                if (line.StartsWith("#") || line.Trim().Length == 0) { outp.Add(line); continue; }
+                if (line.StartsWith("#", System.StringComparison.Ordinal) || line.Trim().Length == 0) { outp.Add(line); continue; }
                 var p = line.Split('\t').ToList();
 
                 // Defaults chosen so an upgraded file behaves exactly as the old one
@@ -341,7 +341,7 @@ namespace Kaban.Core.Helpers
             try
             {
                 return File.ReadAllLines(path)
-                           .Count(l => l.Trim().Length > 0 && !l.StartsWith("#"));
+                           .Count(l => l.Trim().Length > 0 && !l.StartsWith("#", System.StringComparison.Ordinal));
             }
             catch { return 0; }
         }

@@ -413,8 +413,8 @@ namespace Kaban.UI.Dxf
             foreach (var raw in gcode.Split('\n'))
             {
                 string line = raw.Trim();
-                if (line.Length == 0 || line.StartsWith("(")) continue;
-                if (!(line.StartsWith("G0") || line.StartsWith("G1"))) continue;
+                if (line.Length == 0 || line.StartsWith("(", System.StringComparison.Ordinal)) continue;
+                if (!(line.StartsWith("G0", System.StringComparison.Ordinal) || line.StartsWith("G1", System.StringComparison.Ordinal))) continue;
                 bool moved = false;
                 foreach (var tok in line.Split(' '))
                 {

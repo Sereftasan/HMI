@@ -135,7 +135,7 @@ namespace Kaban.Profiles.Jobs
                 no++;
                 string line = (raw ?? "").Trim();
                 if (line.Length == 0 || line.StartsWith("//")) continue;
-                if (line.StartsWith("#")) { job.Comments.Add(line); continue; }
+                if (line.StartsWith("#", System.StringComparison.Ordinal)) { job.Comments.Add(line); continue; }
                 var t = line.Split(';');
                 string kind = t[0].Trim().ToLowerInvariant();
                 int eq = kind.IndexOf('=');
@@ -248,7 +248,7 @@ namespace Kaban.Profiles.Jobs
         public static string Format(IEnumerable<KbnBar> bars, IEnumerable<string> comments = null)
         {
             var sb = new StringBuilder();
-            foreach (var c in comments ?? new string[0]) sb.Append(c.StartsWith("#") ? c : "# " + c).Append("\r\n");
+            foreach (var c in comments ?? new string[0]) sb.Append(c.StartsWith("#", System.StringComparison.Ordinal) ? c : "# " + c).Append("\r\n");
             bool first = true;
             foreach (var b in bars.Where(x => x.Copy == 1))
             {

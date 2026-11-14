@@ -225,7 +225,7 @@ namespace Kaban.UI.Controls
                             new[] { '|' }, StringSplitOptions.RemoveEmptyEntries));
                         continue;
                     }
-                    if (line.Length == 0 || line.StartsWith("#")) continue;
+                    if (line.Length == 0 || line.StartsWith("#", System.StringComparison.Ordinal)) continue;
 
                     int eq = line.IndexOf('=');
                     if (eq <= 0) continue;

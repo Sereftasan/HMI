@@ -198,7 +198,7 @@ namespace Kaban.Core.Helpers
                 var langs = new List<string>();
                 for (int i = 1; i < headers.Length; i++)
                 {
-                    string langCode = headers[i].Trim().ToUpper();
+                    string langCode = headers[i].Trim().ToUpperInvariant();
                     langs.Add(langCode);
                     if (!target.ContainsKey(langCode))
                         target[langCode] = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
@@ -255,7 +255,7 @@ namespace Kaban.Core.Helpers
         public static void AddTranslation(string langCode, string key, string text, string owner = null, string fileName = null)
         {
             if (string.IsNullOrWhiteSpace(langCode) || string.IsNullOrWhiteSpace(key)) return;
-            langCode = langCode.Trim().ToUpper();
+            langCode = langCode.Trim().ToUpperInvariant();
             if (!_machine.ContainsKey(langCode))
             {
                 _machine[langCode] = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
@@ -279,7 +279,7 @@ namespace Kaban.Core.Helpers
         public static void SetText(string langCode, string key, string text, bool common)
         {
             if (string.IsNullOrWhiteSpace(langCode) || string.IsNullOrWhiteSpace(key)) return;
-            langCode = langCode.Trim().ToUpper();
+            langCode = langCode.Trim().ToUpperInvariant();
             var layer = common ? _common : _machine;
             Dictionary<string, string> dict;
             if (!layer.TryGetValue(langCode, out dict))
@@ -294,7 +294,7 @@ namespace Kaban.Core.Helpers
         public static void AddLanguage(string langCode)
         {
             if (string.IsNullOrWhiteSpace(langCode)) return;
-            langCode = langCode.Trim().ToUpper();
+            langCode = langCode.Trim().ToUpperInvariant();
             _deleted.Remove(langCode);
             if (!_common.ContainsKey(langCode)) _common[langCode] = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
             if (!AvailableLanguages.Contains(langCode)) AvailableLanguages.Add(langCode);
@@ -305,7 +305,7 @@ namespace Kaban.Core.Helpers
         public static void RemoveLanguage(string langCode)
         {
             if (string.IsNullOrWhiteSpace(langCode)) return;
-            langCode = langCode.Trim().ToUpper();
+            langCode = langCode.Trim().ToUpperInvariant();
             if (langCode == "EN") return;
             _deleted.Add(langCode);
             AvailableLanguages.RemoveAll(l => string.Equals(l, langCode, StringComparison.OrdinalIgnoreCase));
@@ -324,7 +324,7 @@ namespace Kaban.Core.Helpers
 
         public static void ChangeLanguage(string langCode)
         {
-            langCode = langCode.ToUpper();
+            langCode = langCode.ToUpperInvariant();
             if (_deleted.Contains(langCode)) return;
             bool known = _machine.ContainsKey(langCode) || _common.ContainsKey(langCode);
             if (known && CurrentLanguage != langCode)
@@ -411,7 +411,7 @@ namespace Kaban.Core.Helpers
         public static string GetStringIn(string langCode, string key)
         {
             string value;
-            return !string.IsNullOrEmpty(langCode) && TryLookupIn(langCode.Trim().ToUpper(), key, out value) ? value : null;
+            return !string.IsNullOrEmpty(langCode) && TryLookupIn(langCode.Trim().ToUpperInvariant(), key, out value) ? value : null;
         }
 
         public static string GetString(string key, string fallbackText = "")

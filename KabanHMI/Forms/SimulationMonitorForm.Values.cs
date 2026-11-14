@@ -323,7 +323,7 @@ namespace Kaban.UI.Forms
             string t = (text ?? "").Trim();
             if (IsString(type))
             {
-                if (t.Length >= 2 && t.StartsWith("\"") && t.EndsWith("\"")) t = t.Substring(1, t.Length - 2);
+                if (t.Length >= 2 && t.StartsWith("\"", System.StringComparison.Ordinal) && t.EndsWith("\"", System.StringComparison.Ordinal)) t = t.Substring(1, t.Length - 2);
                 int chars = StringChars(type, r.EffectiveStringLength);
                 if (t.Length > chars) { problem = "Msg_MonTooLong"; return null; }
                 return FromText(t, chars);

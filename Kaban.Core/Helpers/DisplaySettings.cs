@@ -70,7 +70,7 @@ namespace Kaban.Core.Helpers
         public static double? Parse(string text)
         {
             var t = (text ?? "").Trim().Replace(',', '.');
-            bool percent = t.EndsWith("%");
+            bool percent = t.EndsWith("%", System.StringComparison.Ordinal);
             if (percent) t = t.TrimEnd('%').Trim();
             double v;
             if (!double.TryParse(t, NumberStyles.Float, CultureInfo.InvariantCulture, out v)) return null;
@@ -128,7 +128,7 @@ namespace Kaban.Core.Helpers
                 {
                     var line = raw.Trim();
                     int eq = line.IndexOf('=');
-                    if (eq <= 0 || line.StartsWith("#")) continue;
+                    if (eq <= 0 || line.StartsWith("#", System.StringComparison.Ordinal)) continue;
                     string key = line.Substring(0, eq).Trim(), value = line.Substring(eq + 1).Trim();
                     double v;
                     if (key.Equals("Panel", StringComparison.OrdinalIgnoreCase))

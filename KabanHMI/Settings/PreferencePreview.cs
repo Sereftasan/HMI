@@ -254,7 +254,7 @@ namespace Kaban.UI.Settings
         private static UnitType UnitOfKey(string key)
         {
             UnitType t;
-            return key != null && key.StartsWith("Unit_") && Enum.TryParse(key.Substring(5), out t) ? t : UnitType.None;
+            return key != null && key.StartsWith("Unit_", System.StringComparison.Ordinal) && Enum.TryParse(key.Substring(5), out t) ? t : UnitType.None;
         }
 
         // A value of each family as the PLC keeps it (the reference unit).

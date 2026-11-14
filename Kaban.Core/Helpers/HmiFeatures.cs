@@ -105,7 +105,7 @@ namespace Kaban.Core.Helpers
                 {
                     var line = raw.Trim();
                     int eq = line.IndexOf('=');
-                    if (line.Length == 0 || line.StartsWith("#") || eq <= 0) continue;
+                    if (line.Length == 0 || line.StartsWith("#", System.StringComparison.Ordinal) || eq <= 0) continue;
                     var key = line.Substring(0, eq).Trim();
                     var value = line.Substring(eq + 1).Trim();
                     _on[key] = value.Equals("On", StringComparison.OrdinalIgnoreCase) || value == "1" ||

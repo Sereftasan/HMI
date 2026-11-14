@@ -260,7 +260,7 @@ namespace Kaban.Profiles.Data
             foreach (var p in _params.Items)
             {
                 string name = p.ParameterName ?? "";
-                if (!name.StartsWith("@") && !name.StartsWith(":") && !name.StartsWith("$")) name = "@" + name;
+                if (!name.StartsWith("@", System.StringComparison.Ordinal) && !name.StartsWith(":", System.StringComparison.Ordinal) && !name.StartsWith("$", System.StringComparison.Ordinal)) name = "@" + name;
                 int idx = api.ParameterIndex(stmt, NativeApi.Utf8(name));
                 if (idx <= 0) continue;                           // not used by this statement
                 object v = p.Value;

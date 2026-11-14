@@ -306,25 +306,25 @@ namespace Kaban.Core.Helpers
         public static AuditKind Classify(string text)
         {
             string t = (text ?? "").ToLowerInvariant();
-            if (t.StartsWith("[plc diag]") || Regex.IsMatch(t, @"^station \d+ (lost|reconnected)") ||
-                t.Contains("could not open plc station") || t.StartsWith("attempted to connect") ||
-                t.StartsWith("attempted to disconnect") || t.StartsWith("opened connection help"))
+            if (t.StartsWith("[plc diag]", System.StringComparison.Ordinal) || Regex.IsMatch(t, @"^station \d+ (lost|reconnected)") ||
+                t.Contains("could not open plc station") || t.StartsWith("attempted to connect", System.StringComparison.Ordinal) ||
+                t.StartsWith("attempted to disconnect", System.StringComparison.Ordinal) || t.StartsWith("opened connection help", System.StringComparison.Ordinal))
                 return AuditKind.Connection;
-            if (t.StartsWith("logged in") || t.StartsWith("logged out") || t.Contains("login") ||
-                t.StartsWith("signed in") || t.Contains(" user '") || t.StartsWith("deleted user") ||
-                t.StartsWith("changed level of user") || t.StartsWith("added user") || t.StartsWith("created user"))
+            if (t.StartsWith("logged in", System.StringComparison.Ordinal) || t.StartsWith("logged out", System.StringComparison.Ordinal) || t.Contains("login") ||
+                t.StartsWith("signed in", System.StringComparison.Ordinal) || t.Contains(" user '") || t.StartsWith("deleted user", System.StringComparison.Ordinal) ||
+                t.StartsWith("changed level of user", System.StringComparison.Ordinal) || t.StartsWith("added user", System.StringComparison.Ordinal) || t.StartsWith("created user", System.StringComparison.Ordinal))
                 return AuditKind.SignIn;
             if (t.Contains("unhandled") || t.Contains("failed") || t.Contains("could not") ||
                 t.Contains("refused") || t.Contains(" not sent") || t.Contains("error"))
                 return AuditKind.Problem;
-            if (t.StartsWith("wrote ") || t.StartsWith("set bit") || t.StartsWith("set option") ||
-                t.StartsWith("monitor wrote") || t.StartsWith("monitor imported and wrote") ||
-                t.StartsWith("momentary release") || t.StartsWith("alarm reset") || t.StartsWith("speed override") ||
-                t.StartsWith("pressed ") || t.StartsWith("released ") || t.StartsWith("set "))
+            if (t.StartsWith("wrote ", System.StringComparison.Ordinal) || t.StartsWith("set bit", System.StringComparison.Ordinal) || t.StartsWith("set option", System.StringComparison.Ordinal) ||
+                t.StartsWith("monitor wrote", System.StringComparison.Ordinal) || t.StartsWith("monitor imported and wrote", System.StringComparison.Ordinal) ||
+                t.StartsWith("momentary release", System.StringComparison.Ordinal) || t.StartsWith("alarm reset", System.StringComparison.Ordinal) || t.StartsWith("speed override", System.StringComparison.Ordinal) ||
+                t.StartsWith("pressed ", System.StringComparison.Ordinal) || t.StartsWith("released ", System.StringComparison.Ordinal) || t.StartsWith("set ", System.StringComparison.Ordinal))
                 return AuditKind.PlcWrite;
-            if (t.Contains("setting") || t.StartsWith("saved") || t.StartsWith("imported") || t.StartsWith("exported") ||
-                t.StartsWith("loaded") || t.Contains("magnif") || t.StartsWith("restart") || t.Contains("layout") ||
-                t.Contains("audit logging") || t.StartsWith("kept the"))
+            if (t.Contains("setting") || t.StartsWith("saved", System.StringComparison.Ordinal) || t.StartsWith("imported", System.StringComparison.Ordinal) || t.StartsWith("exported", System.StringComparison.Ordinal) ||
+                t.StartsWith("loaded", System.StringComparison.Ordinal) || t.Contains("magnif") || t.StartsWith("restart", System.StringComparison.Ordinal) || t.Contains("layout") ||
+                t.Contains("audit logging") || t.StartsWith("kept the", System.StringComparison.Ordinal))
                 return AuditKind.Settings;
             return AuditKind.Other;
         }

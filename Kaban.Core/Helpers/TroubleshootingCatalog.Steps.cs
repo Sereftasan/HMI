@@ -1466,7 +1466,7 @@ namespace Kaban.Core.Helpers
                 html = Regex.Replace(html, "<a class=\"go\" href=\"#([^\"]*)\"></a>", mt =>
                 {
                     var k = mt.Groups[1].Value;
-                    if (k.StartsWith("@")) k = Symbolic(k, order);
+                    if (k.StartsWith("@", System.StringComparison.Ordinal)) k = Symbolic(k, order);
                     if (k.Length == 0) return "";
                     k = resolve(k);
                     return number.ContainsKey(k) ? link(k) : "";

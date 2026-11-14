@@ -36,7 +36,7 @@ namespace Kaban.Core.Helpers
         {
             if (string.IsNullOrWhiteSpace(formula)) return true;
             string f = formula.Trim();
-            if (f.StartsWith("[") && f.EndsWith("]")) f = f.Substring(1, f.Length - 2).Trim();
+            if (f.StartsWith("[", System.StringComparison.Ordinal) && f.EndsWith("]", System.StringComparison.Ordinal)) f = f.Substring(1, f.Length - 2).Trim();
             return IsValueName(f);
         }
 

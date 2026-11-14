@@ -66,7 +66,7 @@ namespace Kaban.Profiles.Geometry
         public static string Normalize(string text)
         {
             var t = Regex.Replace((text ?? "").Trim().ToUpperInvariant(), @"[\s\-\.]+", "_");
-            if (t.StartsWith("REF_")) t = t.Substring(4);
+            if (t.StartsWith("REF_", System.StringComparison.Ordinal)) t = t.Substring(4);
             if (t == "CENTRE") t = "CENTER";
             if (t == "CHAMBER_CENTER") t = "CHAMBER_CENTRE";
             if (t == "OUTSIDE") t = "OUTSIDE_SURFACE";

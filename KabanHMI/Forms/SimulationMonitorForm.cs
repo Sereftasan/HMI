@@ -2426,7 +2426,7 @@ namespace Kaban.UI.Forms
                 {
                     // Label=280;0;1   (width;position;shown)
                     int eq = line.IndexOf('=');
-                    if (eq <= 0 || line.StartsWith("#")) continue;
+                    if (eq <= 0 || line.StartsWith("#", System.StringComparison.Ordinal)) continue;
                     var f = line.Substring(eq + 1).Split(';');
                     int w, o;
                     if (int.TryParse(f[0], NumberStyles.Integer, CultureInfo.InvariantCulture, out w)) _colWidth[line.Substring(0, eq)] = w;
@@ -4419,7 +4419,7 @@ namespace Kaban.UI.Forms
             foreach (var raw in lines)
             {
                 var line = raw.Trim();
-                if (line.Length == 0 || line.StartsWith("#")) continue;
+                if (line.Length == 0 || line.StartsWith("#", System.StringComparison.Ordinal)) continue;
                 var f = line.Split(line.Contains(";") ? ';' : '\t');
                 int v;
                 if (f.Length > 3 && f[2].Trim().Length > 0 &&
@@ -4435,7 +4435,7 @@ namespace Kaban.UI.Forms
             foreach (var raw in lines)
             {
                 var line = (raw ?? "").Trim();
-                if (line.Length == 0 || line.StartsWith("#")) continue;
+                if (line.Length == 0 || line.StartsWith("#", System.StringComparison.Ordinal)) continue;
                 var f = line.Split(line.Contains(";") ? ';' : '\t');
                 if (f[0].Trim().Equals("Label", StringComparison.OrdinalIgnoreCase)) continue;   // header
 
@@ -4554,7 +4554,7 @@ namespace Kaban.UI.Forms
                     mon.Sheets.Add(current);
                     continue;
                 }
-                if (line.Length == 0 || line.StartsWith("#")) continue;
+                if (line.Length == 0 || line.StartsWith("#", System.StringComparison.Ordinal)) continue;
                 var f = line.Split(';');
                 if (f.Length < 3 || f[0].Trim().Equals("Label", StringComparison.OrdinalIgnoreCase)) continue;
                 if (current == null) { current = new Sheet { Name = T("Tab_MonMain", "Main") }; mon.Sheets.Add(current); }

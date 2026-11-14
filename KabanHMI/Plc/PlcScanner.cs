@@ -179,7 +179,7 @@ namespace Kaban.UI.Plc
                 int st; string device;
                 PlcAddressHelper.Resolve(station, s.Trim(), out st, out device);
                 if (!perPlc.ContainsKey(st)) perPlc[st] = new HashSet<string>();
-                perPlc[st].Add(device.Trim().ToUpper());
+                perPlc[st].Add(device.Trim().ToUpperInvariant());
             };
             Action<string> Add = (s) => AddTo(curPlc, s);
 
@@ -808,6 +808,11 @@ namespace Kaban.UI.Plc
                 lookups[plc] = (addr) =>
                 {
                     if (string.IsNullOrWhiteSpace(addr)) return 0;
+                    // The device as the batch has it - nearly every lookup of a scan: found at once, with no
+                    // station split, trim or upper-casing (three strings made per lookup, thousands a second).
+                    int idx;
+                    if (capturedValues != null && capturedIndex.TryGetValue(addr, out idx) && idx < capturedValues.Length)
+                        return capturedValues[idx];
                     // A DEVICE OF ANOTHER CONTROLLER ("X12@2"): that controller's
                     // values - the control reading it need not know (12 October).
                     int at; string device;
@@ -817,7 +822,7 @@ namespace Kaban.UI.Plc
                         {
                             Func<string, int> there;
                             if (lookups.TryGetValue(at, out there)) return there(device);
-                            string clean = device.Trim().ToUpper();
+                            string clean = device.Trim().ToUpperInvariant();
                             // read there already, and that station did not answer (5 November: PLC 2 switched off on a
                             // panel, the HMI's records of a cylinder of PLC 1 with a sensor of PLC 2): nothing to queue - it
                             // is no device of the page, and must not make that station one of the page's (the banner)
@@ -832,9 +837,8 @@ namespace Kaban.UI.Plc
                         }
                         addr = device;
                     }
-                    string cleanAddr = addr.Trim().ToUpper();
+                    string cleanAddr = addr.Trim().ToUpperInvariant();
 
-                    int idx;
                     if (capturedValues != null && capturedIndex.TryGetValue(cleanAddr, out idx) && idx < capturedValues.Length)
                         return capturedValues[idx];
 

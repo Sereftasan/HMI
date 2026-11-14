@@ -271,7 +271,7 @@ namespace Kaban.UI.Settings
                 Date = DateTime.Now, Station = _endpoint.StationId, Description = _description.Text.Trim(), Modules = _modules,
                 CamsTyped = _modules.Count > 0 ? _cams.Text.Trim() : ""
             };
-            if (backup.Cpu.StartsWith("(")) backup.Cpu = "";
+            if (backup.Cpu.StartsWith("(", System.StringComparison.Ordinal)) backup.Cpu = "";
             List<int> extraCams;
             if (!PlcBackup.TryParseCams(_cams.Text, out extraCams))
             {

@@ -180,7 +180,7 @@ namespace Kaban.Core.Helpers
                 {
                     var line = raw.Trim();
                     // "#! ZeroVoltWire=21": a directive, not a comment.
-                    if (line.StartsWith("#!"))
+                    if (line.StartsWith("#!", System.StringComparison.Ordinal))
                     {
                         var kv = line.Substring(2).Split(new[] { '=' }, 2);
                         if (kv.Length == 2)
@@ -191,7 +191,7 @@ namespace Kaban.Core.Helpers
                         }
                         continue;
                     }
-                    if (line.Length == 0 || line.StartsWith("#")) continue;
+                    if (line.Length == 0 || line.StartsWith("#", System.StringComparison.Ordinal)) continue;
                     var f = line.Split(';');
                     if (head == null && f[0].Trim().Equals("Point", StringComparison.OrdinalIgnoreCase)) { head = f.Select(h => h.Trim()).ToArray(); continue; }
                     if (head == null) continue;

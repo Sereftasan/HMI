@@ -864,7 +864,7 @@ namespace Kaban.UI.Settings
             using (var dlg = new SaveFileDialog
             {
                 Filter = "CSV (*.csv)|*.csv",
-                FileName = (owner == null || owner.StartsWith("*") ? "Translations" : owner == TranslationEdits.General ? "CommonTranslations" : owner + "_Translations") +
+                FileName = (owner == null || owner.StartsWith("*", System.StringComparison.Ordinal) ? "Translations" : owner == TranslationEdits.General ? "CommonTranslations" : owner + "_Translations") +
                            (_onlyEdited.Checked ? "_edited" : "") + ".csv"
             })
             {

@@ -658,7 +658,7 @@ namespace Kaban.UI.Dashboard
                     {
                         var line = raw.Trim();
                         int eq = line.LastIndexOf('=');
-                        if (line.Length == 0 || line.StartsWith("#") || eq <= 0) continue;
+                        if (line.Length == 0 || line.StartsWith("#", System.StringComparison.Ordinal) || eq <= 0) continue;
                         double v;
                         if (double.TryParse(line.Substring(eq + 1), NumberStyles.Float, CultureInfo.InvariantCulture, out v) && v > 0)
                             _all[line.Substring(0, eq)] = new Normal { Value = v };

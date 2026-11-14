@@ -314,7 +314,7 @@ namespace Kaban.UI.Helpers
             var b = c as ButtonHMI;
             if (b != null && b.HasActions) return true;                 // a jog, a set: held is held
             string n = c.GetType().Name;
-            return n == "DashboardTimeline" || n == "DashboardChart" || n == "DxfViewerControl" || n.EndsWith("Chart");
+            return n == "DashboardTimeline" || n == "DashboardChart" || n == "DxfViewerControl" || n.EndsWith("Chart", System.StringComparison.Ordinal);
         }
 
         private static void Held()

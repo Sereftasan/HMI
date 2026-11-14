@@ -349,7 +349,7 @@ namespace Kaban.Machines.FA2010.Screens
             int panes = 0, minimised = 0;
             foreach (var kv in entry)
             {
-                if (kv.Key.StartsWith("#")) continue;
+                if (kv.Key.StartsWith("#", System.StringComparison.Ordinal)) continue;
                 panes++;
                 var f = (kv.Value ?? "").Split(',');
                 if (f.Length >= 5 && f[4].Trim() == "1") minimised++;
@@ -361,7 +361,7 @@ namespace Kaban.Machines.FA2010.Screens
             }
             foreach (var kv in entry)
             {
-                if (kv.Key.StartsWith("#")) continue;
+                if (kv.Key.StartsWith("#", System.StringComparison.Ordinal)) continue;
                 FloatingPaneHMI pane;
                 if (_panes.TryGetValue(kv.Key, out pane)) pane.Deserialize(kv.Value);
             }
@@ -396,7 +396,7 @@ namespace Kaban.Machines.FA2010.Screens
         private void SaveLayoutAs()
         {
             string name = Ask.Text(FindForm(), T("Prf_LayoutSaveTitle", "Save arrangement"), T("Prf_LayoutName", "Name of the arrangement:"));
-            if (string.IsNullOrWhiteSpace(name) || name == DefaultLayoutName || name.StartsWith("#")) return;
+            if (string.IsNullOrWhiteSpace(name) || name == DefaultLayoutName || name.StartsWith("#", System.StringComparison.Ordinal)) return;
             _layouts[name] = CaptureArrangement();
             _lastLayoutName = name;
             SaveLayoutPresets();
@@ -442,7 +442,7 @@ namespace Kaban.Machines.FA2010.Screens
             _cmbLayout.Items.Clear();
             _cmbLayout.Items.Add(DefaultLayoutName);
             foreach (var key in _layouts.Keys)
-                if (key != DefaultLayoutName && !key.StartsWith("#")) _cmbLayout.Items.Add(key);
+                if (key != DefaultLayoutName && !key.StartsWith("#", System.StringComparison.Ordinal)) _cmbLayout.Items.Add(key);
             _cmbLayout.SelectedItem = !string.IsNullOrEmpty(_lastLayoutName) && _cmbLayout.Items.Contains(_lastLayoutName) ? _lastLayoutName : DefaultLayoutName;
             _loadingLayout = false;
         }
@@ -490,7 +490,7 @@ namespace Kaban.Machines.FA2010.Screens
                     {
                         var line = raw.Trim();
                         if (line.Length == 0) continue;
-                        if (line.StartsWith("[") && line.EndsWith("]"))
+                        if (line.StartsWith("[", System.StringComparison.Ordinal) && line.EndsWith("]", System.StringComparison.Ordinal))
                         {
                             current = line.Substring(1, line.Length - 2);
                             _layouts[current] = new Dictionary<string, string>();
@@ -760,7 +760,7 @@ namespace Kaban.Machines.FA2010.Screens
             }
             foreach (var k in _sortKeys)
                 if (!_groupCols.Contains(k.Key)) keys.Add("[" + k.Key + "]" + (k.Value ? " ASC" : " DESC"));
-            if (!keys.Any(k => k.StartsWith("[code]"))) keys.Add("[code] ASC");
+            if (!keys.Any(k => k.StartsWith("[code]", System.StringComparison.Ordinal))) keys.Add("[code] ASC");
             _view.Sort = string.Join(", ", keys);
             _grid.RowHeadersVisible = _groupCols.Count > 0;
             UpdateHeaderArrows();
@@ -1155,7 +1155,7 @@ namespace Kaban.Machines.FA2010.Screens
                     string key = line.Substring(0, eq), val = line.Substring(eq + 1);
                     TextBox tb;
                     decimal d;
-                    if (key.StartsWith("filter.") && _filters.TryGetValue(key.Substring(7), out tb)) tb.Text = val;
+                    if (key.StartsWith("filter.", System.StringComparison.Ordinal) && _filters.TryGetValue(key.Substring(7), out tb)) tb.Text = val;
                     else if (key == "selected" && val.Length > 0) _pendingSelectId = val;
                     else if (key == "bar" && decimal.TryParse(val, NumberStyles.Float, CI, out d)) _numBar.Value = Math.Max(_numBar.Minimum, Math.Min(_numBar.Maximum, d));
                 }

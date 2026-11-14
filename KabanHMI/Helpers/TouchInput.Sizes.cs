@@ -199,10 +199,10 @@ namespace Kaban.UI.Helpers
         {
             var cb = b as CheckBox;
             if (cb != null) return !(cb is CheckBoxHMI) && cb.Appearance == Appearance.Normal && cb.CheckAlign == ContentAlignment.MiddleLeft &&
-                                   cb.RightToLeft != RightToLeft.Yes && cb.GetType().Namespace != null && cb.GetType().Namespace.StartsWith("System.Windows.Forms");
+                                   cb.RightToLeft != RightToLeft.Yes && cb.GetType().Namespace != null && cb.GetType().Namespace.StartsWith("System.Windows.Forms", System.StringComparison.Ordinal);
             var rb = b as RadioButton;
             if (rb != null) return rb.Appearance == Appearance.Normal && rb.CheckAlign == ContentAlignment.MiddleLeft && rb.RightToLeft != RightToLeft.Yes &&
-                                   rb.GetType().Namespace != null && rb.GetType().Namespace.StartsWith("System.Windows.Forms");
+                                   rb.GetType().Namespace != null && rb.GetType().Namespace.StartsWith("System.Windows.Forms", System.StringComparison.Ordinal);
             return false;
         }
 

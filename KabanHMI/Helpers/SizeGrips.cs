@@ -278,7 +278,7 @@ namespace Kaban.UI.Helpers
                     if (g.IsCorner)
                     {
                         bool left = (e & Edge.Left) != 0, top = (e & Edge.Top) != 0;
-                        b = g.Name.EndsWith("H")
+                        b = g.Name.EndsWith("H", System.StringComparison.Ordinal)
                             ? new Rectangle(left ? 0 : c.Width - arm, top ? 0 : c.Height - frame, arm, frame)
                             : new Rectangle(left ? 0 : c.Width - frame, top ? 0 : c.Height - arm, frame, arm);
                     }

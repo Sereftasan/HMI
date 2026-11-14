@@ -103,8 +103,8 @@ namespace Kaban.Machines.FA2010.Jobs
             if (n.Contains("tool") && n.Contains("no")) v = op.ToolNo;
             else if (n.Contains("angle")) v = op.Face != null ? op.Face.Angle : 0;
             else if (n.Contains("length")) v = op.Length;
-            else if (n.EndsWith(" y") || n.Contains("approach y")) v = op.Y;
-            else if (n.EndsWith(" z") || n.Contains("approach z")) v = op.Z;
+            else if (n.EndsWith(" y", System.StringComparison.Ordinal) || n.Contains("approach y")) v = op.Y;
+            else if (n.EndsWith(" z", System.StringComparison.Ordinal) || n.Contains("approach z")) v = op.Z;
             else if (n.Contains("speed")) v = op.Speed;
             else return "";
             return v.ToString("R", CI);

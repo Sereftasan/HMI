@@ -307,7 +307,7 @@ namespace Kaban.UI.Controls
                 sb.Append("\nMath Variables:\t\t").Append(string.Join(", ", MathVariables.Where(v => v != null)));
             var problems = FormulaProblems();
             // What went wrong at the last scan - unless the check above already says it.
-            if (_readFormulaError.Length > 0 && !problems.Any(p => p.StartsWith("ReadFormula")))
+            if (_readFormulaError.Length > 0 && !problems.Any(p => p.StartsWith("ReadFormula", System.StringComparison.Ordinal)))
                 problems.Insert(0, _readFormulaError);
             foreach (var p in problems)
                 sb.Append("\nFormula problem:\t\t").Append(p);

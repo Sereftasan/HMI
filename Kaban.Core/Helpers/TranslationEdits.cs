@@ -715,7 +715,7 @@ namespace Kaban.Core.Helpers
                     foreach (var raw in File.ReadAllLines(LanguagesFile, Encoding.UTF8))
                     {
                         var line = raw.Trim().TrimStart('﻿');
-                        if (line.Length < 2 || line.StartsWith("#")) continue;
+                        if (line.Length < 2 || line.StartsWith("#", System.StringComparison.Ordinal)) continue;
                         if (line[0] == '=')
                         {
                             // a language's name: =FR;French
@@ -833,7 +833,7 @@ namespace Kaban.Core.Helpers
                 {
                     var f = lines[i].Split(';');
                     var key = f[0].Trim();
-                    if (key.Length == 0 || key.StartsWith("#") || all.ContainsKey(key)) continue;
+                    if (key.Length == 0 || key.StartsWith("#", System.StringComparison.Ordinal) || all.ContainsKey(key)) continue;
                     var texts = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
                     for (int c = 1; c < f.Length && c < heads.Count; c++)
                         if (heads[c].Length > 0) texts[heads[c]] = f[c].Trim().Replace("\\r\\n", "\r\n").Replace("\\n", "\n");

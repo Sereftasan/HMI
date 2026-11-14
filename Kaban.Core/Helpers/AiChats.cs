@@ -83,7 +83,7 @@ namespace Kaban.Core.Helpers
                     foreach (var raw in File.ReadAllLines(SettingsPath, Encoding.UTF8))
                     {
                         var line = raw.Trim();
-                        if (line.Length == 0 || line.StartsWith("#")) continue;
+                        if (line.Length == 0 || line.StartsWith("#", System.StringComparison.Ordinal)) continue;
                         int cut = line.IndexOf(';');
                         if (cut <= 0) continue;
                         // ";off" at the end: kept, not offered

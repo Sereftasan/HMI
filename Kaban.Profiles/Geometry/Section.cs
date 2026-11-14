@@ -104,7 +104,7 @@ namespace Kaban.Profiles.Geometry
         public static bool LooksLikeAnnotation(string layer)
         {
             var l = (layer ?? "").ToUpperInvariant();
-            return l == "DEFPOINTS" || l.StartsWith("DIM") || l.Contains("DIMENSION") || l.Contains("OLCU") || l.Contains("ÖLÇÜ") ||
+            return l == "DEFPOINTS" || l.StartsWith("DIM", System.StringComparison.Ordinal) || l.Contains("DIMENSION") || l.Contains("OLCU") || l.Contains("ÖLÇÜ") ||
                    l.Contains("BEMASS") || l.Contains("HATCH") || l.Contains("TARAMA") || l.Contains("TEXT") || l.Contains("YAZI");
         }
 

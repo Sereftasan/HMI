@@ -234,7 +234,7 @@ namespace Kaban.UI.Helpers
             {
                 if (_keyProperties.TryGetValue(t, out ps)) return ps;
                 ps = t.GetProperties(BindingFlags.Instance | BindingFlags.Public)
-                      .Where(p => p.PropertyType == typeof(string) && p.Name.EndsWith("Key") && p.Name != "Key" && p.CanRead && p.GetIndexParameters().Length == 0)
+                      .Where(p => p.PropertyType == typeof(string) && p.Name.EndsWith("Key", System.StringComparison.Ordinal) && p.Name != "Key" && p.CanRead && p.GetIndexParameters().Length == 0)
                       .ToArray();
                 _keyProperties[t] = ps;
             }

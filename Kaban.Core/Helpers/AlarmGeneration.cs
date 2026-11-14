@@ -82,7 +82,7 @@ namespace Kaban.Core.Helpers
                 foreach (var raw in File.ReadAllLines(SettingsPath))
                 {
                     var line = raw.Trim();
-                    if (line.Length == 0 || line.StartsWith("#")) continue;
+                    if (line.Length == 0 || line.StartsWith("#", System.StringComparison.Ordinal)) continue;
                     int eq = line.IndexOf('='), dot = line.LastIndexOf('.', eq < 0 ? line.Length - 1 : eq);
                     if (eq <= 0 || dot <= 0) continue;
                     var module = line.Substring(0, dot).Trim();

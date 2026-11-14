@@ -105,9 +105,9 @@ namespace Kaban.UI.Helpers
                     continue;
                 }
                 var ns = p.PropertyType.Namespace ?? "";
-                bool models = ns.StartsWith("Kaban.Core.Models");
+                bool models = ns.StartsWith("Kaban.Core.Models", System.StringComparison.Ordinal);
                 bool list = typeof(IList).IsAssignableFrom(p.PropertyType) && p.PropertyType.IsGenericType &&
-                            (p.PropertyType.GetGenericArguments()[0].Namespace ?? "").StartsWith("Kaban.Core.Models");
+                            (p.PropertyType.GetGenericArguments()[0].Namespace ?? "").StartsWith("Kaban.Core.Models", System.StringComparison.Ordinal);
                 if (!models && !list) continue;
                 object inner;
                 try { inner = p.GetValue(o, null); } catch { continue; }

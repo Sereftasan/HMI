@@ -168,7 +168,7 @@ namespace Kaban.UI.Helpers
                 if (p.Length > 0 && !parts.Contains(p, StringComparer.OrdinalIgnoreCase)) parts.Add(p);
             }
             if ((string.Equals(row.File, "Alarms.json", StringComparison.OrdinalIgnoreCase) || AlarmDefinitionLoader.TagOf(row.Key) != null) &&
-                !parts.Any(p => p.StartsWith("an alarm's message")))
+                !parts.Any(p => p.StartsWith("an alarm's message", System.StringComparison.Ordinal)))
                 parts.Insert(0, "an alarm's message (the alarm list, the alarm bar)");
             if (parts.Count == 0)
             {
@@ -244,7 +244,7 @@ namespace Kaban.UI.Helpers
             foreach (var raw in (content ?? "").Replace("\r\n", "\n").Split('\n'))
             {
                 var s = raw.Trim().TrimStart('﻿');
-                if (s.StartsWith("```")) { current = null; continue; }
+                if (s.StartsWith("```", System.StringComparison.Ordinal)) { current = null; continue; }
                 if (IsHeader(s))
                 {
                     current = new Block { FileName = pendingName ?? named, Header = Split(s).Select(h => h.Trim()).ToArray() };

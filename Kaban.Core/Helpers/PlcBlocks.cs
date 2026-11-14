@@ -75,7 +75,7 @@ namespace Kaban.Core.Helpers
                 string prefix; long n;
                 string a = addresses[i] ?? "";
                 if (a.Contains(".") || a.Contains("@") || !PlcAddressHelper.TrySplit(a, out prefix, out n) || PlcAddressHelper.IsBitDevice(a) ||
-                    PlcAddressHelper.IsDoubleWordDevice(a) || prefix.EndsWith("\\G") || PlcAddressHelper.BaseOf(prefix) != 10)
+                    PlcAddressHelper.IsDoubleWordDevice(a) || prefix.EndsWith("\\G", System.StringComparison.Ordinal) || PlcAddressHelper.BaseOf(prefix) != 10)
                 { rest.Add(i); continue; }
                 SortedDictionary<long, List<int>> nums;
                 if (!byPrefix.TryGetValue(prefix, out nums)) byPrefix[prefix] = nums = new SortedDictionary<long, List<int>>();
