@@ -115,7 +115,8 @@ class G {
         Check("calibration is bounded the same way",
               byAddr["D5"].MinLimit.TagAddress == "D2" && byAddr["D5"].MaxLimit.TagAddress == "D3");
         Check("the MIN word itself is NOT bounded by itself",
-              byAddr["D2"].MinLimit.Type == Kaban.Core.Enums.LimitSourceType.Static);
+              byAddr["D2"].MinLimit.Type != Kaban.Core.Enums.LimitSourceType.Tag && byAddr["D2"].MinLimit.TagAddress != "D2",
+              byAddr["D2"].MinLimit.Type + " " + byAddr["D2"].MinLimit.TagAddress);
 
         Console.WriteLine("--- action marks reflect the CURRENT bit state ---");
         Check("SET is the filled mark",

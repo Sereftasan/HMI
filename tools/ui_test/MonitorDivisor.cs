@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -249,7 +249,7 @@ class MD {
         foreach (var n in new[] { "_colWidth", "_colOrder", "_colHidden" }) MonType.GetField(n, Any).SetValue(null, null);
         // the order put on the grid (Mono's grid moves a column to the left wrongly: the order itself checked)
         var order = (List<string>)Call(MonType, "ColumnOrder");
-        Check("the new columns after Value, wherever Value was moved to", string.Join(",", order) == "Label,DataType,Format,Value,Calculated,Divisor,Decimals,Address,Changed,Condition",
+        Check("the new columns after Value, wherever Value was moved to", string.Join(",", order) == "Label,DataType,Format,Value,Calculated,Divisor,Decimals,Address,Changed,Rule,Condition",
               string.Join(",", order));
 
         Console.WriteLine("--- the structures' editor ---");

@@ -103,9 +103,9 @@ class UT {
         Check("a motor with neither set is not checked", plain.TypeCheck == "OK", plain.TypeCheck);
         plain.ValveType = CylinderValve.SingleSolenoid;
         Check("  a valve without a feedback asks for it", plain.TypeProblems().Any(p => p.StartsWith("FeedbackType is not set")), P(plain));
-        var later = Unit((CylinderValve)7, (CylinderFeedback)9, "M1", "M2");
+        var later = Unit((CylinderValve)99, (CylinderFeedback)99, "M1", "M2");      // 5 - 8 are the valve island's now
         Check("a type added later is reported as not checked yet",
-              later.TypeProblems().Any(p => p.Contains("ValveType 7 has no check")) && later.TypeProblems().Any(p => p.Contains("FeedbackType 9 has no check")), P(later));
+              later.TypeProblems().Any(p => p.Contains("ValveType 99 has no check")) && later.TypeProblems().Any(p => p.Contains("FeedbackType 99 has no check")), P(later));
         var axis = Unit(CylinderValve.SingleSolenoid, CylinderFeedback.SingleMagnetic, "M1", "M2", "X1", "X2");
         axis.Kind = UnitKind.Axis;
         Check("an axis unit is not a cylinder: not checked", axis.TypeCheck == "OK", axis.TypeCheck);

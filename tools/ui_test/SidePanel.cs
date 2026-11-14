@@ -122,8 +122,11 @@ class SP {
         form.LoadScreen(homePage);
         Pump(150);
         var leaf = AllOf(homePage).OfType<ScrollableControl>().FirstOrDefault(c => c.AutoScroll && !(c is Kaban.UI.Settings.SettingsScreen));
-        Check("the page scrolls when the panel narrows it (it was cut off, no scroll bar)", leaf != null && leaf.HorizontalScroll.Visible,
-              leaf == null ? "no scrolling page" : leaf.GetType().Name + " scroll=" + leaf.HorizontalScroll.Visible);
+        // 11 November: Home's parts follow the window (anchored on both sides) - narrowed by the panel they give way instead of scrolling
+        var cutOff = homePage.Controls.Cast<Control>().Where(c => c.Visible && (c.Right > homePage.ClientSize.Width + 1 || c.Width < 40)).ToList();
+        bool scrolls = leaf != null && leaf.HorizontalScroll.Visible;
+        Check("the page scrolls when the panel narrows it, or its parts give way - none cut off", leaf != null && (scrolls || cutOff.Count == 0),
+              leaf == null ? "no scrolling page" : leaf.GetType().Name + " scroll=" + scrolls + " " + string.Join(",", cutOff.Select(c => c.Name + " " + c.Bounds)));
         // Cancel, at the right of FA2010's home (M24; the demo's D110 of PLC 2 went with the demo, 12 October,
         // and the speed moved to the left on the user's home, 14 October)
         var d110 = DeviceFindForm.Match(DeviceCollector.UsesOf(1), 1, "M24").FirstOrDefault();
@@ -134,7 +137,7 @@ class SP {
         {
             var seen = leaf.RectangleToScreen(leaf.ClientRectangle);
             var at = far.Parent.RectangleToScreen(far.Bounds);
-            Check("  a unit at the far side found by Find: scrolled into sight, beside the panel", seen.Contains(at) && -leaf.AutoScrollPosition.X > 0,
+            Check("  a unit at the far side found by Find: scrolled into sight, beside the panel", seen.Contains(at) && (!scrolls || -leaf.AutoScrollPosition.X > 0),
                   at + " in " + seen + ", scrolled " + leaf.AutoScrollPosition);
         }
         else Check("  a unit at the far side found by Find", false, d110 == null ? "M24 not found" : "not shown");

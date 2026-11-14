@@ -201,8 +201,11 @@ class MG {
         Func<Control, IEnumerable<Control>> all = null;
         all = c => new[] { c }.Concat(c.Controls.Cast<Control>().SelectMany(x => all(x)));
         var scrolling = all(home).OfType<ScrollableControl>().FirstOrDefault(c => c.AutoScroll && c.HorizontalScroll.Visible);
-        Check("the page larger than its room scrolls (it was cut off, with no scroll bar)", scrolling != null,
-              string.Join(",", all(home).OfType<ScrollableControl>().Where(c => c.AutoScroll).Select(c => c.GetType().Name)));
+        // 11 November: Home's parts follow the window (anchored on both sides) - larger than its room, they give way instead
+        var cutOff = home.Controls.Cast<Control>().Where(c => c.Visible && (c.Right > home.ClientSize.Width + 1 || c.Bottom > home.ClientSize.Height + 1 ||
+                                                                         c.Width < 40 || c.Height < 12)).ToList();
+        Check("the page larger than its room scrolls, or its parts give way: none cut off, none squeezed away", scrolling != null || cutOff.Count == 0,
+              home.ClientSize + " " + string.Join(",", cutOff.Select(c => c.Name + " " + c.Bounds)));
 
         var monitor = shell.ShowSimulationMonitor();
         Pump(100);

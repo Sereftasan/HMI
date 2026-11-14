@@ -232,8 +232,8 @@ class AG {
               t1.Any(x => x.StartsWith("Does the output card")) && t1.Any(x => x.Contains("at the other end gone OFF")) &&
               !t1.Any(x => x.Contains("stay ON the whole way")) && !t1.Any(x => x.Contains("see it?")) && titles(all).Count > t1.Count,
               string.Join(" | ", t1));
-        Check("  where to start (the HMI timed it); its code not named below Admin", !page1.Contains("M840") && page1.Contains("X2</code>") &&
-              Regex.IsMatch(page1, "Where to start:</b> The HMI timed"));
+        Check("  no \"where to start\" (2 November: step 1 branches); its code not named below Admin", !page1.Contains("M840") && page1.Contains("X2</code>") &&
+              !page1.Contains("Where to start"));
         TC.AdminView = () => true;
         var page1Admin = TC.BuildSteps(mv, TC.ValveType.ClosedCentre, TC.FeedbackType.TwoMagnetic, 1);
         TC.AdminView = () => false;
