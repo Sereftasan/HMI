@@ -40,12 +40,12 @@ namespace Kaban.Machines.MD3020
             // device reports the wrong version or none at all.
             ConnectionMonitor.SetVersionDevice(ctx.Station(1), "");
 
-            // WHERE THE PLC RESETS ITS ALARMS - pulsed by the Alarms page's Reset
-            // and the caption bar's alarm menu. NOT M102: that is FA2010's reset,
-            // and on this machine it is another device. Until the right bit is
-            // written below, this machine has no alarm reset on the HMI (the
-            // button says so) rather than one that pulses the wrong device.
-            // PlcManager.Instance.SetAlarmResetDevice(ctx.Station(1), "M...");
+            // WHERE THE PLC RESETS ITS ALARMS - set by the Alarms page's Reset and the
+            // caption bar's alarm menu: M314, PC_Error_Reset (the old program's Alarms
+            // page's Reset). Its rung clears the alarms M600 ... M799 and the servos'
+            // and milling motors' errors, and resets M314 itself after its timer
+            // (ErrorResetGecikme K3) - so SET, as FA2010's M102.
+            PlcManager.Instance.SetAlarmResetDevice(ctx.Station(1), "M314", BitActionType.SET);
         }
 
         public void RegisterConditions(IMachineMountContext ctx) { }
