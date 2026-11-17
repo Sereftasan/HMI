@@ -31,6 +31,7 @@ namespace Kaban.Machines.MK2010.Screens.Parameters
             this.lblHeadPosition = new System.Windows.Forms.Label();
             this.lblHeadMin = new System.Windows.Forms.Label();
             this.lblHeadMax = new System.Windows.Forms.Label();
+            this.lblHeadReference = new System.Windows.Forms.Label();
             this.lblHeadCalibration = new System.Windows.Forms.Label();
             this.lblHeadCal = new System.Windows.Forms.Label();
             this.lblHeadZDistance = new System.Windows.Forms.Label();
@@ -87,11 +88,22 @@ namespace Kaban.Machines.MK2010.Screens.Parameters
             this.lblHeadMax.Text = "Max";
             this.lblHeadMax.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
+            // lblHeadReference
+            // 
+            this.lblHeadReference.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
+            this.lblHeadReference.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
+            this.lblHeadReference.Location = new System.Drawing.Point(680, 16);
+            this.lblHeadReference.Name = "lblHeadReference";
+            this.lblHeadReference.Size = new System.Drawing.Size(86, 18);
+            this.lblHeadReference.Tag = "AxisHeading:Reference";
+            this.lblHeadReference.Text = "Reference";
+            this.lblHeadReference.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
             // lblHeadCalibration
             // 
             this.lblHeadCalibration.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
             this.lblHeadCalibration.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
-            this.lblHeadCalibration.Location = new System.Drawing.Point(680, 16);
+            this.lblHeadCalibration.Location = new System.Drawing.Point(770, 16);
             this.lblHeadCalibration.Name = "lblHeadCalibration";
             this.lblHeadCalibration.Size = new System.Drawing.Size(86, 18);
             this.lblHeadCalibration.Tag = "AxisHeading:Calibration";
@@ -102,7 +114,7 @@ namespace Kaban.Machines.MK2010.Screens.Parameters
             // 
             this.lblHeadCal.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
             this.lblHeadCal.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
-            this.lblHeadCal.Location = new System.Drawing.Point(770, 16);
+            this.lblHeadCal.Location = new System.Drawing.Point(860, 16);
             this.lblHeadCal.Name = "lblHeadCal";
             this.lblHeadCal.Size = new System.Drawing.Size(44, 18);
             this.lblHeadCal.Tag = "AxisHeading:Cal";
@@ -113,7 +125,7 @@ namespace Kaban.Machines.MK2010.Screens.Parameters
             // 
             this.lblHeadZDistance.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
             this.lblHeadZDistance.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
-            this.lblHeadZDistance.Location = new System.Drawing.Point(818, 16);
+            this.lblHeadZDistance.Location = new System.Drawing.Point(908, 16);
             this.lblHeadZDistance.Name = "lblHeadZDistance";
             this.lblHeadZDistance.Size = new System.Drawing.Size(76, 18);
             this.lblHeadZDistance.Tag = "AxisHeading:ZDistance";
@@ -252,6 +264,7 @@ namespace Kaban.Machines.MK2010.Screens.Parameters
             this.Controls.Add(this.lblHeadPosition);
             this.Controls.Add(this.lblHeadMin);
             this.Controls.Add(this.lblHeadMax);
+            this.Controls.Add(this.lblHeadReference);
             this.Controls.Add(this.lblHeadCalibration);
             this.Controls.Add(this.lblHeadCal);
             this.Controls.Add(this.lblHeadZDistance);
@@ -274,6 +287,7 @@ namespace Kaban.Machines.MK2010.Screens.Parameters
         private System.Windows.Forms.Label lblHeadPosition;
         private System.Windows.Forms.Label lblHeadMin;
         private System.Windows.Forms.Label lblHeadMax;
+        private System.Windows.Forms.Label lblHeadReference;
         private System.Windows.Forms.Label lblHeadCalibration;
         private System.Windows.Forms.Label lblHeadCal;
         private System.Windows.Forms.Label lblHeadZDistance;

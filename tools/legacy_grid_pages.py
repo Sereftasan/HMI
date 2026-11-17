@@ -73,11 +73,16 @@ L.OWNED['NumericInputHMI'] = L.OWNED['NumericInputHMI'] | {'MinLimit.Type', 'Min
                                                            'MaxLimit.Type', 'MaxLimit.StaticValue', 'MaxLimit.TagAddress'}
 L.OWNED['LampHMI'] = L.OWNED['LampHMI'] | {'OnColor', 'OffColor'}
 L.OWNED['ButtonHMI'] = L.OWNED['ButtonHMI'] | {'ConfirmationNeeded'}
+L.OWNED['InverterUnitHMI'] = L.OWNED['InverterUnitHMI'] | {'RequiredSecurity', 'FaultCodeAddress', 'ErrorAddress', 'RunLampAddress'}
 L.TYPES['SpeedOverrideHMI'] = 'Kaban.UI.Controls.SpeedOverrideHMI'
 L.OWNED['SpeedOverrideHMI'] = {'Name', 'PlcNumber', 'Address', 'BackColor', 'FallbackText', 'TranslationKey', 'Location', 'Size', 'LogAction', 'TabIndex'}
 L.OWNED['LabelHMI'] = {'Name', 'TranslationKey', 'Text', 'Font', 'ForeColor', 'TextAlign', 'Location', 'Size', 'BackColor'}
 L.OWNED['CylinderUnitHMI'] = L.OWNED['CylinderUnitHMI'] | {'Arrows', 'ButtonATextKey', 'ValveType', 'FeedbackType', 'ErrorAAddress', 'ErrorBAddress',
                                                            'RequiredSecurity', 'OutputAAddress', 'OutputBAddress'}
+# (17 November, SB3015) the cylinders with an encoder and the pneumatic positionings: their error bits, valve, feedback and
+# security are the spec's too (FA2010's tool took them from the manual page's unit)
+for _t in ('CylinderEncoderSettingHMI', 'PneumaticPositioningHMI'):
+    L.OWNED[_t] = L.OWNED[_t] | {'ErrorBackAddress', 'ErrorForwardAddress', 'ValveType', 'FeedbackType', 'RequiredSecurity'}
 L.TYPES['AxisSettingHMI'] = 'Kaban.UI.Controls.AxisSettingHMI'
 L.OWNED['AxisSettingHMI'] = {'Name', 'PlcNumber', 'AxisNameKey', 'HMIAxisIndex', 'MotionNumber', 'MotionAxisIndex', 'CommandBackAddress',
                              'CommandForwardAddress', 'PositionAddress', 'PositionDataType', 'MinLimitAddress', 'MaxLimitAddress',
@@ -143,6 +148,57 @@ def Cy(title, a=None, b=None, lampA=None, lampB=None, valve=None, feedback=None,
     return dict(kind='cyl', title=title, a=sa, b=sb, lampA=lampA, lampB=lampB, valve=valve, feedback=feedback, errA=errA, errB=errB,
                 pos=L.value(pos) if pos else None, arrows=arrows, text=text, span=span, note=note, outA=outA, outB=outB)
 
+def Iv(title, fault=None, a=None, b=None, run=None, val=None, error=None, text='Run', span=1, note=None):
+    """An inverter's motor (InverterUnitHMI): title - its name's key; fault - the inverter's fault code word (its alarm and
+    step-by-step help come from it); a / b - the buttons ('M636!Alt', 'M640', 'M639/M206' with a lamp; a one-button motor
+    has A, captioned text); run - its run lamp; val - a value beside the buttons ('D18 16 /10 2'); error - the PLC's alarm bit
+    for the inverter."""
+    return dict(kind='inv', title=title, fault=fault, a=_side(a) if a else None, b=_side(b) if b else None, run=run,
+                val=L.value(val) if val else None, error=error, text=text, span=span, note=note)
+
+def Enc(number, title, back, fwd, pos, ref=None, tol=None, valve=None, feedback=None, errA=None, errB=None, setdiv=(10, 1), note=None):
+    """A cylinder with an encoder (17 November, SB3015 - FA2010's CylinderEncoderSettingHMI): a row of an EncRows panel - its number,
+    its movement ('M646/M217': command / sensor, back and forward), position ('D4 16 /10 1') and settings: ref - the reference
+    (the old pages' calibration position), tol - the measuring tolerance; errA / errB its movements' error bits; setdiv - the
+    settings' divisor and decimals. A manual page shows it as EncU(number)."""
+    # (FA2010's tool's L.Enc registers FA2010's own encoders as it is imported: the machine's are kept here)
+    it = dict(kind='enc', number=number, title=title, a=L.side(back), b=L.side(fwd), pos=L.value(pos), ref=ref, tol=tol, start=None,
+              unclamp=None, note=note, valve=valve, feedback=feedback, errA=errA, errB=errB, setdiv=setdiv)
+    assert number not in ENCODERS, number
+    ENCODERS[number] = it
+    return it
+
+ENCODERS = {}                        # the machine's: number -> its Enc row (an EncU finds it)
+
+def PPos(title, back, fwd, pos, target, send, cal, calibrate, tol, offset, valve=None, feedback=None, errA=None, errB=None, note=None):
+    """A cylinder positioned by its analogue sensor (FA2010's PneumaticPositioningHMI): a row of an EncRows panel - its movement,
+    position (raw / 100), target position and its send bit, calibration and its calibrate bit, tolerance, direction reference."""
+    it = L.Mould(title, back, fwd, pos, target, send, cal, calibrate, tol, offset, valve=valve, feedback=feedback)
+    it.update(errA=errA, errB=errB, note=note)
+    return it
+
+def EncRows(key, items, title=None):
+    """A table of Enc rows or of PPos rows (one kind - each kind's rows put their own headings over their columns): the rows
+    lay their columns out themselves, as an axis settings page's."""
+    kind = items[0]['kind']
+    assert all(i['kind'] == kind for i in items), key
+    sections = L.ENC_SECTIONS if kind == 'enc' else L.PP_SECTIONS
+    # an encoder column no row has: no heading over it (the movement's always)
+    used = {'Manual'} | {k for k, f in (('Reference', 'ref'), ('Tolerance', 'tol'), ('MinimumLimit', 'start'), ('Unclamping', 'unclamp'))
+                         if any(i.get(f) for i in items)}
+    if kind == 'enc': sections = [x for x in sections if x[0] in used]
+    namew = L.pp_name_width([dict(title=L_text(i['title'])) for i in items])
+    w = namew + L.PP_GAP + L.PP_GROUP_GAP + sum(sw for _, _, sw in sections) + L.PP_GROUP_GAP * (len(sections) - 1)
+    return dict(key=key, rows=items, title=title, encrows=kind, cols=[('', w)], namew=namew, sections=sections)
+
+def L_text(key):
+    """A title key's English (its width on the page)."""
+    return TRANSLATIONS.get(key, (key,))[0]
+
+def EncU(number, span=1, note=None):
+    """A cylinder with an encoder on a manual page (CylinderEncoderUnitHMI): its number - its row (Enc) gives it the rest."""
+    return dict(kind='encunit', number=number, span=span, note=note)
+
 def Row(caption, *cells, **kw):
     """A row: its caption, its cells (None: an empty one); key: the names' part when the caption is empty; h: its height
     (a unit's row: UNIT_ROW_H)."""
@@ -152,10 +208,10 @@ def AR(axis):
     """An axis settings row (AxisSettingHMI) - axis: a dict of its number, name key, motion module and axis, devices (AXIS_FIELDS)."""
     return dict(kind='axrow', axis=axis)
 
-def AxisRows(key, rows, title=None):
+def AxisRows(key, rows, title=None, headings=None):
     """The axis settings page's rows: AR(...) and Sec(...) - the headings over them (AxisSettingHMI.AlignHeaders puts each
-    over its column), a row an axis."""
-    return dict(key=key, rows=rows, title=title, axisrows=True, cols=[('Axis', AXIS_ROW_W)])
+    over its column), a row an axis; headings - the page's own (AXIS_HEADINGS' form) when its rows have more columns."""
+    return dict(key=key, rows=rows, title=title, axisrows=True, cols=[('Axis', AXIS_ROW_W)], headings=headings)
 
 def Sec(title):
     return dict(kind='sec', title=title)
@@ -182,7 +238,11 @@ def page(cls, folder, old, caption, *bands, **kw):
 AXES = {}
 AXIS_FIELDS = [('CommandBackAddress', 'back'), ('CommandForwardAddress', 'fwd'), ('PositionAddress', 'pos'),
                ('MinLimitAddress', 'min'), ('MaxLimitAddress', 'max'), ('CalibrationAddress', 'cal'), ('CalibrateAddress', 'calibrate'),
-               ('ZDistanceAddress', 'zdist'), ('ReferenceSensorAddress', 'ref'), ('ErrorAddress', 'err'), ('ReferenceAddress', 'home')]
+               ('ZDistanceAddress', 'zdist'), ('ReferenceSensorAddress', 'ref'), ('ErrorAddress', 'err'), ('ReferenceAddress', 'home'),
+               # (17 November, SB3015's Servo Status and Axis Parameters) send to reference, the load, the reference request,
+               # the motion module's axis error / warning and the servo's alarm codes
+               ('GoToReferenceAddress', 'goref'), ('CurrentAddress', 'load'), ('HomeRequestAddress', 'homereq'),
+               ('AxisAlarmAddress', 'axerr'), ('AxisWarningAddress', 'warn'), ('ServoAlarmAddress', 'servoerr')]
 # the axis settings page's headings (AxisSettingHMI.Headings' keys and the old page's words)
 # (key, text, x, width - where the designer shows them; AlignHeaders moves each over its column)
 AXIS_HEADINGS = [('Axis', 'Axis', 0, 132), ('Position', 'Position', 208, 120), ('Min', 'Min', 484, 86), ('Max', 'Max', 574, 86),
@@ -218,6 +278,8 @@ def panel_width(p):
     return sum(w for _, w in p['cols']) + GAP_X * (len(p['cols']) - 1)
 
 def panel_height(p):
+    if p.get('encrows'):
+        return (TITLE_H if p.get('title') else 0) + L.PP_HEAD_H + 6 + L.PP_PITCH * len(p['rows'])
     h = (TITLE_H if p.get('title') else 0) + COLHEAD_H + 4 + (COLHEAD_H - 6 if grouped(p) else 0)
     for r in p['rows']:
         h += row_h(r)
@@ -235,7 +297,7 @@ def col_x(p, x):
 
 def cell_name(pg, p, sec, row, ci, kind):
     pre = {'btn': 'btn', 'disp': 'disp', 'entry': 'num', 'lamp': 'lamp', 'meter': 'load', 'opt': 'opt', 'speed': 'spd', 'axis': 'ax',
-           'cyl': 'unit'}[kind]
+           'cyl': 'unit', 'inv': 'unit', 'encunit': 'unit'}[kind]
     parts = [p['key']] + ([sec] if sec else []) + [row, p['cols'][ci][0].replace('|', ' ')]
     return pre + '_'.join(ident(x) for x in parts if x)
 
@@ -436,6 +498,50 @@ class Grid:
             em.kept(name, 'CylinderUnitHMI', old)
             em.p(name, 'RequiredSecurity', 'Kaban.Core.Enums.SecurityLevel.' + self.level())
             em.add(name)
+        elif k == 'inv':
+            em.decl(name, 'InverterUnitHMI')
+            em.header(name, c.get('note') or '%s: an inverter\'s motor - its fault code %s gives its alarm and help.' % (caption, c.get('fault') or 'none'))
+            em.p(name, 'BackColor', 'System.Drawing.Color.White')
+            em.p(name, 'Name', cs(name))
+            em.p(name, 'PlcNumber', '1')
+            em.p(name, 'TitleTextKey', cs(c['title']))
+            em.p(name, 'Location', 'new System.Drawing.Point(%d, %d)' % (x, y + (h - UNIT_H) // 2))
+            em.p(name, 'Size', 'new System.Drawing.Size(%d, %d)' % (w, UNIT_H))
+            em.p(name, 'LogAction', 'true')
+            if not c.get('b'):
+                em.p(name, 'Arrows', 'Kaban.Core.Enums.ButtonArrowStyle.Custom')
+                em.p(name, 'ButtonATextKey', cs(c['text']))
+            for sd, k2 in ((c.get('a'), 'A'), (c.get('b'), 'B')):
+                if not sd: continue
+                em.p(name, 'Command%sAddress' % k2, cs(sd['cmd']))
+                em.p(name, 'Command%sAction' % k2, 'Kaban.Core.Enums.BitActionType.' + L.ACTION[sd['action']])
+                if sd.get('lamp') and sd['lamp'] != sd['cmd']: em.p(name, 'Lamp1%sAddress' % k2, cs(sd['lamp']))
+            if c.get('fault'): em.p(name, 'FaultCodeAddress', cs(c['fault']))
+            if c.get('error'): em.p(name, 'ErrorAddress', cs(c['error']))
+            if c.get('run'): em.p(name, 'RunLampAddress', cs(c['run']))
+            v = c.get('val')
+            if v:
+                em.p(name, 'PositionAddress', cs(v['addr']))
+                em.p(name, 'PositionDataType', 'Kaban.Core.Enums.DataTypeEnum.Bin_%d' % v['bits'])
+                em.p(name, 'PositionDivisor', dnum(v['div']))
+                em.p(name, 'PositionDecimalPlaces', str(v['dec']))
+                em.p(name, 'PositionDigits', '6')
+                em.p(name, 'PositionTipKey', '""')
+            em.kept(name, 'InverterUnitHMI', old)
+            em.p(name, 'RequiredSecurity', 'Kaban.Core.Enums.SecurityLevel.' + self.level())
+            em.add(name)
+        elif k == 'encunit':
+            em.decl(name, 'CylinderEncoderUnitHMI')
+            em.header(name, c.get('note') or '%s: encoder %d of the Encoders page - its buttons, sensors, position, valve, feedback and '
+                      'error bits come from its row there.' % (caption, c['number']))
+            em.p(name, 'BackColor', 'System.Drawing.Color.White')
+            em.p(name, 'Name', cs(name))
+            em.p(name, 'EncoderNumber', str(c['number']))
+            em.p(name, 'PlcNumber', '1')
+            em.p(name, 'Location', 'new System.Drawing.Point(%d, %d)' % (x, y + (h - UNIT_H) // 2))
+            em.p(name, 'Size', 'new System.Drawing.Size(%d, %d)' % (w, UNIT_H))
+            em.kept(name, 'CylinderEncoderUnitHMI', old)
+            em.add(name)
         elif k == 'opt':
             em.decl(name, 'CheckBoxHMI')
             em.header(name + '  (%s)' % c['addr'], c.get('note'))
@@ -456,7 +562,7 @@ class Grid:
         if p.get('title'):
             self.label(p['title'], x, y, AXIS_ROW_W, TITLE_H - 4)
             y += TITLE_H
-        for key, text, hx, hw in AXIS_HEADINGS:
+        for key, text, hx, hw in (p.get('headings') or AXIS_HEADINGS):
             # plain labels, as every axis settings page's: AlignHeaders moves, names and translates them (Col_...)
             n = em.unique('lblHead' + key)
             em.decl(n, 'Label')
@@ -499,7 +605,11 @@ class Grid:
             em.p(name, 'PositionDataType', 'Kaban.Core.Enums.DataTypeEnum.Bin_32')
             em.p(name, 'SettingDataType', 'Kaban.Core.Enums.DataTypeEnum.Bin_32')
             em.p(name, 'Size', 'new System.Drawing.Size(%d, 40)' % AXIS_ROW_W)
-            em.p(name, 'Suffix', '"mm"')
+            em.p(name, 'Suffix', cs(a.get('unit', 'mm')))
+            if a.get('load'):
+                # the load as the old page's bar: |raw| on 0 - 100 %
+                em.p(name, 'CurrentDivisor', dnum(a.get('loaddiv', 1)))
+                em.p(name, 'CurrentFullScale', '100D')
             if a.get('zdist'):
                 em.p(name, 'ZDistanceDivisor', '1D')
                 em.p(name, 'ZDistanceFullScale', '100D')
@@ -509,10 +619,90 @@ class Grid:
             y += 40 + AXIS_ROW_GAP
         return y
 
+    def enc_rows(self, p, x, y):
+        """The Enc / PPos rows: the headings (tagged EncoderHeading: / PositioningHeading: and their column - the rows put each
+        over its column), the rows under them."""
+        em = self.em
+        if p.get('title'):
+            self.label(p['title'], x, y, panel_width(p), TITLE_H - 4)
+            y += TITLE_H
+        tag = 'EncoderHeading:' if p['encrows'] == 'enc' else 'PositioningHeading:'
+        hx = x + p['namew'] + L.PP_GAP + L.PP_GROUP_GAP
+        for i, (key, text, w) in enumerate(p['sections']):
+            n = em.unique('lblHead' + ident(p['key']) + key)
+            em.decl(n, 'Label')
+            em.header(n)
+            em.p(n, 'Font', 'new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold)')
+            em.p(n, 'ForeColor', 'System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))))')
+            em.p(n, 'Location', 'new System.Drawing.Point(%d, %d)' % (hx, y))
+            em.p(n, 'Name', cs(n))
+            em.p(n, 'Size', 'new System.Drawing.Size(%d, %d)' % (w, L.PP_HEAD_H))
+            em.p(n, 'Tag', cs(tag + key))
+            em.p(n, 'Text', cs(text))
+            em.p(n, 'TextAlign', 'System.Drawing.ContentAlignment.BottomCenter')
+            em.add(n)
+            hx += w + (L.PP_GROUP_GAP if i < len(p['sections']) - 1 else 0)
+        y += L.PP_HEAD_H + 6
+        w = panel_width(p)
+        for it in p['rows']:
+            if it['kind'] == 'enc':
+                name = em.unique('enc' + ident(L_text(it['title'])))
+                self.enc_row(name, it, x, y, w)
+            else:
+                name = em.unique('pp' + ident(L_text(it['title'])))
+                old = self.old(name)
+                em.positioning(name, it, x, y, w, old)
+                for prop, f in (('ErrorBackAddress', 'errA'), ('ErrorForwardAddress', 'errB')):
+                    if it.get(f): em.p(name, prop, cs(it[f]))
+                if it.get('note'): em.body.append('            // ' + it['note'])
+                em.p(name, 'RequiredSecurity', 'Kaban.Core.Enums.SecurityLevel.' + self.level())
+            y += L.PP_PITCH
+        return y
+
+    def enc_row(self, name, it, x, y, w):
+        """A CylinderEncoderSettingHMI row (as FA2010's tool writes one, with its error bits and its settings' own divisor)."""
+        em = self.em
+        old = self.old(name)
+        em.decl(name, 'CylinderEncoderSettingHMI')
+        a, b = it['a'], it['b']
+        em.header(name, '%s: encoder %d - %s / %s, position %s; reference %s, measuring tolerance %s.%s' % (
+            L_text(it['title']), it['number'], a['cmd'], b['cmd'], it['pos']['addr'], it.get('ref') or '-', it.get('tol') or '-',
+            ('\n' + it['note']) if it.get('note') else ''))
+        em.p(name, 'BackColor', 'System.Drawing.Color.White')
+        em.p(name, 'Name', cs(name))
+        em.p(name, 'PlcNumber', '1')
+        em.p(name, 'EncoderNumber', str(it['number']))
+        em.p(name, 'TitleTextKey', cs(it['title']))
+        em.p(name, 'Location', 'new System.Drawing.Point(%d, %d)' % (x, y))
+        em.p(name, 'Size', 'new System.Drawing.Size(%d, %d)' % (w, L.PP_ROW_H))
+        em.p(name, 'CommandBackAddress', cs(a['cmd']))
+        em.p(name, 'CommandForwardAddress', cs(b['cmd']))
+        if a.get('lamp') and a['lamp'] != a['cmd']: em.p(name, 'BackSensorAddress', cs(a['lamp']))
+        if b.get('lamp') and b['lamp'] != b['cmd']: em.p(name, 'ForwardSensorAddress', cs(b['lamp']))
+        pos = it['pos']
+        em.p(name, 'PositionAddress', cs(pos['addr']))
+        em.p(name, 'PositionDataType', 'Kaban.Core.Enums.DataTypeEnum.Bin_%d' % pos['bits'])
+        em.p(name, 'PositionDivisor', dnum(pos['div']))
+        em.p(name, 'PositionDecimalPlaces', str(pos['dec']))
+        for key, prop in (('ref', 'ReferenceAddress'), ('tol', 'MeasuringToleranceAddress'), ('start', 'MinimumLimitAddress'),
+                          ('unclamp', 'UnclampingIntervalAddress')):
+            if it.get(key): em.p(name, prop, cs(it[key]))
+        em.p(name, 'Divisor', dnum(it['setdiv'][0]))
+        em.p(name, 'DecimalPlaces', str(it['setdiv'][1]))
+        if it.get('valve'): em.p(name, 'ValveType', 'Kaban.UI.Controls.CylinderValve.' + it['valve'])
+        if it.get('feedback'): em.p(name, 'FeedbackType', 'Kaban.UI.Controls.CylinderFeedback.' + it['feedback'])
+        for prop, f in (('ErrorBackAddress', 'errA'), ('ErrorForwardAddress', 'errB')):
+            if it.get(f): em.p(name, prop, cs(it[f]))
+        em.kept(name, 'CylinderEncoderSettingHMI', old)
+        em.p(name, 'RequiredSecurity', 'Kaban.Core.Enums.SecurityLevel.' + self.level())
+        em.add(name)
+
     def panel(self, p, x, y):
         pg = self.pg
         if p.get('axisrows'):
             return self.axis_rows(p, x, y)
+        if p.get('encrows'):
+            return self.enc_rows(p, x, y)
         if p.get('title'):
             self.label(p['title'], x, y, panel_width(p), TITLE_H - 4)
             y += TITLE_H
@@ -589,13 +779,15 @@ def old_controls(old):
         if c is None: return True
         if c.get('Visible') == 'false': return False
         return shown(parent.get(n), d + 1) if parent.get(n) and d < 10 else True
-    return {n: c for n, c in ctl.items() if c['t'] in SHOWN_TYPES and shown(n)}
+    # a control never added to a container is not on the page (17 November: SB3015's Milling has four)
+    return {n: c for n, c in ctl.items() if c['t'] in SHOWN_TYPES and n in parent and shown(n)}
 
 def old_devices(old):
     out = set(CODE_DEVICES.get(old, ()))
     for c in old_controls(old).values():
         for k in ('Device', 'LambDevice'):
-            if c.get(k) and c[k] != 'null': out.add(c[k])
+            # (17 November: SB3015's pages wrote some in small letters - "m751")
+            if c.get(k) and c[k] != 'null': out.add(c[k].upper())
     return out
 
 def cells(pg):
@@ -607,11 +799,14 @@ def cells(pg):
                         if c: yield c
                 elif r['kind'] == 'axrow':
                     yield dict(kind='axrow', axis=r['axis'])
+                elif r['kind'] in ('enc', 'mould'):
+                    yield r
 
 # an axis's devices an old page showed: its jog buttons, position, limits, calibration, reference sensor and its distance
 # (its error bit and motion module come from the alarm list and the drawings, not from an old page); div / dec: its
 # values' divisor and decimals (10000 / 2 unless given)
-AXIS_SHOWN = ('back', 'fwd', 'pos', 'min', 'max', 'cal', 'calibrate', 'zdist', 'ref', 'home')
+AXIS_SHOWN = ('back', 'fwd', 'pos', 'min', 'max', 'cal', 'calibrate', 'zdist', 'ref', 'home', 'goref', 'load', 'homereq', 'axerr', 'warn',
+              'servoerr')
 
 def spec_devices(pg):
     out = set()
@@ -631,6 +826,18 @@ def spec_devices(pg):
             out |= {sd['cmd'] for sd in (c['a'], c['b']) if sd}
             out |= {l for l in (c.get('lampA'), c.get('lampB')) if l}
             if c.get('pos'): out.add(c['pos']['addr'])
+        elif k in ('enc', 'mould', 'encunit'):
+            e = ENCODERS[c['number']] if k == 'encunit' else c
+            out |= {sd['cmd'] for sd in (e['a'], e['b'])}
+            out |= {sd['lamp'] for sd in (e['a'], e['b']) if sd.get('lamp')}
+            out.add(e['pos']['addr'])
+            if k != 'encunit':
+                out |= {e[f] for f in ('ref', 'tol', 'start', 'unclamp', 'target', 'send', 'cal', 'calibrate', 'offset') if e.get(f)}
+        elif k == 'inv':
+            out |= {sd['cmd'] for sd in (c['a'], c['b']) if sd}
+            out |= {sd['lamp'] for sd in (c['a'], c['b']) if sd and sd.get('lamp')}
+            out |= {d for d in (c.get('fault'), c.get('run')) if d}
+            if c.get('val'): out.add(c['val']['addr'])
         else: out.add(c['addr'])
     return out
 
@@ -640,7 +847,7 @@ def divisors(pg):
     old = {}
     for o in pg['old']:
         for c in old_controls(o).values():
-            dev = c.get('Device')
+            dev = (c.get('Device') or '').upper()
             if not dev: continue
             if c['t'] == 'KabanLedLabel':
                 # DirectShow: the raw value as it is
@@ -655,6 +862,14 @@ def divisors(pg):
                 bits = 32 if 'Bit_32' in c.get('DataType', '') else 16
                 old.setdefault(dev, set()).add(('N', div, dec, bits))
     for c in cells(pg):
+        # an encoder's / a positioning's settings: the row's divisor (a positioning's: 100)
+        if c['kind'] in ('enc', 'mould'):
+            div = float(c['setdiv'][0]) if c['kind'] == 'enc' else 100.0
+            for f in ('ref', 'tol', 'start', 'unclamp', 'target', 'cal', 'offset'):
+                seen = old.get(c.get(f) or '')
+                if seen and not any(k == 'N' and d == div for k, d, _, _ in seen):
+                    problems.append('%s: divisor %g, the old page %s' % (c[f], div, sorted(seen)))
+            continue
         if c['kind'] not in ('disp', 'entry'): continue
         v = c['val']
         seen = old.get(v['addr'])
@@ -673,9 +888,9 @@ def actions(pg):
     for o in pg['old']:
         for c in old_controls(o).values():
             if c['t'] in ('KabanButton', 'KabanLambButton') and c.get('Device'):
-                old.setdefault(c['Device'], set()).add(OLD_ACTION.get(c.get('ButtonType', 'Momentary').split('.')[-1], '?'))
+                old.setdefault(c['Device'].upper(), set()).add(OLD_ACTION.get(c.get('ButtonType', 'Momentary').split('.')[-1], '?'))
     for c in cells(pg):
-        if c['kind'] == 'cyl':
+        if c['kind'] in ('cyl', 'inv'):
             for sd in (c['a'], c['b']):
                 seen = old.get(sd['cmd']) if sd else None
                 # an old toggle (Alternate) made two buttons - Set on one side, Reset on the other
