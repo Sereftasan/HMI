@@ -1,20 +1,4 @@
 ﻿Key;EN;TR;RU;DE;IT;ES
-Lbl_Plc1Header;PLC 1 - Mitsubishi (watch in GX Works);PLC 1 - Mitsubishi (GX Works'te izleyin);ПЛК 1 - Mitsubishi (наблюдение в GX Works);SPS 1 - Mitsubishi (Beobachtung in GX Works);PLC 1 - Mitsubishi (monitoraggio in GX Works);PLC 1 - Mitsubishi (supervisión en GX Works)
-Lbl_Plc2Header;PLC 2 - Simulation (watch with F12);PLC 2 - Simulasyon (F12 ile izleyin);ПЛК 2 - симуляция (наблюдение по F12);SPS 2 - Simulation (Beobachtung mit F12);PLC 2 - simulazione (monitoraggio con F12);PLC 2 - simulación (supervisión con F12)
-Btn_Demo;Demo Button;Demo Butonu;Демо-кнопка;Demo-Taste;Pulsante demo;Botón de demostración
-Btn_Demo2;Demo Button (PLC2);Demo Butonu (PLC2);Демо-кнопка (ПЛК2);Demo-Taste (SPS2);Pulsante demo (PLC2);Botón demo (PLC2)
-Btn_Forward;Forward;İleri;Вперёд;Vorwärts;Avanti;Adelante
-Btn_Reverse;Reverse;Geri;Назад;Rückwärts;Indietro;Retroceso
-Fnc_Demo_Unit;Demo Unit (PLC1);Demo Ünite (PLC1);Демо-узел (ПЛК1);Demo-Einheit (SPS1);Unità demo (PLC1);Unidad demo (PLC1)
-Fnc_Demo_Unit2;Demo Unit (PLC2);Demo Ünite (PLC2);Демо-узел (ПЛК2);Demo-Einheit (SPS2);Unità demo (PLC2);Unidad demo (PLC2)
-Tip_Demo;Demo command button;Demo komut butonu;Демо-кнопка команды;Demo-Befehlstaste;Pulsante comando demo;Botón de mando demo
-Tip_Demo_Lamp;Demo indicator;Demo gösterge;Демо-индикатор;Demo-Anzeige;Indicatore demo;Indicador demo
-Tip_Demo_Lamp1;Sensor 1;Sensör 1;Датчик 1;Sensor 1;Sensore 1;Sensor 1
-Tip_Demo_Lamp2;Sensor 2;Sensör 2;Датчик 2;Sensor 2;Sensore 2;Sensor 2
-Tip_Demo_Display;Demo read-only value;Demo salt-okunur değer;Демо-значение (только чтение);Demo-Wert (nur Anzeige);Valore demo (sola lettura);Valor demo (solo lectura)
-Tip_Demo_Fwd;Forward sensor;İleri sensörü;Вперёд sensor;Vorwärts sensor;Avanti sensor;Adelante sensor
-Tip_Demo_Rev;Reverse sensor;Geri sensörü;Датчик заднего положения;Sensor Rückwärts;Sensore di ritorno;Sensor de retroceso
-Tip_Demo_Position;Current position;Mevcut konum;Ток position;Strom position;Corrente position;Corriente position
 Alarm_SB3015.Robot_X_Error;Robot X Error;Eksen1_Ariza;Ошибка Robot X;Robot X Fehler;Errore Robot X;Error Robot X
 Alarm_SB3015.Eksen2_Ariza;Eksen2_Ariza;Eksen2_Ariza;;;;
 Alarm_SB3015.Milling_1_Y_Error;Milling 1 Y Error;Eksen3_Ariza;Ошибка Milling 1 Y;Milling 1 Y Fehler;Errore Fresatura 1 Y;Error Fresado 1 Y
@@ -105,3 +89,216 @@ Alarm_SB3015.Front_Clamp_Cutting_Selection_FW_Movement_Alarm;Front Clamp - Cutti
 Alarm_SB3015.Cut_Piece_Stuck_At_Exit_Robot;Cut Piece Stuck At Exit Robot;KesilenParca_CikisRobotunaTakildi;Отрезанная деталь застряла на выходном роботе;Geschnittenes Teil am Ausstiegsroboter festgeklemmt;Pezzo tagliato inceppato al robot di uscita;Pieza cortada atascada en robot de salida
 Alarm_SB3015.Cutting_Left_Bottom_Support_Back_Movement_Alarm;Cutting Left Bottom Support Back Movement Alarm;KesimSolAltDayama_GeriGidemedi;Сигнал тревоги: Резка левая нижняя опора - движение назад не выполнено;Rückwärtsbewegungsalarm: Schneiden links unten Anschlag;Allarme movimento indietro supporto inferiore taglio sinistra;Alarma movimiento retroceso tope inferior corte izquierda
 Alarm_SB3015.Cutting_Left_Bottom_Support_FW_Movement_Alarm;Cutting Left Bottom Support FW Movement Alarm;KesimSolAltDayama_ileriGidemedi;Сигнал тревоги: Резка левая нижняя опора - движение вперед не выполнено;Vorwärtsbewegungsalarm: Schneiden links unten Anschlag;Allarme movimento avanti supporto inferiore taglio sinistra;Alarma movimiento avance tope inferior corte izquierda
+Name;Name;İsim;;;;
+Unit;Unit;Ünite;;;;
+Value;Value;Değer;;;;
+Entry Conveyor;Entry Conveyor;Giriş Konveyörü;;;;
+Robot;Robot;Robot;;;;
+Profile Recognition;Profile Recognition;Profil Tanıma;;;;
+Milling;Milling;Frezeleme;;;;
+Cutting;Cutting;Kesim;;;;
+Exit;Exit;Çıkış;;;;
+Other;Other;Diğer;;;;
+Unit 1;Unit 1;Ünite 1;;;;
+Unit 2;Unit 2;Ünite 2;;;;
+Exit Robot;Exit Robot;Çıkış Robotu;;;;
+Entry Robot;Entry Robot;Giriş Robotu;;;;
+Axes;Axes;Eksenler;;;;
+Backlash;Backlash;Boşluk;;;;
+Axis;Axis;Eksen;;;;
+Free Speed;Free Speed;Serbest Hız;;;;
+Process Speed;Process Speed;İşlem Hızı;;;;
+Target Position;Target Position;Hedef Pozisyon;;;;
+Send;Send;Gönder;;;;
+Machine Options;Machine Options;Makine Seçenekleri;;;;
+Robot Bolt Heights;Robot Bolt Heights;Robot Cıvata Yükseklikleri;;;;
+Robot Height;Robot Height;Robot Yüksekliği;;;;
+Position;Position;Pozisyon;;;;
+Error Quantity;Error Quantity;Hata Miktarı;;;;
+Exit Conveyor;Exit Conveyor;Çıkış Konveyörü;;;;
+Distances Between Units;Distances Between Units;Üniteler Arası Mesafeler;;;;
+Encoders;Encoders;Enkoderler;;;;
+All Axes;All Axes;Tüm Eksenler;;;;
+Axis_SB3015_RobotX;Robot X;Robot X;;;;
+Axis_SB3015_MillingA;Milling Angle;Freze Açısı;;;;
+Axis_SB3015_Milling1Y;Milling 1 Y;Freze 1 Y;;;;
+Axis_SB3015_Milling1Z;Milling 1 Z;Freze 1 Z;;;;
+Axis_SB3015_Milling2Y;Milling 2 Y;Freze 2 Y;;;;
+Axis_SB3015_Milling2Z;Milling 2 Z;Freze 2 Z;;;;
+Axis_SB3015_CuttingZ;Cutting Z;Kesim Z;;;;
+Axis_SB3015_CuttingA;Cutting Angle;Kesim Açısı;;;;
+Axis_SB3015_ExitRobotX;Exit Robot X;Çıkış Robotu X;;;;
+Rollers Up/Down;Rollers Up/Down;Makaralar Yukarı/Aşağı;;;;
+Unit_SB3015_EntryRollers;Entry Conveyor Rollers;Giriş Konveyörü Makaraları;;;;
+Conveyor Motor;Conveyor Motor;Konveyör Motoru;;;;
+Unit_SB3015_EntryConveyorMotor;Entry Conveyor Motor;Giriş Konveyör Motoru;;;;
+Conveyor Forward Button;Conveyor Forward Button;Konveyör İleri Butonu;;;;
+High Profile Control SN;High Profile Control SN;Yüksek Profil Kontrol SN;;;;
+Conveyor Limit SN;Conveyor Limit SN;Konveyör Limit SN;;;;
+Axis X;Axis X;X Ekseni;;;;
+Height;Height;Yükseklik;;;;
+Unit_SB3015_EntryRobotHeight;Entry Robot Clamping Height;Giriş Robotu Sıkma Yüksekliği;;;;
+Bolt Level Motor;Bolt Level Motor;Cıvata Seviye Motoru;;;;
+Bolt Level;Bolt Level;Cıvata Seviyesi;;;;
+Clamping;Clamping;Sıkma;;;;
+Unit_SB3015_EntryRobotClamping;Entry Robot Clamping;Giriş Robotu Sıkma;;;;
+Clamped Profile Control SN;Clamped Profile Control SN;Sıkılı Profil Kontrol SN;;;;
+Sawdust Blowing;Sawdust Blowing;Talaş Üfleme;;;;
+Bar First End Read SN;Bar First End Read SN;Bar İlk Uç Okuma SN;;;;
+Bar Last End Read SN;Bar Last End Read SN;Bar Son Uç Okuma SN;;;;
+Unit Up/Down;Unit Up/Down;Ünite Yukarı/Aşağı;;;;
+Unit_SB3015_PRUnit;Profile Recognition Unit;Profil Tanıma Ünitesi;;;;
+Back Support;Back Support;Arka Destek;;;;
+Unit_SB3015_PRBackSupport;Profile Recognition Back Support;Profil Tanıma Arka Destek;;;;
+Front Clamping;Front Clamping;Ön Sıkma;;;;
+Unit_SB3015_PRFrontClamping;Profile Recognition Front Clamping;Profil Tanıma Ön Sıkma;;;;
+Top Clamping;Top Clamping;Üst Sıkma;;;;
+Unit_SB3015_PRTopClamping;Profile Recognition Top Clamping;Profil Tanıma Üst Sıkma;;;;
+High Air Pressure;High Air Pressure;Yüksek Hava Basıncı;;;;
+Angle;Angle;Açı;;;;
+Change Degree;Change Degree;Açı Değiştir;;;;
+Milling Motor;Milling Motor;Freze Motoru;;;;
+Unit_SB3015_Milling1Motor;Milling 1 Motor;Freze 1 Motoru;;;;
+Unit_SB3015_Milling2Motor;Milling 2 Motor;Freze 2 Motoru;;;;
+Front Clamp - Milling Active;Front Clamp - Milling Active;Ön Sıkma - Frezeleme Aktif;;;;
+Unit_SB3015_FrontClampMilling;Front Clamp - Milling Active;Ön Sıkma - Frezeleme Aktif;;;;
+Unit_SB3015_CuttingLeftFrontClamping;Cutting Left Front Clamping;Kesim Sol Ön Sıkma;;;;
+Unit_SB3015_MillingTopClamping;Milling Top Clamping;Freze Üst Sıkma;;;;
+Cutting Angle;Cutting Angle;Kesim Açısı;;;;
+Cutting Z;Cutting Z;Kesim Z;;;;
+Front Clamp - Cutting Active;Front Clamp - Cutting Active;Ön Sıkma - Kesim Aktif;;;;
+Unit_SB3015_FrontClampCutting;Front Clamp - Cutting Active;Ön Sıkma - Kesim Aktif;;;;
+Left Back Support;Left Back Support;Sol Arka Destek;;;;
+Unit_SB3015_CuttingLeftBackSupport;Cutting Left Back Support;Kesim Sol Arka Destek;;;;
+Left Front Vertical;Left Front Vertical;Sol Ön Dikey;;;;
+Unit_SB3015_CuttingLeftFrontVertical;Cutting Left Front Vertical;Kesim Sol Ön Dikey;;;;
+Left Front Clamping;Left Front Clamping;Sol Ön Sıkma;;;;
+Left Bottom Support;Left Bottom Support;Sol Alt Destek;;;;
+Unit_SB3015_CuttingLeftBottomSupport;Cutting Left Bottom Support;Kesim Sol Alt Destek;;;;
+Left Top Clamping;Left Top Clamping;Sol Üst Sıkma;;;;
+Unit_SB3015_CuttingLeftTopClamping;Cutting Left Top Clamping;Kesim Sol Üst Sıkma;;;;
+Left Top Small Clamping;Left Top Small Clamping;Sol Üst Küçük Sıkma;;;;
+Unit_SB3015_CuttingLeftTopSmallClamping;Cutting Left Top Small Clamping;Kesim Sol Üst Küçük Sıkma;;;;
+Right Back Support;Right Back Support;Sağ Arka Destek;;;;
+Unit_SB3015_CuttingRightBackSupport;Cutting Right Back Support;Kesim Sağ Arka Destek;;;;
+Right Front Vertical;Right Front Vertical;Sağ Ön Dikey;;;;
+Unit_SB3015_CuttingRightFrontVertical;Cutting Right Front Vertical;Kesim Sağ Ön Dikey;;;;
+Right Front Clamping;Right Front Clamping;Sağ Ön Sıkma;;;;
+Unit_SB3015_CuttingRightFrontClamping;Cutting Right Front Clamping;Kesim Sağ Ön Sıkma;;;;
+Right Top Clamping;Right Top Clamping;Sağ Üst Sıkma;;;;
+Unit_SB3015_ExitRobotTopClamping;Exit Robot Top Clamping;Çıkış Robotu Üst Sıkma;;;;
+Right Top Small Clamping;Right Top Small Clamping;Sağ Üst Küçük Sıkma;;;;
+Unit_SB3015_CuttingRightTopSmallClamping;Cutting Right Top Small Clamping;Kesim Sağ Üst Küçük Sıkma;;;;
+Right Front Vertical Clamping;Right Front Vertical Clamping;Sağ Ön Dikey Sıkma;;;;
+Unit_SB3015_CuttingRightFrontVerticalClamping;Cutting Right Front Vertical Clamping;Kesim Sağ Ön Dikey Sıkma;;;;
+Saw Motor;Saw Motor;Testere Motoru;;;;
+Unit_SB3015_SawMotor;Saw Motor;Testere Motoru;;;;
+Profile Press Roller FW/Back;Profile Press Roller FW/Back;Profil Baskı Makarası İleri/Geri;;;;
+Unit_SB3015_PressRollerFwBack;Profile Press Roller FW/Back;Profil Baskı Makarası İleri/Geri;;;;
+Profile Press Roller Up;Profile Press Roller Up;Profil Baskı Makarası Yukarı;;;;
+Unit_SB3015_PressRollerUp;Profile Press Roller Up/Down;Profil Baskı Makarası Yukarı/Aşağı;;;;
+LeftOver Ejection;LeftOver Ejection;Artık Atma;;;;
+Blowing;Blowing;Üfleme;;;;
+Front High Air Pressure;Front High Air Pressure;Ön Yüksek Hava Basıncı;;;;
+Top High Air Pressure;Top High Air Pressure;Üst Yüksek Hava Basıncı;;;;
+Unit_SB3015_ExitRobotHeight;Exit Robot Clamping Height;Çıkış Robotu Sıkma Yüksekliği;;;;
+Unit_SB3015_ExitRobotFrontClamping;Exit Robot Front Clamping;Çıkış Robotu Ön Sıkma;;;;
+Released Profile Control SN;Released Profile Control SN;Bırakılmış Profil Kontrol SN;;;;
+Profile Ejection;Profile Ejection;Profil Atma;;;;
+Unit_SB3015_ProfileEjection;Profile Ejection;Profil Atma;;;;
+Unit_SB3015_ExitConveyorMotor;Exit Conveyor Motor;Çıkış Konveyör Motoru;;;;
+Sawdust Conveyor Thermic;Sawdust Conveyor Thermic;Talaş Konveyörü Termik;;;;
+Horn;Horn;Korna;;;;
+Emergency Stop;Emergency Stop;Acil Stop;;;;
+Air Pressure;Air Pressure;Hava Basıncı;;;;
+Robot X;Robot X;Robot X;;;;
+Milling Angle;Milling Angle;Freze Açısı;;;;
+Milling 1 Y;Milling 1 Y;Freze 1 Y;;;;
+Milling 1 Z;Milling 1 Z;Freze 1 Z;;;;
+Milling 2 Y;Milling 2 Y;Freze 2 Y;;;;
+Milling 2 Z;Milling 2 Z;Freze 2 Z;;;;
+Exit Robot X;Exit Robot X;Çıkış Robotu X;;;;
+Millings YZ;Millings YZ;Frezeler YZ;;;;
+R. Movement Amount / Rotation;R. Movement Amount / Rotation;R. Tur Başına Hareket Miktarı;;;;
+Deceleration Time;Deceleration Time;Yavaşlama Süresi;;;;
+Length Meas. Sensor Position;Length Meas. Sensor Position;Boy Ölçüm Sensörü Pozisyonu;;;;
+Length Meas. Sensor - End Distance;Length Meas. Sensor - End Distance;Boy Ölçüm Sensörü - Uç Mesafesi;;;;
+Bar End Clamping Amount;Bar End Clamping Amount;Bar Ucu Sıkma Miktarı;;;;
+Prf. Recognition Liberation Position;Prf. Recognition Liberation Position;Profil Tanıma Serbest Bırakma Pozisyonu;;;;
+Conveyor Extrication Position;Conveyor Extrication Position;Konveyör Çıkarma Pozisyonu;;;;
+Center Z Position;Center Z Position;Merkez Z Pozisyonu;;;;
+Center - Profile Y Distance;Center - Profile Y Distance;Merkez - Profil Y Mesafesi;;;;
+Center - Profile Z Distance;Center - Profile Z Distance;Merkez - Profil Z Mesafesi;;;;
+0° Y Offset;0° Y Offset;0° Y Ofset;;;;
+0° Z Offset;0° Z Offset;0° Z Ofset;;;;
+90° Y Offset;90° Y Offset;90° Y Ofset;;;;
+90° Z Offset;90° Z Offset;90° Z Ofset;;;;
+180° Y Offset;180° Y Offset;180° Y Ofset;;;;
+180° Z Offset;180° Z Offset;180° Z Ofset;;;;
+270° Y Offset;270° Y Offset;270° Y Ofset;;;;
+270° Z Offset;270° Z Offset;270° Z Ofset;;;;
+Milling Clamping Position;Milling Clamping Position;Frezeleme Sıkma Pozisyonu;;;;
+Clampless Speed Override;Clampless Speed Override;Sıkmasız Hız Oranı;;;;
+Saw Diameter;Saw Diameter;Testere Çapı;;;;
+Min. Cut Length to Conveyor;Min. Cut Length to Conveyor;Konveyöre Min. Kesim Boyu;;;;
+Min. Waste Profile to Conveyor;Min. Waste Profile to Conveyor;Konveyöre Min. Atık Profil;;;;
+Length Meas. Sensor - Milling;Length Meas. Sensor - Milling;Boy Ölçüm Sensörü - Frezeleme;;;;
+Milling - Cutting Center;Milling - Cutting Center;Frezeleme - Kesim Merkezi;;;;
+Robot End Cut Center Position;Robot End Cut Center Position;Robot Uç Kesim Merkez Pozisyonu;;;;
+Right Clamp Clearing Position;Right Clamp Clearing Position;Sağ Sıkma Boşaltma Pozisyonu;;;;
+Cut Piece Holding Position;Cut Piece Holding Position;Kesilen Parça Tutma Pozisyonu;;;;
+Short Piece Holding Position;Short Piece Holding Position;Kısa Parça Tutma Pozisyonu;;;;
+Conveyor Liberation Position;Conveyor Liberation Position;Konveyör Bırakma Pozisyonu;;;;
+Prf. End Min. Clamping Amount;Prf. End Min. Clamping Amount;Profil Ucu Min. Sıkma Miktarı;;;;
+Cut Piece Releasing Position;Cut Piece Releasing Position;Kesilen Parça Bırakma Pozisyonu;;;;
+Waste Profile Offset;Waste Profile Offset;Atık Profil Ofseti;;;;
+Conveyor Length;Conveyor Length;Konveyör Uzunluğu;;;;
+Discharging Plate Height;Discharging Plate Height;Boşaltma Plakası Yüksekliği;;;;
+Mounted Bolt Number;Mounted Bolt Number;Takılı Cıvata Sayısı;;;;
+Entry Robot Bolt Positioning Distance;Entry Robot Bolt Positioning Distance;Giriş Robotu Cıvata Konumlama Mesafesi;;;;
+Entry Support Reference Position;Entry Support Reference Position;Giriş Destek Referans Pozisyonu;;;;
+Exit Robot Bolt Positioning Distance;Exit Robot Bolt Positioning Distance;Çıkış Robotu Cıvata Konumlama Mesafesi;;;;
+Exit Support Reference Position;Exit Support Reference Position;Çıkış Destek Referans Pozisyonu;;;;
+Exit Conveyor End Closed;Exit Conveyor End Closed;Çıkış Konveyörü Sonu Kapalı;;;;
+Shorten Leftover Profile;Shorten Leftover Profile;Artık Profili Kısalt;;;;
+Clampless Short Profile Unload;Clampless Short Profile Unload;Sıkmasız Kısa Profil Boşaltma;;;;
+Cutting Right Top Clamping Long Profile;Cutting Right Top Clamping Long Profile;Kesim Sağ Üst Sıkma Uzun Profil;;;;
+Top Clamping Reclamp;Top Clamping Reclamp;Üst Sıkma Yeniden Sıkma;;;;
+Go to Position;Go to Position;Pozisyona Git;;;;
+Down Reference;Down Reference;Alt Referans;;;;
+Up Reference;Up Reference;Üst Referans;;;;
+Target Fixed Quantity;Target Fixed Quantity;Hedef Sabit Miktar;;;;
+Pos. Auto. During Measuring;Pos. Auto. During Measuring;Ölçüm Sırasında Otomatik Pozisyon;;;;
+Appoint Target Pos. During Measuring;Appoint Target Pos. During Measuring;Ölçüm Sırasında Hedef Pozisyon Ata;;;;
+Robot Measuring Active;Robot Measuring Active;Robot Ölçüm Aktif;;;;
+Milling A;Milling A;Freze Açısı;;;;
+Cutting A;Cutting A;Kesim Açısı;;;;
+Send All to Reference;Send All to Reference;Tümünü Referansa Gönder;;;;
+Calc!;Calc!;Hesapla!;;;;
+GO!;GO!;GİT!;;;;
+No;No;No;;;;
+On;On;Açık;;;;
+State;State;Durum;;;;
+Machine_SB3015;Profile Machining Centre;Profil İşleme Merkezi;;;;
+Tab_SB3015_ManualEntryConveyor;Entry Conveyor;Giriş Konveyörü;;;;
+Tab_SB3015_ManualRobot;Robot;Robot;;;;
+Tab_SB3015_ManualProfileRecognition;Profile Recognition;Profil Tanıma;;;;
+Tab_SB3015_ManualMilling;Milling;Frezeleme;;;;
+Tab_SB3015_ManualCutting;Cutting;Kesim;;;;
+Tab_SB3015_ManualExit;Exit;Çıkış;;;;
+Tab_SB3015_ManualOther;Other;Diğer;;;;
+Tab_SB3015_ParamAxisSettings;Axis Settings;Eksen Ayarları;;;;
+Tab_SB3015_ParamAxisSpeeds;Axis Speeds;Eksen Hızları;;;;
+Tab_SB3015_ParamEncoders;Encoders;Enkoderler;;;;
+Tab_SB3015_ParamEntry;Entry;Giriş;;;;
+Tab_SB3015_ParamProcess;Process;İşlem;;;;
+Tab_SB3015_ParamOther;Other;Diğer;;;;
+Tab_SB3015_ParamRobotAxisCalibration;Robot Axis Calibration;Robot Ekseni Kalibrasyonu;;;;
+JOG;JOG;JOG;;;;
+10 mm;10 mm;10 mm;;;;
+1 mm;1 mm;1 mm;;;;
+0.1 mm;0.1 mm;0.1 mm;;;;
+0.01 mm;0.01 mm;0.01 mm;;;;
+Reset;Reset;Reset;;;;
+Security ByPass;Security ByPass;Güvenlik Bypass;;;;
+Tab_SB3015_ParamPositioning;Positioning;Konumlama;;;;

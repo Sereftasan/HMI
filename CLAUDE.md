@@ -68,6 +68,10 @@
   AXES table: number, motion module and axis, reference sensor, servo alarm) and axis units on the manual pages (`Ax`);
   their cylinders cylinder units (`Cy`: valve and feedback from the drawings, error bits from the alarm list - which
   the spec also writes, ALARMS -> Alarms.json and its texts). A valve island's valves are CylinderValve Island... (5 - 8).
+  SB3015's (17 November) the same way from the old `_SB3015` (`tools\legacy_sb3015_pages.py`, tools\legacy\SB3015 - its README
+  lists what to check: no drawings, the units' types read from the old pages): its motors on an inverter are inverter units (`Iv`),
+  its clamps with an encoder FA2010's encoder rows and units (`Enc` on Machine Parameters > Encoders, `EncU` on a manual page),
+  its front verticals pneumatic positionings (`PPos`, Machine Parameters > Positioning).
 - Machine Settings' rows (3 November): a page of settings is rows, UiStyle.SettingRowHeight (38) high, touching, a light
   line under each (UiStyle.RowRule, lighter than a table's GridRule) - every row 450 wide (the user's choice; a frame 474,
   its rows 12 in) - a switch: CheckBoxHMI SwitchRow; a value: NumericInputHMI.RowWidth (its caption is the row, words at the
