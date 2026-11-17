@@ -6,6 +6,17 @@ Claude reads this file at the start of every batch, does the items, and moves ea
 ## To do
 
 ## Done
+- 17 November ("complete SB3015 and MK2010 projects using KabanMachineSystem project ... cylinder unit HMI and axis unit HMI controls"):
+  - 6ba4406 - the pages' machinery: inverter units (fault code, alarm bit, value), the axis rows' send to reference, load, reference
+    request and codes, FA2010's encoder rows / units and pneumatic positionings for the old pages' tables.
+  - d83494e - SB3015 a machine of its own, from the old _SB3015: Manual - Entry Conveyor, Robot, Profile Recognition, Milling, Cutting,
+    Exit, Other (cylinder units, 9 axis units, 5 inverter units, 3 encoder units); Machine Parameters - Axis Settings (Axis Parameters,
+    Tool Settings, Servo Status), Axis Speeds, Encoders, Positioning, Entry, Process, Other, Robot Axis Calibration; the manual bar;
+    Home: the axes' positions; the alarms' reset M102. No drawings: the units' types read from the old pages - to check:
+    tools/legacy/SB3015/README.md. Test: SB3015Pages.
+  - 2def3a5 - MK2010: References an axis unit per axis with its reference button, reference switch and Home OK; Calibration's send to
+    reference; Manual Control's repeated sensor rows left to the units; the alarms' reset M36. To check: tools/legacy/MK2010/README.md.
+  - 2227fc4 - MD3020: the alarms' reset M314 (PC_Error_Reset in the PLC program).
 - 13 November ("refactor all the program, fix the potential bugs, make it run with the best performance and delete unneeded parts"):
   - 31f3090 - the same unit on a second page is one help page again (units of one alarm bit are told apart by their devices).
   - 94bc1e0 - the scan's lookup without a split / trim / upper-case per device; names and codes upper-cased without the Windows
