@@ -79,3 +79,28 @@ To check:
   M616): no servo help is given to their rows; their reference switches X6 / X7 /
   X10 are the old page's Limit lamps.
 
+## 17 November: completed
+
+"Can you complete SB3015 and MK2010 projects using KabanMachineSystem project (I want you
+to use cylinder unit HMI and axis unit HMI controls ...)":
+
+* References: an axis unit per axis (its jog and position from its Calibration row - the
+  jog new on this page), its Reference button (M30 / M31 / M32), its reference switch
+  (X6 / X7 / X10 - "X Ekseni referans sw." in the program, normally closed: lit while off,
+  as Manual Control's Limit lamps) and Home OK (M22 / M20 / M21). The old Limit lamps
+  M100 / M102 / M104 were Manual Control's toggles (profile emptying, side tables,
+  heaters): left out.
+* Calibration: each axis row's send to reference (M30 ... M32, the Ref column).
+* Manual Control: the old table's sensor rows that repeated the cylinders' sensors (Head
+  1-2 / 3-4 Conveyor, Unit Up, Head Up, Unit Back) are on the units only; Gasket Pressing
+  (M316) once.
+* The alarms' reset: M36 ("alarm reset" in the program; the old Alarms page's Reset).
+
+Still not brought over: the Home page's profile list and barcode, sending a profile's
+recipe (R1500 ...) - the profiles are in the old program's database; ucWeldingParameters
+(Manual M1006, Zero / Normal Welding M1003: commented out of the old Parameters).
+
+To check: the axes' reference switches are not given to their rows as reference sensors
+(a row shows its sensor lit while ON - these are normally closed), and the axes' error bits
+(the inverter faults M614 ... M616) are not given to them either: an axis row's help is a
+servo's.

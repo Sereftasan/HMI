@@ -35,6 +35,7 @@ namespace Kaban.Machines.MK2010.Screens.Parameters
             this.lblHeadCalibration = new System.Windows.Forms.Label();
             this.lblHeadCal = new System.Windows.Forms.Label();
             this.lblHeadZDistance = new System.Windows.Forms.Label();
+            this.lblHeadRef = new System.Windows.Forms.Label();
             this.axAxis_X = new Kaban.UI.Controls.AxisSettingHMI();
             this.axAxis_Y1 = new Kaban.UI.Controls.AxisSettingHMI();
             this.axAxis_Y2 = new Kaban.UI.Controls.AxisSettingHMI();
@@ -132,6 +133,17 @@ namespace Kaban.Machines.MK2010.Screens.Parameters
             this.lblHeadZDistance.Text = "Z distance";
             this.lblHeadZDistance.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
+            // lblHeadRef
+            // 
+            this.lblHeadRef.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
+            this.lblHeadRef.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
+            this.lblHeadRef.Location = new System.Drawing.Point(984, 16);
+            this.lblHeadRef.Name = "lblHeadRef";
+            this.lblHeadRef.Size = new System.Drawing.Size(44, 18);
+            this.lblHeadRef.Tag = "AxisHeading:Ref";
+            this.lblHeadRef.Text = "Ref";
+            this.lblHeadRef.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
             // axAxis_X
             // 
             this.axAxis_X.AxisNameKey = "Axis_MK2010_X";
@@ -141,6 +153,7 @@ namespace Kaban.Machines.MK2010.Screens.Parameters
             this.axAxis_X.PositionAddress = "D50";
             this.axAxis_X.CalibrationAddress = "D154";
             this.axAxis_X.CalibrateAddress = "M91";
+            this.axAxis_X.GoToReferenceAddress = "M30";
             this.axAxis_X.DecimalPlaces = 1;
             this.axAxis_X.Digits = 8;
             this.axAxis_X.Divisor = 10D;
@@ -152,6 +165,7 @@ namespace Kaban.Machines.MK2010.Screens.Parameters
             this.axAxis_X.SettingDataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
             this.axAxis_X.Size = new System.Drawing.Size(1000, 40);
             this.axAxis_X.Suffix = "mm";
+            this.axAxis_X.GoToReferenceAddress = "M30";
             this.axAxis_X.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
             // 
             // axAxis_Y1
@@ -163,6 +177,7 @@ namespace Kaban.Machines.MK2010.Screens.Parameters
             this.axAxis_Y1.PositionAddress = "D52";
             this.axAxis_Y1.CalibrationAddress = "D156";
             this.axAxis_Y1.CalibrateAddress = "M92";
+            this.axAxis_Y1.GoToReferenceAddress = "M31";
             this.axAxis_Y1.DecimalPlaces = 1;
             this.axAxis_Y1.Digits = 8;
             this.axAxis_Y1.Divisor = 10D;
@@ -174,6 +189,7 @@ namespace Kaban.Machines.MK2010.Screens.Parameters
             this.axAxis_Y1.SettingDataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
             this.axAxis_Y1.Size = new System.Drawing.Size(1000, 40);
             this.axAxis_Y1.Suffix = "mm";
+            this.axAxis_Y1.GoToReferenceAddress = "M31";
             this.axAxis_Y1.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
             // 
             // axAxis_Y2
@@ -185,6 +201,7 @@ namespace Kaban.Machines.MK2010.Screens.Parameters
             this.axAxis_Y2.PositionAddress = "D54";
             this.axAxis_Y2.CalibrationAddress = "D158";
             this.axAxis_Y2.CalibrateAddress = "M93";
+            this.axAxis_Y2.GoToReferenceAddress = "M32";
             this.axAxis_Y2.DecimalPlaces = 1;
             this.axAxis_Y2.Digits = 8;
             this.axAxis_Y2.Divisor = 10D;
@@ -196,6 +213,7 @@ namespace Kaban.Machines.MK2010.Screens.Parameters
             this.axAxis_Y2.SettingDataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
             this.axAxis_Y2.Size = new System.Drawing.Size(1000, 40);
             this.axAxis_Y2.Suffix = "mm";
+            this.axAxis_Y2.GoToReferenceAddress = "M32";
             this.axAxis_Y2.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
             // 
             // hdAxes
@@ -268,6 +286,7 @@ namespace Kaban.Machines.MK2010.Screens.Parameters
             this.Controls.Add(this.lblHeadCalibration);
             this.Controls.Add(this.lblHeadCal);
             this.Controls.Add(this.lblHeadZDistance);
+            this.Controls.Add(this.lblHeadRef);
             this.Controls.Add(this.axAxis_X);
             this.Controls.Add(this.axAxis_Y1);
             this.Controls.Add(this.axAxis_Y2);
@@ -291,6 +310,7 @@ namespace Kaban.Machines.MK2010.Screens.Parameters
         private System.Windows.Forms.Label lblHeadCalibration;
         private System.Windows.Forms.Label lblHeadCal;
         private System.Windows.Forms.Label lblHeadZDistance;
+        private System.Windows.Forms.Label lblHeadRef;
         private Kaban.UI.Controls.AxisSettingHMI axAxis_X;
         private Kaban.UI.Controls.AxisSettingHMI axAxis_Y1;
         private Kaban.UI.Controls.AxisSettingHMI axAxis_Y2;

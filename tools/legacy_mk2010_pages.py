@@ -30,6 +30,7 @@ G.setup('Kaban.Machines.MK2010', 'MK2010', 'tools/legacy_mk2010_pages.py', '11 N
 
 # column widths
 CAP, ARW, POS, NUM, BTN, LMP = 170, 96, 104, 104, 104, 30
+AXU = ARW * 2 + POS + 2 * G.GAP_X                 # an axis unit as wide as Manual Control's (its Back, Forward, Positions)
 
 # ------------------------------------------------------------------ HOME ----
 
@@ -58,12 +59,16 @@ page('HomeJob', 'Home', 'ucJobNew', 'Home',
 # settings rows on Calibration - their jog (Manual Control's), position (raw / 10, as the old page), the real value and
 # Calibrate - and axis units on Manual Control. Their motion modules, reference sensors and servo alarms are not on
 # the old pages: they come with the machine's drawings and alarm list.
-for number, cap, en, tr, back, fwd, pos, cal, calibrate in (
-        (1, 'Axis X', 'Axis X', 'X Ekseni', 'M41', 'M40', 'D50', 'D154', 'M91'),
-        (2, 'Axis Y1', 'Axis Y1', 'Y1 Ekseni', 'M43', 'M42', 'D52', 'D156', 'M92'),
-        (3, 'Axis Y2', 'Axis Y2', 'Y2 Ekseni', 'M45', 'M44', 'D54', 'D158', 'M93')):
+# 17 November ("complete ... MK2010"): each one's send to reference (the old References page's, M30 ... M32 - "X EKSENI
+# SIFIRLA" in the program's comments). Their reference switches X6 / X7 / X10 stay the lamps beside them: normally closed
+# (the old page's negative lamps), which an axis row's reference sensor would show the other way round.
+for number, cap, en, tr, back, fwd, pos, cal, calibrate, goref in (
+        (1, 'Axis X', 'Axis X', 'X Ekseni', 'M41', 'M40', 'D50', 'D154', 'M91', 'M30'),
+        (2, 'Axis Y1', 'Axis Y1', 'Y1 Ekseni', 'M43', 'M42', 'D52', 'D156', 'M92', 'M31'),
+        (3, 'Axis Y2', 'Axis Y2', 'Y2 Ekseni', 'M45', 'M44', 'D54', 'D158', 'M93', 'M32')):
     key = 'Axis_MK2010_' + cap.split()[-1]
-    G.AXES[number] = dict(number=number, caption=cap, key=key, back=back, fwd=fwd, pos=pos, cal=cal, calibrate=calibrate, div=10, dec=1)
+    G.AXES[number] = dict(number=number, caption=cap, key=key, back=back, fwd=fwd, pos=pos, cal=cal, calibrate=calibrate, goref=goref,
+                          div=10, dec=1)
     G.TRANSLATIONS[key] = (en, tr)
 
 # ---------------------------------------------------------------- MANUAL ----
@@ -163,12 +168,10 @@ page('ManualControl', 'Manual', 'ucManuelControl', 'Manual Control',
         Row('Axis X', Ax(1, span=3), Lp('X0006', inv=True), h=G.UNIT_ROW_H),
         Row('Axis Y1', Ax(2, span=3), Lp('X0007', inv=True), h=G.UNIT_ROW_H),
         Row('Axis Y2', Ax(3, span=3), Lp('X0010', inv=True), h=G.UNIT_ROW_H),
-        Row('Head 1-2 Conveyor', Lp('X0031'), Lp('X0011')),
-        Row('Head 3-4 Conveyor', Lp('X0035'), Lp('X0025')),
-        Row('Gasket Pressing', Lp('M316'), Lp('M316')),
-        Row('Unit Up', Lp('X0064'), Lp('X0065')),
-        Row('Head Up', Lp('X0062'), Lp('X0063')),
-        Row('Unit Back', Lp('X0060'), Lp('X0061')),
+        # (17 November) the old table's sensor rows repeated the cylinders' (Head 1-2 Conveyor X0031 / X0011: head 1's
+        # supporting strip; Head 3-4 Conveyor X0035 / X0025: its heater plate; Unit Up / Head Up / Unit Back: the gasket
+        # presses' X0064 / X0065, X0062 / X0063, X0060 / X0061) - they are on the units below; Gasket Pressing once
+        Row('Gasket Pressing', Lp('M316')),
         Row('Lubrication', None, B('M1005/M1005', 'Lubrication'))]),
      Panel('Others', [('Manual Control', 190), ('On/Off', 70)], [
         Row('Automatic On/Off', B('M34/M34!Alt', 'On/Off')),
@@ -216,13 +219,21 @@ G.ALARMS[:] = [(a, tag, en, tr) for a, tag, en, tr in [
     ('M634', 'Sliding_sash_press_did_not_press', 'Sliding sash press did not press', 'Sürme kanat baskı basamadı'),
     ('M635', 'Sliding_sash_press_did_not_go_back', 'Sliding sash press did not go back', 'Sürme kanat baskı geri gidemedi')]]
 
+# 17 November: an axis unit each (its jog and position from its row - the jog new on this page), its reference button
+# (Send to reference, M30 ... M32), its reference switch (X6 / X7 / X10, normally closed) and Home OK (M22 / M20 / M21). The
+# old Limit lamps M100 / M102 / M104 were Manual Control's toggles (profile emptying, side tables, heaters): left out.
+G.EXPECTED['ManualReference'] = {'missing': {'M100', 'M102', 'M104'},
+                                 'extra': {'M40', 'M41', 'M42', 'M43', 'M44', 'M45', 'X0006', 'X0007', 'X0010'}}
+_t('Reference', 'Reference', 'Referans')
+_t('Reference Switch', 'Reference Switch', 'Referans Switch')
+_t('Home OK', 'Home OK', 'Referans OK')
 page('ManualReference', 'Manual', 'ucReferance', 'References',
-    [Panel('References', [('Name', CAP), ('Forward', ARW), ('Positions', POS), ('Limit', 70), ('Reference OK', 110)], [
-        Row('Axis X', B('M30/M30', '>'), V('D50 32 /10 1'), Lp('M100'), Lp('M22')),
-        Row('Axis Y1', B('M31/M31', '>'), V('D52 32 /10 1'), Lp('M102'), Lp('M20')),
-        Row('Axis Y2', B('M32/M32', '>'), V('D54 32 /10 1'), Lp('M104'), Lp('M21')),
+    [Panel('References', [('Name', CAP), ('Axis', AXU), ('Reference', 100), ('Reference Switch', 124), ('Home OK', 80)], [
+        Row('Axis X', Ax(1), B('M30/M30', 'Reference'), Lp('X0006', inv=True), Lp('M22'), h=G.UNIT_ROW_H),
+        Row('Axis Y1', Ax(2), B('M31/M31', 'Reference'), Lp('X0007', inv=True), Lp('M20'), h=G.UNIT_ROW_H),
+        Row('Axis Y2', Ax(3), B('M32/M32', 'Reference'), Lp('X0010', inv=True), Lp('M21'), h=G.UNIT_ROW_H),
         # the old page's code sets the three
-        Row('X, Y1, Y2', B('M30!Set,M31!Set,M32!Set', 'Reference All'))])])
+        Row('X, Y1, Y2', None, B('M30!Set,M31!Set,M32!Set', 'Reference All', span=2))])])
 
 # ------------------------------------------------------------ PARAMETERS ----
 
@@ -249,8 +260,10 @@ page('ParamProduction', 'Parameters', 'ucProductionParameters', 'Production Para
 # (Manual Control's) new on this page
 G.EXPECTED['ParamCalibration'] = {'extra': {'M40', 'M41', 'M42', 'M43', 'M44', 'M45'}}
 G.TRANSLATIONS['Axes'] = ('Axes', 'Eksenler')
+# (17 November: its send to reference - the Ref column - too)
+G.EXPECTED['ParamCalibration']['extra'] |= {'M30', 'M31', 'M32'}
 page('ParamCalibration', 'Parameters', 'ucCalibration', 'Calibration',
-    [G.AxisRows('Axes', [G.AR(G.AXES[n]) for n in (1, 2, 3)])],
+    [G.AxisRows('Axes', [G.AR(G.AXES[n]) for n in (1, 2, 3)], headings=G.AXIS_HEADINGS + [('Ref', 'Ref', 968, 44)])],
     [Panel('Calibration', [('Axes', CAP), ('Calibrate', BTN + 20)], [
         # the old page's code sets the three
         Row('X, Y1, Y2', B('M91!Set,M92!Set,M93!Set', 'Calibrate All'), key='All')])])

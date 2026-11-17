@@ -31,27 +31,27 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             Kaban.Core.Models.BitAction bitAction5 = new Kaban.Core.Models.BitAction();
             Kaban.Core.Models.BitAction bitAction6 = new Kaban.Core.Models.BitAction();
             this.hdName = new Kaban.UI.Controls.LabelHMI();
-            this.hdForward = new Kaban.UI.Controls.LabelHMI();
-            this.hdPositions = new Kaban.UI.Controls.LabelHMI();
-            this.hdLimit = new Kaban.UI.Controls.LabelHMI();
-            this.hdReference_OK = new Kaban.UI.Controls.LabelHMI();
+            this.hdAxis = new Kaban.UI.Controls.LabelHMI();
+            this.hdReference = new Kaban.UI.Controls.LabelHMI();
+            this.hdReference_Switch = new Kaban.UI.Controls.LabelHMI();
+            this.hdHome_OK = new Kaban.UI.Controls.LabelHMI();
             this.capAxis_X = new Kaban.UI.Controls.LabelHMI();
-            this.btnReferences_Axis_X_Forward = new Kaban.UI.Controls.ButtonHMI();
-            this.dispReferences_Axis_X_Positions = new Kaban.UI.Controls.NumericDisplayHMI();
-            this.lampReferences_Axis_X_Limit = new Kaban.UI.Controls.LampHMI();
-            this.lampReferences_Axis_X_Reference_OK = new Kaban.UI.Controls.LampHMI();
+            this.axReferences_Axis_X_Axis = new Kaban.UI.Controls.AxisUnitHMI();
+            this.btnReferences_Axis_X_Reference = new Kaban.UI.Controls.ButtonHMI();
+            this.lampReferences_Axis_X_Reference_Switch = new Kaban.UI.Controls.LampHMI();
+            this.lampReferences_Axis_X_Home_OK = new Kaban.UI.Controls.LampHMI();
             this.capAxis_Y1 = new Kaban.UI.Controls.LabelHMI();
-            this.btnReferences_Axis_Y1_Forward = new Kaban.UI.Controls.ButtonHMI();
-            this.dispReferences_Axis_Y1_Positions = new Kaban.UI.Controls.NumericDisplayHMI();
-            this.lampReferences_Axis_Y1_Limit = new Kaban.UI.Controls.LampHMI();
-            this.lampReferences_Axis_Y1_Reference_OK = new Kaban.UI.Controls.LampHMI();
+            this.axReferences_Axis_Y1_Axis = new Kaban.UI.Controls.AxisUnitHMI();
+            this.btnReferences_Axis_Y1_Reference = new Kaban.UI.Controls.ButtonHMI();
+            this.lampReferences_Axis_Y1_Reference_Switch = new Kaban.UI.Controls.LampHMI();
+            this.lampReferences_Axis_Y1_Home_OK = new Kaban.UI.Controls.LampHMI();
             this.capAxis_Y2 = new Kaban.UI.Controls.LabelHMI();
-            this.btnReferences_Axis_Y2_Forward = new Kaban.UI.Controls.ButtonHMI();
-            this.dispReferences_Axis_Y2_Positions = new Kaban.UI.Controls.NumericDisplayHMI();
-            this.lampReferences_Axis_Y2_Limit = new Kaban.UI.Controls.LampHMI();
-            this.lampReferences_Axis_Y2_Reference_OK = new Kaban.UI.Controls.LampHMI();
+            this.axReferences_Axis_Y2_Axis = new Kaban.UI.Controls.AxisUnitHMI();
+            this.btnReferences_Axis_Y2_Reference = new Kaban.UI.Controls.ButtonHMI();
+            this.lampReferences_Axis_Y2_Reference_Switch = new Kaban.UI.Controls.LampHMI();
+            this.lampReferences_Axis_Y2_Home_OK = new Kaban.UI.Controls.LampHMI();
             this.capX_Y1_Y2 = new Kaban.UI.Controls.LabelHMI();
-            this.btnReferences_X_Y1_Y2_Forward = new Kaban.UI.Controls.ButtonHMI();
+            this.btnReferences_X_Y1_Y2_Reference = new Kaban.UI.Controls.ButtonHMI();
             this.SuspendLayout();
             // 
             // hdName
@@ -65,49 +65,49 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.hdName.Location = new System.Drawing.Point(16, 16);
             this.hdName.Size = new System.Drawing.Size(170, 26);
             // 
-            // hdForward
+            // hdAxis
             // 
-            this.hdForward.Name = "hdForward";
-            this.hdForward.TranslationKey = "Forward";
-            this.hdForward.Text = "Forward";
-            this.hdForward.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
-            this.hdForward.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
-            this.hdForward.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.hdForward.Location = new System.Drawing.Point(192, 16);
-            this.hdForward.Size = new System.Drawing.Size(96, 26);
+            this.hdAxis.Name = "hdAxis";
+            this.hdAxis.TranslationKey = "Axis";
+            this.hdAxis.Text = "Axis";
+            this.hdAxis.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
+            this.hdAxis.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
+            this.hdAxis.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.hdAxis.Location = new System.Drawing.Point(192, 16);
+            this.hdAxis.Size = new System.Drawing.Size(308, 26);
             // 
-            // hdPositions
+            // hdReference
             // 
-            this.hdPositions.Name = "hdPositions";
-            this.hdPositions.TranslationKey = "Positions";
-            this.hdPositions.Text = "Positions";
-            this.hdPositions.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
-            this.hdPositions.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
-            this.hdPositions.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.hdPositions.Location = new System.Drawing.Point(294, 16);
-            this.hdPositions.Size = new System.Drawing.Size(104, 26);
+            this.hdReference.Name = "hdReference";
+            this.hdReference.TranslationKey = "Reference";
+            this.hdReference.Text = "Reference";
+            this.hdReference.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
+            this.hdReference.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
+            this.hdReference.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.hdReference.Location = new System.Drawing.Point(506, 16);
+            this.hdReference.Size = new System.Drawing.Size(100, 26);
             // 
-            // hdLimit
+            // hdReference_Switch
             // 
-            this.hdLimit.Name = "hdLimit";
-            this.hdLimit.TranslationKey = "Limit";
-            this.hdLimit.Text = "Limit";
-            this.hdLimit.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
-            this.hdLimit.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
-            this.hdLimit.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.hdLimit.Location = new System.Drawing.Point(404, 16);
-            this.hdLimit.Size = new System.Drawing.Size(70, 26);
+            this.hdReference_Switch.Name = "hdReference_Switch";
+            this.hdReference_Switch.TranslationKey = "Reference Switch";
+            this.hdReference_Switch.Text = "Reference Switch";
+            this.hdReference_Switch.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
+            this.hdReference_Switch.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
+            this.hdReference_Switch.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.hdReference_Switch.Location = new System.Drawing.Point(612, 16);
+            this.hdReference_Switch.Size = new System.Drawing.Size(124, 26);
             // 
-            // hdReference_OK
+            // hdHome_OK
             // 
-            this.hdReference_OK.Name = "hdReference_OK";
-            this.hdReference_OK.TranslationKey = "Reference OK";
-            this.hdReference_OK.Text = "Reference OK";
-            this.hdReference_OK.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
-            this.hdReference_OK.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
-            this.hdReference_OK.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.hdReference_OK.Location = new System.Drawing.Point(480, 16);
-            this.hdReference_OK.Size = new System.Drawing.Size(110, 26);
+            this.hdHome_OK.Name = "hdHome_OK";
+            this.hdHome_OK.TranslationKey = "Home OK";
+            this.hdHome_OK.Text = "Home OK";
+            this.hdHome_OK.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
+            this.hdHome_OK.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
+            this.hdHome_OK.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.hdHome_OK.Location = new System.Drawing.Point(742, 16);
+            this.hdHome_OK.Size = new System.Drawing.Size(80, 26);
             // 
             // capAxis_X
             // 
@@ -118,52 +118,51 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.capAxis_X.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
             this.capAxis_X.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.capAxis_X.Location = new System.Drawing.Point(16, 50);
-            this.capAxis_X.Size = new System.Drawing.Size(170, 40);
+            this.capAxis_X.Size = new System.Drawing.Size(170, 72);
             this.capAxis_X.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             // 
-            // btnReferences_Axis_X_Forward
+            // axReferences_Axis_X_Axis
             // 
-            this.btnReferences_Axis_X_Forward.Name = "btnReferences_Axis_X_Forward";
-            this.btnReferences_Axis_X_Forward.PlcNumber = 1;
-            this.btnReferences_Axis_X_Forward.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.Right;
+            // Axis X: axis 1 of the axis settings page (its buttons, position, reference sensor and error come from there).
+            this.axReferences_Axis_X_Axis.BackColor = System.Drawing.Color.White;
+            this.axReferences_Axis_X_Axis.Name = "axReferences_Axis_X_Axis";
+            this.axReferences_Axis_X_Axis.AxisNumber = 1;
+            this.axReferences_Axis_X_Axis.PlcNumber = 1;
+            this.axReferences_Axis_X_Axis.Location = new System.Drawing.Point(192, 54);
+            this.axReferences_Axis_X_Axis.Size = new System.Drawing.Size(308, 64);
+            // 
+            // btnReferences_Axis_X_Reference
+            // 
+            this.btnReferences_Axis_X_Reference.Name = "btnReferences_Axis_X_Reference";
+            this.btnReferences_Axis_X_Reference.PlcNumber = 1;
+            this.btnReferences_Axis_X_Reference.TranslationKey = "Reference";
+            this.btnReferences_Axis_X_Reference.FallbackText = "Reference";
             bitAction1.Address = "M30";
             bitAction1.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnReferences_Axis_X_Forward.BitActions.Add(bitAction1);
-            this.btnReferences_Axis_X_Forward.Lamp1Address = "M30";
-            this.btnReferences_Axis_X_Forward.Location = new System.Drawing.Point(192, 53);
-            this.btnReferences_Axis_X_Forward.Size = new System.Drawing.Size(96, 34);
-            this.btnReferences_Axis_X_Forward.LogAction = true;
-            this.btnReferences_Axis_X_Forward.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            this.btnReferences_Axis_X_Reference.BitActions.Add(bitAction1);
+            this.btnReferences_Axis_X_Reference.Lamp1Address = "M30";
+            this.btnReferences_Axis_X_Reference.Location = new System.Drawing.Point(506, 69);
+            this.btnReferences_Axis_X_Reference.Size = new System.Drawing.Size(100, 34);
+            this.btnReferences_Axis_X_Reference.LogAction = true;
+            this.btnReferences_Axis_X_Reference.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
             // 
-            // dispReferences_Axis_X_Positions
+            // lampReferences_Axis_X_Reference_Switch
             // 
-            // Axis X Positions: D50, raw / 10.
-            this.dispReferences_Axis_X_Positions.Name = "dispReferences_Axis_X_Positions";
-            this.dispReferences_Axis_X_Positions.PlcNumber = 1;
-            this.dispReferences_Axis_X_Positions.Address = "D50";
-            this.dispReferences_Axis_X_Positions.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.dispReferences_Axis_X_Positions.Divisor = 10D;
-            this.dispReferences_Axis_X_Positions.DecimalPlaces = 1;
-            this.dispReferences_Axis_X_Positions.Digits = 7;
-            this.dispReferences_Axis_X_Positions.Suffix = "mm";
-            this.dispReferences_Axis_X_Positions.Location = new System.Drawing.Point(294, 53);
-            this.dispReferences_Axis_X_Positions.Size = new System.Drawing.Size(104, 34);
+            this.lampReferences_Axis_X_Reference_Switch.Name = "lampReferences_Axis_X_Reference_Switch";
+            this.lampReferences_Axis_X_Reference_Switch.PlcNumber = 1;
+            this.lampReferences_Axis_X_Reference_Switch.Address = "X0006";
+            this.lampReferences_Axis_X_Reference_Switch.OnColor = System.Drawing.Color.FromArgb(((int)(((byte)(225)))), ((int)(((byte)(225)))), ((int)(((byte)(225)))));
+            this.lampReferences_Axis_X_Reference_Switch.OffColor = System.Drawing.Color.FromArgb(((int)(((byte)(76)))), ((int)(((byte)(175)))), ((int)(((byte)(80)))));
+            this.lampReferences_Axis_X_Reference_Switch.Location = new System.Drawing.Point(659, 71);
+            this.lampReferences_Axis_X_Reference_Switch.Size = new System.Drawing.Size(30, 30);
             // 
-            // lampReferences_Axis_X_Limit
+            // lampReferences_Axis_X_Home_OK
             // 
-            this.lampReferences_Axis_X_Limit.Name = "lampReferences_Axis_X_Limit";
-            this.lampReferences_Axis_X_Limit.PlcNumber = 1;
-            this.lampReferences_Axis_X_Limit.Address = "M100";
-            this.lampReferences_Axis_X_Limit.Location = new System.Drawing.Point(424, 55);
-            this.lampReferences_Axis_X_Limit.Size = new System.Drawing.Size(30, 30);
-            // 
-            // lampReferences_Axis_X_Reference_OK
-            // 
-            this.lampReferences_Axis_X_Reference_OK.Name = "lampReferences_Axis_X_Reference_OK";
-            this.lampReferences_Axis_X_Reference_OK.PlcNumber = 1;
-            this.lampReferences_Axis_X_Reference_OK.Address = "M22";
-            this.lampReferences_Axis_X_Reference_OK.Location = new System.Drawing.Point(520, 55);
-            this.lampReferences_Axis_X_Reference_OK.Size = new System.Drawing.Size(30, 30);
+            this.lampReferences_Axis_X_Home_OK.Name = "lampReferences_Axis_X_Home_OK";
+            this.lampReferences_Axis_X_Home_OK.PlcNumber = 1;
+            this.lampReferences_Axis_X_Home_OK.Address = "M22";
+            this.lampReferences_Axis_X_Home_OK.Location = new System.Drawing.Point(767, 71);
+            this.lampReferences_Axis_X_Home_OK.Size = new System.Drawing.Size(30, 30);
             // 
             // capAxis_Y1
             // 
@@ -173,53 +172,52 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.capAxis_Y1.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.capAxis_Y1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
             this.capAxis_Y1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capAxis_Y1.Location = new System.Drawing.Point(16, 90);
-            this.capAxis_Y1.Size = new System.Drawing.Size(170, 40);
+            this.capAxis_Y1.Location = new System.Drawing.Point(16, 122);
+            this.capAxis_Y1.Size = new System.Drawing.Size(170, 72);
             this.capAxis_Y1.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             // 
-            // btnReferences_Axis_Y1_Forward
+            // axReferences_Axis_Y1_Axis
             // 
-            this.btnReferences_Axis_Y1_Forward.Name = "btnReferences_Axis_Y1_Forward";
-            this.btnReferences_Axis_Y1_Forward.PlcNumber = 1;
-            this.btnReferences_Axis_Y1_Forward.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.Right;
+            // Axis Y1: axis 2 of the axis settings page (its buttons, position, reference sensor and error come from there).
+            this.axReferences_Axis_Y1_Axis.BackColor = System.Drawing.Color.White;
+            this.axReferences_Axis_Y1_Axis.Name = "axReferences_Axis_Y1_Axis";
+            this.axReferences_Axis_Y1_Axis.AxisNumber = 2;
+            this.axReferences_Axis_Y1_Axis.PlcNumber = 1;
+            this.axReferences_Axis_Y1_Axis.Location = new System.Drawing.Point(192, 126);
+            this.axReferences_Axis_Y1_Axis.Size = new System.Drawing.Size(308, 64);
+            // 
+            // btnReferences_Axis_Y1_Reference
+            // 
+            this.btnReferences_Axis_Y1_Reference.Name = "btnReferences_Axis_Y1_Reference";
+            this.btnReferences_Axis_Y1_Reference.PlcNumber = 1;
+            this.btnReferences_Axis_Y1_Reference.TranslationKey = "Reference";
+            this.btnReferences_Axis_Y1_Reference.FallbackText = "Reference";
             bitAction2.Address = "M31";
             bitAction2.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnReferences_Axis_Y1_Forward.BitActions.Add(bitAction2);
-            this.btnReferences_Axis_Y1_Forward.Lamp1Address = "M31";
-            this.btnReferences_Axis_Y1_Forward.Location = new System.Drawing.Point(192, 93);
-            this.btnReferences_Axis_Y1_Forward.Size = new System.Drawing.Size(96, 34);
-            this.btnReferences_Axis_Y1_Forward.LogAction = true;
-            this.btnReferences_Axis_Y1_Forward.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            this.btnReferences_Axis_Y1_Reference.BitActions.Add(bitAction2);
+            this.btnReferences_Axis_Y1_Reference.Lamp1Address = "M31";
+            this.btnReferences_Axis_Y1_Reference.Location = new System.Drawing.Point(506, 141);
+            this.btnReferences_Axis_Y1_Reference.Size = new System.Drawing.Size(100, 34);
+            this.btnReferences_Axis_Y1_Reference.LogAction = true;
+            this.btnReferences_Axis_Y1_Reference.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
             // 
-            // dispReferences_Axis_Y1_Positions
+            // lampReferences_Axis_Y1_Reference_Switch
             // 
-            // Axis Y1 Positions: D52, raw / 10.
-            this.dispReferences_Axis_Y1_Positions.Name = "dispReferences_Axis_Y1_Positions";
-            this.dispReferences_Axis_Y1_Positions.PlcNumber = 1;
-            this.dispReferences_Axis_Y1_Positions.Address = "D52";
-            this.dispReferences_Axis_Y1_Positions.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.dispReferences_Axis_Y1_Positions.Divisor = 10D;
-            this.dispReferences_Axis_Y1_Positions.DecimalPlaces = 1;
-            this.dispReferences_Axis_Y1_Positions.Digits = 7;
-            this.dispReferences_Axis_Y1_Positions.Suffix = "mm";
-            this.dispReferences_Axis_Y1_Positions.Location = new System.Drawing.Point(294, 93);
-            this.dispReferences_Axis_Y1_Positions.Size = new System.Drawing.Size(104, 34);
+            this.lampReferences_Axis_Y1_Reference_Switch.Name = "lampReferences_Axis_Y1_Reference_Switch";
+            this.lampReferences_Axis_Y1_Reference_Switch.PlcNumber = 1;
+            this.lampReferences_Axis_Y1_Reference_Switch.Address = "X0007";
+            this.lampReferences_Axis_Y1_Reference_Switch.OnColor = System.Drawing.Color.FromArgb(((int)(((byte)(225)))), ((int)(((byte)(225)))), ((int)(((byte)(225)))));
+            this.lampReferences_Axis_Y1_Reference_Switch.OffColor = System.Drawing.Color.FromArgb(((int)(((byte)(76)))), ((int)(((byte)(175)))), ((int)(((byte)(80)))));
+            this.lampReferences_Axis_Y1_Reference_Switch.Location = new System.Drawing.Point(659, 143);
+            this.lampReferences_Axis_Y1_Reference_Switch.Size = new System.Drawing.Size(30, 30);
             // 
-            // lampReferences_Axis_Y1_Limit
+            // lampReferences_Axis_Y1_Home_OK
             // 
-            this.lampReferences_Axis_Y1_Limit.Name = "lampReferences_Axis_Y1_Limit";
-            this.lampReferences_Axis_Y1_Limit.PlcNumber = 1;
-            this.lampReferences_Axis_Y1_Limit.Address = "M102";
-            this.lampReferences_Axis_Y1_Limit.Location = new System.Drawing.Point(424, 95);
-            this.lampReferences_Axis_Y1_Limit.Size = new System.Drawing.Size(30, 30);
-            // 
-            // lampReferences_Axis_Y1_Reference_OK
-            // 
-            this.lampReferences_Axis_Y1_Reference_OK.Name = "lampReferences_Axis_Y1_Reference_OK";
-            this.lampReferences_Axis_Y1_Reference_OK.PlcNumber = 1;
-            this.lampReferences_Axis_Y1_Reference_OK.Address = "M20";
-            this.lampReferences_Axis_Y1_Reference_OK.Location = new System.Drawing.Point(520, 95);
-            this.lampReferences_Axis_Y1_Reference_OK.Size = new System.Drawing.Size(30, 30);
+            this.lampReferences_Axis_Y1_Home_OK.Name = "lampReferences_Axis_Y1_Home_OK";
+            this.lampReferences_Axis_Y1_Home_OK.PlcNumber = 1;
+            this.lampReferences_Axis_Y1_Home_OK.Address = "M20";
+            this.lampReferences_Axis_Y1_Home_OK.Location = new System.Drawing.Point(767, 143);
+            this.lampReferences_Axis_Y1_Home_OK.Size = new System.Drawing.Size(30, 30);
             // 
             // capAxis_Y2
             // 
@@ -229,53 +227,52 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.capAxis_Y2.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.capAxis_Y2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
             this.capAxis_Y2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capAxis_Y2.Location = new System.Drawing.Point(16, 130);
-            this.capAxis_Y2.Size = new System.Drawing.Size(170, 40);
+            this.capAxis_Y2.Location = new System.Drawing.Point(16, 194);
+            this.capAxis_Y2.Size = new System.Drawing.Size(170, 72);
             this.capAxis_Y2.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             // 
-            // btnReferences_Axis_Y2_Forward
+            // axReferences_Axis_Y2_Axis
             // 
-            this.btnReferences_Axis_Y2_Forward.Name = "btnReferences_Axis_Y2_Forward";
-            this.btnReferences_Axis_Y2_Forward.PlcNumber = 1;
-            this.btnReferences_Axis_Y2_Forward.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.Right;
+            // Axis Y2: axis 3 of the axis settings page (its buttons, position, reference sensor and error come from there).
+            this.axReferences_Axis_Y2_Axis.BackColor = System.Drawing.Color.White;
+            this.axReferences_Axis_Y2_Axis.Name = "axReferences_Axis_Y2_Axis";
+            this.axReferences_Axis_Y2_Axis.AxisNumber = 3;
+            this.axReferences_Axis_Y2_Axis.PlcNumber = 1;
+            this.axReferences_Axis_Y2_Axis.Location = new System.Drawing.Point(192, 198);
+            this.axReferences_Axis_Y2_Axis.Size = new System.Drawing.Size(308, 64);
+            // 
+            // btnReferences_Axis_Y2_Reference
+            // 
+            this.btnReferences_Axis_Y2_Reference.Name = "btnReferences_Axis_Y2_Reference";
+            this.btnReferences_Axis_Y2_Reference.PlcNumber = 1;
+            this.btnReferences_Axis_Y2_Reference.TranslationKey = "Reference";
+            this.btnReferences_Axis_Y2_Reference.FallbackText = "Reference";
             bitAction3.Address = "M32";
             bitAction3.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnReferences_Axis_Y2_Forward.BitActions.Add(bitAction3);
-            this.btnReferences_Axis_Y2_Forward.Lamp1Address = "M32";
-            this.btnReferences_Axis_Y2_Forward.Location = new System.Drawing.Point(192, 133);
-            this.btnReferences_Axis_Y2_Forward.Size = new System.Drawing.Size(96, 34);
-            this.btnReferences_Axis_Y2_Forward.LogAction = true;
-            this.btnReferences_Axis_Y2_Forward.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            this.btnReferences_Axis_Y2_Reference.BitActions.Add(bitAction3);
+            this.btnReferences_Axis_Y2_Reference.Lamp1Address = "M32";
+            this.btnReferences_Axis_Y2_Reference.Location = new System.Drawing.Point(506, 213);
+            this.btnReferences_Axis_Y2_Reference.Size = new System.Drawing.Size(100, 34);
+            this.btnReferences_Axis_Y2_Reference.LogAction = true;
+            this.btnReferences_Axis_Y2_Reference.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
             // 
-            // dispReferences_Axis_Y2_Positions
+            // lampReferences_Axis_Y2_Reference_Switch
             // 
-            // Axis Y2 Positions: D54, raw / 10.
-            this.dispReferences_Axis_Y2_Positions.Name = "dispReferences_Axis_Y2_Positions";
-            this.dispReferences_Axis_Y2_Positions.PlcNumber = 1;
-            this.dispReferences_Axis_Y2_Positions.Address = "D54";
-            this.dispReferences_Axis_Y2_Positions.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.dispReferences_Axis_Y2_Positions.Divisor = 10D;
-            this.dispReferences_Axis_Y2_Positions.DecimalPlaces = 1;
-            this.dispReferences_Axis_Y2_Positions.Digits = 7;
-            this.dispReferences_Axis_Y2_Positions.Suffix = "mm";
-            this.dispReferences_Axis_Y2_Positions.Location = new System.Drawing.Point(294, 133);
-            this.dispReferences_Axis_Y2_Positions.Size = new System.Drawing.Size(104, 34);
+            this.lampReferences_Axis_Y2_Reference_Switch.Name = "lampReferences_Axis_Y2_Reference_Switch";
+            this.lampReferences_Axis_Y2_Reference_Switch.PlcNumber = 1;
+            this.lampReferences_Axis_Y2_Reference_Switch.Address = "X0010";
+            this.lampReferences_Axis_Y2_Reference_Switch.OnColor = System.Drawing.Color.FromArgb(((int)(((byte)(225)))), ((int)(((byte)(225)))), ((int)(((byte)(225)))));
+            this.lampReferences_Axis_Y2_Reference_Switch.OffColor = System.Drawing.Color.FromArgb(((int)(((byte)(76)))), ((int)(((byte)(175)))), ((int)(((byte)(80)))));
+            this.lampReferences_Axis_Y2_Reference_Switch.Location = new System.Drawing.Point(659, 215);
+            this.lampReferences_Axis_Y2_Reference_Switch.Size = new System.Drawing.Size(30, 30);
             // 
-            // lampReferences_Axis_Y2_Limit
+            // lampReferences_Axis_Y2_Home_OK
             // 
-            this.lampReferences_Axis_Y2_Limit.Name = "lampReferences_Axis_Y2_Limit";
-            this.lampReferences_Axis_Y2_Limit.PlcNumber = 1;
-            this.lampReferences_Axis_Y2_Limit.Address = "M104";
-            this.lampReferences_Axis_Y2_Limit.Location = new System.Drawing.Point(424, 135);
-            this.lampReferences_Axis_Y2_Limit.Size = new System.Drawing.Size(30, 30);
-            // 
-            // lampReferences_Axis_Y2_Reference_OK
-            // 
-            this.lampReferences_Axis_Y2_Reference_OK.Name = "lampReferences_Axis_Y2_Reference_OK";
-            this.lampReferences_Axis_Y2_Reference_OK.PlcNumber = 1;
-            this.lampReferences_Axis_Y2_Reference_OK.Address = "M21";
-            this.lampReferences_Axis_Y2_Reference_OK.Location = new System.Drawing.Point(520, 135);
-            this.lampReferences_Axis_Y2_Reference_OK.Size = new System.Drawing.Size(30, 30);
+            this.lampReferences_Axis_Y2_Home_OK.Name = "lampReferences_Axis_Y2_Home_OK";
+            this.lampReferences_Axis_Y2_Home_OK.PlcNumber = 1;
+            this.lampReferences_Axis_Y2_Home_OK.Address = "M21";
+            this.lampReferences_Axis_Y2_Home_OK.Location = new System.Drawing.Point(767, 215);
+            this.lampReferences_Axis_Y2_Home_OK.Size = new System.Drawing.Size(30, 30);
             // 
             // capX_Y1_Y2
             // 
@@ -285,29 +282,29 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.capX_Y1_Y2.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.capX_Y1_Y2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
             this.capX_Y1_Y2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capX_Y1_Y2.Location = new System.Drawing.Point(16, 170);
+            this.capX_Y1_Y2.Location = new System.Drawing.Point(16, 266);
             this.capX_Y1_Y2.Size = new System.Drawing.Size(170, 40);
             this.capX_Y1_Y2.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             // 
-            // btnReferences_X_Y1_Y2_Forward
+            // btnReferences_X_Y1_Y2_Reference
             // 
-            this.btnReferences_X_Y1_Y2_Forward.Name = "btnReferences_X_Y1_Y2_Forward";
-            this.btnReferences_X_Y1_Y2_Forward.PlcNumber = 1;
-            this.btnReferences_X_Y1_Y2_Forward.TranslationKey = "Reference All";
-            this.btnReferences_X_Y1_Y2_Forward.FallbackText = "Reference All";
+            this.btnReferences_X_Y1_Y2_Reference.Name = "btnReferences_X_Y1_Y2_Reference";
+            this.btnReferences_X_Y1_Y2_Reference.PlcNumber = 1;
+            this.btnReferences_X_Y1_Y2_Reference.TranslationKey = "Reference All";
+            this.btnReferences_X_Y1_Y2_Reference.FallbackText = "Reference All";
             bitAction4.Address = "M30";
             bitAction4.Action = Kaban.Core.Enums.BitActionType.SET;
-            this.btnReferences_X_Y1_Y2_Forward.BitActions.Add(bitAction4);
+            this.btnReferences_X_Y1_Y2_Reference.BitActions.Add(bitAction4);
             bitAction5.Address = "M31";
             bitAction5.Action = Kaban.Core.Enums.BitActionType.SET;
-            this.btnReferences_X_Y1_Y2_Forward.BitActions.Add(bitAction5);
+            this.btnReferences_X_Y1_Y2_Reference.BitActions.Add(bitAction5);
             bitAction6.Address = "M32";
             bitAction6.Action = Kaban.Core.Enums.BitActionType.SET;
-            this.btnReferences_X_Y1_Y2_Forward.BitActions.Add(bitAction6);
-            this.btnReferences_X_Y1_Y2_Forward.Location = new System.Drawing.Point(192, 173);
-            this.btnReferences_X_Y1_Y2_Forward.Size = new System.Drawing.Size(96, 34);
-            this.btnReferences_X_Y1_Y2_Forward.LogAction = true;
-            this.btnReferences_X_Y1_Y2_Forward.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            this.btnReferences_X_Y1_Y2_Reference.BitActions.Add(bitAction6);
+            this.btnReferences_X_Y1_Y2_Reference.Location = new System.Drawing.Point(506, 269);
+            this.btnReferences_X_Y1_Y2_Reference.Size = new System.Drawing.Size(230, 34);
+            this.btnReferences_X_Y1_Y2_Reference.LogAction = true;
+            this.btnReferences_X_Y1_Y2_Reference.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
             // 
             // ManualReference
             // 
@@ -318,29 +315,29 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.AutoScroll = true;
             this.BackColor = System.Drawing.Color.White;
             this.Controls.Add(this.hdName);
-            this.Controls.Add(this.hdForward);
-            this.Controls.Add(this.hdPositions);
-            this.Controls.Add(this.hdLimit);
-            this.Controls.Add(this.hdReference_OK);
+            this.Controls.Add(this.hdAxis);
+            this.Controls.Add(this.hdReference);
+            this.Controls.Add(this.hdReference_Switch);
+            this.Controls.Add(this.hdHome_OK);
             this.Controls.Add(this.capAxis_X);
-            this.Controls.Add(this.btnReferences_Axis_X_Forward);
-            this.Controls.Add(this.dispReferences_Axis_X_Positions);
-            this.Controls.Add(this.lampReferences_Axis_X_Limit);
-            this.Controls.Add(this.lampReferences_Axis_X_Reference_OK);
+            this.Controls.Add(this.axReferences_Axis_X_Axis);
+            this.Controls.Add(this.btnReferences_Axis_X_Reference);
+            this.Controls.Add(this.lampReferences_Axis_X_Reference_Switch);
+            this.Controls.Add(this.lampReferences_Axis_X_Home_OK);
             this.Controls.Add(this.capAxis_Y1);
-            this.Controls.Add(this.btnReferences_Axis_Y1_Forward);
-            this.Controls.Add(this.dispReferences_Axis_Y1_Positions);
-            this.Controls.Add(this.lampReferences_Axis_Y1_Limit);
-            this.Controls.Add(this.lampReferences_Axis_Y1_Reference_OK);
+            this.Controls.Add(this.axReferences_Axis_Y1_Axis);
+            this.Controls.Add(this.btnReferences_Axis_Y1_Reference);
+            this.Controls.Add(this.lampReferences_Axis_Y1_Reference_Switch);
+            this.Controls.Add(this.lampReferences_Axis_Y1_Home_OK);
             this.Controls.Add(this.capAxis_Y2);
-            this.Controls.Add(this.btnReferences_Axis_Y2_Forward);
-            this.Controls.Add(this.dispReferences_Axis_Y2_Positions);
-            this.Controls.Add(this.lampReferences_Axis_Y2_Limit);
-            this.Controls.Add(this.lampReferences_Axis_Y2_Reference_OK);
+            this.Controls.Add(this.axReferences_Axis_Y2_Axis);
+            this.Controls.Add(this.btnReferences_Axis_Y2_Reference);
+            this.Controls.Add(this.lampReferences_Axis_Y2_Reference_Switch);
+            this.Controls.Add(this.lampReferences_Axis_Y2_Home_OK);
             this.Controls.Add(this.capX_Y1_Y2);
-            this.Controls.Add(this.btnReferences_X_Y1_Y2_Forward);
+            this.Controls.Add(this.btnReferences_X_Y1_Y2_Reference);
             this.Name = "ManualReference";
-            this.Size = new System.Drawing.Size(606, 234);
+            this.Size = new System.Drawing.Size(838, 330);
             this.ResumeLayout(false);
             this.PerformLayout();
         }
@@ -348,26 +345,26 @@ namespace Kaban.Machines.MK2010.Screens.Manual
         #endregion
 
         private Kaban.UI.Controls.LabelHMI hdName;
-        private Kaban.UI.Controls.LabelHMI hdForward;
-        private Kaban.UI.Controls.LabelHMI hdPositions;
-        private Kaban.UI.Controls.LabelHMI hdLimit;
-        private Kaban.UI.Controls.LabelHMI hdReference_OK;
+        private Kaban.UI.Controls.LabelHMI hdAxis;
+        private Kaban.UI.Controls.LabelHMI hdReference;
+        private Kaban.UI.Controls.LabelHMI hdReference_Switch;
+        private Kaban.UI.Controls.LabelHMI hdHome_OK;
         private Kaban.UI.Controls.LabelHMI capAxis_X;
-        private Kaban.UI.Controls.ButtonHMI btnReferences_Axis_X_Forward;
-        private Kaban.UI.Controls.NumericDisplayHMI dispReferences_Axis_X_Positions;
-        private Kaban.UI.Controls.LampHMI lampReferences_Axis_X_Limit;
-        private Kaban.UI.Controls.LampHMI lampReferences_Axis_X_Reference_OK;
+        private Kaban.UI.Controls.AxisUnitHMI axReferences_Axis_X_Axis;
+        private Kaban.UI.Controls.ButtonHMI btnReferences_Axis_X_Reference;
+        private Kaban.UI.Controls.LampHMI lampReferences_Axis_X_Reference_Switch;
+        private Kaban.UI.Controls.LampHMI lampReferences_Axis_X_Home_OK;
         private Kaban.UI.Controls.LabelHMI capAxis_Y1;
-        private Kaban.UI.Controls.ButtonHMI btnReferences_Axis_Y1_Forward;
-        private Kaban.UI.Controls.NumericDisplayHMI dispReferences_Axis_Y1_Positions;
-        private Kaban.UI.Controls.LampHMI lampReferences_Axis_Y1_Limit;
-        private Kaban.UI.Controls.LampHMI lampReferences_Axis_Y1_Reference_OK;
+        private Kaban.UI.Controls.AxisUnitHMI axReferences_Axis_Y1_Axis;
+        private Kaban.UI.Controls.ButtonHMI btnReferences_Axis_Y1_Reference;
+        private Kaban.UI.Controls.LampHMI lampReferences_Axis_Y1_Reference_Switch;
+        private Kaban.UI.Controls.LampHMI lampReferences_Axis_Y1_Home_OK;
         private Kaban.UI.Controls.LabelHMI capAxis_Y2;
-        private Kaban.UI.Controls.ButtonHMI btnReferences_Axis_Y2_Forward;
-        private Kaban.UI.Controls.NumericDisplayHMI dispReferences_Axis_Y2_Positions;
-        private Kaban.UI.Controls.LampHMI lampReferences_Axis_Y2_Limit;
-        private Kaban.UI.Controls.LampHMI lampReferences_Axis_Y2_Reference_OK;
+        private Kaban.UI.Controls.AxisUnitHMI axReferences_Axis_Y2_Axis;
+        private Kaban.UI.Controls.ButtonHMI btnReferences_Axis_Y2_Reference;
+        private Kaban.UI.Controls.LampHMI lampReferences_Axis_Y2_Reference_Switch;
+        private Kaban.UI.Controls.LampHMI lampReferences_Axis_Y2_Home_OK;
         private Kaban.UI.Controls.LabelHMI capX_Y1_Y2;
-        private Kaban.UI.Controls.ButtonHMI btnReferences_X_Y1_Y2_Forward;
+        private Kaban.UI.Controls.ButtonHMI btnReferences_X_Y1_Y2_Reference;
     }
 }

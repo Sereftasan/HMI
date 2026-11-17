@@ -37,10 +37,10 @@ namespace Kaban.Machines.MK2010
             // Where the PLC keeps its program version: not known yet (the old program read none).
             ConnectionMonitor.SetVersionDevice(ctx.Station(1), "");
 
-            // Where the PLC resets its alarms: not known yet - the old program's alarm words start
-            // at M600 (3 words) and its texts are in its database; until the right bit is written
-            // here the Alarms page has no reset rather than one that pulses the wrong device.
-            // PlcManager.Instance.SetAlarmResetDevice(ctx.Station(1), "M...");
+            // WHERE THE PLC RESETS ITS ALARMS - pulsed by the Alarms page's Reset and the caption
+            // bar's alarm menu: M36 ("alarm reset" in the PLC program's comments; the old program's
+            // Alarms page's Reset, ucAlarms btnReset).
+            PlcManager.Instance.SetAlarmResetDevice(ctx.Station(1), "M36");
         }
 
         public void RegisterConditions(IMachineMountContext ctx) { }

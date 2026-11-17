@@ -70,6 +70,8 @@ class MKP {
         Check("  the real values D154 / D156 / D158 their calibration, Calibrate M91 / M92 / M93; a Maintenance's",
               rows.Select(r => r.CalibrationAddress + " " + r.CalibrateAddress).SequenceEqual(new[] { "D154 M91", "D156 M92", "D158 M93" }) &&
               rows.All(r => r.RequiredSecurity == SecurityLevel.Maintenance));
+        // 17 November: each one's send to reference (M30 ... M32, the old References page's)
+        Check("  their send to reference M30 / M31 / M32", rows.Select(r => r.GoToReferenceAddress).SequenceEqual(new[] { "M30", "M31", "M32" }));
         var calAll = Tree(cal).OfType<ButtonHMI>().FirstOrDefault(b => b.FallbackText == "Calibrate All");
         Check("  Calibrate All sets the three", calAll != null && Bits(calAll) == "M91:SET,M92:SET,M93:SET");
 
@@ -112,6 +114,11 @@ class MKP {
         var lamps = cu.SelectMany(u => new[] { u.Lamp1AAddress, u.Lamp1BAddress }).Where(a => !string.IsNullOrEmpty(a)).ToList();
         Check("  the old page's sensors on them (X0011 ... X0040, X0054 ... X0057, X0060 ... X0065)",
               new[] { "X0011", "X0034", "X0015", "X0020", "X0021", "X0024", "X0025", "X0040", "X0054", "X0057", "X0060", "X0061", "X0062", "X0065" }.All(lamps.Contains));
+        // 17 November: the old table's sensor rows (the cylinders' sensors again) left to the units
+        var loose = Tree(man).OfType<LampHMI>().Where(l => !(l.Parent is CylinderUnitHMI) && l.Parent == man).Select(l => l.Address).ToList();
+        Check("  the sensors only on their units (no lamp rows X0031 / X0011 ... beside them); Gasket Pressing M316 once",
+              !loose.Any(a => new[] { "X0031", "X0011", "X0035", "X0025", "X0064", "X0065", "X0062", "X0063", "X0060", "X0061" }.Contains(a)) &&
+              loose.Count(a => a == "M316") == 1, string.Join(",", loose));
         Check("  Automatic On/Off M34 and Conveyor M106 stay buttons (no cylinders)",
               Bits(Btn(man, "M34")) == "M34:Alternate" && Bits(Btn(man, "M106")) == "M106:Alternate");
         // one alarm bit, the four heads' units: the alarm's help offers each one's page
@@ -128,6 +135,13 @@ class MKP {
         Check("References: X / Y1 / Y2 M30 / M31 / M32, Reference All SETs the three, OK lamps M22 / M20 / M21",
               Btn(refs, "M30") != null && all != null && Bits(all) == "M30:SET,M31:SET,M32:SET" &&
               new[] { "M22", "M20", "M21" }.All(a => Tree(refs).OfType<LampHMI>().Any(l => l.Address == a)), all == null ? "-" : Bits(all));
+        // 17 November: an axis unit each; the reference switches instead of the old Limit lamps (Manual Control's toggles)
+        var refAxes = Tree(refs).OfType<AxisUnitHMI>().OrderBy(u => u.AxisNumber).ToList();
+        var refLamps = Tree(refs).OfType<LampHMI>().Where(l => l.Parent == refs).Select(l => l.Address).ToList();
+        Check("  X / Y1 / Y2 as axis units (their jog and position), their reference switches X0006 / X0007 / X0010; no M100 / M102 / M104",
+              refAxes.Count == 3 && refAxes.All(u => u.IsResolved) && refAxes[1].Unit.CommandBAddress == "M42" &&
+              new[] { "X0006", "X0007", "X0010" }.All(refLamps.Contains) && !refLamps.Any(a => a == "M100" || a == "M102" || a == "M104"),
+              string.Join(",", refLamps));
 
         Console.WriteLine("--- Machine Parameters ---");
         var sys = new ParamSystem();
@@ -177,6 +191,7 @@ class MKP {
             Shot(new HomeJob(), Path.Combine(args[0], "mk_home.png"));
             Shot(new ManualControl(), Path.Combine(args[0], "mk_manual.png"));
             Shot(new ParamCalibration(), Path.Combine(args[0], "mk_calib.png"));
+            Shot(new ManualReference(), Path.Combine(args[0], "mk_refs.png"));
         }
         Console.WriteLine(fail == 0 ? "\nMK2010 PAGES ALL PASS" : "\nMK2010 PAGES " + fail + " FAILED");
         Environment.Exit(fail == 0 ? 0 : 1);

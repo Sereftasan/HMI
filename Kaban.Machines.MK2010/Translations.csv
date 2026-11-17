@@ -210,3 +210,6 @@ Alarm_MK2010.Y1_axis_jammed;Y1 axis jammed;Y1 ekseni sıkıştı;;;;
 Alarm_MK2010.Y2_axis_jammed;Y2 axis jammed;Y2 ekseni sıkıştı;;;;
 Alarm_MK2010.Sliding_sash_press_did_not_press;Sliding sash press did not press;Sürme kanat baskı basamadı;;;;
 Alarm_MK2010.Sliding_sash_press_did_not_go_back;Sliding sash press did not go back;Sürme kanat baskı geri gidemedi;;;;
+Reference;Reference;Referans;;;;
+Reference Switch;Reference Switch;Referans Switch;;;;
+Home OK;Home OK;Referans OK;;;;

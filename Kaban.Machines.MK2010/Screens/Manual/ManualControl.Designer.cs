@@ -41,24 +41,8 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.capAxis_Y2 = new Kaban.UI.Controls.LabelHMI();
             this.axAxes_Axis_Y2_Back = new Kaban.UI.Controls.AxisUnitHMI();
             this.lampAxes_Axis_Y2_Limit = new Kaban.UI.Controls.LampHMI();
-            this.capHead_1_2_Conveyor = new Kaban.UI.Controls.LabelHMI();
-            this.lampAxes_Head_1_2_Conveyor_Back = new Kaban.UI.Controls.LampHMI();
-            this.lampAxes_Head_1_2_Conveyor_Forward = new Kaban.UI.Controls.LampHMI();
-            this.capHead_3_4_Conveyor = new Kaban.UI.Controls.LabelHMI();
-            this.lampAxes_Head_3_4_Conveyor_Back = new Kaban.UI.Controls.LampHMI();
-            this.lampAxes_Head_3_4_Conveyor_Forward = new Kaban.UI.Controls.LampHMI();
             this.capGasket_Pressing = new Kaban.UI.Controls.LabelHMI();
             this.lampAxes_Gasket_Pressing_Back = new Kaban.UI.Controls.LampHMI();
-            this.lampAxes_Gasket_Pressing_Forward = new Kaban.UI.Controls.LampHMI();
-            this.capUnit_Up = new Kaban.UI.Controls.LabelHMI();
-            this.lampAxes_Unit_Up_Back = new Kaban.UI.Controls.LampHMI();
-            this.lampAxes_Unit_Up_Forward = new Kaban.UI.Controls.LampHMI();
-            this.capHead_Up = new Kaban.UI.Controls.LabelHMI();
-            this.lampAxes_Head_Up_Back = new Kaban.UI.Controls.LampHMI();
-            this.lampAxes_Head_Up_Forward = new Kaban.UI.Controls.LampHMI();
-            this.capUnit_Back = new Kaban.UI.Controls.LabelHMI();
-            this.lampAxes_Unit_Back_Back = new Kaban.UI.Controls.LampHMI();
-            this.lampAxes_Unit_Back_Forward = new Kaban.UI.Controls.LampHMI();
             this.capLubrication = new Kaban.UI.Controls.LabelHMI();
             this.btnAxes_Lubrication_Forward = new Kaban.UI.Controls.ButtonHMI();
             this.hdManual_Control = new Kaban.UI.Controls.LabelHMI();
@@ -275,62 +259,6 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.lampAxes_Axis_Y2_Limit.Location = new System.Drawing.Point(526, 215);
             this.lampAxes_Axis_Y2_Limit.Size = new System.Drawing.Size(30, 30);
             // 
-            // capHead_1_2_Conveyor
-            // 
-            this.capHead_1_2_Conveyor.Name = "capHead_1_2_Conveyor";
-            this.capHead_1_2_Conveyor.TranslationKey = "Head 1-2 Conveyor";
-            this.capHead_1_2_Conveyor.Text = "Head 1-2 Conveyor";
-            this.capHead_1_2_Conveyor.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.capHead_1_2_Conveyor.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
-            this.capHead_1_2_Conveyor.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capHead_1_2_Conveyor.Location = new System.Drawing.Point(16, 266);
-            this.capHead_1_2_Conveyor.Size = new System.Drawing.Size(170, 40);
-            this.capHead_1_2_Conveyor.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            // 
-            // lampAxes_Head_1_2_Conveyor_Back
-            // 
-            this.lampAxes_Head_1_2_Conveyor_Back.Name = "lampAxes_Head_1_2_Conveyor_Back";
-            this.lampAxes_Head_1_2_Conveyor_Back.PlcNumber = 1;
-            this.lampAxes_Head_1_2_Conveyor_Back.Address = "X0031";
-            this.lampAxes_Head_1_2_Conveyor_Back.Location = new System.Drawing.Point(225, 271);
-            this.lampAxes_Head_1_2_Conveyor_Back.Size = new System.Drawing.Size(30, 30);
-            // 
-            // lampAxes_Head_1_2_Conveyor_Forward
-            // 
-            this.lampAxes_Head_1_2_Conveyor_Forward.Name = "lampAxes_Head_1_2_Conveyor_Forward";
-            this.lampAxes_Head_1_2_Conveyor_Forward.PlcNumber = 1;
-            this.lampAxes_Head_1_2_Conveyor_Forward.Address = "X0011";
-            this.lampAxes_Head_1_2_Conveyor_Forward.Location = new System.Drawing.Point(327, 271);
-            this.lampAxes_Head_1_2_Conveyor_Forward.Size = new System.Drawing.Size(30, 30);
-            // 
-            // capHead_3_4_Conveyor
-            // 
-            this.capHead_3_4_Conveyor.Name = "capHead_3_4_Conveyor";
-            this.capHead_3_4_Conveyor.TranslationKey = "Head 3-4 Conveyor";
-            this.capHead_3_4_Conveyor.Text = "Head 3-4 Conveyor";
-            this.capHead_3_4_Conveyor.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.capHead_3_4_Conveyor.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
-            this.capHead_3_4_Conveyor.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capHead_3_4_Conveyor.Location = new System.Drawing.Point(16, 306);
-            this.capHead_3_4_Conveyor.Size = new System.Drawing.Size(170, 40);
-            this.capHead_3_4_Conveyor.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            // 
-            // lampAxes_Head_3_4_Conveyor_Back
-            // 
-            this.lampAxes_Head_3_4_Conveyor_Back.Name = "lampAxes_Head_3_4_Conveyor_Back";
-            this.lampAxes_Head_3_4_Conveyor_Back.PlcNumber = 1;
-            this.lampAxes_Head_3_4_Conveyor_Back.Address = "X0035";
-            this.lampAxes_Head_3_4_Conveyor_Back.Location = new System.Drawing.Point(225, 311);
-            this.lampAxes_Head_3_4_Conveyor_Back.Size = new System.Drawing.Size(30, 30);
-            // 
-            // lampAxes_Head_3_4_Conveyor_Forward
-            // 
-            this.lampAxes_Head_3_4_Conveyor_Forward.Name = "lampAxes_Head_3_4_Conveyor_Forward";
-            this.lampAxes_Head_3_4_Conveyor_Forward.PlcNumber = 1;
-            this.lampAxes_Head_3_4_Conveyor_Forward.Address = "X0025";
-            this.lampAxes_Head_3_4_Conveyor_Forward.Location = new System.Drawing.Point(327, 311);
-            this.lampAxes_Head_3_4_Conveyor_Forward.Size = new System.Drawing.Size(30, 30);
-            // 
             // capGasket_Pressing
             // 
             this.capGasket_Pressing.Name = "capGasket_Pressing";
@@ -339,7 +267,7 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.capGasket_Pressing.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.capGasket_Pressing.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
             this.capGasket_Pressing.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capGasket_Pressing.Location = new System.Drawing.Point(16, 346);
+            this.capGasket_Pressing.Location = new System.Drawing.Point(16, 266);
             this.capGasket_Pressing.Size = new System.Drawing.Size(170, 40);
             this.capGasket_Pressing.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             // 
@@ -348,100 +276,8 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.lampAxes_Gasket_Pressing_Back.Name = "lampAxes_Gasket_Pressing_Back";
             this.lampAxes_Gasket_Pressing_Back.PlcNumber = 1;
             this.lampAxes_Gasket_Pressing_Back.Address = "M316";
-            this.lampAxes_Gasket_Pressing_Back.Location = new System.Drawing.Point(225, 351);
+            this.lampAxes_Gasket_Pressing_Back.Location = new System.Drawing.Point(225, 271);
             this.lampAxes_Gasket_Pressing_Back.Size = new System.Drawing.Size(30, 30);
-            // 
-            // lampAxes_Gasket_Pressing_Forward
-            // 
-            this.lampAxes_Gasket_Pressing_Forward.Name = "lampAxes_Gasket_Pressing_Forward";
-            this.lampAxes_Gasket_Pressing_Forward.PlcNumber = 1;
-            this.lampAxes_Gasket_Pressing_Forward.Address = "M316";
-            this.lampAxes_Gasket_Pressing_Forward.Location = new System.Drawing.Point(327, 351);
-            this.lampAxes_Gasket_Pressing_Forward.Size = new System.Drawing.Size(30, 30);
-            // 
-            // capUnit_Up
-            // 
-            this.capUnit_Up.Name = "capUnit_Up";
-            this.capUnit_Up.TranslationKey = "Unit Up";
-            this.capUnit_Up.Text = "Unit Up";
-            this.capUnit_Up.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.capUnit_Up.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
-            this.capUnit_Up.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capUnit_Up.Location = new System.Drawing.Point(16, 386);
-            this.capUnit_Up.Size = new System.Drawing.Size(170, 40);
-            this.capUnit_Up.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            // 
-            // lampAxes_Unit_Up_Back
-            // 
-            this.lampAxes_Unit_Up_Back.Name = "lampAxes_Unit_Up_Back";
-            this.lampAxes_Unit_Up_Back.PlcNumber = 1;
-            this.lampAxes_Unit_Up_Back.Address = "X0064";
-            this.lampAxes_Unit_Up_Back.Location = new System.Drawing.Point(225, 391);
-            this.lampAxes_Unit_Up_Back.Size = new System.Drawing.Size(30, 30);
-            // 
-            // lampAxes_Unit_Up_Forward
-            // 
-            this.lampAxes_Unit_Up_Forward.Name = "lampAxes_Unit_Up_Forward";
-            this.lampAxes_Unit_Up_Forward.PlcNumber = 1;
-            this.lampAxes_Unit_Up_Forward.Address = "X0065";
-            this.lampAxes_Unit_Up_Forward.Location = new System.Drawing.Point(327, 391);
-            this.lampAxes_Unit_Up_Forward.Size = new System.Drawing.Size(30, 30);
-            // 
-            // capHead_Up
-            // 
-            this.capHead_Up.Name = "capHead_Up";
-            this.capHead_Up.TranslationKey = "Head Up";
-            this.capHead_Up.Text = "Head Up";
-            this.capHead_Up.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.capHead_Up.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
-            this.capHead_Up.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capHead_Up.Location = new System.Drawing.Point(16, 426);
-            this.capHead_Up.Size = new System.Drawing.Size(170, 40);
-            this.capHead_Up.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            // 
-            // lampAxes_Head_Up_Back
-            // 
-            this.lampAxes_Head_Up_Back.Name = "lampAxes_Head_Up_Back";
-            this.lampAxes_Head_Up_Back.PlcNumber = 1;
-            this.lampAxes_Head_Up_Back.Address = "X0062";
-            this.lampAxes_Head_Up_Back.Location = new System.Drawing.Point(225, 431);
-            this.lampAxes_Head_Up_Back.Size = new System.Drawing.Size(30, 30);
-            // 
-            // lampAxes_Head_Up_Forward
-            // 
-            this.lampAxes_Head_Up_Forward.Name = "lampAxes_Head_Up_Forward";
-            this.lampAxes_Head_Up_Forward.PlcNumber = 1;
-            this.lampAxes_Head_Up_Forward.Address = "X0063";
-            this.lampAxes_Head_Up_Forward.Location = new System.Drawing.Point(327, 431);
-            this.lampAxes_Head_Up_Forward.Size = new System.Drawing.Size(30, 30);
-            // 
-            // capUnit_Back
-            // 
-            this.capUnit_Back.Name = "capUnit_Back";
-            this.capUnit_Back.TranslationKey = "Unit Back";
-            this.capUnit_Back.Text = "Unit Back";
-            this.capUnit_Back.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.capUnit_Back.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
-            this.capUnit_Back.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capUnit_Back.Location = new System.Drawing.Point(16, 466);
-            this.capUnit_Back.Size = new System.Drawing.Size(170, 40);
-            this.capUnit_Back.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            // 
-            // lampAxes_Unit_Back_Back
-            // 
-            this.lampAxes_Unit_Back_Back.Name = "lampAxes_Unit_Back_Back";
-            this.lampAxes_Unit_Back_Back.PlcNumber = 1;
-            this.lampAxes_Unit_Back_Back.Address = "X0060";
-            this.lampAxes_Unit_Back_Back.Location = new System.Drawing.Point(225, 471);
-            this.lampAxes_Unit_Back_Back.Size = new System.Drawing.Size(30, 30);
-            // 
-            // lampAxes_Unit_Back_Forward
-            // 
-            this.lampAxes_Unit_Back_Forward.Name = "lampAxes_Unit_Back_Forward";
-            this.lampAxes_Unit_Back_Forward.PlcNumber = 1;
-            this.lampAxes_Unit_Back_Forward.Address = "X0061";
-            this.lampAxes_Unit_Back_Forward.Location = new System.Drawing.Point(327, 471);
-            this.lampAxes_Unit_Back_Forward.Size = new System.Drawing.Size(30, 30);
             // 
             // capLubrication
             // 
@@ -451,7 +287,7 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.capLubrication.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.capLubrication.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
             this.capLubrication.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capLubrication.Location = new System.Drawing.Point(16, 506);
+            this.capLubrication.Location = new System.Drawing.Point(16, 306);
             this.capLubrication.Size = new System.Drawing.Size(170, 40);
             this.capLubrication.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             // 
@@ -465,7 +301,7 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             bitAction1.Action = Kaban.Core.Enums.BitActionType.Momentary;
             this.btnAxes_Lubrication_Forward.BitActions.Add(bitAction1);
             this.btnAxes_Lubrication_Forward.Lamp1Address = "M1005";
-            this.btnAxes_Lubrication_Forward.Location = new System.Drawing.Point(294, 509);
+            this.btnAxes_Lubrication_Forward.Location = new System.Drawing.Point(294, 309);
             this.btnAxes_Lubrication_Forward.Size = new System.Drawing.Size(96, 34);
             this.btnAxes_Lubrication_Forward.LogAction = true;
             this.btnAxes_Lubrication_Forward.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
@@ -554,7 +390,7 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.lblCylinders.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.lblCylinders.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
             this.lblCylinders.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.lblCylinders.Location = new System.Drawing.Point(16, 570);
+            this.lblCylinders.Location = new System.Drawing.Point(16, 370);
             this.lblCylinders.Size = new System.Drawing.Size(1038, 26);
             // 
             // hdUnit
@@ -565,7 +401,7 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.hdUnit.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
             this.hdUnit.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
             this.hdUnit.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.hdUnit.Location = new System.Drawing.Point(16, 600);
+            this.hdUnit.Location = new System.Drawing.Point(16, 400);
             this.hdUnit.Size = new System.Drawing.Size(150, 26);
             // 
             // hdHead_1
@@ -576,7 +412,7 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.hdHead_1.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
             this.hdHead_1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
             this.hdHead_1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.hdHead_1.Location = new System.Drawing.Point(172, 600);
+            this.hdHead_1.Location = new System.Drawing.Point(172, 400);
             this.hdHead_1.Size = new System.Drawing.Size(216, 26);
             // 
             // hdHead_2
@@ -587,7 +423,7 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.hdHead_2.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
             this.hdHead_2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
             this.hdHead_2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.hdHead_2.Location = new System.Drawing.Point(394, 600);
+            this.hdHead_2.Location = new System.Drawing.Point(394, 400);
             this.hdHead_2.Size = new System.Drawing.Size(216, 26);
             // 
             // hdHead_3
@@ -598,7 +434,7 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.hdHead_3.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
             this.hdHead_3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
             this.hdHead_3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.hdHead_3.Location = new System.Drawing.Point(616, 600);
+            this.hdHead_3.Location = new System.Drawing.Point(616, 400);
             this.hdHead_3.Size = new System.Drawing.Size(216, 26);
             // 
             // hdHead_4
@@ -609,7 +445,7 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.hdHead_4.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
             this.hdHead_4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
             this.hdHead_4.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.hdHead_4.Location = new System.Drawing.Point(838, 600);
+            this.hdHead_4.Location = new System.Drawing.Point(838, 400);
             this.hdHead_4.Size = new System.Drawing.Size(216, 26);
             // 
             // capSupporting_Strip
@@ -620,7 +456,7 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.capSupporting_Strip.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.capSupporting_Strip.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
             this.capSupporting_Strip.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capSupporting_Strip.Location = new System.Drawing.Point(16, 634);
+            this.capSupporting_Strip.Location = new System.Drawing.Point(16, 434);
             this.capSupporting_Strip.Size = new System.Drawing.Size(150, 72);
             this.capSupporting_Strip.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             // 
@@ -631,7 +467,7 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.unitUnits_Supporting_Strip_Head_1.Name = "unitUnits_Supporting_Strip_Head_1";
             this.unitUnits_Supporting_Strip_Head_1.PlcNumber = 1;
             this.unitUnits_Supporting_Strip_Head_1.TitleTextKey = "Unit_MK2010_H1SupportingStrip";
-            this.unitUnits_Supporting_Strip_Head_1.Location = new System.Drawing.Point(172, 638);
+            this.unitUnits_Supporting_Strip_Head_1.Location = new System.Drawing.Point(172, 438);
             this.unitUnits_Supporting_Strip_Head_1.Size = new System.Drawing.Size(216, 64);
             this.unitUnits_Supporting_Strip_Head_1.LogAction = true;
             this.unitUnits_Supporting_Strip_Head_1.Arrows = Kaban.Core.Enums.ButtonArrowStyle.UpDown;
@@ -654,7 +490,7 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.unitUnits_Supporting_Strip_Head_2.Name = "unitUnits_Supporting_Strip_Head_2";
             this.unitUnits_Supporting_Strip_Head_2.PlcNumber = 1;
             this.unitUnits_Supporting_Strip_Head_2.TitleTextKey = "Unit_MK2010_H2SupportingStrip";
-            this.unitUnits_Supporting_Strip_Head_2.Location = new System.Drawing.Point(394, 638);
+            this.unitUnits_Supporting_Strip_Head_2.Location = new System.Drawing.Point(394, 438);
             this.unitUnits_Supporting_Strip_Head_2.Size = new System.Drawing.Size(216, 64);
             this.unitUnits_Supporting_Strip_Head_2.LogAction = true;
             this.unitUnits_Supporting_Strip_Head_2.Arrows = Kaban.Core.Enums.ButtonArrowStyle.UpDown;
@@ -677,7 +513,7 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.unitUnits_Supporting_Strip_Head_3.Name = "unitUnits_Supporting_Strip_Head_3";
             this.unitUnits_Supporting_Strip_Head_3.PlcNumber = 1;
             this.unitUnits_Supporting_Strip_Head_3.TitleTextKey = "Unit_MK2010_H3SupportingStrip";
-            this.unitUnits_Supporting_Strip_Head_3.Location = new System.Drawing.Point(616, 638);
+            this.unitUnits_Supporting_Strip_Head_3.Location = new System.Drawing.Point(616, 438);
             this.unitUnits_Supporting_Strip_Head_3.Size = new System.Drawing.Size(216, 64);
             this.unitUnits_Supporting_Strip_Head_3.LogAction = true;
             this.unitUnits_Supporting_Strip_Head_3.Arrows = Kaban.Core.Enums.ButtonArrowStyle.UpDown;
@@ -700,7 +536,7 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.unitUnits_Supporting_Strip_Head_4.Name = "unitUnits_Supporting_Strip_Head_4";
             this.unitUnits_Supporting_Strip_Head_4.PlcNumber = 1;
             this.unitUnits_Supporting_Strip_Head_4.TitleTextKey = "Unit_MK2010_H4SupportingStrip";
-            this.unitUnits_Supporting_Strip_Head_4.Location = new System.Drawing.Point(838, 638);
+            this.unitUnits_Supporting_Strip_Head_4.Location = new System.Drawing.Point(838, 438);
             this.unitUnits_Supporting_Strip_Head_4.Size = new System.Drawing.Size(216, 64);
             this.unitUnits_Supporting_Strip_Head_4.LogAction = true;
             this.unitUnits_Supporting_Strip_Head_4.Arrows = Kaban.Core.Enums.ButtonArrowStyle.UpDown;
@@ -724,7 +560,7 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.capSide_Table_1.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.capSide_Table_1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
             this.capSide_Table_1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capSide_Table_1.Location = new System.Drawing.Point(16, 706);
+            this.capSide_Table_1.Location = new System.Drawing.Point(16, 506);
             this.capSide_Table_1.Size = new System.Drawing.Size(150, 72);
             this.capSide_Table_1.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             // 
@@ -735,7 +571,7 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.unitUnits_Side_Table_1_Head_1.Name = "unitUnits_Side_Table_1_Head_1";
             this.unitUnits_Side_Table_1_Head_1.PlcNumber = 1;
             this.unitUnits_Side_Table_1_Head_1.TitleTextKey = "Unit_MK2010_H1SideTable1";
-            this.unitUnits_Side_Table_1_Head_1.Location = new System.Drawing.Point(172, 710);
+            this.unitUnits_Side_Table_1_Head_1.Location = new System.Drawing.Point(172, 510);
             this.unitUnits_Side_Table_1_Head_1.Size = new System.Drawing.Size(216, 64);
             this.unitUnits_Side_Table_1_Head_1.LogAction = true;
             this.unitUnits_Side_Table_1_Head_1.CommandAAddress = "M102";
@@ -755,7 +591,7 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.unitUnits_Side_Table_1_Head_2.Name = "unitUnits_Side_Table_1_Head_2";
             this.unitUnits_Side_Table_1_Head_2.PlcNumber = 1;
             this.unitUnits_Side_Table_1_Head_2.TitleTextKey = "Unit_MK2010_H2SideTable1";
-            this.unitUnits_Side_Table_1_Head_2.Location = new System.Drawing.Point(394, 710);
+            this.unitUnits_Side_Table_1_Head_2.Location = new System.Drawing.Point(394, 510);
             this.unitUnits_Side_Table_1_Head_2.Size = new System.Drawing.Size(216, 64);
             this.unitUnits_Side_Table_1_Head_2.LogAction = true;
             this.unitUnits_Side_Table_1_Head_2.CommandAAddress = "M102";
@@ -775,7 +611,7 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.unitUnits_Side_Table_1_Head_3.Name = "unitUnits_Side_Table_1_Head_3";
             this.unitUnits_Side_Table_1_Head_3.PlcNumber = 1;
             this.unitUnits_Side_Table_1_Head_3.TitleTextKey = "Unit_MK2010_H3SideTable1";
-            this.unitUnits_Side_Table_1_Head_3.Location = new System.Drawing.Point(616, 710);
+            this.unitUnits_Side_Table_1_Head_3.Location = new System.Drawing.Point(616, 510);
             this.unitUnits_Side_Table_1_Head_3.Size = new System.Drawing.Size(216, 64);
             this.unitUnits_Side_Table_1_Head_3.LogAction = true;
             this.unitUnits_Side_Table_1_Head_3.CommandAAddress = "M102";
@@ -795,7 +631,7 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.unitUnits_Side_Table_1_Head_4.Name = "unitUnits_Side_Table_1_Head_4";
             this.unitUnits_Side_Table_1_Head_4.PlcNumber = 1;
             this.unitUnits_Side_Table_1_Head_4.TitleTextKey = "Unit_MK2010_H4SideTable1";
-            this.unitUnits_Side_Table_1_Head_4.Location = new System.Drawing.Point(838, 710);
+            this.unitUnits_Side_Table_1_Head_4.Location = new System.Drawing.Point(838, 510);
             this.unitUnits_Side_Table_1_Head_4.Size = new System.Drawing.Size(216, 64);
             this.unitUnits_Side_Table_1_Head_4.LogAction = true;
             this.unitUnits_Side_Table_1_Head_4.CommandAAddress = "M102";
@@ -816,7 +652,7 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.capSide_Table_2.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.capSide_Table_2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
             this.capSide_Table_2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capSide_Table_2.Location = new System.Drawing.Point(16, 778);
+            this.capSide_Table_2.Location = new System.Drawing.Point(16, 578);
             this.capSide_Table_2.Size = new System.Drawing.Size(150, 72);
             this.capSide_Table_2.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             // 
@@ -826,7 +662,7 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.unitUnits_Side_Table_2_Head_1.Name = "unitUnits_Side_Table_2_Head_1";
             this.unitUnits_Side_Table_2_Head_1.PlcNumber = 1;
             this.unitUnits_Side_Table_2_Head_1.TitleTextKey = "Unit_MK2010_H1SideTable2";
-            this.unitUnits_Side_Table_2_Head_1.Location = new System.Drawing.Point(172, 782);
+            this.unitUnits_Side_Table_2_Head_1.Location = new System.Drawing.Point(172, 582);
             this.unitUnits_Side_Table_2_Head_1.Size = new System.Drawing.Size(216, 64);
             this.unitUnits_Side_Table_2_Head_1.LogAction = true;
             this.unitUnits_Side_Table_2_Head_1.CommandAAddress = "M102";
@@ -845,7 +681,7 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.unitUnits_Side_Table_2_Head_2.Name = "unitUnits_Side_Table_2_Head_2";
             this.unitUnits_Side_Table_2_Head_2.PlcNumber = 1;
             this.unitUnits_Side_Table_2_Head_2.TitleTextKey = "Unit_MK2010_H2SideTable2";
-            this.unitUnits_Side_Table_2_Head_2.Location = new System.Drawing.Point(394, 782);
+            this.unitUnits_Side_Table_2_Head_2.Location = new System.Drawing.Point(394, 582);
             this.unitUnits_Side_Table_2_Head_2.Size = new System.Drawing.Size(216, 64);
             this.unitUnits_Side_Table_2_Head_2.LogAction = true;
             this.unitUnits_Side_Table_2_Head_2.CommandAAddress = "M102";
@@ -864,7 +700,7 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.unitUnits_Side_Table_2_Head_3.Name = "unitUnits_Side_Table_2_Head_3";
             this.unitUnits_Side_Table_2_Head_3.PlcNumber = 1;
             this.unitUnits_Side_Table_2_Head_3.TitleTextKey = "Unit_MK2010_H3SideTable2";
-            this.unitUnits_Side_Table_2_Head_3.Location = new System.Drawing.Point(616, 782);
+            this.unitUnits_Side_Table_2_Head_3.Location = new System.Drawing.Point(616, 582);
             this.unitUnits_Side_Table_2_Head_3.Size = new System.Drawing.Size(216, 64);
             this.unitUnits_Side_Table_2_Head_3.LogAction = true;
             this.unitUnits_Side_Table_2_Head_3.CommandAAddress = "M102";
@@ -883,7 +719,7 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.unitUnits_Side_Table_2_Head_4.Name = "unitUnits_Side_Table_2_Head_4";
             this.unitUnits_Side_Table_2_Head_4.PlcNumber = 1;
             this.unitUnits_Side_Table_2_Head_4.TitleTextKey = "Unit_MK2010_H4SideTable2";
-            this.unitUnits_Side_Table_2_Head_4.Location = new System.Drawing.Point(838, 782);
+            this.unitUnits_Side_Table_2_Head_4.Location = new System.Drawing.Point(838, 582);
             this.unitUnits_Side_Table_2_Head_4.Size = new System.Drawing.Size(216, 64);
             this.unitUnits_Side_Table_2_Head_4.LogAction = true;
             this.unitUnits_Side_Table_2_Head_4.CommandAAddress = "M102";
@@ -904,7 +740,7 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.capHeater_Plate.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.capHeater_Plate.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
             this.capHeater_Plate.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capHeater_Plate.Location = new System.Drawing.Point(16, 850);
+            this.capHeater_Plate.Location = new System.Drawing.Point(16, 650);
             this.capHeater_Plate.Size = new System.Drawing.Size(150, 72);
             this.capHeater_Plate.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             // 
@@ -915,7 +751,7 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.unitUnits_Heater_Plate_Head_1.Name = "unitUnits_Heater_Plate_Head_1";
             this.unitUnits_Heater_Plate_Head_1.PlcNumber = 1;
             this.unitUnits_Heater_Plate_Head_1.TitleTextKey = "Unit_MK2010_H1HeaterPlate";
-            this.unitUnits_Heater_Plate_Head_1.Location = new System.Drawing.Point(172, 854);
+            this.unitUnits_Heater_Plate_Head_1.Location = new System.Drawing.Point(172, 654);
             this.unitUnits_Heater_Plate_Head_1.Size = new System.Drawing.Size(216, 64);
             this.unitUnits_Heater_Plate_Head_1.LogAction = true;
             this.unitUnits_Heater_Plate_Head_1.CommandAAddress = "M104";
@@ -937,7 +773,7 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.unitUnits_Heater_Plate_Head_2.Name = "unitUnits_Heater_Plate_Head_2";
             this.unitUnits_Heater_Plate_Head_2.PlcNumber = 1;
             this.unitUnits_Heater_Plate_Head_2.TitleTextKey = "Unit_MK2010_H2HeaterPlate";
-            this.unitUnits_Heater_Plate_Head_2.Location = new System.Drawing.Point(394, 854);
+            this.unitUnits_Heater_Plate_Head_2.Location = new System.Drawing.Point(394, 654);
             this.unitUnits_Heater_Plate_Head_2.Size = new System.Drawing.Size(216, 64);
             this.unitUnits_Heater_Plate_Head_2.LogAction = true;
             this.unitUnits_Heater_Plate_Head_2.CommandAAddress = "M104";
@@ -959,7 +795,7 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.unitUnits_Heater_Plate_Head_3.Name = "unitUnits_Heater_Plate_Head_3";
             this.unitUnits_Heater_Plate_Head_3.PlcNumber = 1;
             this.unitUnits_Heater_Plate_Head_3.TitleTextKey = "Unit_MK2010_H3HeaterPlate";
-            this.unitUnits_Heater_Plate_Head_3.Location = new System.Drawing.Point(616, 854);
+            this.unitUnits_Heater_Plate_Head_3.Location = new System.Drawing.Point(616, 654);
             this.unitUnits_Heater_Plate_Head_3.Size = new System.Drawing.Size(216, 64);
             this.unitUnits_Heater_Plate_Head_3.LogAction = true;
             this.unitUnits_Heater_Plate_Head_3.CommandAAddress = "M104";
@@ -981,7 +817,7 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.unitUnits_Heater_Plate_Head_4.Name = "unitUnits_Heater_Plate_Head_4";
             this.unitUnits_Heater_Plate_Head_4.PlcNumber = 1;
             this.unitUnits_Heater_Plate_Head_4.TitleTextKey = "Unit_MK2010_H4HeaterPlate";
-            this.unitUnits_Heater_Plate_Head_4.Location = new System.Drawing.Point(838, 854);
+            this.unitUnits_Heater_Plate_Head_4.Location = new System.Drawing.Point(838, 654);
             this.unitUnits_Heater_Plate_Head_4.Size = new System.Drawing.Size(216, 64);
             this.unitUnits_Heater_Plate_Head_4.LogAction = true;
             this.unitUnits_Heater_Plate_Head_4.CommandAAddress = "M104";
@@ -1004,7 +840,7 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.capTop_Press.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.capTop_Press.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
             this.capTop_Press.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capTop_Press.Location = new System.Drawing.Point(16, 922);
+            this.capTop_Press.Location = new System.Drawing.Point(16, 722);
             this.capTop_Press.Size = new System.Drawing.Size(150, 72);
             this.capTop_Press.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             // 
@@ -1015,7 +851,7 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.unitUnits_Top_Press_Head_1.Name = "unitUnits_Top_Press_Head_1";
             this.unitUnits_Top_Press_Head_1.PlcNumber = 1;
             this.unitUnits_Top_Press_Head_1.TitleTextKey = "Unit_MK2010_H1TopPress";
-            this.unitUnits_Top_Press_Head_1.Location = new System.Drawing.Point(172, 926);
+            this.unitUnits_Top_Press_Head_1.Location = new System.Drawing.Point(172, 726);
             this.unitUnits_Top_Press_Head_1.Size = new System.Drawing.Size(216, 64);
             this.unitUnits_Top_Press_Head_1.LogAction = true;
             this.unitUnits_Top_Press_Head_1.Arrows = Kaban.Core.Enums.ButtonArrowStyle.UpDown;
@@ -1034,7 +870,7 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.unitUnits_Top_Press_Head_2.Name = "unitUnits_Top_Press_Head_2";
             this.unitUnits_Top_Press_Head_2.PlcNumber = 1;
             this.unitUnits_Top_Press_Head_2.TitleTextKey = "Unit_MK2010_H2TopPress";
-            this.unitUnits_Top_Press_Head_2.Location = new System.Drawing.Point(394, 926);
+            this.unitUnits_Top_Press_Head_2.Location = new System.Drawing.Point(394, 726);
             this.unitUnits_Top_Press_Head_2.Size = new System.Drawing.Size(216, 64);
             this.unitUnits_Top_Press_Head_2.LogAction = true;
             this.unitUnits_Top_Press_Head_2.Arrows = Kaban.Core.Enums.ButtonArrowStyle.UpDown;
@@ -1053,7 +889,7 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.unitUnits_Top_Press_Head_3.Name = "unitUnits_Top_Press_Head_3";
             this.unitUnits_Top_Press_Head_3.PlcNumber = 1;
             this.unitUnits_Top_Press_Head_3.TitleTextKey = "Unit_MK2010_H3TopPress";
-            this.unitUnits_Top_Press_Head_3.Location = new System.Drawing.Point(616, 926);
+            this.unitUnits_Top_Press_Head_3.Location = new System.Drawing.Point(616, 726);
             this.unitUnits_Top_Press_Head_3.Size = new System.Drawing.Size(216, 64);
             this.unitUnits_Top_Press_Head_3.LogAction = true;
             this.unitUnits_Top_Press_Head_3.Arrows = Kaban.Core.Enums.ButtonArrowStyle.UpDown;
@@ -1072,7 +908,7 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.unitUnits_Top_Press_Head_4.Name = "unitUnits_Top_Press_Head_4";
             this.unitUnits_Top_Press_Head_4.PlcNumber = 1;
             this.unitUnits_Top_Press_Head_4.TitleTextKey = "Unit_MK2010_H4TopPress";
-            this.unitUnits_Top_Press_Head_4.Location = new System.Drawing.Point(838, 926);
+            this.unitUnits_Top_Press_Head_4.Location = new System.Drawing.Point(838, 726);
             this.unitUnits_Top_Press_Head_4.Size = new System.Drawing.Size(216, 64);
             this.unitUnits_Top_Press_Head_4.LogAction = true;
             this.unitUnits_Top_Press_Head_4.Arrows = Kaban.Core.Enums.ButtonArrowStyle.UpDown;
@@ -1092,7 +928,7 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.capProfile_Lifting.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.capProfile_Lifting.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
             this.capProfile_Lifting.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capProfile_Lifting.Location = new System.Drawing.Point(16, 994);
+            this.capProfile_Lifting.Location = new System.Drawing.Point(16, 794);
             this.capProfile_Lifting.Size = new System.Drawing.Size(150, 72);
             this.capProfile_Lifting.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             // 
@@ -1103,7 +939,7 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.unitUnits_Profile_Lifting_Head_1.Name = "unitUnits_Profile_Lifting_Head_1";
             this.unitUnits_Profile_Lifting_Head_1.PlcNumber = 1;
             this.unitUnits_Profile_Lifting_Head_1.TitleTextKey = "Unit_MK2010_H1ProfileLifting";
-            this.unitUnits_Profile_Lifting_Head_1.Location = new System.Drawing.Point(172, 998);
+            this.unitUnits_Profile_Lifting_Head_1.Location = new System.Drawing.Point(172, 798);
             this.unitUnits_Profile_Lifting_Head_1.Size = new System.Drawing.Size(216, 64);
             this.unitUnits_Profile_Lifting_Head_1.LogAction = true;
             this.unitUnits_Profile_Lifting_Head_1.Arrows = Kaban.Core.Enums.ButtonArrowStyle.DownUp;
@@ -1122,7 +958,7 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.unitUnits_Profile_Lifting_Head_2.Name = "unitUnits_Profile_Lifting_Head_2";
             this.unitUnits_Profile_Lifting_Head_2.PlcNumber = 1;
             this.unitUnits_Profile_Lifting_Head_2.TitleTextKey = "Unit_MK2010_H2ProfileLifting";
-            this.unitUnits_Profile_Lifting_Head_2.Location = new System.Drawing.Point(394, 998);
+            this.unitUnits_Profile_Lifting_Head_2.Location = new System.Drawing.Point(394, 798);
             this.unitUnits_Profile_Lifting_Head_2.Size = new System.Drawing.Size(216, 64);
             this.unitUnits_Profile_Lifting_Head_2.LogAction = true;
             this.unitUnits_Profile_Lifting_Head_2.Arrows = Kaban.Core.Enums.ButtonArrowStyle.DownUp;
@@ -1141,7 +977,7 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.unitUnits_Profile_Lifting_Head_3.Name = "unitUnits_Profile_Lifting_Head_3";
             this.unitUnits_Profile_Lifting_Head_3.PlcNumber = 1;
             this.unitUnits_Profile_Lifting_Head_3.TitleTextKey = "Unit_MK2010_H3ProfileLifting";
-            this.unitUnits_Profile_Lifting_Head_3.Location = new System.Drawing.Point(616, 998);
+            this.unitUnits_Profile_Lifting_Head_3.Location = new System.Drawing.Point(616, 798);
             this.unitUnits_Profile_Lifting_Head_3.Size = new System.Drawing.Size(216, 64);
             this.unitUnits_Profile_Lifting_Head_3.LogAction = true;
             this.unitUnits_Profile_Lifting_Head_3.Arrows = Kaban.Core.Enums.ButtonArrowStyle.DownUp;
@@ -1160,7 +996,7 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.unitUnits_Profile_Lifting_Head_4.Name = "unitUnits_Profile_Lifting_Head_4";
             this.unitUnits_Profile_Lifting_Head_4.PlcNumber = 1;
             this.unitUnits_Profile_Lifting_Head_4.TitleTextKey = "Unit_MK2010_H4ProfileLifting";
-            this.unitUnits_Profile_Lifting_Head_4.Location = new System.Drawing.Point(838, 998);
+            this.unitUnits_Profile_Lifting_Head_4.Location = new System.Drawing.Point(838, 798);
             this.unitUnits_Profile_Lifting_Head_4.Size = new System.Drawing.Size(216, 64);
             this.unitUnits_Profile_Lifting_Head_4.LogAction = true;
             this.unitUnits_Profile_Lifting_Head_4.Arrows = Kaban.Core.Enums.ButtonArrowStyle.DownUp;
@@ -1180,7 +1016,7 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.capProfile_Emptying.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.capProfile_Emptying.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
             this.capProfile_Emptying.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capProfile_Emptying.Location = new System.Drawing.Point(16, 1066);
+            this.capProfile_Emptying.Location = new System.Drawing.Point(16, 866);
             this.capProfile_Emptying.Size = new System.Drawing.Size(150, 72);
             this.capProfile_Emptying.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             // 
@@ -1191,7 +1027,7 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.unitUnits_Profile_Emptying_Head_1.Name = "unitUnits_Profile_Emptying_Head_1";
             this.unitUnits_Profile_Emptying_Head_1.PlcNumber = 1;
             this.unitUnits_Profile_Emptying_Head_1.TitleTextKey = "Unit_MK2010_H1ProfileEmptying";
-            this.unitUnits_Profile_Emptying_Head_1.Location = new System.Drawing.Point(172, 1070);
+            this.unitUnits_Profile_Emptying_Head_1.Location = new System.Drawing.Point(172, 870);
             this.unitUnits_Profile_Emptying_Head_1.Size = new System.Drawing.Size(216, 64);
             this.unitUnits_Profile_Emptying_Head_1.LogAction = true;
             this.unitUnits_Profile_Emptying_Head_1.CommandAAddress = "M100";
@@ -1209,7 +1045,7 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.unitUnits_Profile_Emptying_Head_2.Name = "unitUnits_Profile_Emptying_Head_2";
             this.unitUnits_Profile_Emptying_Head_2.PlcNumber = 1;
             this.unitUnits_Profile_Emptying_Head_2.TitleTextKey = "Unit_MK2010_H2ProfileEmptying";
-            this.unitUnits_Profile_Emptying_Head_2.Location = new System.Drawing.Point(394, 1070);
+            this.unitUnits_Profile_Emptying_Head_2.Location = new System.Drawing.Point(394, 870);
             this.unitUnits_Profile_Emptying_Head_2.Size = new System.Drawing.Size(216, 64);
             this.unitUnits_Profile_Emptying_Head_2.LogAction = true;
             this.unitUnits_Profile_Emptying_Head_2.CommandAAddress = "M100";
@@ -1227,7 +1063,7 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.unitUnits_Profile_Emptying_Head_3.Name = "unitUnits_Profile_Emptying_Head_3";
             this.unitUnits_Profile_Emptying_Head_3.PlcNumber = 1;
             this.unitUnits_Profile_Emptying_Head_3.TitleTextKey = "Unit_MK2010_H3ProfileEmptying";
-            this.unitUnits_Profile_Emptying_Head_3.Location = new System.Drawing.Point(616, 1070);
+            this.unitUnits_Profile_Emptying_Head_3.Location = new System.Drawing.Point(616, 870);
             this.unitUnits_Profile_Emptying_Head_3.Size = new System.Drawing.Size(216, 64);
             this.unitUnits_Profile_Emptying_Head_3.LogAction = true;
             this.unitUnits_Profile_Emptying_Head_3.CommandAAddress = "M100";
@@ -1245,7 +1081,7 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.unitUnits_Profile_Emptying_Head_4.Name = "unitUnits_Profile_Emptying_Head_4";
             this.unitUnits_Profile_Emptying_Head_4.PlcNumber = 1;
             this.unitUnits_Profile_Emptying_Head_4.TitleTextKey = "Unit_MK2010_H4ProfileEmptying";
-            this.unitUnits_Profile_Emptying_Head_4.Location = new System.Drawing.Point(838, 1070);
+            this.unitUnits_Profile_Emptying_Head_4.Location = new System.Drawing.Point(838, 870);
             this.unitUnits_Profile_Emptying_Head_4.Size = new System.Drawing.Size(216, 64);
             this.unitUnits_Profile_Emptying_Head_4.LogAction = true;
             this.unitUnits_Profile_Emptying_Head_4.CommandAAddress = "M100";
@@ -1264,7 +1100,7 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.capSliding_Sash_Press.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.capSliding_Sash_Press.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
             this.capSliding_Sash_Press.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capSliding_Sash_Press.Location = new System.Drawing.Point(16, 1138);
+            this.capSliding_Sash_Press.Location = new System.Drawing.Point(16, 938);
             this.capSliding_Sash_Press.Size = new System.Drawing.Size(150, 72);
             this.capSliding_Sash_Press.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             // 
@@ -1275,7 +1111,7 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.unitUnits_Sliding_Sash_Press_Head_1.Name = "unitUnits_Sliding_Sash_Press_Head_1";
             this.unitUnits_Sliding_Sash_Press_Head_1.PlcNumber = 1;
             this.unitUnits_Sliding_Sash_Press_Head_1.TitleTextKey = "Unit_MK2010_H1SlidingSashPress";
-            this.unitUnits_Sliding_Sash_Press_Head_1.Location = new System.Drawing.Point(172, 1142);
+            this.unitUnits_Sliding_Sash_Press_Head_1.Location = new System.Drawing.Point(172, 942);
             this.unitUnits_Sliding_Sash_Press_Head_1.Size = new System.Drawing.Size(216, 64);
             this.unitUnits_Sliding_Sash_Press_Head_1.LogAction = true;
             this.unitUnits_Sliding_Sash_Press_Head_1.CommandAAddress = "M196";
@@ -1292,7 +1128,7 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.unitUnits_Sliding_Sash_Press_Head_2.Name = "unitUnits_Sliding_Sash_Press_Head_2";
             this.unitUnits_Sliding_Sash_Press_Head_2.PlcNumber = 1;
             this.unitUnits_Sliding_Sash_Press_Head_2.TitleTextKey = "Unit_MK2010_H2SlidingSashPress";
-            this.unitUnits_Sliding_Sash_Press_Head_2.Location = new System.Drawing.Point(394, 1142);
+            this.unitUnits_Sliding_Sash_Press_Head_2.Location = new System.Drawing.Point(394, 942);
             this.unitUnits_Sliding_Sash_Press_Head_2.Size = new System.Drawing.Size(216, 64);
             this.unitUnits_Sliding_Sash_Press_Head_2.LogAction = true;
             this.unitUnits_Sliding_Sash_Press_Head_2.CommandAAddress = "M196";
@@ -1309,7 +1145,7 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.unitUnits_Sliding_Sash_Press_Head_3.Name = "unitUnits_Sliding_Sash_Press_Head_3";
             this.unitUnits_Sliding_Sash_Press_Head_3.PlcNumber = 1;
             this.unitUnits_Sliding_Sash_Press_Head_3.TitleTextKey = "Unit_MK2010_H3SlidingSashPress";
-            this.unitUnits_Sliding_Sash_Press_Head_3.Location = new System.Drawing.Point(616, 1142);
+            this.unitUnits_Sliding_Sash_Press_Head_3.Location = new System.Drawing.Point(616, 942);
             this.unitUnits_Sliding_Sash_Press_Head_3.Size = new System.Drawing.Size(216, 64);
             this.unitUnits_Sliding_Sash_Press_Head_3.LogAction = true;
             this.unitUnits_Sliding_Sash_Press_Head_3.CommandAAddress = "M196";
@@ -1326,7 +1162,7 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.unitUnits_Sliding_Sash_Press_Head_4.Name = "unitUnits_Sliding_Sash_Press_Head_4";
             this.unitUnits_Sliding_Sash_Press_Head_4.PlcNumber = 1;
             this.unitUnits_Sliding_Sash_Press_Head_4.TitleTextKey = "Unit_MK2010_H4SlidingSashPress";
-            this.unitUnits_Sliding_Sash_Press_Head_4.Location = new System.Drawing.Point(838, 1142);
+            this.unitUnits_Sliding_Sash_Press_Head_4.Location = new System.Drawing.Point(838, 942);
             this.unitUnits_Sliding_Sash_Press_Head_4.Size = new System.Drawing.Size(216, 64);
             this.unitUnits_Sliding_Sash_Press_Head_4.LogAction = true;
             this.unitUnits_Sliding_Sash_Press_Head_4.CommandAAddress = "M196";
@@ -1344,7 +1180,7 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.capGasket_Forward_Back.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.capGasket_Forward_Back.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
             this.capGasket_Forward_Back.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capGasket_Forward_Back.Location = new System.Drawing.Point(16, 1210);
+            this.capGasket_Forward_Back.Location = new System.Drawing.Point(16, 1010);
             this.capGasket_Forward_Back.Size = new System.Drawing.Size(150, 72);
             this.capGasket_Forward_Back.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             // 
@@ -1355,7 +1191,7 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.unitUnits_Gasket_Forward_Back_Head_1.Name = "unitUnits_Gasket_Forward_Back_Head_1";
             this.unitUnits_Gasket_Forward_Back_Head_1.PlcNumber = 1;
             this.unitUnits_Gasket_Forward_Back_Head_1.TitleTextKey = "Unit_MK2010_G14ForwardBack";
-            this.unitUnits_Gasket_Forward_Back_Head_1.Location = new System.Drawing.Point(172, 1214);
+            this.unitUnits_Gasket_Forward_Back_Head_1.Location = new System.Drawing.Point(172, 1014);
             this.unitUnits_Gasket_Forward_Back_Head_1.Size = new System.Drawing.Size(216, 64);
             this.unitUnits_Gasket_Forward_Back_Head_1.LogAction = true;
             this.unitUnits_Gasket_Forward_Back_Head_1.CommandAAddress = "M109";
@@ -1371,7 +1207,7 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.unitUnits_Gasket_Forward_Back_Head_2.Name = "unitUnits_Gasket_Forward_Back_Head_2";
             this.unitUnits_Gasket_Forward_Back_Head_2.PlcNumber = 1;
             this.unitUnits_Gasket_Forward_Back_Head_2.TitleTextKey = "Unit_MK2010_G23ForwardBack";
-            this.unitUnits_Gasket_Forward_Back_Head_2.Location = new System.Drawing.Point(394, 1214);
+            this.unitUnits_Gasket_Forward_Back_Head_2.Location = new System.Drawing.Point(394, 1014);
             this.unitUnits_Gasket_Forward_Back_Head_2.Size = new System.Drawing.Size(216, 64);
             this.unitUnits_Gasket_Forward_Back_Head_2.LogAction = true;
             this.unitUnits_Gasket_Forward_Back_Head_2.CommandAAddress = "M109";
@@ -1388,7 +1224,7 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.capGasket_Group.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.capGasket_Group.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
             this.capGasket_Group.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capGasket_Group.Location = new System.Drawing.Point(16, 1282);
+            this.capGasket_Group.Location = new System.Drawing.Point(16, 1082);
             this.capGasket_Group.Size = new System.Drawing.Size(150, 72);
             this.capGasket_Group.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             // 
@@ -1399,7 +1235,7 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.unitUnits_Gasket_Group_Head_1.Name = "unitUnits_Gasket_Group_Head_1";
             this.unitUnits_Gasket_Group_Head_1.PlcNumber = 1;
             this.unitUnits_Gasket_Group_Head_1.TitleTextKey = "Unit_MK2010_G14Group";
-            this.unitUnits_Gasket_Group_Head_1.Location = new System.Drawing.Point(172, 1286);
+            this.unitUnits_Gasket_Group_Head_1.Location = new System.Drawing.Point(172, 1086);
             this.unitUnits_Gasket_Group_Head_1.Size = new System.Drawing.Size(216, 64);
             this.unitUnits_Gasket_Group_Head_1.LogAction = true;
             this.unitUnits_Gasket_Group_Head_1.CommandAAddress = "M108";
@@ -1415,7 +1251,7 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.unitUnits_Gasket_Group_Head_2.Name = "unitUnits_Gasket_Group_Head_2";
             this.unitUnits_Gasket_Group_Head_2.PlcNumber = 1;
             this.unitUnits_Gasket_Group_Head_2.TitleTextKey = "Unit_MK2010_G23Group";
-            this.unitUnits_Gasket_Group_Head_2.Location = new System.Drawing.Point(394, 1286);
+            this.unitUnits_Gasket_Group_Head_2.Location = new System.Drawing.Point(394, 1086);
             this.unitUnits_Gasket_Group_Head_2.Size = new System.Drawing.Size(216, 64);
             this.unitUnits_Gasket_Group_Head_2.LogAction = true;
             this.unitUnits_Gasket_Group_Head_2.CommandAAddress = "M108";
@@ -1432,7 +1268,7 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.capGasket_Press.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.capGasket_Press.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
             this.capGasket_Press.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.capGasket_Press.Location = new System.Drawing.Point(16, 1354);
+            this.capGasket_Press.Location = new System.Drawing.Point(16, 1154);
             this.capGasket_Press.Size = new System.Drawing.Size(150, 72);
             this.capGasket_Press.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             // 
@@ -1443,7 +1279,7 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.unitUnits_Gasket_Press_Head_1.Name = "unitUnits_Gasket_Press_Head_1";
             this.unitUnits_Gasket_Press_Head_1.PlcNumber = 1;
             this.unitUnits_Gasket_Press_Head_1.TitleTextKey = "Unit_MK2010_G14Press";
-            this.unitUnits_Gasket_Press_Head_1.Location = new System.Drawing.Point(172, 1358);
+            this.unitUnits_Gasket_Press_Head_1.Location = new System.Drawing.Point(172, 1158);
             this.unitUnits_Gasket_Press_Head_1.Size = new System.Drawing.Size(216, 64);
             this.unitUnits_Gasket_Press_Head_1.LogAction = true;
             this.unitUnits_Gasket_Press_Head_1.CommandAAddress = "M108";
@@ -1459,7 +1295,7 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.unitUnits_Gasket_Press_Head_2.Name = "unitUnits_Gasket_Press_Head_2";
             this.unitUnits_Gasket_Press_Head_2.PlcNumber = 1;
             this.unitUnits_Gasket_Press_Head_2.TitleTextKey = "Unit_MK2010_G23Press";
-            this.unitUnits_Gasket_Press_Head_2.Location = new System.Drawing.Point(394, 1358);
+            this.unitUnits_Gasket_Press_Head_2.Location = new System.Drawing.Point(394, 1158);
             this.unitUnits_Gasket_Press_Head_2.Size = new System.Drawing.Size(216, 64);
             this.unitUnits_Gasket_Press_Head_2.LogAction = true;
             this.unitUnits_Gasket_Press_Head_2.CommandAAddress = "M108";
@@ -1490,24 +1326,8 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.Controls.Add(this.capAxis_Y2);
             this.Controls.Add(this.axAxes_Axis_Y2_Back);
             this.Controls.Add(this.lampAxes_Axis_Y2_Limit);
-            this.Controls.Add(this.capHead_1_2_Conveyor);
-            this.Controls.Add(this.lampAxes_Head_1_2_Conveyor_Back);
-            this.Controls.Add(this.lampAxes_Head_1_2_Conveyor_Forward);
-            this.Controls.Add(this.capHead_3_4_Conveyor);
-            this.Controls.Add(this.lampAxes_Head_3_4_Conveyor_Back);
-            this.Controls.Add(this.lampAxes_Head_3_4_Conveyor_Forward);
             this.Controls.Add(this.capGasket_Pressing);
             this.Controls.Add(this.lampAxes_Gasket_Pressing_Back);
-            this.Controls.Add(this.lampAxes_Gasket_Pressing_Forward);
-            this.Controls.Add(this.capUnit_Up);
-            this.Controls.Add(this.lampAxes_Unit_Up_Back);
-            this.Controls.Add(this.lampAxes_Unit_Up_Forward);
-            this.Controls.Add(this.capHead_Up);
-            this.Controls.Add(this.lampAxes_Head_Up_Back);
-            this.Controls.Add(this.lampAxes_Head_Up_Forward);
-            this.Controls.Add(this.capUnit_Back);
-            this.Controls.Add(this.lampAxes_Unit_Back_Back);
-            this.Controls.Add(this.lampAxes_Unit_Back_Forward);
             this.Controls.Add(this.capLubrication);
             this.Controls.Add(this.btnAxes_Lubrication_Forward);
             this.Controls.Add(this.hdManual_Control);
@@ -1572,7 +1392,7 @@ namespace Kaban.Machines.MK2010.Screens.Manual
             this.Controls.Add(this.unitUnits_Gasket_Press_Head_1);
             this.Controls.Add(this.unitUnits_Gasket_Press_Head_2);
             this.Name = "ManualControl";
-            this.Size = new System.Drawing.Size(1070, 1450);
+            this.Size = new System.Drawing.Size(1070, 1250);
             this.ResumeLayout(false);
             this.PerformLayout();
         }
@@ -1593,24 +1413,8 @@ namespace Kaban.Machines.MK2010.Screens.Manual
         private Kaban.UI.Controls.LabelHMI capAxis_Y2;
         private Kaban.UI.Controls.AxisUnitHMI axAxes_Axis_Y2_Back;
         private Kaban.UI.Controls.LampHMI lampAxes_Axis_Y2_Limit;
-        private Kaban.UI.Controls.LabelHMI capHead_1_2_Conveyor;
-        private Kaban.UI.Controls.LampHMI lampAxes_Head_1_2_Conveyor_Back;
-        private Kaban.UI.Controls.LampHMI lampAxes_Head_1_2_Conveyor_Forward;
-        private Kaban.UI.Controls.LabelHMI capHead_3_4_Conveyor;
-        private Kaban.UI.Controls.LampHMI lampAxes_Head_3_4_Conveyor_Back;
-        private Kaban.UI.Controls.LampHMI lampAxes_Head_3_4_Conveyor_Forward;
         private Kaban.UI.Controls.LabelHMI capGasket_Pressing;
         private Kaban.UI.Controls.LampHMI lampAxes_Gasket_Pressing_Back;
-        private Kaban.UI.Controls.LampHMI lampAxes_Gasket_Pressing_Forward;
-        private Kaban.UI.Controls.LabelHMI capUnit_Up;
-        private Kaban.UI.Controls.LampHMI lampAxes_Unit_Up_Back;
-        private Kaban.UI.Controls.LampHMI lampAxes_Unit_Up_Forward;
-        private Kaban.UI.Controls.LabelHMI capHead_Up;
-        private Kaban.UI.Controls.LampHMI lampAxes_Head_Up_Back;
-        private Kaban.UI.Controls.LampHMI lampAxes_Head_Up_Forward;
-        private Kaban.UI.Controls.LabelHMI capUnit_Back;
-        private Kaban.UI.Controls.LampHMI lampAxes_Unit_Back_Back;
-        private Kaban.UI.Controls.LampHMI lampAxes_Unit_Back_Forward;
         private Kaban.UI.Controls.LabelHMI capLubrication;
         private Kaban.UI.Controls.ButtonHMI btnAxes_Lubrication_Forward;
         private Kaban.UI.Controls.LabelHMI hdManual_Control;
