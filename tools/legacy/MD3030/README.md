@@ -147,3 +147,20 @@ Questions (the program answers them only in part):
 * The stripping knives of heads 3 and 4 do not follow the manual command M222 / M223 in V1.01
   (a copy-and-paste slip in the program - `PLC_V1.01_Review.md`, with the rest of what reading
   the program turned up; `PLC_V1.01_UnreferencedLabels.txt`: the labels no rung names).
+
+## 17 November: decided here
+
+The user: "decide how to do them yourself". The questions above, as the pages are now built:
+
+* The old pages' oddities (General Y2's encoder D2014, the heads' shared limits, D7194 / D7188, Head 4's 16-bit
+  encoders ...): the PLC program's labels win wherever they name the device (12 November); what the program does not
+  name stays as the old page had it.
+* The small vertical presses' normally closed down sensors: shown as the input is (a unit's lamp is not inverted).
+* The support plate: one valve with a spring, as the drawing - the program's second coil (W101.B) is driven by the
+  same command; the single-coil cylinders keep the old page's two buttons (the coil's and the spring's).
+* The body brakes: their buttons kept (M260 - M262) - harmless where the program releases the brakes itself.
+* Conveyor up / down (M206 / M207), lubrication (M209), Automatic On/Off (M220): kept as the old pages had them; not
+  added where the old pages had none.
+* The servos' loads D6656 - D6658: the body's, as the alarms' axis order says.
+* Per axis go-to-reference bits (M3 ... M21): not added - Send Reference stays the common M100 as on the old page.
+* The stripping knives of heads 3 and 4: a PLC program fix (PLC_V1.01_Review.md) - nothing to change on the HMI.

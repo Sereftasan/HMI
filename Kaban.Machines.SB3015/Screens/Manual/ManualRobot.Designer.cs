@@ -121,7 +121,7 @@ namespace Kaban.Machines.SB3015.Screens.Manual
             // 
             // unitRobot_Height_Unit
             // 
-            // Height: M540 on / off (its lamp M252) - its up / down alarms M861 / M862 are not given to it: which way the one button moves it is not on the old page.
+            // Height: M540 on / off (its lamp M252) - on taken as up (17 November, decided here: the coil lifts the clamp to its upper height, the spring brings it down): up alarm M861, down M862.
             this.unitRobot_Height_Unit.BackColor = System.Drawing.Color.White;
             this.unitRobot_Height_Unit.Name = "unitRobot_Height_Unit";
             this.unitRobot_Height_Unit.PlcNumber = 1;
@@ -136,6 +136,8 @@ namespace Kaban.Machines.SB3015.Screens.Manual
             this.unitRobot_Height_Unit.Lamp1AAddress = "M252";
             this.unitRobot_Height_Unit.ValveType = Kaban.UI.Controls.CylinderValve.SingleSolenoid;
             this.unitRobot_Height_Unit.FeedbackType = Kaban.UI.Controls.CylinderFeedback.SingleMagnetic;
+            this.unitRobot_Height_Unit.ErrorAAddress = "M861";
+            this.unitRobot_Height_Unit.ErrorBAddress = "M862";
             this.unitRobot_Height_Unit.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
             // 
             // dispRobot_Height_Value

@@ -125,7 +125,7 @@ namespace Kaban.Machines.SB3015.Screens.Manual
             // 
             // unitExit_Height_Unit
             // 
-            // Height: M558 on / off (its lamp M253) - its up / down alarms M867 / M868 are not given to it.
+            // Height: M558 on / off (its lamp M253) - on taken as up, as the entry robot's: up alarm M867, down M868.
             this.unitExit_Height_Unit.BackColor = System.Drawing.Color.White;
             this.unitExit_Height_Unit.Name = "unitExit_Height_Unit";
             this.unitExit_Height_Unit.PlcNumber = 1;
@@ -140,6 +140,8 @@ namespace Kaban.Machines.SB3015.Screens.Manual
             this.unitExit_Height_Unit.Lamp1AAddress = "M253";
             this.unitExit_Height_Unit.ValveType = Kaban.UI.Controls.CylinderValve.SingleSolenoid;
             this.unitExit_Height_Unit.FeedbackType = Kaban.UI.Controls.CylinderFeedback.SingleMagnetic;
+            this.unitExit_Height_Unit.ErrorAAddress = "M867";
+            this.unitExit_Height_Unit.ErrorBAddress = "M868";
             this.unitExit_Height_Unit.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
             // 
             // dispExit_Height_Value

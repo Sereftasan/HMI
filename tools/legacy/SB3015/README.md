@@ -49,7 +49,8 @@ Not brought over:
   sending a job to the PLC.
 * Lubrication (hidden on Other) and Entry's hidden D800 / D801.
 
-To check - there are no drawings of SB3015 here, so the units' types are read from the old pages:
+Decided here (17 November - the user: "decide how to do them yourself"; no drawings of SB3015 here, so the units' types
+are read from the old pages - a machine that differs: change its row in tools/legacy_sb3015_pages.py and run it again):
 
 * Valve: two command buttons a double solenoid (5/2), one a single solenoid; sensors: a lamp
   on each side two end sensors, on one side one sensor. The front verticals: a 5/3 closed
@@ -60,8 +61,9 @@ To check - there are no drawings of SB3015 here, so the units' types are read fr
   Profile Recognition's unit's Back taken as up. The front verticals: back down, forward up
   (FA2010's drawings show the same cylinders so) - so their height alarms' down bits (M864 /
   M866) are Back's.
-* The robots' Height (M540 / M558, one on / off button): their up / down alarms (M861 / M862,
-  M867 / M868) are not given to them - which way the button moves them is not on the old page.
+* The robots' Height (M540 / M558, one on / off button): on is up (the coil lifts the clamp to its
+  upper height, the spring brings it down) - the up alarms M861 / M867 on the button, the down
+  alarms M862 / M868 on the spring's side.
 * Milling 2 Y's reference request: W58.3 (the old page reads W68.3, Milling 2 Z's).
 * The bar's JOG: the old one wrote nothing itself (its lamp M174); here it clears the step bits
   M170 ... M173. Security ByPass (M175): the old bar showed it to Developer, Service and Admin

@@ -64,7 +64,8 @@ tools/legacy_mk2010_pages.py for each one's valve, sensors and alarm bits. An
 alarm bit is common to the four heads (the PLC has one per movement): every head's
 unit carries it and the alarm's help offers each one's page.
 
-To check:
+Decided here (12 November's open points, 17 November - the user: "decide how to do them yourself"; a machine that
+differs: change its row in tools/legacy_mk2010_pages.py):
 
 * The toggles' direction: M10x on = forward / down (the strips down, the side
   tables and heaters forward, the top presses down, the profile lifted).
@@ -100,7 +101,7 @@ Still not brought over: the Home page's profile list and barcode, sending a prof
 recipe (R1500 ...) - the profiles are in the old program's database; ucWeldingParameters
 (Manual M1006, Zero / Normal Welding M1003: commented out of the old Parameters).
 
-To check: the axes' reference switches are not given to their rows as reference sensors
+Decided here (17 November - "decide how to do them yourself"): the axes' reference switches are not given to their rows as reference sensors
 (a row shows its sensor lit while ON - these are normally closed), and the axes' error bits
 (the inverter faults M614 ... M616) are not given to them either: an axis row's help is a
 servo's.
