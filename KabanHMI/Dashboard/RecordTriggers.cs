@@ -148,7 +148,13 @@ namespace Kaban.UI.Dashboard
                     // PLC knows the HMI recorded it and doesn't start the next operation until the HMI record completed"): the PLC
                     // holds the bit; the HMI takes the record while it is on (on its first scan too - the PLC is waiting), turns it
                     // off once the record is in the database, and takes the next only after it has seen it off.
-                    if (d.Stage == 0 && on) { d.Stage = 1; Take(d, lookup, now); }
+                    if (d.Stage == 0 && on)
+                    {
+                        d.Stage = 1;
+                        Take(d, lookup, now);
+                        // a label asked for with the same bit (FA2010's L24: the leftover's) - printed now, the record turns the bit off
+                        try { Kaban.UI.Helpers.LabelTriggers.EdgeSeen(d.Station, d.Trigger.MonitorAddress); } catch { }
+                    }
                     else if (d.Stage == 2)
                     {
                         if (!on) d.Stage = 0;

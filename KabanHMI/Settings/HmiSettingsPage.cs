@@ -34,6 +34,10 @@ namespace Kaban.UI.Settings
                 new AiPromptPage(),
                 // 21 October: every translation, edited on the panel, languages added and deleted (Maintenance)
                 new TranslationsPage(),
+                // 17 November ("take barcode reading and writing from KabanMachineSystem as well"): the barcode readers and the
+                // parts of a code, the labels and the PLC's requests for them (Maintenance)
+                new BarcodeSettingsPage(),
+                new LabelSettingsPage(),
                 // 30 October: the HMI's optional parts on and off - Industry 4 logging, the touch screen (Admin)
                 new FeaturesPage()
                 // No "Manual" or "About" tab: both are the caption bar's "?" (9 October:

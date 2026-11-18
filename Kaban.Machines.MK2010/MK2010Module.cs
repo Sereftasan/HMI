@@ -41,6 +41,17 @@ namespace Kaban.Machines.MK2010
             // bar's alarm menu: M36 ("alarm reset" in the PLC program's comments; the old program's
             // Alarms page's Reset, ucAlarms btnReset).
             PlcManager.Instance.SetAlarmResetDevice(ctx.Station(1), "M36");
+
+            // A PROFILE'S SIZE FROM A BARCODE (17 November - the old Job Preparations' FillByBarcode): a code of 18 - 21
+            // characters, the profile code 1 - 10, X 11 - 14, Y 15 - 18 (mm; HMI Settings > Barcodes can set other parts) -
+            // the wider side into Width X (D1200), the other into Width Y (D1202), x10 in two words each, as the old page;
+            // not while a job runs (M26 - the old page took no code then).
+            Kaban.Core.Barcodes.BarcodeReaders.DefaultFields(Kaban.Core.Barcodes.BarcodeReaders.ProfileSizeLayout());
+            Kaban.Core.Barcodes.BarcodeTargets.Register(new Kaban.Core.Barcodes.BarcodeTarget
+            {
+                ModuleId = ctx.ModuleId, Name = "MK2010", Station = ctx.Station(1), WidthAddress = "D1200", HeightAddress = "D1202",
+                Scale = 10, DoubleWord = true, WiderFirst = true, BusyBit = "M26"
+            });
         }
 
         public void RegisterConditions(IMachineMountContext ctx) { }

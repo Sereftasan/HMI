@@ -127,6 +127,10 @@
     <Compile Include="Helpers\UserStore.cs" />
     <Compile Include="Helpers\UserRights.cs" />
     <Compile Include="Helpers\AlarmDefinitionLoader.cs" />
+    <Compile Include="Barcodes\BarcodeReaders.cs" />
+    <Compile Include="Barcodes\BarcodeTargets.cs" />
+    <Compile Include="Labels\LabelTemplate.cs" />
+    <Compile Include="Labels\LabelPrinting.cs" />
     <Compile Include="Data\HmiDatabase.cs" />
     <Compile Include="Machines\IMachineModule.cs" />
     <Compile Include="Machines\MachineRegistry.cs" />

@@ -653,6 +653,8 @@ namespace Kaban.UI.Forms
             Kaban.UI.Helpers.PlcPopupHost.Attach(this);
             // why a machine stood still - asked of the operator for a new machine (StopReasons, 5 November)
             Kaban.UI.Helpers.StopReasonHost.Attach(this);
+            // the barcode readers opened, the labels the PLC asks for printed (17 November, HMI Settings > Barcodes / Labels)
+            Kaban.UI.Helpers.BarcodeHost.Attach(this);
             FormClosed += (s5, e5) => AlarmManager.AlarmsChanged -= OnHmiAlarmsChanged;
 
             try

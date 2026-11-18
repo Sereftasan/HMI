@@ -283,7 +283,7 @@ namespace Kaban.Machines.FA2010.Jobs
         }
 
         /// <summary>The bar into the PLC (the question asked already). Stops at the first write the PLC refuses.</summary>
-        internal static Result Send(BarPlan plan, int station, string jobName, bool trial)
+        internal static Result Send(BarPlan plan, int station, string jobName, bool trial, KbnJob job = null)
         {
             var r = new Result();
             var problems = new List<string>();
@@ -315,6 +315,8 @@ namespace Kaban.Machines.FA2010.Jobs
             r.Ok = true;
             // the units ask for these operations' steps from now on
             JobMilling.Take(plan, string.Format(CI, "bar {0} of {1} ({2})", plan.Bar.Title, jobName, plan.Bar.Code));
+            // its pieces' labels, for when the PLC asks for them by their IDs (17 November)
+            JobLabels.Take(plan, job ?? new KbnJob { Name = jobName ?? "" });
             AuditLogger.Log(string.Format(CI, "[JOB] {0} sent: {1} steps (IDs {2} - {3}), {4} milling operation(s), {5} special cut(s), {6} pieces", source,
                 plan.Steps.Count, plan.FirstNo, plan.LastNo, plan.Milling.Count, plan.Special.Count, plan.Bar.Pieces.Count));
             return r;

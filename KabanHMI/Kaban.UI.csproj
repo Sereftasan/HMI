@@ -130,6 +130,17 @@
     <Compile Include="Helpers\HmiAiPrompt.cs" />
     <Compile Include="Helpers\PlcPopupHost.cs" />
     <Compile Include="Helpers\StopReasonHost.cs" />
+    <Compile Include="Helpers\BarcodeHost.cs" />
+    <Compile Include="Helpers\LabelTriggers.cs" />
+    <Compile Include="Controls\LabelPreview.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Settings\BarcodeSettingsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Settings\LabelSettingsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Helpers\SingleInstance.cs" />
     <Compile Include="Helpers\ShownPick.cs" />
     <Compile Include="Helpers\UnitCoupling.cs" />

@@ -46,6 +46,17 @@ namespace Kaban.Machines.MD3020
             // and milling motors' errors, and resets M314 itself after its timer
             // (ErrorResetGecikme K3) - so SET, as FA2010's M102.
             PlcManager.Instance.SetAlarmResetDevice(ctx.Station(1), "M314", BitActionType.SET);
+
+            // A FRAME'S SIZE FROM A BARCODE (17 November - the old MD3030's FillByBarcode / FeedBarcode): the code's width and
+            // height (its parts: HMI Settings > Barcodes - the old MDBarcode table; none set: the profile code 1 - 10, X 11 - 14,
+            // Y 15 - 18 in mm) into Frame Width (X) D1200 and Frame Depth (Y) D1202, x10 in two words each, as the old page
+            // (it did not swap them). The old page then made the profile's recipe the job - the recipes are not in this HMI yet.
+            Kaban.Core.Barcodes.BarcodeReaders.DefaultFields(Kaban.Core.Barcodes.BarcodeReaders.ProfileSizeLayout());
+            Kaban.Core.Barcodes.BarcodeTargets.Register(new Kaban.Core.Barcodes.BarcodeTarget
+            {
+                ModuleId = ctx.ModuleId, Name = "MD3020", Station = ctx.Station(1), WidthAddress = "D1200", HeightAddress = "D1202",
+                Scale = 10, DoubleWord = true
+            });
         }
 
         public void RegisterConditions(IMachineMountContext ctx) { }

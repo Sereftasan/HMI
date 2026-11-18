@@ -594,7 +594,7 @@ namespace Kaban.Machines.FA2010.Screens
             if (trial) question += "\r\n\r\n" + T("Job_AskTrial", "TRIAL: milling positions nobody has confirmed - for a test piece only.");
             if (!Kaban.UI.Settings.PlcBackupUi.IsSimulator(Station)) question += "\r\n\r\n" + T("Msg_MonResetLive", "This is the machine's PLC: it uses the new values at once.");
             if (!Ask.YesNo(FindForm(), title, question)) return false;
-            var r = JobSender.Send(plan, Station, Job.Name, trial);
+            var r = JobSender.Send(plan, Station, Job.Name, trial, Job);
             if (!r.Ok)
             {
                 Ask.Tell(FindForm(), title, string.Format(T("Job_SendFailed", "Bar {0} was not sent: {1}"), plan.Bar.Title, r.Message));

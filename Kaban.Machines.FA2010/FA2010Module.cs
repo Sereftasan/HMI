@@ -75,6 +75,23 @@ namespace Kaban.Machines.FA2010
             PlcManager.Instance.RegisterStation(ctx.Station(2), "FA2010 Aux PLC",
                 SecurityLevel.Operator, ctx.ModuleId, 2);
 
+            // THE LABELS THE PLC ASKS FOR (17 November: "take barcode reading and writing from KabanMachineSystem as well") - the
+            // old cutting machines' handshake: a piece cut - the bit L2 (the old Constants.PrintBarcode) with the piece's ID in
+            // D386 (PC_Kesim_Barkod_Id, 32-bit: a step's ID of the job list D5000); a leftover - L24 (PC_FireBarkod_Bas) with its
+            // length in D388 (PC_BarkodFireBoyu, tenths of a mm). The HMI turns the bit off and prints the label on for it (HMI
+            // Settings > Labels). Off until switched on there: L2 is not in this PLC's label list - check it with the PLC program.
+            Jobs.JobLabels.MachineName = DisplayName;
+            Kaban.UI.Helpers.LabelTriggers.Register(new Kaban.UI.Helpers.LabelTrigger
+            {
+                ModuleId = ctx.ModuleId, Name = "FA2010", Station = ctx.Station(1), Use = Kaban.Core.Labels.LabelUse.Piece,
+                Bit = "L2", Value = "D386", DoubleWord = true, Divisor = 1, Resolve = Jobs.JobLabels.Piece
+            });
+            Kaban.UI.Helpers.LabelTriggers.Register(new Kaban.UI.Helpers.LabelTrigger
+            {
+                ModuleId = ctx.ModuleId, Name = "FA2010", Station = ctx.Station(1), Use = Kaban.Core.Labels.LabelUse.Leftover,
+                Bit = "L24", Value = "D388", DoubleWord = true, Divisor = 10, Resolve = Jobs.JobLabels.Leftover
+            });
+
             // Drivers are registered by the entry point (Program.cs), because only
             // it knows whether this deployment talks to real hardware or the
             // simulator. The module just declares which stations must exist.
