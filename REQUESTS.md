@@ -6,6 +6,22 @@ Claude reads this file at the start of every batch, does the items, and moves ea
 ## To do
 
 ## Done
+- 17 / 18 November ("I want you to decide how to do them yourself and take barcode reading and writing from KabanMachineSystem as well?
+  I want you also check over the program and add the other tools you find useful as well"):
+  - 59758df - the open questions decided and written down (tools/legacy/SB3015, MK2010, MD3030 README "Decided here"): SB3015's
+    robots' Height on is up (M861 / M867 the up alarms on the button, M862 / M868 on the spring's side).
+  - 6a385d4 - barcodes and labels: HMI Settings > Barcodes (serial readers COMn as the old page, or a USB scanner that types; a code
+    cleaned and split into its parts - MD3030's barcode fields; none set: MK2010's profile code 1-10, width 11-14, height 15-18) - MK2010's
+    Width X / Y (D1200 / D1202 x10, the wider first, not while M26) and MD3020's Frame Width / Depth take a code's size. HMI Settings >
+    Labels (the old label designer: printer COMn / Windows printer / address:port / file:, EPL as the old one or ZPL, the old field keys,
+    barcodes, QR codes, Yes/No, dates, pictures; drawn as printed; test print; the printer commands as a file) and the PLC's requests
+    for labels (FA2010: a piece L2 + its ID D386, a leftover L24 + D388 / 10 - both OFF until switched on there: L2 is not in FA2010's
+    label list - check it with the PLC program). FA2010 keeps each bar's step IDs with its pieces' values when it sends it.
+    Test: BarcodesLabels.
+  - 2b1b0ed - tools from the old program: HMI Settings > Maintenance (the old Cleaning Settings for any task: every so many days and /
+    or so many counts of a PLC counter; due: a warning on the Alarms page until marked done), remote support in the "?" menu (the
+    old TeamViewer / AnyDesk items: Supports\KabanSupport.exe, Supports\AnyDesk.exe beside the program), FA2010's transfer folder
+    (the Jobs page's inbox button: the window software's new job files come to the top of the list). Test: OldProgramTools.
 - 17 November ("complete SB3015 and MK2010 projects using KabanMachineSystem project ... cylinder unit HMI and axis unit HMI controls"):
   - 6ba4406 - the pages' machinery: inverter units (fault code, alarm bit, value), the axis rows' send to reference, load, reference
     request and codes, FA2010's encoder rows / units and pneumatic positionings for the old pages' tables.

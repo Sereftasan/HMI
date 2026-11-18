@@ -161,6 +161,18 @@
 - An encoder the machine has only with an option, or one input switched between two encoders (30 October):
   CylinderEncoderSettingHMI.EncoderConditions (FA2010: L33, L34) and MeasuredConditions (Y120 / M450, the left or the
   right profile recognition unit). New machine conditions go after the last one (FA2010: bits 22 - 27 now), never between.
+- Barcodes and labels (17 November, from the old KabanMachinesSystem): Kaban.Core\Barcodes (BarcodeReaders - Barcodes.cfg: the
+  readers, the parts of a code; a page that wants codes registers with BarcodeReaders.Take, the newest asked first; BarcodeTargets: a
+  machine's job size from a code - MK2010 / MD3020 register theirs in RegisterPlc) and Kaban.Core\Labels (LabelStore - ProgramData\KabanHMI\Labels\*.label;
+  LabelWriter - EPL exactly as the old ZebraPrinterSender wrote it, or ZPL; LabelPrinters - COMn, Windows printer RAW, address:port, file:;
+  LabelService - prints on a thread of its own). Kaban.UI: BarcodeHost (opens the readers, catches a typing scanner, notes), LabelTriggers
+  (a PLC's label request - bit + value, the bit turned off; a bit that is also a LogRecordHMI handshake is left to the record and printed
+  from RecordTriggers' edge), HMI Settings > Barcodes / Labels. FA2010's JobLabels: the step IDs (D5000) of each bar sent -> its pieces'
+  values (JobLabels.cfg), its requests L2 + D386 and L24 + D388 / 10 registered OFF.
+- HMI Settings > Maintenance (17 November, the old Cleaning Settings): MaintenancePlan (Maintenance.cfg) - a due task is an HMI alarm
+  (HMI.MAINT.<id>, a warning), back 4 hours after an acknowledgement while not done. Remote support: the "?" menu (RemoteSupport -
+  Supports\KabanSupport.exe / AnyDesk.exe beside the program). FA2010's transfer folder: JobInbox (JobInbox.cfg) - the Jobs page's
+  inbox button sets it (Maintenance).
 
 ## Open questions (answer here or in a message)
 (none now)
