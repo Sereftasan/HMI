@@ -135,6 +135,21 @@ namespace Kaban.UI.Forms
             manual.Click += (s, e) => OpenManualFromHelp();
             menu.Items.Add(manual);
 
+            // remote support (17 November - the old main form's TeamViewer / AnyDesk items): Kaban's service connects to the panel
+            foreach (var tool in new[] { Kaban.UI.Helpers.RemoteSupport.Tool.TeamViewer, Kaban.UI.Helpers.RemoteSupport.Tool.AnyDesk })
+            {
+                var t = tool;
+                var support = new ToolStripMenuItem(string.Format(LanguageManager.GetString("Hlp_Support", "Remote support - {0}"), t == Kaban.UI.Helpers.RemoteSupport.Tool.TeamViewer ? "TeamViewer" : "AnyDesk"),
+                                                    MenuGlyphs.Support()) { Name = "helpSupport" + t };
+                support.ToolTipText = LanguageManager.GetString("Tip_HlpSupport", "Starts the support program so that Kaban's service can connect to this panel (give them the ID it shows).");
+                support.Click += (s, e) =>
+                {
+                    var why = Kaban.UI.Helpers.RemoteSupport.Open(t);
+                    if (why.Length > 0) MessageBox.Show(this, why, LanguageManager.GetString("Ttl_Help", "Help"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                };
+                menu.Items.Add(support);
+            }
+
             menu.Items.Add(new ToolStripSeparator());
             foreach (var item in AiMenu.Items(() => HmiAiPrompt.Build(HelpContext()), AlarmAiPrompt.Subject.Hmi, this))
                 menu.Items.Add(item);

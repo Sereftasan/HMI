@@ -655,6 +655,14 @@ namespace Kaban.UI.Forms
             Kaban.UI.Helpers.StopReasonHost.Attach(this);
             // the barcode readers opened, the labels the PLC asks for printed (17 November, HMI Settings > Barcodes / Labels)
             Kaban.UI.Helpers.BarcodeHost.Attach(this);
+            // the maintenance plan's reminders on the Alarms page (17 November, HMI Settings > Maintenance)
+            MaintenancePlan.StationOf = m =>
+            {
+                var link = Kaban.UI.Helpers.MachineLinks.Find(m) ?? System.Linq.Enumerable.FirstOrDefault(Kaban.UI.Helpers.MachineLinks.All());
+                return link != null ? link.MainStation : 1;
+            };
+            MaintenancePlan.Start();
+            FormClosed += (s8, e8) => MaintenancePlan.Stop();
             FormClosed += (s5, e5) => AlarmManager.AlarmsChanged -= OnHmiAlarmsChanged;
 
             try

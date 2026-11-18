@@ -38,6 +38,8 @@ namespace Kaban.UI.Settings
                 // parts of a code, the labels and the PLC's requests for them (Maintenance)
                 new BarcodeSettingsPage(),
                 new LabelSettingsPage(),
+                // 17 November (the old Cleaning Settings): the machines' maintenance tasks, a warning when one is due (Operator: Done)
+                new MaintenancePlanPage(),
                 // 30 October: the HMI's optional parts on and off - Industry 4 logging, the touch screen (Admin)
                 new FeaturesPage()
                 // No "Manual" or "About" tab: both are the caption bar's "?" (9 October:

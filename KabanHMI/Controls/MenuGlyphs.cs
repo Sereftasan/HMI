@@ -29,6 +29,22 @@ namespace Kaban.UI.Controls
             });
         }
 
+        /// <summary>A screen with a headset over it: remote support.</summary>
+        public static Image Support()
+        {
+            return Draw((g, pen, ink, k) =>
+            {
+                // the screen, its foot
+                g.DrawRectangle(pen, 2.5f * k, 9 * k, 14 * k, 9 * k);
+                g.DrawLine(pen, 9.5f * k, 18 * k, 9.5f * k, 21 * k);
+                g.DrawLine(pen, 6 * k, 21 * k, 13 * k, 21 * k);
+                // the headset: its band, its two ear pieces
+                g.DrawArc(pen, 12 * k, 2.5f * k, 10 * k, 10 * k, 180, 180);
+                g.FillRectangle(ink, 11.2f * k, 6.5f * k, 2.4f * k, 4 * k);
+                g.FillRectangle(ink, 20.4f * k, 6.5f * k, 2.4f * k, 4 * k);
+            });
+        }
+
         /// <summary>An open book: the manual.</summary>
         public static Image Book()
         {

@@ -42,7 +42,7 @@ namespace Kaban.Machines.FA2010.Screens
         private readonly ComboBox _cmbRecent = new ComboBox();
         private readonly NumericUpDown _numSaw = Num(0, 20), _numShare = Num(-50, 50), _numSquare = Num(0, 9999), _numLongest = Num(0, 99999), _numVSaws = Num(0, 999);
         private readonly CheckBox _chkTrial = new CheckBox();
-        private Button _btnSend, _btnOpen, _btnReload;
+        private Button _btnSend, _btnOpen, _btnReload, _btnInbox;
         private readonly DataGridView _bars = new DataGridView(), _pieces = new DataGridView(), _steps = new DataGridView();
         private readonly TextBox _notes = new TextBox();
         /// <summary>The job's bars drawn (10 November: "it draws a bar image for each job bar with the cut and accessory operation points marked").</summary>
@@ -96,6 +96,11 @@ namespace Kaban.Machines.FA2010.Screens
             left.Controls.Add(_cmbRecent);
             _btnReload = UiStyle.ToolButton("\uD83D\uDD04", T("Job_TipReload", "Read the job file and the profile library again"), _tips, (s, e) => { if (Job != null) OpenJob(Job.Path); });
             left.Controls.Add(_btnReload);
+            // 17 November - the old program's transfer folder (KabanFileSystemWatcher): the window software's new job files come here
+            _btnInbox = UiStyle.ToolButton("\uD83D\uDCE5", T("Job_TipInbox", "The transfer folder: the job files the window software writes there come to the top of the list"), _tips,
+                                           (s, e) => InboxMenu().Show(_btnInbox, new Point(0, _btnInbox.Height)));
+            _btnInbox.Name = "jobInbox";
+            left.Controls.Add(_btnInbox);
 
             _btnSend = UiStyle.TextButton("\u25B6 " + T("Job_Send", "Send to the machine"), 0, (s, e) => SendSelected());
             _btnSend.Font = new Font(UiStyle.Body, FontStyle.Bold);
@@ -209,6 +214,11 @@ namespace Kaban.Machines.FA2010.Screens
             ApplyAccess();
             // the milling units' requests for the steps of the bar sent last - answered from the start, the page shown or not
             JobMilling.Start();
+            // the transfer folder watched (its new job files to the top of the list, said in a note)
+            Action<string> arrived = path => { try { if (IsHandleCreated && !IsDisposed) BeginInvoke((Action)(() => JobArrived(path))); } catch { } };
+            JobInbox.Arrived += arrived;
+            Disposed += (s, e) => JobInbox.Arrived -= arrived;
+            JobInbox.Start();
             Status(T("Job_Hint", "Open a job file (.kbn) - the bars, their pieces and what each sends to the machine are shown."));
         }
 
@@ -342,6 +352,7 @@ namespace Kaban.Machines.FA2010.Screens
         /// <summary>Reads the job file, lays out every bar, shows it.</summary>
         internal void OpenJob(string path)
         {
+            JobInbox.Opened(path);
             EnsureLibrary();
             try { Job = KbnFile.Read(path); }
             catch (Exception ex)
@@ -356,6 +367,63 @@ namespace Kaban.Machines.FA2010.Screens
             FillRecent();
             AuditLogger.Log("[JOB] opened " + path + ": " + Job.Bars.Count + " bar(s)" + (Job.Problems.Count > 0 ? ", " + Job.Problems.Count + " line(s) not read" : ""));
             Replan();
+        }
+
+        /// <summary>A job file arrived in the transfer folder: at the top of the list, said; opened when no job is open.</summary>
+        internal void JobArrived(string path)
+        {
+            _recent.RemoveAll(p => string.Equals(p, path, StringComparison.OrdinalIgnoreCase));
+            _recent.Insert(0, path);
+            while (_recent.Count > 12) _recent.RemoveAt(_recent.Count - 1);
+            SaveState();
+            string text = string.Format(T("Job_Arrived", "New job received: {0}"), Path.GetFileName(path));
+            if (Job == null) OpenJob(path);
+            else FillRecent();
+            Status(text);
+            try { if (Visible && FindForm() != null) Toast.Show(FindForm(), text); } catch { }
+        }
+
+        /// <summary>The transfer folder's menu: its new files, setting it (Maintenance), opening it.</summary>
+        private ContextMenuStrip InboxMenu()
+        {
+            var menu = UiStyle.Menu();
+            string folder = JobInbox.Folder;
+            menu.Items.Add(UiStyle.MenuHeader(folder.Length > 0 ? folder : T("Job_InboxNone", "No transfer folder set")));
+            var files = JobInbox.New;
+            foreach (var f in files.Take(15))
+            {
+                var path = f;
+                DateTime at = DateTime.MinValue;
+                try { at = File.GetLastWriteTime(f); } catch { }
+                menu.Items.Add(Path.GetFileName(f) + "   " + at.ToString("dd.MM HH:mm", CI), null, (s, e) => OpenJob(path));
+            }
+            if (folder.Length > 0 && files.Count == 0)
+                menu.Items.Add(new ToolStripMenuItem(T("Job_InboxEmpty", "No new job file")) { Enabled = false });
+            menu.Items.Add(new ToolStripSeparator());
+            menu.Items.Add(UiStyle.Unavailable(new ToolStripMenuItem(T("Job_InboxSet", "Set the transfer folder..."), null, (s, e) => PickInbox()),
+                                               CanSet, T("Job_InboxLevel", "The Maintenance level sets it")));
+            if (folder.Length > 0)
+            {
+                menu.Items.Add(T("Job_InboxOpen", "Open the folder"), null, (s, e) =>
+                {
+                    try { System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo { FileName = folder, UseShellExecute = true }); } catch { }
+                });
+                menu.Items.Add(T("Job_InboxClear", "Watch no folder"), null, (s, e) => { if (CanSet) JobInbox.SetFolder(""); });
+            }
+            return menu;
+        }
+
+        private void PickInbox()
+        {
+            if (!CanSet) return;
+            using (var d = new FolderBrowserDialog { Description = T("Job_InboxPick", "The folder the window software writes the job files (.kbn) into") })
+            {
+                if (JobInbox.Folder.Length > 0 && Directory.Exists(JobInbox.Folder)) d.SelectedPath = JobInbox.Folder;
+                if (d.ShowDialog(FindForm()) != DialogResult.OK) return;
+                JobInbox.SetFolder(d.SelectedPath);
+                JobInbox.Scan();
+                Status(string.Format(T("Job_InboxSetDone", "Watching {0} for new job files."), d.SelectedPath));
+            }
         }
 
         private void FillRecent()

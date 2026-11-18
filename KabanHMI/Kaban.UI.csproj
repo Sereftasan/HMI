@@ -132,10 +132,14 @@
     <Compile Include="Helpers\StopReasonHost.cs" />
     <Compile Include="Helpers\BarcodeHost.cs" />
     <Compile Include="Helpers\LabelTriggers.cs" />
+    <Compile Include="Helpers\RemoteSupport.cs" />
     <Compile Include="Controls\LabelPreview.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Settings\BarcodeSettingsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Settings\MaintenancePlanControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Settings\LabelSettingsControl.cs">
