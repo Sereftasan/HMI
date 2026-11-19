@@ -139,6 +139,9 @@
     <Compile Include="Settings\BarcodeSettingsControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="Settings\DataBackupControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Settings\ProductionControl.cs">
       <SubType>UserControl</SubType>
     </Compile>

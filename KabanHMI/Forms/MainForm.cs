@@ -663,6 +663,9 @@ namespace Kaban.UI.Forms
             };
             MaintenancePlan.Start();
             FormClosed += (s8, e8) => MaintenancePlan.Stop();
+            // the HMI's data backed up daily when it is switched on (19 November, HMI Settings > Backup)
+            DataBackup.Start();
+            FormClosed += (s9, e9) => DataBackup.Stop();
             FormClosed += (s5, e5) => AlarmManager.AlarmsChanged -= OnHmiAlarmsChanged;
 
             try

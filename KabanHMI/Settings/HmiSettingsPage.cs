@@ -42,6 +42,8 @@ namespace Kaban.UI.Settings
                 new MaintenancePlanPage(),
                 // 19 November (the old Machine Logs: Customer Report, General Information): what was sent, finished and cut, the machines' counters
                 new ProductionPage(),
+                // 19 November (the old Backup Settings): the HMI's data as one zip, daily by itself, restored (Maintenance)
+                new DataBackupPage(),
                 // 30 October: the HMI's optional parts on and off - Industry 4 logging, the touch screen (Admin)
                 new FeaturesPage()
                 // No "Manual" or "About" tab: both are the caption bar's "?" (9 October:
