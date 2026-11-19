@@ -257,6 +257,11 @@ namespace Kaban.Machines.FA2010.Jobs
             plan.Layout = BarLayout.Of(bar, cs);
             plan.Problems.AddRange(plan.Layout.Problems);
             plan.Warnings.AddRange(plan.Layout.Notes);
+            // the screwing machine's positions (Screw / Hole lines): not this machine's - kept in the file, said once a bar
+            int screws = bar.Pieces.Sum(x => x.Screws.Sum(c => c.Count));
+            if (screws > 0)
+                plan.Warnings.Add(string.Format("{0} screw / hole position(s) for the screwing machine on {1} piece(s) - not used by this machine",
+                                                screws, bar.Pieces.Count(x => x.Screws.Count > 0)));
             foreach (var p in bar.Pieces.Where(x => x.Other.Count > 0))
                 plan.Problems.Add(string.Format("piece {0}: {1} - not taken by the HMI yet", bar.Pieces.IndexOf(p) + 1,
                     string.Join(", ", p.Other.Select(o => o.Split(';')[0]).Distinct())));

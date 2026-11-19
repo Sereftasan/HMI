@@ -55,10 +55,31 @@ namespace Kaban.Profiles.Jobs
         /// <summary>The piece's V cuts, its special ends (null: none).</summary>
         public readonly List<KbnVCut> VCuts = new List<KbnVCut>();
         public KbnSpecialCut Special;
-        /// <summary>The lines under the piece the HMI does not take yet (Screw, Hole ...) - kept, and shown.</summary>
+        /// <summary>
+        /// The piece's screw and hole positions for the screwing machine (19 November - the old KabanFileReader's Screw, Screw2 ...
+        /// Screw5, Hole ... Hole5 lines, at most 20 together): read and kept - a cutting machine does not use them.
+        /// </summary>
+        public readonly List<KbnScrews> Screws = new List<KbnScrews>();
+        /// <summary>The lines under the piece the HMI does not know (none in the old program's files) - kept, and shown.</summary>
         public readonly List<string> Other = new List<string>();
         public int LineNo;
         public string Line = "";
+    }
+
+    /// <summary>
+    /// "Screw;p1;p2;...;" or "Hole;...;" (Screw2 - 5, Hole2 - 5: the profile's other faces): positions along the piece as the window
+    /// software writes them (the old ScrewPosition / HolePosition: whole numbers, 0 none) - for the screwing machine (H500).
+    /// </summary>
+    public sealed class KbnScrews
+    {
+        /// <summary>"Screw", "Screw2" ... "Hole5".</summary>
+        public string Kind = "";
+        public readonly List<int> Positions = new List<int>();
+        public int LineNo;
+        public string Line = "";
+        public bool IsHole { get { return Kind.StartsWith("Hole", System.StringComparison.OrdinalIgnoreCase); } }
+        /// <summary>The positions given (not 0).</summary>
+        public int Count { get { return Positions.Count(p => p > 0); } }
     }
 
     /// <summary>A bar: "Bar;no;profile code;name;quantity;colour;length;leftover;" and its pieces.</summary>
@@ -214,8 +235,28 @@ namespace Kaban.Profiles.Jobs
                                 if (!double.TryParse(c, NumberStyles.Float, CI, out code)) throw new FormatException("the special cut's code \"" + c + "\" is not a number");
                             piece.Special = sc;
                             break;
+                        case "screw": case "screw2": case "screw3": case "screw4": case "screw5":
+                        case "hole": case "hole2": case "hole3": case "hole4": case "hole5":
+                            {
+                                if (piece == null && skipPiece) break;
+                                if (piece == null) throw new FormatException("\"" + t[0] + "\" before any piece");
+                                if (t.Length < 3) throw new FormatException("\"" + t[0] + "\" has no positions");
+                                var sc2 = new KbnScrews { Kind = char.ToUpperInvariant(kind[0]) + kind.Substring(1), LineNo = no, Line = line };
+                                // the old reader: every field between the kind and the last (the one after the closing ';')
+                                for (int i = 1; i < t.Length - 1; i++)
+                                {
+                                    var f = t[i].Trim();
+                                    int pos;
+                                    if (f.Length == 0) pos = 0;
+                                    else if (!int.TryParse(f, NumberStyles.Integer, CI, out pos)) throw new FormatException("\"" + f + "\" is not a position");
+                                    sc2.Positions.Add(pos);
+                                }
+                                piece.Screws.Add(sc2);
+                                if (piece.Screws.Sum(x => x.Count) > 20) throw new FormatException("more than 20 screws and holes on the piece (the old program's limit)");
+                            }
+                            break;
                         default:
-                            // Screw, Hole ...: kept with the piece
+                            // a line the HMI does not know: kept with the piece
                             if (piece == null && skipPiece) break;
                             if (piece == null) throw new FormatException("\"" + t[0] + "\" is not a line of a job file");
                             piece.Other.Add(line);
@@ -267,6 +308,7 @@ namespace Kaban.Profiles.Jobs
                     foreach (var v in p.VCuts) sb.Append("VCut;").Append(Tenths(v.Position)).Append(';').Append(v.Depth.ToString("0.###", CI)).Append(";\r\n");
                     if (p.Special != null)
                         sb.Append(string.Join(";", new[] { "SpecialCut", p.Special.LeftCode, p.Special.RightCode, Tenths(p.Special.LeftParam), Tenths(p.Special.RightParam) })).Append("\r\n");
+                    foreach (var s in p.Screws) sb.Append(s.Line).Append("\r\n");
                     foreach (var o in p.Other) sb.Append(o).Append("\r\n");
                 }
             }
