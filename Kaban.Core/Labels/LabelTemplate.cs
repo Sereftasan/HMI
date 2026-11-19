@@ -53,6 +53,8 @@ namespace Kaban.Core.Labels
         public bool Enabled = true;
         /// <summary>The machine (module id) it is for, "" every machine of the panel.</summary>
         public string Machine = "";
+        /// <summary>How many of the label at each print (the old Machine Settings' Barcode Count).</summary>
+        public int Copies = 1;
         public readonly List<LabelField> Fields = new List<LabelField>();
 
         public LabelTemplate Clone()
@@ -60,7 +62,7 @@ namespace Kaban.Core.Labels
             var c = new LabelTemplate
             {
                 Name = Name, WidthMm = WidthMm, HeightMm = HeightMm, Printer = Printer, BaudRate = BaudRate, Language = Language,
-                PrinterLanguage = PrinterLanguage, HasRibbon = HasRibbon, Use = Use, Enabled = Enabled, Machine = Machine
+                PrinterLanguage = PrinterLanguage, HasRibbon = HasRibbon, Use = Use, Enabled = Enabled, Machine = Machine, Copies = Copies
             };
             c.Fields.AddRange(Fields.Select(f => f.Clone()));
             return c;
@@ -274,6 +276,7 @@ namespace Kaban.Core.Labels
             sb.AppendLine("use\t" + t.Use);
             sb.AppendLine("enabled\t" + (t.Enabled ? "on" : "off"));
             sb.AppendLine("machine\t" + Esc(t.Machine));
+            sb.AppendLine("copies\t" + Math.Max(1, t.Copies).ToString(CI));
             foreach (var f in t.Fields)
                 sb.AppendLine(string.Join("\t", "field", Esc(f.Key), Esc(f.Text), f.Type.ToString(), f.X.ToString(CI), f.Y.ToString(CI),
                                           f.Width.ToString(CI), f.Height.ToString(CI), f.FontSize.ToString(CI), Esc(f.ValueOnTrue), Esc(f.ValueOnFalse)));
@@ -336,6 +339,7 @@ namespace Kaban.Core.Labels
                         case "use": { LabelUse u; if (p.Length > 1 && Enum.TryParse(p[1], out u)) t.Use = u; } break;
                         case "enabled": t.Enabled = p.Length > 1 && p[1] == "on"; break;
                         case "machine": if (p.Length > 1) t.Machine = p[1].Trim(); break;
+                        case "copies": if (p.Length > 1 && int.TryParse(p[1], NumberStyles.Integer, CI, out n) && n > 0) t.Copies = Math.Min(99, n); break;
                         case "field":
                             if (p.Length < 9) break;
                             var f = new LabelField { Key = p[1], Text = p[2] };

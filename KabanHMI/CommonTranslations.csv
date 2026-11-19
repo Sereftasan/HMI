@@ -2497,3 +2497,4 @@ Bk_Restore;Restore the selected;Seçileni geri yükle;;;;
 Bk_Restored;{0} file(s) restored - restart the program to use them.;{0} dosya geri yüklendi - kullanmak için programı yeniden başlatın.;;;;
 Bk_Size;Size;Boyut;;;;
 Tab_Backup;Backup;Yedekleme;;;;
+Lbl_Copies;Copies;Kopya;;;;

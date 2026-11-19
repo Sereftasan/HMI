@@ -185,7 +185,7 @@ namespace Kaban.Core.Labels
                         break;
                 }
             }
-            line("P1");
+            line("P" + Math.Max(1, Math.Min(99, t.Copies)).ToString(CI));
             return ms.ToArray();
         }
 
@@ -239,7 +239,7 @@ namespace Kaban.Core.Labels
                         break;
                 }
             }
-            sb.Append("^PQ1\r\n^XZ\r\n");
+            sb.Append("^PQ").Append(Math.Max(1, Math.Min(99, t.Copies)).ToString(CI)).Append("\r\n^XZ\r\n");
             return Encoding.UTF8.GetBytes(sb.ToString());
         }
 

@@ -45,6 +45,7 @@ namespace Kaban.UI.Settings
         private readonly ComboBox _language = new ComboBox { Name = "labelLanguage", DropDownStyle = ComboBoxStyle.DropDownList, Width = 120 };
         private readonly ComboBox _printerLanguage = new ComboBox { Name = "labelPrinterLanguage", DropDownStyle = ComboBoxStyle.DropDownList, Width = 70 };
         private readonly CheckBox _ribbon = new CheckBox { Name = "labelRibbon", AutoSize = true };
+        private readonly NumericUpDown _copies = new NumericUpDown { Name = "labelCopies", Minimum = 1, Maximum = 99, Width = 56, Value = 1 };
         private readonly DataGridView _fields = new DataGridView { Name = "labelFields" };
         private readonly LabelPreview _preview = new LabelPreview();
         private readonly DataGridView _triggers = new DataGridView { Name = "labelTriggers" };
@@ -99,6 +100,7 @@ namespace Kaban.UI.Settings
             size.Controls.Add(_w); size.Controls.Add(new Label { Text = "x", AutoSize = true, Margin = new Padding(4, 6, 4, 0) }); size.Controls.Add(_h);
             size.Controls.Add(new Label { Text = "mm", AutoSize = true, Margin = new Padding(4, 6, 0, 0) });
             Row(T("Lbl_Size", "Size"), size, x0, y); Row(T("Lbl_Machine", "Machine"), _machine, x0 + c2, y);
+            Row(T("Lbl_Copies", "Copies"), _copies, x0 + c3, y);
             y += 34;
             Row(T("Lbl_Printer", "Printer"), _printer, x0, y); Row(T("Lbl_Baud", "Baud rate"), _baud, x0 + c2, y);
             y += 34;
@@ -198,7 +200,7 @@ namespace Kaban.UI.Settings
                 c.TextChanged += (s, e) => { if (!_filling) { _dirty.MarkDirty(); Redraw(); } };
             foreach (var c in new ComboBox[] { _use, _machine, _baud, _language, _printerLanguage })
                 c.SelectedIndexChanged += (s, e) => { if (!_filling) { _dirty.MarkDirty(); Redraw(); } };
-            foreach (var c in new NumericUpDown[] { _w, _h })
+            foreach (var c in new NumericUpDown[] { _w, _h, _copies })
                 c.ValueChanged += (s, e) => { if (!_filling) { _dirty.MarkDirty(); Redraw(); } };
             foreach (var c in new CheckBox[] { _on, _ribbon })
                 c.CheckedChanged += (s, e) => { if (!_filling) _dirty.MarkDirty(); };
@@ -309,7 +311,7 @@ namespace Kaban.UI.Settings
         private void Show(LabelTemplate t)
         {
             bool has = t != null;
-            foreach (Control c in new Control[] { _name, _use, _on, _machine, _w, _h, _printer, _baud, _language, _printerLanguage, _ribbon, _fields }) c.Enabled = has;
+            foreach (Control c in new Control[] { _name, _use, _on, _machine, _w, _h, _printer, _baud, _language, _printerLanguage, _ribbon, _copies, _fields }) c.Enabled = has;
             _fields.Rows.Clear();
             if (!has) { _preview.Show(null, null); return; }
             _name.Text = t.Name;
@@ -329,6 +331,7 @@ namespace Kaban.UI.Settings
             _language.SelectedItem = lang;
             _printerLanguage.SelectedItem = t.PrinterLanguage.ToString();
             _ribbon.Checked = t.HasRibbon;
+            _copies.Value = Math.Max(1, Math.Min(99, t.Copies));
             foreach (var f in t.Fields) AddRow(f);
             Redraw();
         }
@@ -360,7 +363,8 @@ namespace Kaban.UI.Settings
                 Printer = _printer.Text.Trim(),
                 Language = _language.SelectedItem != null ? _language.SelectedItem.ToString() : "turkish",
                 PrinterLanguage = Equals(_printerLanguage.SelectedItem, "ZPL") ? LabelPrinterLanguage.ZPL : LabelPrinterLanguage.EPL,
-                HasRibbon = _ribbon.Checked
+                HasRibbon = _ribbon.Checked,
+                Copies = (int)_copies.Value
             };
             int baud;
             if (_baud.SelectedItem != null && int.TryParse(_baud.SelectedItem.ToString(), NumberStyles.Integer, CI, out baud)) t.BaudRate = baud;

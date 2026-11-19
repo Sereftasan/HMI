@@ -160,6 +160,12 @@ class BL {
         Check("  font 5 upper case only; a QR code b...Q,m2", epl.Contains("A24,160,0,5,1,1,N,\"KABAN\"") && epl.Contains("b640,160,Q,m2,\"ORD-1\""));
         t.HasRibbon = true;
         Check("  with a ribbon: O (not OD)", Encoding.ASCII.GetString(LabelWriter.Build(t, v, at)).Contains("\r\nO\r\n"));
+        t.Copies = 3;
+        Check("  3 copies (the old Barcode Count): P3", Encoding.ASCII.GetString(LabelWriter.Build(t, v, at)).Contains("\r\nP3\r\n"));
+        t.PrinterLanguage = LabelPrinterLanguage.ZPL;
+        Check("  in ZPL: ^PQ3", Encoding.UTF8.GetString(LabelWriter.Build(t, v, at)).Contains("^PQ3"));
+        t.PrinterLanguage = LabelPrinterLanguage.EPL;
+        t.Copies = 1;
         t.PrinterLanguage = LabelPrinterLanguage.ZPL;
         var zpl = Encoding.UTF8.GetString(LabelWriter.Build(t, v, at));
         Check("ZPL: ^XA ... ^XZ, UTF-8, the size, a ribbon ^MTT, the fields at ^FO, Code 128 ^BC, a QR ^BQ",
