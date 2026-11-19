@@ -435,6 +435,17 @@ namespace Kaban.Machines.FA2010.Screens
                     try { System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo { FileName = folder, UseShellExecute = true }); } catch { }
                 });
                 menu.Items.Add(T("Job_InboxClear", "Watch no folder"), null, (s, e) => { if (CanSet) JobInbox.SetFolder(""); });
+                // the old ones into the folder's Archive (the old KabanTransferCleaner)
+                var arch = new ToolStripMenuItem(T("Job_InboxArchive", "Old job files into its Archive"));
+                foreach (var d in new[] { 0, 7, 30, 90 })
+                {
+                    int days = d;
+                    var it = new ToolStripMenuItem(days == 0 ? T("Job_InboxArchiveNever", "never") : string.Format(T("Job_InboxArchiveDays", "older than {0} days"), days),
+                                                   null, (s, e) => { if (CanSet) { JobInbox.SetArchiveDays(days); JobInbox.ArchiveOld(DateTime.Now); } })
+                    { Checked = JobInbox.ArchiveDays == days, Enabled = CanSet };
+                    arch.DropDownItems.Add(it);
+                }
+                menu.Items.Add(arch);
             }
             return menu;
         }

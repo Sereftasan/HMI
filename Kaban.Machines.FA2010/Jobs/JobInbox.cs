@@ -24,6 +24,8 @@ namespace Kaban.Machines.FA2010.Jobs
         private static readonly Dictionary<string, long> _seen = new Dictionary<string, long>(StringComparer.OrdinalIgnoreCase);
         private static readonly List<string> _new = new List<string>();
         private static string _folder = "";
+        /// <summary>Job files older than this many days moved into the folder's Archive (0: none - the old KabanTransferCleaner emptied it).</summary>
+        private static int _archiveDays;
         private static bool _loaded;
         private static FileSystemWatcher _watcher;
         private static System.Threading.Timer _timer;
@@ -34,6 +36,44 @@ namespace Kaban.Machines.FA2010.Jobs
         internal static event Action<string> Arrived;
 
         internal static string Folder { get { lock (Gate) { Load(); return _folder; } } }
+        internal static int ArchiveDays { get { lock (Gate) { Load(); return _archiveDays; } } }
+
+        /// <summary>How old a job file gets before it is moved into the Archive subfolder (0: never).</summary>
+        internal static void SetArchiveDays(int days)
+        {
+            lock (Gate) { Load(); _archiveDays = Math.Max(0, days); Save(); }
+            AuditLogger.Log("[JOB] the transfer folder's job files " + (days > 0 ? "older than " + days + " day(s) go into its Archive" : "stay where they are"));
+        }
+
+        /// <summary>
+        /// The job files older than ArchiveDays moved into Archive\yyyy-MM under the transfer folder (19 November - the old program's
+        /// KabanTransferCleaner, which deleted them). Returns how many moved.
+        /// </summary>
+        internal static int ArchiveOld(DateTime now)
+        {
+            string folder = Folder;
+            int days = ArchiveDays;
+            if (days <= 0 || folder.Length == 0 || !Directory.Exists(folder)) return 0;
+            int moved = 0;
+            foreach (var f in Directory.GetFiles(folder, "*.kbn"))
+            {
+                try
+                {
+                    var at = File.GetLastWriteTime(f);
+                    if ((now - at).TotalDays < days) continue;
+                    var dir = Path.Combine(folder, "Archive", at.ToString("yyyy-MM", CI));
+                    Directory.CreateDirectory(dir);
+                    var target = Path.Combine(dir, Path.GetFileName(f));
+                    for (int i = 2; File.Exists(target); i++) target = Path.Combine(dir, Path.GetFileNameWithoutExtension(f) + " (" + i + ")" + Path.GetExtension(f));
+                    File.Move(f, target);
+                    moved++;
+                    lock (Gate) { _seen.Remove(f); _new.RemoveAll(p => string.Equals(p, f, StringComparison.OrdinalIgnoreCase)); }
+                }
+                catch (Exception ex) { AuditLogger.Log("[JOB] " + f + " not archived: " + ex.Message); }
+            }
+            if (moved > 0) { lock (Gate) Save(); AuditLogger.Log("[JOB] " + moved + " job file(s) older than " + days + " day(s) moved into " + Path.Combine(folder, "Archive")); }
+            return moved;
+        }
 
         /// <summary>The files arrived and not opened yet, newest first.</summary>
         internal static List<string> New { get { lock (Gate) { Load(); return _new.Where(File.Exists).ToList(); } } }
@@ -102,6 +142,7 @@ namespace Kaban.Machines.FA2010.Jobs
         }
 
         private static readonly object ScanGate = new object();
+        private static DateTime _lastArchive = DateTime.MinValue;
 
         /// <summary>The folder looked through now: a new, finished job file announced (tests call it).</summary>
         internal static void Scan()
@@ -111,6 +152,8 @@ namespace Kaban.Machines.FA2010.Jobs
             {
                 string folder = Folder;
                 if (folder.Length == 0 || !Directory.Exists(folder)) return;
+                // the old ones out of the way first (once an hour is plenty)
+                if ((DateTime.UtcNow - _lastArchive).TotalMinutes >= 60) { _lastArchive = DateTime.UtcNow; ArchiveOld(DateTime.Now); }
                 var arrived = new List<string>();
                 foreach (var f in Directory.GetFiles(folder, "*.kbn").OrderBy(x => File.GetLastWriteTimeUtc(x)))
                 {
@@ -171,13 +214,15 @@ namespace Kaban.Machines.FA2010.Jobs
         internal static void Reset()
         {
             Stop();
-            lock (Gate) { _seen.Clear(); _new.Clear(); _waiting.Clear(); _folder = ""; _loaded = true; }
+            lock (Gate) { _seen.Clear(); _new.Clear(); _waiting.Clear(); _folder = ""; _archiveDays = 0; _loaded = true; }
+            _lastArchive = DateTime.MinValue;
         }
 
         private static void Save()
         {
             var sb = new StringBuilder("# Kaban HMI - FA2010's transfer folder and the job files seen in it\r\n");
             sb.Append("folder\t").Append(_folder).Append("\r\n");
+            sb.Append("archive\t").Append(_archiveDays.ToString(CI)).Append("\r\n");
             foreach (var p in _new) sb.Append("new\t").Append(p).Append("\r\n");
             foreach (var kv in _seen) sb.Append("seen\t").Append(kv.Key).Append('\t').Append(kv.Value.ToString(CI)).Append("\r\n");
             try { SafeFile.WriteAllText(StatePath, sb.ToString()); }
@@ -188,7 +233,7 @@ namespace Kaban.Machines.FA2010.Jobs
         {
             if (_loaded) return;
             _loaded = true;
-            _seen.Clear(); _new.Clear(); _folder = "";
+            _seen.Clear(); _new.Clear(); _folder = ""; _archiveDays = 0;
             try
             {
                 if (!File.Exists(StatePath)) return;
@@ -196,7 +241,9 @@ namespace Kaban.Machines.FA2010.Jobs
                 {
                     var t = line.Split('\t');
                     long n;
+                    int days;
                     if (t.Length >= 2 && t[0] == "folder") _folder = t[1].Trim();
+                    else if (t.Length >= 2 && t[0] == "archive" && int.TryParse(t[1], NumberStyles.Integer, CI, out days)) _archiveDays = Math.Max(0, days);
                     else if (t.Length >= 2 && t[0] == "new") _new.Add(t[1]);
                     else if (t.Length >= 3 && t[0] == "seen" && long.TryParse(t[2], NumberStyles.Integer, CI, out n)) _seen[t[1]] = n;
                 }

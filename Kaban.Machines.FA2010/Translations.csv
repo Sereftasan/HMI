@@ -945,3 +945,6 @@ Job_StateFinished;finished {0};bitti {0};;;;
 Job_StopRun;Stop automatic;Otomatiği durdur;;;;
 Job_TipAutomatic;Send: the selected bar now, then each next bar of the job not sent yet when the machine asks for it (Is Gonder L0, while Makine Aktif M21 is on);Gönder: seçili bar şimdi, sonra işin henüz gönderilmemiş her sonraki barı makine istediğinde (İş Gönder L0, Makine Aktif M21 açıkken);;;;
 Job_TipStopRun;No further bar is sent: the bar in the machine is its last (L10 off);Başka bar gönderilmez: makinedeki bar sonuncusudur (L10 kapalı);;;;
+Job_InboxArchive;Old job files into its Archive;Eski iş dosyaları Arşiv'e;;;;
+Job_InboxArchiveDays;older than {0} days;{0} günden eski;;;;
+Job_InboxArchiveNever;never;asla;;;;
