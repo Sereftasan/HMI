@@ -6,6 +6,17 @@ Claude reads this file at the start of every batch, does the items, and moves ea
 ## To do
 
 ## Done
+- 19 November ("analyze KabanMachineSystem allover and add everything you find useful for our new HMI program"): the whole old
+  solution gone through - docs\KabanMachinesSystem_Analysis.md lists every part, where it is in the new HMI and what is next.
+  - 50c9098 - job files with the screwing machine's Screw / Hole lines read and kept: FA2010 no longer refuses such bars.
+  - a3daee5 - FA2010: the bar's handshake the old program wrote (L10, L0 off, L1 "Is Geldi" on) - WITHOUT IT THE PLC WAS NOT TOLD A BAR
+    HAD COME; the Jobs page's Automatic (the next bar when the PLC asks with L0 while M21), Stop automatic; bars shown finished.
+    The production log: HMI Settings > Production (bars sent / finished with their time, pieces cut, leftovers, sums, power-on D93 and
+    working D104 time, CSV export). Test: FA2010JobRun.
+  - f9d165f - HMI Settings > Backup: the HMI's data as one zip, now or daily, the newest kept, restored after a question.
+  - 789b3c1 - the transfer folder's old job files into its Archive (7 / 30 / 90 days). Test: DataBackupArchive.
+  - 0cba5c1 - label copies (the old Barcode Count).
+  Next, when wanted: the H500 screwing job from the cutting machine's labels, the waste mode (L26), the machines not brought over yet.
 - 17 / 18 November ("I want you to decide how to do them yourself and take barcode reading and writing from KabanMachineSystem as well?
   I want you also check over the program and add the other tools you find useful as well"):
   - 59758df - the open questions decided and written down (tools/legacy/SB3015, MK2010, MD3030 README "Decided here"): SB3015's

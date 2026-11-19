@@ -43,7 +43,7 @@ All;Kaban.Machines.MD3020\Screens\Parameters\ParamAxisCalibration.Designer.cs;14
 All;KabanHMI\Controls\AxisPickBar.cs;173;Text;AllText = T("AxIt_All", "All"),
 All;KabanHMI\Controls\AxisPickBar.cs;250;Text;ItemsPick.AllText = T("AxIt_All", "All");
 All;KabanHMI\Settings\TranslationsControl.cs;325;Text;_owner.Items.Add(new Choice(null, T("Lbl_TrnAllOwners", "All")));
-Angle;Kaban.Machines.FA2010\Screens\JobsScreen.cs;616;Text;if (SpecialCutStep.Uses(st.Command, "Angle")) parts.Add(string.Format(CI, "{0:0.#}\u00B0", st.Angle));
+Angle;Kaban.Machines.FA2010\Screens\JobsScreen.cs;706;Text;if (SpecialCutStep.Uses(st.Command, "Angle")) parts.Add(string.Format(CI, "{0:0.#}\u00B0", st.Angle));
 Angle;Kaban.Machines.FA2010\Screens\SpecialCutsEditor.cs;469;Text;new[] { "sangle", "Angle" }, new[] { "vcut", "VCutY" } })
 Angle;Kaban.Machines.SB3015\Screens\Manual\ManualMilling.Designer.cs;102;Text;this.capAngle.TranslationKey = "Angle";
 Angle;Kaban.Machines.SB3015\Screens\Manual\ManualMilling.Designer.cs;103;Text;this.capAngle.Text = "Angle";
@@ -61,7 +61,7 @@ Axes;KabanHMI\Dashboard\MachineRecords.cs;88;Text;new Kind { Code = AxisAlarm, K
 Axes;KabanHMI\Dashboard\MachineRecords.cs;89;Text;new Kind { Code = AxisOverload, Key = "axis_overload", TextKey = "Rec_AxisOverload", Text = "Axis overload", Group = "Axes" },
 Axes;KabanHMI\Forms\PlcPopupForm.cs;314;Text;var valueFields = popup.Fields.Where(f => !string.Equals(f.Kind, "Axes", StringComparison.OrdinalIgnoreCase)).ToList();
 Axis;Kaban.Core\Helpers\TroubleshootingCatalog.cs;129;Text;return new ParameterSpec { Caption = "Axis" };   // free number
-Axis;Kaban.Machines.FA2010\FA2010Module.cs;245;Text;new Screens.GeneratedPage("Tab_AxisSettings", "Axis", SecurityLevel.Maintenance, () => new Screens.Parameters.AxisSettings()),
+Axis;Kaban.Machines.FA2010\FA2010Module.cs;281;Text;new Screens.GeneratedPage("Tab_AxisSettings", "Axis", SecurityLevel.Maintenance, () => new Screens.Parameters.AxisSettings()),
 Axis;Kaban.Machines.FA2010\Screens\Parameters\AxisSettings.Designer.cs;78;Text;this.lblHead0.Text = "Axis";
 Axis;Kaban.Machines.H800\Screens\Parameters\AxisSettings.Designer.cs;41;Text;this.lblHead0.Text = "Axis";
 Axis;Kaban.Machines.MD3020\Screens\Home\HomeJob.Designer.cs;529;Text;this.hdAxis.TranslationKey = "Axis";
@@ -293,7 +293,7 @@ Bc_NoRight;Kaban.Core\Barcodes\BarcodeTargets.cs;89;Text;Tell(t, scan, string.Fo
 Bc_NotConnected;Kaban.Core\Barcodes\BarcodeTargets.cs;84;Text;Tell(t, scan, string.Format(LanguageManager.GetString("Bc_NotConnected", "{0}: the PLC is not connected - {1} not written."), who, scan.Code), true);
 Bc_NotOpen;KabanHMI\Settings\BarcodeSettingsControl.cs;334;Text;else s = state.FirstOrDefault(x => x.StartsWith(name + " (", StringComparison.Ordinal)) ?? T("Bc_NotOpen", "not open - keep the settings");
 Bc_Off;KabanHMI\Settings\BarcodeSettingsControl.cs;332;Text;if (!Equals(row.Cells["on"].Value, true)) s = T("Bc_Off", "off");
-Bc_Off;KabanHMI\Settings\LabelSettingsControl.cs;288;Text;(t.Enabled ? "" : ", " + LanguageManager.GetString("Bc_Off", "off")) + ")";
+Bc_Off;KabanHMI\Settings\LabelSettingsControl.cs;290;Text;(t.Enabled ? "" : ", " + LanguageManager.GetString("Bc_Off", "off")) + ")";
 Bc_On;KabanHMI\Settings\BarcodeSettingsControl.cs;79;Heading;_readers.Columns.Add(new DataGridViewCheckBoxColumn { Name = "on", HeaderText = T("Bc_On", "On"), FillWeight = 5 });
 Bc_Parity;KabanHMI\Settings\BarcodeSettingsControl.cs;76;Text;_readers.Columns.Add(Combo("parity", T("Bc_Parity", "Parity"), 9, Enum.GetNames(typeof(Parity))));
 Bc_Parts;KabanHMI\Settings\BarcodeSettingsControl.cs;136;Text;_recent.Columns.Add(Col("parts", T("Bc_Parts", "Parts"), 30));
@@ -320,6 +320,22 @@ Bc_Suffix;KabanHMI\Settings\BarcodeSettingsControl.cs;90;Text;_body.Controls.Add
 Bc_TakenBy;KabanHMI\Settings\BarcodeSettingsControl.cs;137;Text;_recent.Columns.Add(Col("taken", T("Bc_TakenBy", "Taken by"), 20));
 Bc_Try;KabanHMI\Settings\BarcodeSettingsControl.cs;116;Text;y = Heading(T("Bc_Try", "Try a code"), y);
 Bc_UsualFields;KabanHMI\Settings\BarcodeSettingsControl.cs;101;Tooltip;UiStyle.ToolButton("↻", T("Bc_UsualFields", "The usual parts: the profile code 1 - 10, the width 11 - 14, the height 15 - 18 (the old MK2010's)"), tips,
+Bk_Ask;KabanHMI\Settings\DataBackupControl.cs;147;Text;if (!Confirm(FindForm(), string.Format(T("Bk_Ask", "Restore the HMI's data from {0} ({1})? The data as it is now is backed up first - the program restarts after."),
+Bk_At;KabanHMI\Settings\DataBackupControl.cs;88;Heading;_grid.Columns.Add(new DataGridViewTextBoxColumn { Name = "at", HeaderText = T("Bk_At", "Made"), FillWeight = 20 });
+Bk_Browse;KabanHMI\Settings\DataBackupControl.cs;56;Tooltip;var browse = UiStyle.ToolButton("📁", T("Bk_Browse", "Choose the folder"), tips, (s, e) =>
+Bk_Daily;KabanHMI\Settings\DataBackupControl.cs;64;Text;_daily.Text = T("Bk_Daily", "Daily by itself");
+Bk_File;KabanHMI\Settings\DataBackupControl.cs;89;Heading;_grid.Columns.Add(new DataGridViewTextBoxColumn { Name = "name", HeaderText = T("Bk_File", "File"), FillWeight = 55 });
+Bk_Folder;KabanHMI\Settings\DataBackupControl.cs;61;Text;settings.Controls.Add(new Label { Text = T("Bk_Folder", "Backups in"), AutoSize = true, Margin = new Padding(0, 6, 6, 0) });
+Bk_Keep;KabanHMI\Settings\DataBackupControl.cs;67;Text;settings.Controls.Add(new Label { Text = T("Bk_Keep", "the newest kept"), AutoSize = true, Margin = new Padding(10, 6, 4, 0) });
+Bk_Made;KabanHMI\Settings\DataBackupControl.cs;137;Text;Say(string.Format(T("Bk_Made", "Backed up: {0}"), System.IO.Path.GetFileName(path)), true);
+Bk_Note;KabanHMI\Settings\DataBackupControl.cs;76;Text;Text = T("Bk_Note", "One zip a backup: the profile library, the users, the settings, the labels, the notes, the production log (C:\\ProgramData\\KabanHMI). Not in it: the audit ...
+Bk_Now;KabanHMI\Settings\DataBackupControl.cs;44;Text;var now = UiStyle.TextButton("💾 " + T("Bk_Now", "Back up now"), 0, (s, e) => BackUpNow());
+Bk_Open;KabanHMI\Settings\DataBackupControl.cs;46;Tooltip;var open = UiStyle.ToolButton("📂", T("Bk_Open", "Open the backup folder"), tips, (s, e) =>
+Bk_Pick;KabanHMI\Settings\DataBackupControl.cs;146;Text;if (b == null) { Say(T("Bk_Pick", "Pick the backup to restore first."), false); return; }
+Bk_RestartWhat;KabanHMI\Settings\DataBackupControl.cs;155;Text;try { Kaban.UI.Forms.MainForm.NotifyRestartRequired(FindForm(), T("Bk_RestartWhat", "the HMI's data restored")); } catch { }
+Bk_Restore;KabanHMI\Settings\DataBackupControl.cs;45;Text;var restore = UiStyle.TextButton("↺ " + T("Bk_Restore", "Restore the selected"), 0, (s, e) => RestoreSelected());
+Bk_Restored;KabanHMI\Settings\DataBackupControl.cs;154;Text;Say(string.Format(T("Bk_Restored", "{0} file(s) restored - restart the program to use them."), n), true);
+Bk_Size;KabanHMI\Settings\DataBackupControl.cs;90;Heading;_grid.Columns.Add(new DataGridViewTextBoxColumn { Name = "size", HeaderText = T("Bk_Size", "Size"), FillWeight = 12 });
 Blowing;Kaban.Machines.FA2010\Screens\Manual\ManualCutting.Designer.cs;644;Text;this.btnBlowing.ButtonText = "Blowing";
 Blowing;Kaban.Machines.FA2010\Screens\Manual\ManualCutting.Designer.cs;669;Text;this.btnBlowing.FallbackText = "Blowing";
 Blowing;Kaban.Machines.FA2010\Screens\Manual\ManualCutting.Designer.cs;700;Text;this.btnBlowing.TranslationKey = "Blowing";
@@ -340,7 +356,7 @@ Btn_AlarmReset;KabanHMI\Screens\MachineAlarmScreen.cs;96;Tooltip;_btnReset.ToolT
 Btn_AlarmReset;KabanHMI\Screens\MachineAlarmScreen.cs;103;Tooltip;var none = UiStyle.ToolButton("\uD83D\uDD04", LanguageManager.GetString("Btn_AlarmReset", "Reset alarms") +
 Btn_AlarmReset;KabanHMI\Screens\MachineAlarmScreen.cs;105;Message;MessageBox.Show(FindForm(), LanguageManager.GetString("Btn_AlarmReset", "Reset alarms") + ": " + why + ".",
 Btn_Alarms;Kaban.Machines.SB3012\Program.cs;73;Text;shell.AddMenuButton("Btn_Alarms", "Alarms", null, new Screens.AlarmScreen());
-Btn_Alarms;KabanHMI\Forms\MainForm.cs;2255;Text;if (!string.Equals(kv.Key.TranslationKey, "Btn_Alarms", StringComparison.OrdinalIgnoreCase))
+Btn_Alarms;KabanHMI\Forms\MainForm.cs;2258;Text;if (!string.Equals(kv.Key.TranslationKey, "Btn_Alarms", StringComparison.OrdinalIgnoreCase))
 Btn_Alarms;KabanHMI\Helpers\DeviceCollector.cs;293;Text;var alarms = new PageDevices { Title = LanguageManager.GetString("Btn_Alarms", "Alarms") };
 Btn_Alarms;KabanHMI\Helpers\DeviceCollector.cs;449;Text;PageTitle = LanguageManager.GetString("Btn_Alarms", "Alarms"),
 Btn_Alarms;KabanHMI\Helpers\TextUses.cs;87;Text;list.Add(new Use { Kind = KindAlarm, Place = LanguageManager.GetString("Btn_Alarms", "Alarms"),
@@ -377,8 +393,8 @@ Btn_Cancel;KabanHMI\Settings\PlcBackupSelection.cs;394;Text;var cancel = UiStyle
 Btn_Cancel;KabanHMI\Settings\TranslationLanguageForms.cs;93;Text;var cancel = UiStyle.DialogButton(T("Btn_Cancel", "Cancel"), DialogResult.Cancel);
 Btn_Cancel;KabanHMI\Settings\TranslationLanguageForms.cs;242;Text;var cancel = UiStyle.DialogButton(T("Btn_Cancel", "Cancel"), DialogResult.Cancel);
 Btn_Cancel;KabanHMI\Settings\TranslationLanguageForms.cs;424;Text;var cancel = UiStyle.DialogButton(T("Btn_Cancel", "Cancel"), DialogResult.Cancel);
-Btn_ChangeUser;KabanHMI\Forms\MainForm.cs;1694;Menu;var change = new ToolStripMenuItem(LanguageManager.GetString("Btn_ChangeUser", "Change user"),
-Btn_Close;KabanHMI\Forms\MainForm.cs;1297;Menu;var item = new ToolStripMenuItem(LanguageManager.GetString("Btn_Close", "Close"))
+Btn_ChangeUser;KabanHMI\Forms\MainForm.cs;1697;Menu;var change = new ToolStripMenuItem(LanguageManager.GetString("Btn_ChangeUser", "Change user"),
+Btn_Close;KabanHMI\Forms\MainForm.cs;1300;Menu;var item = new ToolStripMenuItem(LanguageManager.GetString("Btn_Close", "Close"))
 Btn_Close;KabanHMI\Screens\NotesFindForm.cs;124;Text;var close = UiStyle.DialogButton(T("Btn_Close", "Close"), DialogResult.Cancel);
 Btn_Close;KabanHMI\Settings\PlcBackupForms.cs;482;Text;var close = UiStyle.DialogButton(T("Btn_Close", "Close"), DialogResult.Cancel);
 Btn_Close;KabanHMI\Settings\SettingsCompareForm.cs;125;Text;var close = UiStyle.DialogButton(T("Btn_Close", "Close"), DialogResult.Cancel);
@@ -412,12 +428,12 @@ Btn_ImpBackups;KabanHMI\Settings\ImportSettingsControl.cs;121;Text;Text = T("Btn
 Btn_ImpCompare;KabanHMI\Settings\ImportSettingsControl.cs;109;Text;Text = T("Btn_ImpCompare", "Compare..."), Size = new Size(130, 30), BackColor = Color.White, Name = "impCompare", Enabled = false
 Btn_ImpList;KabanHMI\Settings\ImportSettingsControl.cs;102;Text;Text = T("Btn_ImpList", "List its settings files"), Size = new Size(190, 30), BackColor = Color.White, Name = "impScan"
 Btn_Import;KabanHMI\Settings\ImportSettingsControl.cs;115;Text;Text = T("Btn_Import", "Import selected"), Size = new Size(160, 30), BackColor = Color.White, Name = "impImport"
-Btn_Jobs;Kaban.Machines.FA2010\FA2010Module.cs;265;Text;TitleKey = "Btn_Jobs",
+Btn_Jobs;Kaban.Machines.FA2010\FA2010Module.cs;301;Text;TitleKey = "Btn_Jobs",
 Btn_Login;KabanHMI\Forms\LoginForm.cs;92;Text;btnOk = UiStyle.DialogButton(LanguageManager.GetString("Btn_Login", "Login"), DialogResult.None);
-Btn_Login;KabanHMI\Forms\MainForm.cs;2536;Text;Helpers.Shortcuts.Set(_btnLogin, Keys.Control | Keys.L, _topTips, LanguageManager.GetString("Btn_Login", "Login"));
+Btn_Login;KabanHMI\Forms\MainForm.cs;2539;Text;Helpers.Shortcuts.Set(_btnLogin, Keys.Control | Keys.L, _topTips, LanguageManager.GetString("Btn_Login", "Login"));
 Btn_Login;KabanHMI\Forms\PlcPopupForm.cs;193;Text;_signIn = UiStyle.TextButton(T("Btn_Login", "Login"), 120, (s, e) => { var h = SignInAsked; if (h != null) h(); });
-Btn_Logout;KabanHMI\Forms\MainForm.cs;1690;Menu;var logout = new ToolStripMenuItem(LanguageManager.GetString("Btn_Logout", "Logout"),
-Btn_Logout;KabanHMI\Forms\MainForm.cs;2544;Text;Helpers.Shortcuts.Set(_btnLogin, Keys.Control | Keys.L, _topTips, LanguageManager.GetString("Btn_Logout", "Logout"));
+Btn_Logout;KabanHMI\Forms\MainForm.cs;1693;Menu;var logout = new ToolStripMenuItem(LanguageManager.GetString("Btn_Logout", "Logout"),
+Btn_Logout;KabanHMI\Forms\MainForm.cs;2547;Text;Helpers.Shortcuts.Set(_btnLogin, Keys.Control | Keys.L, _topTips, LanguageManager.GetString("Btn_Logout", "Logout"));
 Btn_MachineParameters;KabanHMI\Screens\StandardScreens.cs;167;Text;TitleKey = "Btn_MachineParameters",
 Btn_MachineParameters;KabanHMI\Screens\StandardScreens.cs;243;Text;return new PlaceholderControl("Btn_MachineParameters", "Machine Parameters",
 Btn_MachineParameters;KabanHMI\Settings\PreferencePreview.cs;421;Text;new[] { "Btn_MachineParameters", "Machine Parameters" }, new[] { "Btn_Alarms", "Alarms" }
@@ -447,17 +463,17 @@ Btn_OpenJob;KabanHMI\Screens\MachineHomeScreen.cs;360;Text;LanguageManager.GetSt
 Btn_OpenManual;KabanHMI\Forms\MainForm.Help.cs;133;Menu;var manual = new ToolStripMenuItem(LanguageManager.GetString("Btn_OpenManual", "Open the HMI manual"), MenuGlyphs.Book()) { Name = "helpManual" };
 Btn_PlcRead;KabanHMI\Settings\StationConnectionControl.cs;344;Text;var read = UiStyle.TextButton(LanguageManager.GetString("Btn_PlcRead", "Read..."), 0);
 Btn_PlcWrite;KabanHMI\Settings\StationConnectionControl.cs;345;Text;var write = UiStyle.TextButton(LanguageManager.GetString("Btn_PlcWrite", "Write..."), 0);
-Btn_ProfileGroups;Kaban.Machines.FA2010\FA2010Module.cs;282;Text;TitleKey = "Btn_ProfileGroups",
+Btn_ProfileGroups;Kaban.Machines.FA2010\FA2010Module.cs;318;Text;TitleKey = "Btn_ProfileGroups",
 Btn_ProfileGroups;Kaban.Machines.FA2010\Screens\ProfileGroupsScreen.cs;224;Message;_libraryOk = Library.Open(() => Ask.YesNo(FindForm(), T("Btn_ProfileGroups", "Profile groups"),
-Btn_Profiles;Kaban.Machines.FA2010\FA2010Module.cs;273;Text;TitleKey = "Btn_Profiles",
+Btn_Profiles;Kaban.Machines.FA2010\FA2010Module.cs;309;Text;TitleKey = "Btn_Profiles",
 Btn_Refresh;KabanHMI\Screens\MachineAlarmScreen.cs;306;Text;LanguageManager.GetString("Btn_Refresh", "Refresh the history"), tips, (s, e) => fill()));
 Btn_Remove;KabanHMI\Settings\AlarmSettingsControl.cs;486;Text;btn(LanguageManager.GetString("Btn_Remove", "Remove"), (s, e) => RemoveSelected());
 Btn_Reset;Kaban.Machines.FA2010\Screens\AlarmScreen.Designer.cs;110;Text;this.btnReset.TranslationKey = "Btn_Reset";
 Btn_Reset;Kaban.Machines.SB3012\Screens\AlarmScreen.Designer.cs;103;Text;this.btnReset.TranslationKey = "Btn_Reset";
-Btn_ResetNActive;KabanHMI\Forms\MainForm.cs;1999;Text;LanguageManager.GetString("Btn_ResetNActive", "Reset ({0}) Active Alarms"),
-Btn_Restart;KabanHMI\Forms\MainForm.cs;1315;Menu;var restart = new ToolStripMenuItem(LanguageManager.GetString("Btn_Restart", "Restart"))
-Btn_Restart;KabanHMI\Forms\MainForm.cs;1379;Text;LanguageManager.GetString("Btn_Restart", "Restart the program"),
-Btn_Restart;KabanHMI\Forms\MainForm.cs;1418;Text;LanguageManager.GetString("Btn_Restart", "Restart the program"),
+Btn_ResetNActive;KabanHMI\Forms\MainForm.cs;2002;Text;LanguageManager.GetString("Btn_ResetNActive", "Reset ({0}) Active Alarms"),
+Btn_Restart;KabanHMI\Forms\MainForm.cs;1318;Menu;var restart = new ToolStripMenuItem(LanguageManager.GetString("Btn_Restart", "Restart"))
+Btn_Restart;KabanHMI\Forms\MainForm.cs;1382;Text;LanguageManager.GetString("Btn_Restart", "Restart the program"),
+Btn_Restart;KabanHMI\Forms\MainForm.cs;1421;Text;LanguageManager.GetString("Btn_Restart", "Restart the program"),
 Btn_SafetyBypass;Kaban.Machines.FA2010\Screens\Shared\AxisJogBar.Designer.cs;583;Text;this.BtnSafetyBypass.TranslationKey = "Btn_SafetyBypass";
 Btn_Save;KabanHMI\Profiles\LibraryEditorForm.cs;495;Text;var save = UiStyle.TextButton(T("Btn_Save", "Save"), 110);
 Btn_Start;Kaban.Machines.H500\Screens\H500Screen.cs;64;Text;ButtonATextKey = "Btn_Start",
@@ -684,15 +700,15 @@ Cond_Now;KabanHMI\Forms\SimulationMonitorForm.cs;4169;Text;(met.HasValue ? "\n" 
 Cond_Now;KabanHMI\Forms\SimulationMonitorForm.cs;4180;Text;(m.HasValue ? "   (" + T("Cond_Now", "Now") + ": " + v.ToString(CultureInfo.CurrentCulture) + ")" : ""));
 Cond_Now;KabanHMI\Forms\SimulationMonitorForm.cs;4186;Text;(met.HasValue ? "\n" + T("Cond_Now", "Now") + ": " + value.ToString(CultureInfo.CurrentCulture) : "");
 Cond_Or;KabanHMI\Forms\SimulationMonitorForm.cs;4113;Text;return string.Join(rule.AnyDevice ? " " + T("Cond_Or", "or") + " " : " " + T("Cond_And", "and") + " ", rule.Devices.Select(DeviceRuleText));
-Conn_AllOk;KabanHMI\Forms\MainForm.cs;2076;Text;LanguageManager.GetString("Conn_AllOk", "All controllers connected")) { Enabled = false });
+Conn_AllOk;KabanHMI\Forms\MainForm.cs;2079;Text;LanguageManager.GetString("Conn_AllOk", "All controllers connected")) { Enabled = false });
 Conn_C01;Kaban.Core\Helpers\ConnectionMonitor.cs;378;Text;case "C01": return LanguageManager.GetString("Conn_C01", "No driver configured for this station");
 Conn_C02;Kaban.Core\Helpers\ConnectionMonitor.cs;379;Text;case "C02": return LanguageManager.GetString("Conn_C02", "Link not open - check cable, power and address");
 Conn_C03;Kaban.Core\Helpers\ConnectionMonitor.cs;380;Text;case "C03": return LanguageManager.GetString("Conn_C03", "Link open but no reply - check network and PLC run state");
 Conn_C04;Kaban.Core\Helpers\ConnectionMonitor.cs;381;Text;case "C04": return LanguageManager.GetString("Conn_C04", "Unexpected reply from the controller");
 Conn_ErrorCode;Kaban.Core\Helpers\ConnectionMonitor.cs;348;Text;text += " (" + LanguageManager.GetString("Conn_ErrorCode", "Error Code") + ": " + s.ErrorCode + ")";
-Conn_ErrorCode;KabanHMI\Forms\MainForm.cs;2093;Text;: LanguageManager.GetString("Conn_ErrorCode", "Error Code") +
-Conn_StaleFor;KabanHMI\Forms\MainForm.cs;2100;Text;LanguageManager.GetString("Conn_StaleFor", "No reply for {0} s"),
-Conveyor;Kaban.Machines.FA2010\FA2010Module.cs;246;Text;new Screens.GeneratedPage("Tab_ParamConveyor", "Conveyor", SecurityLevel.Maintenance, () => new Screens.Parameters.ParamConveyor()),
+Conn_ErrorCode;KabanHMI\Forms\MainForm.cs;2096;Text;: LanguageManager.GetString("Conn_ErrorCode", "Error Code") +
+Conn_StaleFor;KabanHMI\Forms\MainForm.cs;2103;Text;LanguageManager.GetString("Conn_StaleFor", "No reply for {0} s"),
+Conveyor;Kaban.Machines.FA2010\FA2010Module.cs;282;Text;new Screens.GeneratedPage("Tab_ParamConveyor", "Conveyor", SecurityLevel.Maintenance, () => new Screens.Parameters.ParamConveyor()),
 Conveyor;Kaban.Machines.H500\Screens\Manual\ManualEntry_Conveyor.Designer.cs;422;Text;this.btnConveyor.TranslationKey = "Conveyor";
 Conveyor;Kaban.Machines.H500\Screens\Manual\ManualEntry_Conveyor.Designer.cs;423;Text;this.btnConveyor.FallbackText = "Conveyor";
 Conveyor;Kaban.Machines.H800\H800Module.cs;103;Text;new Kaban.UI.Settings.SimplePage("Tab_H800_ManualConveyor", "Conveyor",
@@ -728,8 +744,8 @@ Cpl_UncoupleAll;KabanHMI\Controls\CylinderUnitHMI.cs;217;Menu;menu.Items.Add(new
 Cpl_UncoupleAll;KabanHMI\Forms\MainForm.Coupling.cs;131;Menu;menu.Items.Add(new ToolStripMenuItem(string.Format(LanguageManager.GetString("Cpl_UncoupleAll", "Uncouple all {0}"), units.Count), null,
 Cpl_UncoupleThis;KabanHMI\Controls\CylinderUnitHMI.cs;215;Menu;menu.Items.Add(new ToolStripMenuItem(string.Format(LanguageManager.GetString("Cpl_UncoupleThis", "Uncouple '{0}'"), CouplingName), null,
 Cpl_UncoupleThis;KabanHMI\Forms\MainForm.Coupling.cs;127;Menu;menu.Items.Add(new ToolStripMenuItem(string.Format(LanguageManager.GetString("Cpl_UncoupleThis", "Uncouple '{0}'"), unit.CouplingName), null,
-Cutting;Kaban.Machines.FA2010\FA2010Module.cs;229;Text;new Screens.GeneratedPage("Tab_ManualCutting", "Cutting", SecurityLevel.Operator, () => new Screens.Manual.ManualCutting()),
-Cutting;Kaban.Machines.FA2010\FA2010Module.cs;249;Text;new Screens.GeneratedPage("Tab_ParamCutting", "Cutting", SecurityLevel.Maintenance, () => new Screens.Parameters.ParamCutting()),
+Cutting;Kaban.Machines.FA2010\FA2010Module.cs;265;Text;new Screens.GeneratedPage("Tab_ManualCutting", "Cutting", SecurityLevel.Operator, () => new Screens.Manual.ManualCutting()),
+Cutting;Kaban.Machines.FA2010\FA2010Module.cs;285;Text;new Screens.GeneratedPage("Tab_ParamCutting", "Cutting", SecurityLevel.Maintenance, () => new Screens.Parameters.ParamCutting()),
 Cutting;Kaban.Machines.SB3015\SB3015Module.cs;75;Text;new Kaban.UI.Settings.SimplePage("Tab_SB3015_ManualCutting", "Cutting",
 Cutting;Kaban.Machines.SB3015\Screens\Parameters\ParamAxisSettings.Designer.cs;512;Text;this.lblCutting.TranslationKey = "Cutting";
 Cutting;Kaban.Machines.SB3015\Screens\Parameters\ParamAxisSettings.Designer.cs;513;Text;this.lblCutting.Text = "Cutting";
@@ -946,9 +962,9 @@ Encoder;Kaban.Machines.MD3020\Screens\Parameters\ParamAxisCalibration.Designer.c
 Encoder;KabanHMI\Controls\CylinderEncoderUnitHMI.cs;146;Text;_unit.TitleTextKey = _title.Length > 0 ? _title : (_number > 0 ? "Encoder " + _number : "Encoder");
 Encoder;KabanHMI\Design\PropertyOrder.cs;37;Text;"Valve & Feedback", "Inverter", "Device", "Encoder", "Unit", "Axis", "Action", "Action A", "Action B", "Movement", "Position",
 Encoder;KabanHMI\Design\PropertyOrder.cs;196;Text;C("Encoder", "EncoderNumber", "PlcNumber"),
-Encoders;Kaban.Machines.FA2010\FA2010Module.cs;250;Text;new Screens.GeneratedPage("Tab_ParamEncoders", "Encoders", SecurityLevel.Maintenance, () => new Screens.Parameters.ParamEncoders()),
+Encoders;Kaban.Machines.FA2010\FA2010Module.cs;286;Text;new Screens.GeneratedPage("Tab_ParamEncoders", "Encoders", SecurityLevel.Maintenance, () => new Screens.Parameters.ParamEncoders()),
 Encoders;Kaban.Machines.SB3015\SB3015Module.cs;92;Text;new Kaban.UI.Settings.SimplePage("Tab_SB3015_ParamEncoders", "Encoders",
-Exit;Kaban.Machines.FA2010\FA2010Module.cs;230;Text;new Screens.GeneratedPage("Tab_ManualExit", "Exit", SecurityLevel.Operator, () => new Screens.Manual.ManualExit()),
+Exit;Kaban.Machines.FA2010\FA2010Module.cs;266;Text;new Screens.GeneratedPage("Tab_ManualExit", "Exit", SecurityLevel.Operator, () => new Screens.Manual.ManualExit()),
 Exit;Kaban.Machines.FA2010\Screens\Parameters\ParamOther.Designer.cs;1613;Text;this.numCross_Roller_Exit.DescriptionText = "Exit";
 Exit;Kaban.Machines.FA2010\Screens\Parameters\ParamOther.Designer.cs;1648;Text;this.numCross_Roller_Exit.TranslationKey = "Exit";
 Exit;Kaban.Machines.SB3015\SB3015Module.cs;77;Text;new Kaban.UI.Settings.SimplePage("Tab_SB3015_ManualExit", "Exit",
@@ -1178,14 +1194,18 @@ IoShow_Outputs;KabanHMI\Screens\IoMonitorPage.cs;196;Menu;if (sec.Outputs != nul
 Job;Kaban.Machines.MK2010\Screens\Home\HomeJob.Designer.cs;565;Text;this.hdJob.TranslationKey = "Job";
 Job;Kaban.Machines.MK2010\Screens\Home\HomeJob.Designer.cs;566;Text;this.hdJob.Text = "Job";
 Job;KabanHMI\Screens\MachineHomeScreen.cs;170;Text;var job = NewGroup("Job", rx, 16, 500, 150);
-Job_Arrived;Kaban.Machines.FA2010\Screens\JobsScreen.cs;379;Text;string text = string.Format(T("Job_Arrived", "New job received: {0}"), Path.GetFileName(path));
-Job_Ask;Kaban.Machines.FA2010\Screens\JobsScreen.cs;654;Text;string question = string.Format(T("Job_Ask", "Send bar {0} ({1}, {2} piece(s), {3} mm) to the machine?"), plan.Bar.Title, plan.Bar.Code, plan.Bar.Pieces.Count,
-Job_AskNotch;Kaban.Machines.FA2010\Screens\JobsScreen.cs;659;Text;question += "\r\n" + string.Format(T("Job_AskNotch", "{0} mullion notching step(s) of the profile (R25700)."), plan.Notch.Count);
-Job_AskSpecial;Kaban.Machines.FA2010\Screens\JobsScreen.cs;661;Text;question += "\r\n" + string.Format(T("Job_AskSpecial", "{0} special cut(s): their parameters - the saw gets their steps when it asks (L105)."), plan.Special.Count);
-Job_AskTrial;Kaban.Machines.FA2010\Screens\JobsScreen.cs;662;Text;if (trial) question += "\r\n\r\n" + T("Job_AskTrial", "TRIAL: milling positions nobody has confirmed - for a test piece only.");
-Job_AskWhat;Kaban.Machines.FA2010\Screens\JobsScreen.cs;656;Text;string.Format(T("Job_AskWhat", "{0} step(s) (IDs {1} - {2}) into the job list, {3} milling operation(s), the profile's parameters."),
-Job_BarHead;Kaban.Machines.FA2010\Screens\JobsScreen.cs;544;Text;_lblBar.Text = string.Format(T("Job_BarHead", "Bar {0}: {1} {2}, {3} mm"), b.Title, b.Code, b.Name, b.Length.ToString("0.#", CI)) +
-Job_CannotSend;Kaban.Machines.FA2010\Screens\JobsScreen.cs;642;Message;Ask.Tell(FindForm(), title, string.Format(T("Job_CannotSend", "Bar {0} cannot go to the machine:"), plan.Bar.Title) + "\r\n\r\n" +
+Job;KabanHMI\Settings\ProductionControl.cs;84;Text;new[] { "job", T("Prd_Job", "Job"), "12" }, new[] { "bar", T("Prd_Bar", "Bar"), "5" }, new[] { "profile", T("Prd_Profile", "Profile"), "10" },
+Job_Arrived;Kaban.Machines.FA2010\Screens\JobsScreen.cs;405;Text;string text = string.Format(T("Job_Arrived", "New job received: {0}"), Path.GetFileName(path));
+Job_Ask;Kaban.Machines.FA2010\Screens\JobsScreen.cs;744;Text;string question = string.Format(T("Job_Ask", "Send bar {0} ({1}, {2} piece(s), {3} mm) to the machine?"), plan.Bar.Title, plan.Bar.Code, plan.Bar.Pieces.Count,
+Job_AskAutomatic;Kaban.Machines.FA2010\Screens\JobsScreen.cs;755;Text;question += "\r\n\r\n" + T("Job_AskAutomatic", "AUTOMATIC: then each next bar of the job not sent yet, when the machine asks for it.");
+Job_AskNotch;Kaban.Machines.FA2010\Screens\JobsScreen.cs;749;Text;question += "\r\n" + string.Format(T("Job_AskNotch", "{0} mullion notching step(s) of the profile (R25700)."), plan.Notch.Count);
+Job_AskSpecial;Kaban.Machines.FA2010\Screens\JobsScreen.cs;751;Text;question += "\r\n" + string.Format(T("Job_AskSpecial", "{0} special cut(s): their parameters - the saw gets their steps when it asks (L105)."), plan.Special.Count);
+Job_AskTrial;Kaban.Machines.FA2010\Screens\JobsScreen.cs;752;Text;if (trial) question += "\r\n\r\n" + T("Job_AskTrial", "TRIAL: milling positions nobody has confirmed - for a test piece only.");
+Job_AskWhat;Kaban.Machines.FA2010\Screens\JobsScreen.cs;746;Text;string.Format(T("Job_AskWhat", "{0} step(s) (IDs {1} - {2}) into the job list, {3} milling operation(s), the profile's parameters."),
+Job_Automatic;Kaban.Machines.FA2010\Screens\JobsScreen.cs;123;Text;_chkAuto.Text = T("Job_Automatic", "Automatic");
+Job_Automatic;KabanHMI\Settings\ProductionControl.cs;152;Text;(e.Trial ? T("Job_Trial", "Trial") + " " : "") + (e.Automatic ? T("Job_Automatic", "Automatic") + " " : "") + e.Note);
+Job_BarHead;Kaban.Machines.FA2010\Screens\JobsScreen.cs;634;Text;_lblBar.Text = string.Format(T("Job_BarHead", "Bar {0}: {1} {2}, {3} mm"), b.Title, b.Code, b.Name, b.Length.ToString("0.#", CI)) +
+Job_CannotSend;Kaban.Machines.FA2010\Screens\JobsScreen.cs;732;Message;Ask.Tell(FindForm(), title, string.Format(T("Job_CannotSend", "Bar {0} cannot go to the machine:"), plan.Bar.Title) + "\r\n\r\n" +
 Job_Cmd1;Kaban.Machines.FA2010\Screens\SpecialCutsEditor.cs;59;Text;case SpecialCutCommand.Clamp: return T("Job_Cmd1", "Clamp");
 Job_Cmd2;Kaban.Machines.FA2010\Screens\SpecialCutsEditor.cs;60;Text;case SpecialCutCommand.Unclamp: return T("Job_Cmd2", "Unclamp");
 Job_Cmd3;Kaban.Machines.FA2010\Screens\SpecialCutsEditor.cs;61;Text;case SpecialCutCommand.RobotsMove: return T("Job_Cmd3", "Robots move");
@@ -1193,47 +1213,50 @@ Job_Cmd4;Kaban.Machines.FA2010\Screens\SpecialCutsEditor.cs;62;Text;case Special
 Job_Cmd5;Kaban.Machines.FA2010\Screens\SpecialCutsEditor.cs;63;Text;case SpecialCutCommand.VCut: return T("Job_Cmd5", "V cut");
 Job_Cmd6;Kaban.Machines.FA2010\Screens\SpecialCutsEditor.cs;64;Text;case SpecialCutCommand.ExitRobotPulls: return T("Job_Cmd6", "Exit robot pulls the profile");
 Job_Cmd7;Kaban.Machines.FA2010\Screens\SpecialCutsEditor.cs;65;Text;case SpecialCutCommand.Merge: return T("Job_Cmd7", "Merge the recipes");
-Job_ColAccessories;Kaban.Machines.FA2010\Screens\JobsScreen.cs;145;Text;T("Job_ColAccessories", "Accessories"), T("Job_ColLength", "Length"), T("Job_ColLeftover", "Leftover"),
-Job_ColAccessories;Kaban.Machines.FA2010\Screens\JobsScreen.cs;151;Text;T("Job_ColOrder", "Order"), T("Job_ColCustomer", "Customer"), T("Job_ColBarcode", "Barcode"), T("Job_ColAccessories", "Accessories") },
-Job_ColBar;Kaban.Machines.FA2010\Screens\JobsScreen.cs;144;Text;new[] { T("Job_ColBar", "Bar"), T("Job_ColProfile", "Profile"), T("Job_ColState", "State"), T("Job_ColPieces", "Pieces"),
-Job_ColBarcode;Kaban.Machines.FA2010\Screens\JobsScreen.cs;151;Text;T("Job_ColOrder", "Order"), T("Job_ColCustomer", "Customer"), T("Job_ColBarcode", "Barcode"), T("Job_ColAccessories", "Accessories") },
-Job_ColCode;Kaban.Machines.FA2010\Screens\JobsScreen.cs;154;Text;new[] { T("Job_ColId", "ID (D5000)"), T("Job_ColPos", "Position (D6000)"), T("Job_ColCode", "Code (D7000)"), T("Job_ColPiece", "Piece"), T("Job_ColWhat", "What") },
-Job_ColColour;Kaban.Machines.FA2010\Screens\JobsScreen.cs;146;Text;T("Job_ColName", "Name"), T("Job_ColColour", "Colour") },
-Job_ColCustomer;Kaban.Machines.FA2010\Screens\JobsScreen.cs;151;Text;T("Job_ColOrder", "Order"), T("Job_ColCustomer", "Customer"), T("Job_ColBarcode", "Barcode"), T("Job_ColAccessories", "Accessories") },
-Job_ColId;Kaban.Machines.FA2010\Screens\JobsScreen.cs;154;Text;new[] { T("Job_ColId", "ID (D5000)"), T("Job_ColPos", "Position (D6000)"), T("Job_ColCode", "Code (D7000)"), T("Job_ColPiece", "Piece"), T("Job_ColWhat", "What") },
-Job_ColLeft;Kaban.Machines.FA2010\Screens\JobsScreen.cs;150;Text;new[] { "#", T("Job_ColLength", "Length"), T("Job_ColLeft", "Left \u00B0"), T("Job_ColRight", "Right \u00B0"), T("Job_ColPosition", "Position"),
-Job_ColLeftover;Kaban.Machines.FA2010\Screens\JobsScreen.cs;145;Text;T("Job_ColAccessories", "Accessories"), T("Job_ColLength", "Length"), T("Job_ColLeftover", "Leftover"),
-Job_ColLength;Kaban.Machines.FA2010\Screens\JobsScreen.cs;145;Text;T("Job_ColAccessories", "Accessories"), T("Job_ColLength", "Length"), T("Job_ColLeftover", "Leftover"),
-Job_ColLength;Kaban.Machines.FA2010\Screens\JobsScreen.cs;150;Text;new[] { "#", T("Job_ColLength", "Length"), T("Job_ColLeft", "Left \u00B0"), T("Job_ColRight", "Right \u00B0"), T("Job_ColPosition", "Position"),
-Job_ColName;Kaban.Machines.FA2010\Screens\JobsScreen.cs;146;Text;T("Job_ColName", "Name"), T("Job_ColColour", "Colour") },
-Job_ColOrder;Kaban.Machines.FA2010\Screens\JobsScreen.cs;151;Text;T("Job_ColOrder", "Order"), T("Job_ColCustomer", "Customer"), T("Job_ColBarcode", "Barcode"), T("Job_ColAccessories", "Accessories") },
-Job_ColPiece;Kaban.Machines.FA2010\Screens\JobsScreen.cs;154;Text;new[] { T("Job_ColId", "ID (D5000)"), T("Job_ColPos", "Position (D6000)"), T("Job_ColCode", "Code (D7000)"), T("Job_ColPiece", "Piece"), T("Job_ColWhat", "What") },
-Job_ColPieces;Kaban.Machines.FA2010\Screens\JobsScreen.cs;144;Text;new[] { T("Job_ColBar", "Bar"), T("Job_ColProfile", "Profile"), T("Job_ColState", "State"), T("Job_ColPieces", "Pieces"),
-Job_ColPos;Kaban.Machines.FA2010\Screens\JobsScreen.cs;154;Text;new[] { T("Job_ColId", "ID (D5000)"), T("Job_ColPos", "Position (D6000)"), T("Job_ColCode", "Code (D7000)"), T("Job_ColPiece", "Piece"), T("Job_ColWhat", "What") },
-Job_ColPosition;Kaban.Machines.FA2010\Screens\JobsScreen.cs;150;Text;new[] { "#", T("Job_ColLength", "Length"), T("Job_ColLeft", "Left \u00B0"), T("Job_ColRight", "Right \u00B0"), T("Job_ColPosition", "Position"),
-Job_ColProfile;Kaban.Machines.FA2010\Screens\JobsScreen.cs;144;Text;new[] { T("Job_ColBar", "Bar"), T("Job_ColProfile", "Profile"), T("Job_ColState", "State"), T("Job_ColPieces", "Pieces"),
-Job_ColRight;Kaban.Machines.FA2010\Screens\JobsScreen.cs;150;Text;new[] { "#", T("Job_ColLength", "Length"), T("Job_ColLeft", "Left \u00B0"), T("Job_ColRight", "Right \u00B0"), T("Job_ColPosition", "Position"),
-Job_ColState;Kaban.Machines.FA2010\Screens\JobsScreen.cs;144;Text;new[] { T("Job_ColBar", "Bar"), T("Job_ColProfile", "Profile"), T("Job_ColState", "State"), T("Job_ColPieces", "Pieces"),
-Job_ColWhat;Kaban.Machines.FA2010\Screens\JobsScreen.cs;154;Text;new[] { T("Job_ColId", "ID (D5000)"), T("Job_ColPos", "Position (D6000)"), T("Job_ColCode", "Code (D7000)"), T("Job_ColPiece", "Piece"), T("Job_ColWhat", "What") },
-Job_Cutting;Kaban.Machines.FA2010\Screens\JobsScreen.cs;122;Text;cutting.Controls.Add(new Label { Text = T("Job_Cutting", "Cutting:"), AutoSize = true, Font = new Font(UiStyle.Small, FontStyle.Bold), Margin = new Padding(2, 6, 8, 0) });
-Job_EndMark;Kaban.Machines.FA2010\Screens\JobsScreen.cs;568;Text;int e = _steps.Rows.Add("", JobPlanner.EndMark.ToString(CI), "", "", T("Job_EndMark", "the end of the bar"));
-Job_Filter;Kaban.Machines.FA2010\Screens\JobsScreen.cs;345;Text;using (var d = new OpenFileDialog { Filter = T("Job_Filter", "Job files (*.kbn)|*.kbn|All files (*.*)|*.*"), Title = T("Job_TipOpen", "Open a job file (.kbn)") })
-Job_Hint;Kaban.Machines.FA2010\Screens\JobsScreen.cs;222;Status;Status(T("Job_Hint", "Open a job file (.kbn) - the bars, their pieces and what each sends to the machine are shown."));
-Job_InboxClear;Kaban.Machines.FA2010\Screens\JobsScreen.cs;411;Text;menu.Items.Add(T("Job_InboxClear", "Watch no folder"), null, (s, e) => { if (CanSet) JobInbox.SetFolder(""); });
-Job_InboxEmpty;Kaban.Machines.FA2010\Screens\JobsScreen.cs;401;Menu;menu.Items.Add(new ToolStripMenuItem(T("Job_InboxEmpty", "No new job file")) { Enabled = false });
-Job_InboxLevel;Kaban.Machines.FA2010\Screens\JobsScreen.cs;404;Text;CanSet, T("Job_InboxLevel", "The Maintenance level sets it")));
-Job_InboxNone;Kaban.Machines.FA2010\Screens\JobsScreen.cs;391;Text;menu.Items.Add(UiStyle.MenuHeader(folder.Length > 0 ? folder : T("Job_InboxNone", "No transfer folder set")));
-Job_InboxOpen;Kaban.Machines.FA2010\Screens\JobsScreen.cs;407;Text;menu.Items.Add(T("Job_InboxOpen", "Open the folder"), null, (s, e) =>
-Job_InboxPick;Kaban.Machines.FA2010\Screens\JobsScreen.cs;419;Text;using (var d = new FolderBrowserDialog { Description = T("Job_InboxPick", "The folder the window software writes the job files (.kbn) into") })
-Job_InboxSet;Kaban.Machines.FA2010\Screens\JobsScreen.cs;403;Menu;menu.Items.Add(UiStyle.Unavailable(new ToolStripMenuItem(T("Job_InboxSet", "Set the transfer folder..."), null, (s, e) => PickInbox()),
-Job_InboxSetDone;Kaban.Machines.FA2010\Screens\JobsScreen.cs;425;Status;Status(string.Format(T("Job_InboxSetDone", "Watching {0} for new job files."), d.SelectedPath));
-Job_LeftoverNote;Kaban.Machines.FA2010\Screens\JobsScreen.cs;574;Text;notes.Add(string.Format(T("Job_LeftoverNote", "Leftover {0} mm, {1} step(s) (IDs {2} - {3}), {4} milling operation(s)."),
-Job_LinesNotRead;Kaban.Machines.FA2010\Screens\JobsScreen.cs;455;Text;if (Job.Problems.Count > 0) text += "  " + string.Format(T("Job_LinesNotRead", "{0} line(s) of the file not read (the notes below)."), Job.Problems.Count);
-Job_Longest;Kaban.Machines.FA2010\Screens\JobsScreen.cs;134;Text;setting("Job_Longest", "Longest piece mm", _numLongest, "A longer leftover is cut into pieces the machine can take (0: no limit)");
-Job_NeedsTrial;Kaban.Machines.FA2010\Screens\JobsScreen.cs;649;Message;Ask.Tell(FindForm(), title, string.Format(T("Job_NeedsTrial",
+Job_ColAccessories;Kaban.Machines.FA2010\Screens\JobsScreen.cs;163;Text;T("Job_ColAccessories", "Accessories"), T("Job_ColLength", "Length"), T("Job_ColLeftover", "Leftover"),
+Job_ColAccessories;Kaban.Machines.FA2010\Screens\JobsScreen.cs;169;Text;T("Job_ColOrder", "Order"), T("Job_ColCustomer", "Customer"), T("Job_ColBarcode", "Barcode"), T("Job_ColAccessories", "Accessories") },
+Job_ColBar;Kaban.Machines.FA2010\Screens\JobsScreen.cs;162;Text;new[] { T("Job_ColBar", "Bar"), T("Job_ColProfile", "Profile"), T("Job_ColState", "State"), T("Job_ColPieces", "Pieces"),
+Job_ColBarcode;Kaban.Machines.FA2010\Screens\JobsScreen.cs;169;Text;T("Job_ColOrder", "Order"), T("Job_ColCustomer", "Customer"), T("Job_ColBarcode", "Barcode"), T("Job_ColAccessories", "Accessories") },
+Job_ColCode;Kaban.Machines.FA2010\Screens\JobsScreen.cs;172;Text;new[] { T("Job_ColId", "ID (D5000)"), T("Job_ColPos", "Position (D6000)"), T("Job_ColCode", "Code (D7000)"), T("Job_ColPiece", "Piece"), T("Job_ColWhat", "What") },
+Job_ColColour;Kaban.Machines.FA2010\Screens\JobsScreen.cs;164;Text;T("Job_ColName", "Name"), T("Job_ColColour", "Colour") },
+Job_ColCustomer;Kaban.Machines.FA2010\Screens\JobsScreen.cs;169;Text;T("Job_ColOrder", "Order"), T("Job_ColCustomer", "Customer"), T("Job_ColBarcode", "Barcode"), T("Job_ColAccessories", "Accessories") },
+Job_ColId;Kaban.Machines.FA2010\Screens\JobsScreen.cs;172;Text;new[] { T("Job_ColId", "ID (D5000)"), T("Job_ColPos", "Position (D6000)"), T("Job_ColCode", "Code (D7000)"), T("Job_ColPiece", "Piece"), T("Job_ColWhat", "What") },
+Job_ColLeft;Kaban.Machines.FA2010\Screens\JobsScreen.cs;168;Text;new[] { "#", T("Job_ColLength", "Length"), T("Job_ColLeft", "Left \u00B0"), T("Job_ColRight", "Right \u00B0"), T("Job_ColPosition", "Position"),
+Job_ColLeftover;Kaban.Machines.FA2010\Screens\JobsScreen.cs;163;Text;T("Job_ColAccessories", "Accessories"), T("Job_ColLength", "Length"), T("Job_ColLeftover", "Leftover"),
+Job_ColLength;Kaban.Machines.FA2010\Screens\JobsScreen.cs;163;Text;T("Job_ColAccessories", "Accessories"), T("Job_ColLength", "Length"), T("Job_ColLeftover", "Leftover"),
+Job_ColLength;Kaban.Machines.FA2010\Screens\JobsScreen.cs;168;Text;new[] { "#", T("Job_ColLength", "Length"), T("Job_ColLeft", "Left \u00B0"), T("Job_ColRight", "Right \u00B0"), T("Job_ColPosition", "Position"),
+Job_ColName;Kaban.Machines.FA2010\Screens\JobsScreen.cs;164;Text;T("Job_ColName", "Name"), T("Job_ColColour", "Colour") },
+Job_ColOrder;Kaban.Machines.FA2010\Screens\JobsScreen.cs;169;Text;T("Job_ColOrder", "Order"), T("Job_ColCustomer", "Customer"), T("Job_ColBarcode", "Barcode"), T("Job_ColAccessories", "Accessories") },
+Job_ColPiece;Kaban.Machines.FA2010\Screens\JobsScreen.cs;172;Text;new[] { T("Job_ColId", "ID (D5000)"), T("Job_ColPos", "Position (D6000)"), T("Job_ColCode", "Code (D7000)"), T("Job_ColPiece", "Piece"), T("Job_ColWhat", "What") },
+Job_ColPieces;Kaban.Machines.FA2010\Screens\JobsScreen.cs;162;Text;new[] { T("Job_ColBar", "Bar"), T("Job_ColProfile", "Profile"), T("Job_ColState", "State"), T("Job_ColPieces", "Pieces"),
+Job_ColPos;Kaban.Machines.FA2010\Screens\JobsScreen.cs;172;Text;new[] { T("Job_ColId", "ID (D5000)"), T("Job_ColPos", "Position (D6000)"), T("Job_ColCode", "Code (D7000)"), T("Job_ColPiece", "Piece"), T("Job_ColWhat", "What") },
+Job_ColPosition;Kaban.Machines.FA2010\Screens\JobsScreen.cs;168;Text;new[] { "#", T("Job_ColLength", "Length"), T("Job_ColLeft", "Left \u00B0"), T("Job_ColRight", "Right \u00B0"), T("Job_ColPosition", "Position"),
+Job_ColProfile;Kaban.Machines.FA2010\Screens\JobsScreen.cs;162;Text;new[] { T("Job_ColBar", "Bar"), T("Job_ColProfile", "Profile"), T("Job_ColState", "State"), T("Job_ColPieces", "Pieces"),
+Job_ColRight;Kaban.Machines.FA2010\Screens\JobsScreen.cs;168;Text;new[] { "#", T("Job_ColLength", "Length"), T("Job_ColLeft", "Left \u00B0"), T("Job_ColRight", "Right \u00B0"), T("Job_ColPosition", "Position"),
+Job_ColState;Kaban.Machines.FA2010\Screens\JobsScreen.cs;162;Text;new[] { T("Job_ColBar", "Bar"), T("Job_ColProfile", "Profile"), T("Job_ColState", "State"), T("Job_ColPieces", "Pieces"),
+Job_ColWhat;Kaban.Machines.FA2010\Screens\JobsScreen.cs;172;Text;new[] { T("Job_ColId", "ID (D5000)"), T("Job_ColPos", "Position (D6000)"), T("Job_ColCode", "Code (D7000)"), T("Job_ColPiece", "Piece"), T("Job_ColWhat", "What") },
+Job_Cutting;Kaban.Machines.FA2010\Screens\JobsScreen.cs;140;Text;cutting.Controls.Add(new Label { Text = T("Job_Cutting", "Cutting:"), AutoSize = true, Font = new Font(UiStyle.Small, FontStyle.Bold), Margin = new Padding(2, 6, 8, 0) });
+Job_EndMark;Kaban.Machines.FA2010\Screens\JobsScreen.cs;658;Text;int e = _steps.Rows.Add("", JobPlanner.EndMark.ToString(CI), "", "", T("Job_EndMark", "the end of the bar"));
+Job_Filter;Kaban.Machines.FA2010\Screens\JobsScreen.cs;371;Text;using (var d = new OpenFileDialog { Filter = T("Job_Filter", "Job files (*.kbn)|*.kbn|All files (*.*)|*.*"), Title = T("Job_TipOpen", "Open a job file (.kbn)") })
+Job_Hint;Kaban.Machines.FA2010\Screens\JobsScreen.cs;248;Status;Status(T("Job_Hint", "Open a job file (.kbn) - the bars, their pieces and what each sends to the machine are shown."));
+Job_InboxArchive;Kaban.Machines.FA2010\Screens\JobsScreen.cs;439;Menu;var arch = new ToolStripMenuItem(T("Job_InboxArchive", "Old job files into its Archive"));
+Job_InboxArchiveDays;Kaban.Machines.FA2010\Screens\JobsScreen.cs;443;Menu;var it = new ToolStripMenuItem(days == 0 ? T("Job_InboxArchiveNever", "never") : string.Format(T("Job_InboxArchiveDays", "older than {0} days"), days),
+Job_InboxArchiveNever;Kaban.Machines.FA2010\Screens\JobsScreen.cs;443;Menu;var it = new ToolStripMenuItem(days == 0 ? T("Job_InboxArchiveNever", "never") : string.Format(T("Job_InboxArchiveDays", "older than {0} days"), days),
+Job_InboxClear;Kaban.Machines.FA2010\Screens\JobsScreen.cs;437;Text;menu.Items.Add(T("Job_InboxClear", "Watch no folder"), null, (s, e) => { if (CanSet) JobInbox.SetFolder(""); });
+Job_InboxEmpty;Kaban.Machines.FA2010\Screens\JobsScreen.cs;427;Menu;menu.Items.Add(new ToolStripMenuItem(T("Job_InboxEmpty", "No new job file")) { Enabled = false });
+Job_InboxLevel;Kaban.Machines.FA2010\Screens\JobsScreen.cs;430;Text;CanSet, T("Job_InboxLevel", "The Maintenance level sets it")));
+Job_InboxNone;Kaban.Machines.FA2010\Screens\JobsScreen.cs;417;Text;menu.Items.Add(UiStyle.MenuHeader(folder.Length > 0 ? folder : T("Job_InboxNone", "No transfer folder set")));
+Job_InboxOpen;Kaban.Machines.FA2010\Screens\JobsScreen.cs;433;Text;menu.Items.Add(T("Job_InboxOpen", "Open the folder"), null, (s, e) =>
+Job_InboxPick;Kaban.Machines.FA2010\Screens\JobsScreen.cs;456;Text;using (var d = new FolderBrowserDialog { Description = T("Job_InboxPick", "The folder the window software writes the job files (.kbn) into") })
+Job_InboxSet;Kaban.Machines.FA2010\Screens\JobsScreen.cs;429;Menu;menu.Items.Add(UiStyle.Unavailable(new ToolStripMenuItem(T("Job_InboxSet", "Set the transfer folder..."), null, (s, e) => PickInbox()),
+Job_InboxSetDone;Kaban.Machines.FA2010\Screens\JobsScreen.cs;462;Status;Status(string.Format(T("Job_InboxSetDone", "Watching {0} for new job files."), d.SelectedPath));
+Job_LeftoverNote;Kaban.Machines.FA2010\Screens\JobsScreen.cs;664;Text;notes.Add(string.Format(T("Job_LeftoverNote", "Leftover {0} mm, {1} step(s) (IDs {2} - {3}), {4} milling operation(s)."),
+Job_LinesNotRead;Kaban.Machines.FA2010\Screens\JobsScreen.cs;492;Text;if (Job.Problems.Count > 0) text += "  " + string.Format(T("Job_LinesNotRead", "{0} line(s) of the file not read (the notes below)."), Job.Problems.Count);
+Job_Longest;Kaban.Machines.FA2010\Screens\JobsScreen.cs;152;Text;setting("Job_Longest", "Longest piece mm", _numLongest, "A longer leftover is cut into pieces the machine can take (0: no limit)");
+Job_NeedsTrial;Kaban.Machines.FA2010\Screens\JobsScreen.cs;739;Message;Ask.Tell(FindForm(), title, string.Format(T("Job_NeedsTrial",
 Job_NoBars;Kaban.Machines.FA2010\Screens\JobBarsView.cs;138;Text;TextRenderer.DrawText(g, T("Job_NoBars", "Open a job file: its bars are drawn here."), Font, new Point(Pad, 10), ColText);
-Job_NoLevel;Kaban.Machines.FA2010\Screens\JobsScreen.cs;639;Message;if (!CanSend) { Ask.Tell(FindForm(), title, T("Job_NoLevel", "Sending a job needs the Operator level.")); return false; }
-Job_NotchNote;Kaban.Machines.FA2010\Screens\JobsScreen.cs;587;Text;notes.Add(string.Format(T("Job_NotchNote", "Mullion notching: {0} step(s) of the profile (X1 X2 Z1 Z2 Y1 Y2 Step Speed)"), plan.Notch.Count));
+Job_NoLevel;Kaban.Machines.FA2010\Screens\JobsScreen.cs;729;Message;if (!CanSend) { Ask.Tell(FindForm(), title, T("Job_NoLevel", "Sending a job needs the Operator level.")); return false; }
+Job_NotchNote;Kaban.Machines.FA2010\Screens\JobsScreen.cs;677;Text;notes.Add(string.Format(T("Job_NotchNote", "Mullion notching: {0} step(s) of the profile (X1 X2 Z1 Z2 Y1 Y2 Step Speed)"), plan.Notch.Count));
 Job_PicLeftover;Kaban.Machines.FA2010\Screens\JobBarsView.cs;205;Text;string text = string.Format(T("Job_PicLeftover", "leftover {0}"), plan.Layout.Leftover.ToString("0.#", CI));
 Job_PicMirrored;Kaban.Machines.FA2010\Screens\JobBarsView.cs;330;Text;list.Add(new KeyValuePair<int, string>(0, op.Index.ToString(CI) + " " + op.Accessory + " " + op.Macro + (op.Mirrored ? " (" + T("Job_PicMirrored", "mirrored") + ")" : "") +
 Job_PicSpecial;Kaban.Machines.FA2010\Screens\JobBarsView.cs;335;Text;list.Add(new KeyValuePair<int, string>(2, sp.Number.ToString(CI) + " " + T("Job_PicSpecial", "special cut") + " " + (sp.Recipe != null ? sp.Recipe.Title : "")));
@@ -1278,7 +1301,7 @@ Job_RcTooMany;Kaban.Machines.FA2010\Screens\SpecialCutsEditor.cs;729;Text;if (r.
 Job_RcTwice;Kaban.Machines.FA2010\Screens\SpecialCutsEditor.cs;714;Text;bad.Add(string.Format(T("Job_RcTwice", "recipe number {0} twice"), g.Key));
 Job_RcUnsaved;Kaban.Machines.FA2010\Screens\SpecialCutsEditor.cs;244;Text;_state.Text = dirty ? T("Job_RcUnsaved", "changed - not saved yet") : "";
 Job_RcValuesOf;Kaban.Machines.FA2010\Screens\SpecialCutsEditor.cs;286;Text;sb.Append(string.Format(CI, T("Job_RcValuesOf", "For {0} (W {1}, T {2}, O {3}, D {4}; L = R = 0):"), _valuesOf, _values.W.ToString("0.##", CI),
-Job_ReadFailed;Kaban.Machines.FA2010\Screens\JobsScreen.cs;360;Status;Status(string.Format(T("Job_ReadFailed", "The job file could not be read: {0}"), ex.Message), true);
+Job_ReadFailed;Kaban.Machines.FA2010\Screens\JobsScreen.cs;386;Status;Status(string.Format(T("Job_ReadFailed", "The job file could not be read: {0}"), ex.Message), true);
 Job_RecipesHelp3;Kaban.Machines.FA2010\Screens\SpecialCutsEditor.cs;81;Text;Text = T("Job_RecipesHelp3", "A recipe makes the joint of a piece's right end (its right code) and the next piece's left end (its left code) - " +
 Job_RecipesTitle;Kaban.Machines.FA2010\Screens\SpecialCutsEditor.cs;434;Message;if (used > 0 && !Ask.YesNo(this, T("Job_RecipesTitle", "Special cut recipes"),
 Job_RecipesTitle;Kaban.Machines.FA2010\Screens\SpecialCutsEditor.cs;555;Message;if (!Ask.YesNo(this, T("Job_RecipesTitle", "Special cut recipes"), string.Format(T("Job_RcAskDelete", "Delete recipe {0}?"), r.Title))) return;
@@ -1286,26 +1309,33 @@ Job_RecipesTitle;Kaban.Machines.FA2010\Screens\SpecialCutsEditor.cs;634;Text;str
 Job_RecipesTitle;Kaban.Machines.FA2010\Screens\SpecialCutsEditor.cs;691;Message;catch (Exception ex) { Ask.Tell(this, T("Job_RecipesTitle", "Special cut recipes"), ex.Message); return false; }
 Job_RecipesTitle;Kaban.Machines.FA2010\Screens\SpecialCutsEditor.cs;692;Message;if (list.Count == 0) { Ask.Tell(this, T("Job_RecipesTitle", "Special cut recipes"), T("Job_RcImportNone", "No recipe was found in the file.") + (problems.Count > 0 ? "\r\n" + st...
 Job_RecipesTitle;Kaban.Machines.FA2010\Screens\SpecialCutsEditor.cs;698;Message;if ((Recipes.Count > 0 || (types != null && Types.Count > 0)) && !Ask.YesNo(this, T("Job_RecipesTitle", "Special cut recipes"), q)) return false;
-Job_Saw;Kaban.Machines.FA2010\Screens\JobsScreen.cs;131;Text;setting("Job_Saw", "Saw blade mm", _numSaw, "The main saw blade's thickness: half of it, at the cut's angle, on each side of every cut");
-Job_SawToVCut;Kaban.Machines.FA2010\Screens\JobsScreen.cs;140;Text;setting("Job_SawToVCut", "Saw - V cut distance mm", _numVSaws, "The distance between the saw and the V cut's centre - the special cut recipes' D (the recipes are on the Profiles...
-Job_Send;Kaban.Machines.FA2010\Screens\JobsScreen.cs;105;Text;_btnSend = UiStyle.TextButton("\u25B6 " + T("Job_Send", "Send to the machine"), 0, (s, e) => SendSelected());
-Job_Send;Kaban.Machines.FA2010\Screens\JobsScreen.cs;638;Text;string title = T("Job_Send", "Send to the machine");
-Job_SendFailed;Kaban.Machines.FA2010\Screens\JobsScreen.cs;668;Message;Ask.Tell(FindForm(), title, string.Format(T("Job_SendFailed", "Bar {0} was not sent: {1}"), plan.Bar.Title, r.Message));
-Job_SendFailed;Kaban.Machines.FA2010\Screens\JobsScreen.cs;669;Message;Status(string.Format(T("Job_SendFailed", "Bar {0} was not sent: {1}"), plan.Bar.Title, r.Message), true);
-Job_Sent;Kaban.Machines.FA2010\Screens\JobsScreen.cs;677;Status;Status(string.Format(T("Job_Sent", "Bar {0} sent to the machine: {1} step(s), {2} milling operation(s){3}."), plan.Bar.Title, plan.Steps.Count, plan.Milling.Count,
-Job_Share;Kaban.Machines.FA2010\Screens\JobsScreen.cs;132;Text;setting("Job_Share", "Vertical share mm", _numShare, "The saw's vertical share (the old program's): added at an angled cut over its tangent");
-Job_Square;Kaban.Machines.FA2010\Screens\JobsScreen.cs;133;Text;setting("Job_Square", "Square a leftover from mm", _numSquare, "A leftover this long or longer is squared (a 90 degree cut) when the last cut is not");
+Job_RunPrefix;Kaban.Machines.FA2010\Screens\JobsScreen.cs;238;Status;Action<string, bool> runSaid = (text, bad) => OnUi(() => { Status(T("Job_RunPrefix", "Automatic:") + " " + text, bad); ShowRun(); });
+Job_RunSent;Kaban.Machines.FA2010\Screens\JobsScreen.cs;522;Status;Status(string.Format(T("Job_RunSent", "Automatic: bar {0} sent - {1} more to go."), Plans[i].Bar.Title, JobRun.Queue.Count));
+Job_RunStopped;Kaban.Machines.FA2010\Screens\JobsScreen.cs;130;Text;_btnStopRun = UiStyle.TextButton("\u25A0 " + T("Job_StopRun", "Stop automatic"), 0, (s, e) => JobRun.Stop(T("Job_RunStopped", "stopped by the operator")));
+Job_Saw;Kaban.Machines.FA2010\Screens\JobsScreen.cs;149;Text;setting("Job_Saw", "Saw blade mm", _numSaw, "The main saw blade's thickness: half of it, at the cut's angle, on each side of every cut");
+Job_SawToVCut;Kaban.Machines.FA2010\Screens\JobsScreen.cs;158;Text;setting("Job_SawToVCut", "Saw - V cut distance mm", _numVSaws, "The distance between the saw and the V cut's centre - the special cut recipes' D (the recipes are on the Profiles...
+Job_Send;Kaban.Machines.FA2010\Screens\JobsScreen.cs;109;Text;_btnSend = UiStyle.TextButton("\u25B6 " + T("Job_Send", "Send to the machine"), 0, (s, e) => SendSelected());
+Job_Send;Kaban.Machines.FA2010\Screens\JobsScreen.cs;728;Text;string title = T("Job_Send", "Send to the machine");
+Job_SendFailed;Kaban.Machines.FA2010\Screens\JobsScreen.cs;765;Message;Ask.Tell(FindForm(), title, string.Format(T("Job_SendFailed", "Bar {0} was not sent: {1}"), plan.Bar.Title, why));
+Job_SendFailed;Kaban.Machines.FA2010\Screens\JobsScreen.cs;766;Message;Status(string.Format(T("Job_SendFailed", "Bar {0} was not sent: {1}"), plan.Bar.Title, why), true);
+Job_SendFailed;Kaban.Machines.FA2010\Screens\JobsScreen.cs;775;Message;Ask.Tell(FindForm(), title, string.Format(T("Job_SendFailed", "Bar {0} was not sent: {1}"), plan.Bar.Title, r.Message));
+Job_SendFailed;Kaban.Machines.FA2010\Screens\JobsScreen.cs;776;Message;Status(string.Format(T("Job_SendFailed", "Bar {0} was not sent: {1}"), plan.Bar.Title, r.Message), true);
+Job_Sent;Kaban.Machines.FA2010\Screens\JobsScreen.cs;787;Status;Status(string.Format(T("Job_Sent", "Bar {0} sent to the machine: {1} step(s), {2} milling operation(s){3}."), plan.Bar.Title, plan.Steps.Count, plan.Milling.Count,
+Job_Share;Kaban.Machines.FA2010\Screens\JobsScreen.cs;150;Text;setting("Job_Share", "Vertical share mm", _numShare, "The saw's vertical share (the old program's): added at an angled cut over its tangent");
+Job_Square;Kaban.Machines.FA2010\Screens\JobsScreen.cs;151;Text;setting("Job_Square", "Square a leftover from mm", _numSquare, "A leftover this long or longer is squared (a 90 degree cut) when the last cut is not");
 Job_StAdd;Kaban.Machines.FA2010\Screens\SpecialCutsEditor.cs;182;Text;Btn("+ " + T("Job_StAdd", "Step"), (s, e) => AddStep(), true),
 Job_StAngle;Kaban.Machines.FA2010\Screens\SpecialCutsEditor.cs;129;Text;AddText(_steps, "sangle", T("Job_StAngle", "Angle °"), 80, true);
+Job_StateFinished;Kaban.Machines.FA2010\Screens\JobsScreen.cs;595;Text;cell.Value = "\u2714\u2714 " + string.Format(T("Job_StateFinished", "finished {0}"), f.ToString(f.Date == DateTime.Today ? "HH:mm" : "yyyy-MM-dd HH:mm", CI));
 Job_StateProblems;Kaban.Machines.FA2010\Screens\JobBarsView.cs;172;Text;string bad = "⚠ " + string.Format(T("Job_StateProblems", "{0} problem(s)"), plan.Problems.Count);
-Job_StateProblems;Kaban.Machines.FA2010\Screens\JobsScreen.cs;505;Text;cell.Value = "\u26A0 " + string.Format(T("Job_StateProblems", "{0} problem(s)"), plan.Problems.Count);
-Job_StateReady;Kaban.Machines.FA2010\Screens\JobsScreen.cs;520;Text;cell.Value = T("Job_StateReady", "ready");
-Job_StateSent;Kaban.Machines.FA2010\Screens\JobsScreen.cs;510;Text;cell.Value = "\u2714 " + string.Format(T("Job_StateSent", "sent {0}"), sent.Value.ToString(sent.Value.Date == DateTime.Today ? "HH:mm" : "yyyy-MM-dd HH:mm", CI));
-Job_StateTrial;Kaban.Machines.FA2010\Screens\JobsScreen.cs;515;Text;cell.Value = T("Job_StateTrial", "trial only (unconfirmed)");
+Job_StateProblems;Kaban.Machines.FA2010\Screens\JobsScreen.cs;589;Text;cell.Value = "\u26A0 " + string.Format(T("Job_StateProblems", "{0} problem(s)"), plan.Problems.Count);
+Job_StateReady;Kaban.Machines.FA2010\Screens\JobsScreen.cs;610;Text;cell.Value = T("Job_StateReady", "ready");
+Job_StateSent;Kaban.Machines.FA2010\Screens\JobsScreen.cs;600;Text;cell.Value = "\u2714 " + string.Format(T("Job_StateSent", "sent {0}"), sent.Value.ToString(sent.Value.Date == DateTime.Today ? "HH:mm" : "yyyy-MM-dd HH:mm", CI));
+Job_StateTrial;Kaban.Machines.FA2010\Screens\JobsScreen.cs;605;Text;cell.Value = T("Job_StateTrial", "trial only (unconfirmed)");
 Job_StCommand;Kaban.Machines.FA2010\Screens\SpecialCutsEditor.cs;122;Heading;var cmd = new DataGridViewComboBoxColumn { Name = "command", HeaderText = T("Job_StCommand", "Step"), Width = 220, FlatStyle = FlatStyle.Flat, SortMode = DataGridViewColumnSortM...
 Job_StCommand;Kaban.Machines.FA2010\Screens\SpecialCutsEditor.cs;294;Text;sb.Append(string.Format(CI, "\r\n{0} {1}: {2}", T("Job_StCommand", "Step"), k + 1, CommandName(st.Command)));
 Job_StDelete;Kaban.Machines.FA2010\Screens\SpecialCutsEditor.cs;183;Text;Btn("\u2212 " + T("Job_StDelete", "Step"), (s, e) => DeleteStep(), true),
 Job_StLeftClamp;Kaban.Machines.FA2010\Screens\SpecialCutsEditor.cs;125;Heading;_steps.Columns.Add(new DataGridViewCheckBoxColumn { Name = "lclamp", HeaderText = T("Job_StLeftClamp", "Left clamp"), Width = 84, SortMode = DataGridViewColumnSortMode.NotSortab...
+Job_StopRun;Kaban.Machines.FA2010\Screens\JobsScreen.cs;130;Text;_btnStopRun = UiStyle.TextButton("\u25A0 " + T("Job_StopRun", "Stop automatic"), 0, (s, e) => JobRun.Stop(T("Job_RunStopped", "stopped by the operator")));
 Job_StRightClamp;Kaban.Machines.FA2010\Screens\SpecialCutsEditor.cs;126;Heading;_steps.Columns.Add(new DataGridViewCheckBoxColumn { Name = "rclamp", HeaderText = T("Job_StRightClamp", "Right clamp"), Width = 88, SortMode = DataGridViewColumnSortMode.NotSort...
 Job_StRobot1;Kaban.Machines.FA2010\Screens\SpecialCutsEditor.cs;127;Text;AddText(_steps, "robot1", T("Job_StRobot1", "Robot 1"), 130, false);
 Job_StRobot1;Kaban.Machines.FA2010\Screens\SpecialCutsEditor.cs;295;Text;if (SpecialCutStep.Uses(st.Command, "Robot1")) sb.Append(", " + T("Job_StRobot1", "Robot 1") + " " + v(st.Robot1));
@@ -1313,23 +1343,26 @@ Job_StRobot2;Kaban.Machines.FA2010\Screens\SpecialCutsEditor.cs;128;Text;AddText
 Job_StRobot2;Kaban.Machines.FA2010\Screens\SpecialCutsEditor.cs;296;Text;if (SpecialCutStep.Uses(st.Command, "Robot2")) sb.Append(", " + T("Job_StRobot2", "Robot 2") + " " + v(st.Robot2));
 Job_StVCut;Kaban.Machines.FA2010\Screens\SpecialCutsEditor.cs;130;Text;AddText(_steps, "vcut", T("Job_StVCut", "V cut Y"), 130, false);
 Job_StVCut;Kaban.Machines.FA2010\Screens\SpecialCutsEditor.cs;297;Text;if (SpecialCutStep.Uses(st.Command, "VCutY")) sb.Append(", " + T("Job_StVCut", "V cut Y") + " " + v(st.VCutY));
-Job_Summary;Kaban.Machines.FA2010\Screens\JobsScreen.cs;454;Text;string text = string.Format(T("Job_Summary", "{0}: {1} bar(s) - {2} can go to the machine, {3} cannot."), Job.Name, Job.Bars.Count, ready, problems);
-Job_TipInbox;Kaban.Machines.FA2010\Screens\JobsScreen.cs;100;Tooltip;_btnInbox = UiStyle.ToolButton("\uD83D\uDCE5", T("Job_TipInbox", "The transfer folder: the job files the window software writes there come to the top of the list"), _tips,
-Job_TipOpen;Kaban.Machines.FA2010\Screens\JobsScreen.cs;83;Tooltip;_btnOpen = UiStyle.ToolButton("\uD83D\uDCC2", T("Job_TipOpen", "Open a job file (.kbn) - the window software's job list for the machine"), _tips, (s, e) => OpenFile());
-Job_TipOpen;Kaban.Machines.FA2010\Screens\JobsScreen.cs;345;Text;using (var d = new OpenFileDialog { Filter = T("Job_Filter", "Job files (*.kbn)|*.kbn|All files (*.*)|*.*"), Title = T("Job_TipOpen", "Open a job file (.kbn)") })
+Job_Summary;Kaban.Machines.FA2010\Screens\JobsScreen.cs;491;Text;string text = string.Format(T("Job_Summary", "{0}: {1} bar(s) - {2} can go to the machine, {3} cannot."), Job.Name, Job.Bars.Count, ready, problems);
+Job_TipAutomatic;Kaban.Machines.FA2010\Screens\JobsScreen.cs;127;Tooltip;_tips.SetToolTip(_chkAuto, T("Job_TipAutomatic",
+Job_TipInbox;Kaban.Machines.FA2010\Screens\JobsScreen.cs;104;Tooltip;_btnInbox = UiStyle.ToolButton("\uD83D\uDCE5", T("Job_TipInbox", "The transfer folder: the job files the window software writes there come to the top of the list"), _tips,
+Job_TipOpen;Kaban.Machines.FA2010\Screens\JobsScreen.cs;87;Tooltip;_btnOpen = UiStyle.ToolButton("\uD83D\uDCC2", T("Job_TipOpen", "Open a job file (.kbn) - the window software's job list for the machine"), _tips, (s, e) => OpenFile());
+Job_TipOpen;Kaban.Machines.FA2010\Screens\JobsScreen.cs;371;Text;using (var d = new OpenFileDialog { Filter = T("Job_Filter", "Job files (*.kbn)|*.kbn|All files (*.*)|*.*"), Title = T("Job_TipOpen", "Open a job file (.kbn)") })
 Job_TipRcAngle;Kaban.Machines.FA2010\Screens\SpecialCutsEditor.cs;102;Tooltip;_recipes.Columns["angle"].ToolTipText = T("Job_TipRcAngle", "The angle of its first normal cut - written to the PLC before its steps, so the saw turns in time (typed in only for...
 Job_TipRcAngleFirst;Kaban.Machines.FA2010\Screens\SpecialCutsEditor.cs;388;Tooltip;cell.ToolTipText = first.HasValue ? T("Job_TipRcAngleFirst", "Its first normal cut's angle - written before its steps so the saw turns in time") : "";
 Job_TipRcLeftCode;Kaban.Machines.FA2010\Screens\SpecialCutsEditor.cs;100;Tooltip;_recipes.Columns["left"].ToolTipText = T("Job_TipRcLeftCode", "The next piece's left end: a special cut type's code (the job file's), an ordinary end's angle, 0 any");
 Job_TipRcOffL;Kaban.Machines.FA2010\Screens\SpecialCutsEditor.cs;98;Tooltip;_recipes.Columns["offL"].ToolTipText = T("Job_TipRcOffL", "The recipe for a left end that has a value (L not 0)");
 Job_TipRcOffR;Kaban.Machines.FA2010\Screens\SpecialCutsEditor.cs;99;Tooltip;_recipes.Columns["offR"].ToolTipText = T("Job_TipRcOffR", "The recipe for a right end that has a value (R not 0)");
 Job_TipRcRightCode;Kaban.Machines.FA2010\Screens\SpecialCutsEditor.cs;101;Tooltip;_recipes.Columns["right"].ToolTipText = T("Job_TipRcRightCode", "The piece's right end: a special cut type's code (the job file's), an ordinary end's angle, 0 any");
-Job_TipRecent;Kaban.Machines.FA2010\Screens\JobsScreen.cs;95;Tooltip;_tips.SetToolTip(_cmbRecent, T("Job_TipRecent", "The jobs opened lately"));
-Job_TipReload;Kaban.Machines.FA2010\Screens\JobsScreen.cs;97;Tooltip;_btnReload = UiStyle.ToolButton("\uD83D\uDD04", T("Job_TipReload", "Read the job file and the profile library again"), _tips, (s, e) => { if (Job != null) OpenJob(Job.Path); });
-Job_TipSend;Kaban.Machines.FA2010\Screens\JobsScreen.cs;108;Tooltip;_tips.SetToolTip(_btnSend, T("Job_TipSend", "Write the selected bar into the PLC: the profile's parameters, its milling operations, the job list"));
-Job_TipTrial;Kaban.Machines.FA2010\Screens\JobsScreen.cs;115;Tooltip;_tips.SetToolTip(_chkTrial, T("Job_TipTrial",
+Job_TipRecent;Kaban.Machines.FA2010\Screens\JobsScreen.cs;99;Tooltip;_tips.SetToolTip(_cmbRecent, T("Job_TipRecent", "The jobs opened lately"));
+Job_TipReload;Kaban.Machines.FA2010\Screens\JobsScreen.cs;101;Tooltip;_btnReload = UiStyle.ToolButton("\uD83D\uDD04", T("Job_TipReload", "Read the job file and the profile library again"), _tips, (s, e) => { if (Job != null) OpenJob(Job.Path); });
+Job_TipSend;Kaban.Machines.FA2010\Screens\JobsScreen.cs;112;Tooltip;_tips.SetToolTip(_btnSend, T("Job_TipSend", "Write the selected bar into the PLC: the profile's parameters, its milling operations, the job list"));
+Job_TipStopRun;Kaban.Machines.FA2010\Screens\JobsScreen.cs;134;Tooltip;_tips.SetToolTip(_btnStopRun, T("Job_TipStopRun", "No further bar is sent: the bar in the machine is its last (L10 off)"));
+Job_TipTrial;Kaban.Machines.FA2010\Screens\JobsScreen.cs;119;Tooltip;_tips.SetToolTip(_chkTrial, T("Job_TipTrial",
 Job_TipTyCode;Kaban.Machines.FA2010\Screens\SpecialCutsEditor.cs;144;Tooltip;_types.Columns["no"].ToolTipText = T("Job_TipTyCode", "The code a job file's SpecialCut line gives the end");
-Job_Trial;Kaban.Machines.FA2010\Screens\JobsScreen.cs;110;Text;_chkTrial.Text = T("Job_Trial", "Trial");
-Job_Trial;Kaban.Machines.FA2010\Screens\JobsScreen.cs;678;Status;trial ? " - " + T("Job_Trial", "Trial") : ""));
+Job_Trial;Kaban.Machines.FA2010\Screens\JobsScreen.cs;114;Text;_chkTrial.Text = T("Job_Trial", "Trial");
+Job_Trial;Kaban.Machines.FA2010\Screens\JobsScreen.cs;788;Status;trial ? " - " + T("Job_Trial", "Trial") : ""));
+Job_Trial;KabanHMI\Settings\ProductionControl.cs;152;Text;(e.Trial ? T("Job_Trial", "Trial") + " " : "") + (e.Automatic ? T("Job_Automatic", "Automatic") + " " : "") + e.Note);
 Job_TyAdd;Kaban.Machines.FA2010\Screens\SpecialCutsEditor.cs;153;Text;Btn("+ " + T("Job_TyAdd", "Type"), (s, e) => AddType(), true),
 Job_TyAskDelete;Kaban.Machines.FA2010\Screens\SpecialCutsEditor.cs;435;Message;string.Format(T("Job_TyAskDelete", "{0} recipe(s) use the code {1} ({2}). Delete the type anyway? (their codes stay)"), used, t.No, t.Name))) return;
 Job_TyCode;Kaban.Machines.FA2010\Screens\SpecialCutsEditor.cs;142;Text;AddText(_types, "no", T("Job_TyCode", "Code"), 56, true);
@@ -1355,14 +1388,14 @@ Key_Enter;KabanHMI\Helpers\Shortcuts.cs;92;Text;case Keys.Enter: return T("Key_E
 Key_Insert;KabanHMI\Helpers\Shortcuts.cs;90;Text;case Keys.Insert: return T("Key_Insert", "Insert");
 Key_Shift;KabanHMI\Helpers\Shortcuts.cs;79;Text;if ((keys & Keys.Shift) != 0) parts.Add(T("Key_Shift", "Shift"));
 Key_Space;KabanHMI\Helpers\Shortcuts.cs;93;Text;case Keys.Space: return T("Key_Space", "Space");
-Lbl_AddField;KabanHMI\Settings\LabelSettingsControl.cs;126;Tooltip;var fadd = UiStyle.ToolButton("➕", T("Lbl_AddField", "Add a field"), tips, (s, e) => AddField());
-Lbl_AllFiles;KabanHMI\Settings\LabelSettingsControl.cs;508;Text;using (var d = new SaveFileDialog { FileName = t.Name + ".prn", Filter = T("Lbl_PrnFiles", "Printer files") + " (*.prn)|*.prn|" + T("Lbl_AllFiles", "All files") + " (*.*)|*.*" })
+Lbl_AddField;KabanHMI\Settings\LabelSettingsControl.cs;128;Tooltip;var fadd = UiStyle.ToolButton("➕", T("Lbl_AddField", "Add a field"), tips, (s, e) => AddField());
+Lbl_AllFiles;KabanHMI\Settings\LabelSettingsControl.cs;512;Text;using (var d = new SaveFileDialog { FileName = t.Name + ".prn", Filter = T("Lbl_PrnFiles", "Printer files") + " (*.prn)|*.prn|" + T("Lbl_AllFiles", "All files") + " (*.*)|*.*" })
 Lbl_AllFiles;KabanHMI\Settings\TranslationsControl.Import.cs;116;Text;Filter = T("Lbl_TrnFiles", "Translation files") + " (" + pattern + ")|" + pattern + "|" + T("Lbl_AllFiles", "All files") + " (*.*)|*.*"
-Lbl_AnyMachine;KabanHMI\Settings\LabelSettingsControl.cs;116;Text;_machine.Items.Add(T("Lbl_AnyMachine", "every machine"));
+Lbl_AnyMachine;KabanHMI\Settings\LabelSettingsControl.cs;118;Text;_machine.Items.Add(T("Lbl_AnyMachine", "every machine"));
 Lbl_ArrayCount;KabanHMI\Forms\PlcRowEditorForm.cs;161;Text;new[] { "Lbl_ArrayCount", "Array (how many)" }, new[] { "Col_ValuePlc", "Value (PLC)" } })
 Lbl_ArrayCount;KabanHMI\Forms\PlcRowEditorForm.cs;212;Text;AddRow(LanguageManager.GetString("Lbl_ArrayCount", "Array (how many)"), _count, ref y);
-Lbl_AskDelete;KabanHMI\Settings\LabelSettingsControl.cs;452;Message;if (!Ask.YesNo(FindForm(), T("Tab_Labels", "Labels"), string.Format(T("Lbl_AskDelete", "Delete the label {0}?"), _currentOldName))) return;
-Lbl_At;KabanHMI\Settings\LabelSettingsControl.cs;188;Text;_recent.Columns.Add(TextCol("at", T("Lbl_At", "Time"), 10));
+Lbl_AskDelete;KabanHMI\Settings\LabelSettingsControl.cs;456;Message;if (!Ask.YesNo(FindForm(), T("Tab_Labels", "Labels"), string.Format(T("Lbl_AskDelete", "Delete the label {0}?"), _currentOldName))) return;
+Lbl_At;KabanHMI\Settings\LabelSettingsControl.cs;190;Text;_recent.Columns.Add(TextCol("at", T("Lbl_At", "Time"), 10));
 Lbl_BakCams;KabanHMI\Settings\PlcBackupForms.cs;240;Text;if (_modules.Count > 0) add(T("Lbl_BakCams", "Cam No. also read"), _cams, 32);
 Lbl_BakCpu;KabanHMI\Settings\PlcBackupForms.cs;227;Text;add(T("Lbl_BakCpu", "CPU"), _cpu, 30);
 Lbl_BakCpuUnknown;KabanHMI\Settings\PlcBackupForms.cs;203;Text;_cpu.Text = id != null && !string.IsNullOrEmpty(id.Identity) ? id.Identity : T("Lbl_BakCpuUnknown", "(the PLC does not say)");
@@ -1376,8 +1409,8 @@ Lbl_BakSummary;KabanHMI\Settings\PlcBackupForms.cs;964;Text;_summary.Text = part
 Lbl_BakTo;KabanHMI\Settings\PlcBackupSelection.cs;237;Text;table.Controls.Add(new Label { Text = T("Lbl_BakTo", "to"), AutoSize = true, Margin = new Padding(3, 8, 3, 3) }, 2, rows);
 Lbl_BakUser;KabanHMI\Settings\PlcBackupForms.cs;229;Text;add(T("Lbl_BakUser", "User"), new Label { Text = SecurityManager.CurrentUser, Name = "bakUser" }, 30);
 Lbl_BakWhat;KabanHMI\Settings\PlcBackupForms.cs;239;Text;add(T("Lbl_BakWhat", "What is read"), what, 72);
-Lbl_Baud;KabanHMI\Settings\LabelSettingsControl.cs;103;Text;Row(T("Lbl_Printer", "Printer"), _printer, x0, y); Row(T("Lbl_Baud", "Baud rate"), _baud, x0 + c2, y);
-Lbl_Bit;KabanHMI\Settings\LabelSettingsControl.cs;169;Text;_triggers.Columns.Add(TextCol("bit", T("Lbl_Bit", "Its bit"), 10));
+Lbl_Baud;KabanHMI\Settings\LabelSettingsControl.cs;105;Text;Row(T("Lbl_Printer", "Printer"), _printer, x0, y); Row(T("Lbl_Baud", "Baud rate"), _baud, x0 + c2, y);
+Lbl_Bit;KabanHMI\Settings\LabelSettingsControl.cs;171;Text;_triggers.Columns.Add(TextCol("bit", T("Lbl_Bit", "Its bit"), 10));
 Lbl_CmpConverted;KabanHMI\Settings\SettingsCompareForm.cs;85;Text;string right = f.SourcePath + (f.NeedsUpgrade ? "  " + string.Format(T("Lbl_CmpConverted", "(converted from v{0}, as it would be written)"), f.DetectedVersion) : "");
 Lbl_CmpNone;KabanHMI\Settings\SettingsCompareForm.cs;84;Text;: T("Lbl_CmpNone", "(none - the import adds it)");
 Lbl_CmpOld;KabanHMI\Settings\SettingsCompareForm.cs;87;Text;heads.Controls.Add(head(T("Lbl_CmpOld", "The older installation's - what the import writes:"), right), 1, 0);
@@ -1387,15 +1420,16 @@ Lbl_ColShown;KabanHMI\Helpers\ColumnChooser.cs;295;Text;table.Controls.Add(new L
 Lbl_ColTable;KabanHMI\Helpers\ColumnChooser.cs;312;Text;var totalLabel = new Label { Text = T("Lbl_ColTable", "The whole table"), AutoSize = true, Font = UiStyle.FontVariant(UiStyle.Body, FontStyle.Bold), Margin = new Padding(3, 12, ...
 Lbl_ColWidth;KabanHMI\Helpers\ColumnChooser.cs;297;Text;table.Controls.Add(new Label { Text = T("Lbl_ColWidth", "Width (pixels)"), AutoSize = true, ForeColor = Color.FromArgb(90, 96, 106), Margin = new Padding(3, 6, 3, 6) }, 2, 0);
 Lbl_CommentLine;KabanHMI\Forms\PlcRowEditorForm.cs;166;Text;_comment.Text = LanguageManager.GetString("Lbl_CommentLine", "Comment line (no address, no value)");
-Lbl_Copy;KabanHMI\Settings\LabelSettingsControl.cs;75;Tooltip;var copy = UiStyle.ToolButton("📋", T("Lbl_Copy", "A copy of the label"), tips, (s, e) => CopyLabel());
-Lbl_Delete;KabanHMI\Settings\LabelSettingsControl.cs;76;Tooltip;var del = UiStyle.ToolButton("🗑", T("Lbl_Delete", "Delete the label"), tips, (s, e) => DeleteLabel());
-Lbl_Deleted;KabanHMI\Settings\LabelSettingsControl.cs;455;Text;Say(T("Lbl_Deleted", "Deleted."), true);
-Lbl_Divisor;KabanHMI\Settings\LabelSettingsControl.cs;171;Text;_triggers.Columns.Add(TextCol("divisor", T("Lbl_Divisor", "Divided by"), 9));
-Lbl_FieldDown;KabanHMI\Settings\LabelSettingsControl.cs;129;Tooltip;var fdown = UiStyle.ToolButton("▼", T("Lbl_FieldDown", "Down the list"), tips, (s, e) => MoveField(1));
-Lbl_FieldUp;KabanHMI\Settings\LabelSettingsControl.cs;128;Tooltip;var fup = UiStyle.ToolButton("▲", T("Lbl_FieldUp", "Up the list"), tips, (s, e) => MoveField(-1));
-Lbl_FileSaved;KabanHMI\Settings\LabelSettingsControl.cs;514;Text;Say(string.Format(T("Lbl_FileSaved", "Saved as {0}."), d.FileName), true);
+Lbl_Copies;KabanHMI\Settings\LabelSettingsControl.cs;103;Text;Row(T("Lbl_Copies", "Copies"), _copies, x0 + c3, y);
+Lbl_Copy;KabanHMI\Settings\LabelSettingsControl.cs;76;Tooltip;var copy = UiStyle.ToolButton("📋", T("Lbl_Copy", "A copy of the label"), tips, (s, e) => CopyLabel());
+Lbl_Delete;KabanHMI\Settings\LabelSettingsControl.cs;77;Tooltip;var del = UiStyle.ToolButton("🗑", T("Lbl_Delete", "Delete the label"), tips, (s, e) => DeleteLabel());
+Lbl_Deleted;KabanHMI\Settings\LabelSettingsControl.cs;459;Text;Say(T("Lbl_Deleted", "Deleted."), true);
+Lbl_Divisor;KabanHMI\Settings\LabelSettingsControl.cs;173;Text;_triggers.Columns.Add(TextCol("divisor", T("Lbl_Divisor", "Divided by"), 9));
+Lbl_FieldDown;KabanHMI\Settings\LabelSettingsControl.cs;131;Tooltip;var fdown = UiStyle.ToolButton("▼", T("Lbl_FieldDown", "Down the list"), tips, (s, e) => MoveField(1));
+Lbl_FieldUp;KabanHMI\Settings\LabelSettingsControl.cs;130;Tooltip;var fup = UiStyle.ToolButton("▲", T("Lbl_FieldUp", "Up the list"), tips, (s, e) => MoveField(-1));
+Lbl_FileSaved;KabanHMI\Settings\LabelSettingsControl.cs;518;Text;Say(string.Format(T("Lbl_FileSaved", "Saved as {0}."), d.FileName), true);
 Lbl_FindWhat;KabanHMI\Forms\DeviceFindForm.cs;119;Text;var caption1 = new Label { Text = T("Lbl_FindWhat", "Address, label or name:"), AutoSize = true, Location = new Point(10, 12) };
-Lbl_FixedText;Kaban.Core\Labels\LabelTemplate.cs;128;Text;if (string.IsNullOrEmpty(key)) return LanguageManager.GetString("Lbl_FixedText", "Fixed text");
+Lbl_FixedText;Kaban.Core\Labels\LabelTemplate.cs;130;Text;if (string.IsNullOrEmpty(key)) return LanguageManager.GetString("Lbl_FixedText", "Fixed text");
 Lbl_FlgColours;KabanHMI\Settings\TranslationFlagForm.cs;130;Text;var colourLabel = new Label { Text = T("Lbl_FlgColours", "Its colours (from the top, from the left; the field first, then the cross):"), Location = new Point(10, 82), Size = new...
 Lbl_FlgLanguage;KabanHMI\Settings\TranslationFlagForm.cs;78;Text;var langLabel = new Label { Text = T("Lbl_FlgLanguage", "Language:"), AutoSize = true, Location = new Point(12, 12) };
 Lbl_FlgNew;KabanHMI\Settings\TranslationFlagForm.cs;88;Text;var newLabel = new Label { Text = T("Lbl_FlgNew", "The flag chosen:"), AutoSize = true, Location = new Point(12, 236) };
@@ -1404,50 +1438,50 @@ Lbl_FlgPattern;KabanHMI\Settings\TranslationFlagForm.cs;125;Text;var patternLabe
 Lbl_FlgPictureNote;KabanHMI\Settings\TranslationFlagForm.cs;154;Text;Text = T("Lbl_FlgPictureNote", "A PNG, JPG, BMP or GIF of any size: its middle is taken in the flags' shape (3:2), cut at the sides or the top and bottom. " +
 Lbl_FlgSearch;KabanHMI\Settings\TranslationFlagForm.cs;104;Text;var searchLabel = new Label { Text = T("Lbl_FlgSearch", "Its name or code - or paste its flag emoji:"), AutoSize = true, Location = new Point(0, 8) };
 Lbl_FlgSmall;KabanHMI\Settings\TranslationFlagForm.cs;93;Text;Text = T("Lbl_FlgSmall", "Beside: as small as on the caption bar."), Location = new Point(12, 386), Size = new Size(250, 40),
-Lbl_Font;KabanHMI\Settings\LabelSettingsControl.cs;145;Heading;var fontCol = new DataGridViewComboBoxColumn { Name = "font", HeaderText = T("Lbl_Font", "Font"), FillWeight = 6, FlatStyle = FlatStyle.Flat };
-Lbl_H;KabanHMI\Settings\LabelSettingsControl.cs;149;Text;_fields.Columns.Add(TextCol("h", T("Lbl_H", "H mm"), 6));
+Lbl_Font;KabanHMI\Settings\LabelSettingsControl.cs;147;Heading;var fontCol = new DataGridViewComboBoxColumn { Name = "font", HeaderText = T("Lbl_Font", "Font"), FillWeight = 6, FlatStyle = FlatStyle.Flat };
+Lbl_H;KabanHMI\Settings\LabelSettingsControl.cs;151;Text;_fields.Columns.Add(TextCol("h", T("Lbl_H", "H mm"), 6));
 Lbl_HelperLinksNote;KabanHMI\Settings\AlarmSettingsControl.cs;469;Text;Text = LanguageManager.GetString("Lbl_HelperLinksNote", "The documents this alarm offers, in this order: files (a file in the program's folder is kept " +
 Lbl_IoFilter;KabanHMI\Screens\IoMonitorPage.cs;56;Text;var find = new Label { Text = T("Lbl_IoFilter", "Find:"), AutoSize = true, Location = new Point(8, 11) };
 Lbl_IoShow;KabanHMI\Screens\IoMonitorPage.cs;62;Text;_showCaption.Text = T("Lbl_IoShow", "Lists:");
-Lbl_Kept;KabanHMI\Settings\LabelSettingsControl.cs;463;Text;Say(T("Lbl_Kept", "Kept."), true);
-Lbl_Kept;KabanHMI\Settings\LabelSettingsControl.cs;482;Text;Say(T("Lbl_Kept", "Kept."), true);
-Lbl_Label;KabanHMI\Settings\LabelSettingsControl.cs;189;Text;_recent.Columns.Add(TextCol("label", T("Lbl_Label", "Label"), 14));
-Lbl_Language;KabanHMI\Settings\LabelSettingsControl.cs;105;Text;Row(T("Lbl_Language", "Language"), _language, x0, y); Row(T("Lbl_PrinterLanguage", "Printer language"), _printerLanguage, x0 + c2, y);
-Lbl_Machine;KabanHMI\Settings\LabelSettingsControl.cs;101;Text;Row(T("Lbl_Size", "Size"), size, x0, y); Row(T("Lbl_Machine", "Machine"), _machine, x0 + c2, y);
+Lbl_Kept;KabanHMI\Settings\LabelSettingsControl.cs;467;Text;Say(T("Lbl_Kept", "Kept."), true);
+Lbl_Kept;KabanHMI\Settings\LabelSettingsControl.cs;486;Text;Say(T("Lbl_Kept", "Kept."), true);
+Lbl_Label;KabanHMI\Settings\LabelSettingsControl.cs;191;Text;_recent.Columns.Add(TextCol("label", T("Lbl_Label", "Label"), 14));
+Lbl_Language;KabanHMI\Settings\LabelSettingsControl.cs;107;Text;Row(T("Lbl_Language", "Language"), _language, x0, y); Row(T("Lbl_PrinterLanguage", "Printer language"), _printerLanguage, x0 + c2, y);
+Lbl_Machine;KabanHMI\Settings\LabelSettingsControl.cs;102;Text;Row(T("Lbl_Size", "Size"), size, x0, y); Row(T("Lbl_Machine", "Machine"), _machine, x0 + c2, y);
 Lbl_MonLabelList;KabanHMI\Forms\SimulationMonitorForm.Table.cs;1085;Text;e.Label + "   " + e.Address + "   " + type + " [" + n + "]   (" + T("Lbl_MonLabelList", "label list") + ")",
 Lbl_MonThisList;KabanHMI\Forms\SimulationMonitorForm.Table.cs;1065;Text;" [" + r.EffectiveCount + "]   (" + T("Lbl_MonThisList", "this tab's list") + ")", () => from));
-Lbl_Name;KabanHMI\Settings\LabelSettingsControl.cs;95;Text;Row(T("Lbl_Name", "Name"), _name, x0, y); Row(T("Lbl_Use", "Printed for"), _use, x0 + c2, y); Row(T("Lbl_On", "On"), _on, x0 + c3, y);
-Lbl_NameTaken;KabanHMI\Settings\LabelSettingsControl.cs;474;Text;Say(string.Format(T("Lbl_NameTaken", "There is a label named {0} already."), t.Name), false);
-Lbl_New;KabanHMI\Settings\LabelSettingsControl.cs;73;Tooltip;var add = UiStyle.ToolButton("➕", T("Lbl_New", "A new label for the pieces (the usual fields on it)"), tips, (s, e) => New(LabelUse.Piece));
-Lbl_NewLeftover;KabanHMI\Settings\LabelSettingsControl.cs;74;Tooltip;var addLeft = UiStyle.ToolButton("✂", T("Lbl_NewLeftover", "A new label for the leftovers"), tips, (s, e) => New(LabelUse.Leftover));
-Lbl_No;KabanHMI\Settings\LabelSettingsControl.cs;151;Text;_fields.Columns.Add(TextCol("no", T("Lbl_No", "No"), 8));
+Lbl_Name;KabanHMI\Settings\LabelSettingsControl.cs;96;Text;Row(T("Lbl_Name", "Name"), _name, x0, y); Row(T("Lbl_Use", "Printed for"), _use, x0 + c2, y); Row(T("Lbl_On", "On"), _on, x0 + c3, y);
+Lbl_NameTaken;KabanHMI\Settings\LabelSettingsControl.cs;478;Text;Say(string.Format(T("Lbl_NameTaken", "There is a label named {0} already."), t.Name), false);
+Lbl_New;KabanHMI\Settings\LabelSettingsControl.cs;74;Tooltip;var add = UiStyle.ToolButton("➕", T("Lbl_New", "A new label for the pieces (the usual fields on it)"), tips, (s, e) => New(LabelUse.Piece));
+Lbl_NewLeftover;KabanHMI\Settings\LabelSettingsControl.cs;75;Tooltip;var addLeft = UiStyle.ToolButton("✂", T("Lbl_NewLeftover", "A new label for the leftovers"), tips, (s, e) => New(LabelUse.Leftover));
+Lbl_No;KabanHMI\Settings\LabelSettingsControl.cs;153;Text;_fields.Columns.Add(TextCol("no", T("Lbl_No", "No"), 8));
 Lbl_NoAnswer;Kaban.Core\Labels\LabelPrinting.cs;329;Text;if (!ar.AsyncWaitHandle.WaitOne(3000)) return host + ":" + tcp + " - " + LanguageManager.GetString("Lbl_NoAnswer", "the printer does not answer.");
 Lbl_NoPrinter;Kaban.Core\Labels\LabelPrinting.cs;300;Text;if (p.Length == 0) return LanguageManager.GetString("Lbl_NoPrinter", "No printer set for the label.");
 Lbl_NoSuchPrinter;Kaban.Core\Labels\LabelPrinting.cs;370;Text;return printer + ": " + LanguageManager.GetString("Lbl_NoSuchPrinter", "no such printer (Windows' Printers, or COMn, an address:port, file:path).");
 Lbl_NotPrinted;KabanHMI\Helpers\BarcodeHost.cs;40;Text;Action<LabelPrint> printed = r => { if (!r.Ok) Note(string.Format(LanguageManager.GetString("Lbl_NotPrinted", "Label {0} not printed: {1}"), r.Template, r.Message), true); };
 Lbl_NtsFindWhat;KabanHMI\Screens\NotesFindForm.cs;87;Text;top.Controls.Add(new Label { Text = T("Lbl_NtsFindWhat", "Device or translation key:"), AutoSize = true, Margin = new Padding(0, 7, 6, 0) }, 0, 0);
-Lbl_On;KabanHMI\Settings\LabelSettingsControl.cs;95;Text;Row(T("Lbl_Name", "Name"), _name, x0, y); Row(T("Lbl_Use", "Printed for"), _use, x0 + c2, y); Row(T("Lbl_On", "On"), _on, x0 + c3, y);
-Lbl_On;KabanHMI\Settings\LabelSettingsControl.cs;167;Heading;_triggers.Columns.Add(new DataGridViewCheckBoxColumn { Name = "on", HeaderText = T("Lbl_On", "On"), FillWeight = 5 });
+Lbl_On;KabanHMI\Settings\LabelSettingsControl.cs;96;Text;Row(T("Lbl_Name", "Name"), _name, x0, y); Row(T("Lbl_Use", "Printed for"), _use, x0 + c2, y); Row(T("Lbl_On", "On"), _on, x0 + c3, y);
+Lbl_On;KabanHMI\Settings\LabelSettingsControl.cs;169;Heading;_triggers.Columns.Add(new DataGridViewCheckBoxColumn { Name = "on", HeaderText = T("Lbl_On", "On"), FillWeight = 5 });
 Lbl_Or;Kaban.Core\Helpers\NumericLimits.cs;57;Text;return f(min.Value) + le + dots + "  " + LanguageManager.GetString("Lbl_Or", "or") + "  " + dots + le + f(max.Value);
 Lbl_Password;KabanHMI\Forms\LoginForm.cs;76;Text;LanguageManager.GetString("Lbl_Password", "Password"), 20, 80, 100);
-Lbl_Printed;KabanHMI\Settings\LabelSettingsControl.cs;555;Text;_recent.Rows.Add(p.At.ToString("HH:mm:ss", CI), p.Template, p.Source, p.Summary, p.Ok ? T("Lbl_Printed", "printed") : p.Message);
-Lbl_Printer;KabanHMI\Settings\LabelSettingsControl.cs;103;Text;Row(T("Lbl_Printer", "Printer"), _printer, x0, y); Row(T("Lbl_Baud", "Baud rate"), _baud, x0 + c2, y);
-Lbl_PrinterLanguage;KabanHMI\Settings\LabelSettingsControl.cs;105;Text;Row(T("Lbl_Language", "Language"), _language, x0, y); Row(T("Lbl_PrinterLanguage", "Printer language"), _printerLanguage, x0 + c2, y);
-Lbl_PrinterNote;KabanHMI\Settings\LabelSettingsControl.cs;111;Text;Text = T("Lbl_PrinterNote", "Printer: COM3 (a serial printer), a Windows printer's name, 192.168.1.50:9100 (a network printer) or file:C:\\Labels\\label.prn. EPL: the old progra...
-Lbl_PrnFiles;KabanHMI\Settings\LabelSettingsControl.cs;508;Text;using (var d = new SaveFileDialog { FileName = t.Name + ".prn", Filter = T("Lbl_PrnFiles", "Printer files") + " (*.prn)|*.prn|" + T("Lbl_AllFiles", "All files") + " (*.*)|*.*" })
-Lbl_Recent;KabanHMI\Settings\LabelSettingsControl.cs;184;Text;_body.Controls.Add(new Label { Text = T("Lbl_Recent", "Printed last"), Font = UiStyle.Title, AutoSize = true, Location = new Point(12, y) });
-Lbl_RemoveField;KabanHMI\Settings\LabelSettingsControl.cs;127;Tooltip;var fdel = UiStyle.ToolButton("🗑", T("Lbl_RemoveField", "Remove the selected field"), tips, (s, e) => RemoveField());
-Lbl_Request;KabanHMI\Settings\LabelSettingsControl.cs;168;Text;var w1 = TextCol("what", T("Lbl_Request", "Request"), 26); w1.ReadOnly = true; _triggers.Columns.Add(w1);
-Lbl_Result;KabanHMI\Settings\LabelSettingsControl.cs;192;Text;_recent.Columns.Add(TextCol("result", T("Lbl_Result", "Result"), 20));
-Lbl_Revert;KabanHMI\Settings\LabelSettingsControl.cs;72;Tooltip;var revert = UiStyle.ToolButton("↺", T("Lbl_Revert", "Throw the changes away and show the kept labels"), tips, (s, e) => Fill(_current != null ? _current.Name : null));
-Lbl_Ribbon;KabanHMI\Settings\LabelSettingsControl.cs;106;Text;Row(T("Lbl_Ribbon", "Ribbon"), _ribbon, x0 + c3, y);
-Lbl_Save;KabanHMI\Settings\LabelSettingsControl.cs;71;Tooltip;var save = UiStyle.ToolButton("💾", T("Lbl_Save", "Keep the label and the PLC's label requests"), tips, (s, e) => Keep());
-Lbl_SaveFile;KabanHMI\Settings\LabelSettingsControl.cs;78;Tooltip;var file = UiStyle.ToolButton("📄", T("Lbl_SaveFile", "Save the label's printer commands as a file"), tips, (s, e) => SaveFile());
+Lbl_Printed;KabanHMI\Settings\LabelSettingsControl.cs;559;Text;_recent.Rows.Add(p.At.ToString("HH:mm:ss", CI), p.Template, p.Source, p.Summary, p.Ok ? T("Lbl_Printed", "printed") : p.Message);
+Lbl_Printer;KabanHMI\Settings\LabelSettingsControl.cs;105;Text;Row(T("Lbl_Printer", "Printer"), _printer, x0, y); Row(T("Lbl_Baud", "Baud rate"), _baud, x0 + c2, y);
+Lbl_PrinterLanguage;KabanHMI\Settings\LabelSettingsControl.cs;107;Text;Row(T("Lbl_Language", "Language"), _language, x0, y); Row(T("Lbl_PrinterLanguage", "Printer language"), _printerLanguage, x0 + c2, y);
+Lbl_PrinterNote;KabanHMI\Settings\LabelSettingsControl.cs;113;Text;Text = T("Lbl_PrinterNote", "Printer: COM3 (a serial printer), a Windows printer's name, 192.168.1.50:9100 (a network printer) or file:C:\\Labels\\label.prn. EPL: the old progra...
+Lbl_PrnFiles;KabanHMI\Settings\LabelSettingsControl.cs;512;Text;using (var d = new SaveFileDialog { FileName = t.Name + ".prn", Filter = T("Lbl_PrnFiles", "Printer files") + " (*.prn)|*.prn|" + T("Lbl_AllFiles", "All files") + " (*.*)|*.*" })
+Lbl_Recent;KabanHMI\Settings\LabelSettingsControl.cs;186;Text;_body.Controls.Add(new Label { Text = T("Lbl_Recent", "Printed last"), Font = UiStyle.Title, AutoSize = true, Location = new Point(12, y) });
+Lbl_RemoveField;KabanHMI\Settings\LabelSettingsControl.cs;129;Tooltip;var fdel = UiStyle.ToolButton("🗑", T("Lbl_RemoveField", "Remove the selected field"), tips, (s, e) => RemoveField());
+Lbl_Request;KabanHMI\Settings\LabelSettingsControl.cs;170;Text;var w1 = TextCol("what", T("Lbl_Request", "Request"), 26); w1.ReadOnly = true; _triggers.Columns.Add(w1);
+Lbl_Result;KabanHMI\Settings\LabelSettingsControl.cs;194;Text;_recent.Columns.Add(TextCol("result", T("Lbl_Result", "Result"), 20));
+Lbl_Revert;KabanHMI\Settings\LabelSettingsControl.cs;73;Tooltip;var revert = UiStyle.ToolButton("↺", T("Lbl_Revert", "Throw the changes away and show the kept labels"), tips, (s, e) => Fill(_current != null ? _current.Name : null));
+Lbl_Ribbon;KabanHMI\Settings\LabelSettingsControl.cs;108;Text;Row(T("Lbl_Ribbon", "Ribbon"), _ribbon, x0 + c3, y);
+Lbl_Save;KabanHMI\Settings\LabelSettingsControl.cs;72;Tooltip;var save = UiStyle.ToolButton("💾", T("Lbl_Save", "Keep the label and the PLC's label requests"), tips, (s, e) => Keep());
+Lbl_SaveFile;KabanHMI\Settings\LabelSettingsControl.cs;79;Tooltip;var file = UiStyle.ToolButton("📄", T("Lbl_SaveFile", "Save the label's printer commands as a file"), tips, (s, e) => SaveFile());
 Lbl_SheetName;KabanHMI\Forms\SimulationMonitorForm.cs;2768;Text;string name = AskText(T("Ttl_SheetNew", "New tab"), T("Lbl_SheetName", "Name of the tab:"),
 Lbl_SheetName;KabanHMI\Forms\SimulationMonitorForm.cs;2791;Text;string name = AskText(T("Ttl_SheetRename", "Rename tab"), T("Lbl_SheetName", "Name of the tab:"), sh.Name, mon, sh);
 Lbl_Simulated;KabanHMI\Forms\SimulationMonitorForm.cs;4283;Text;(mon.IsSimulated ? "  \u00B7  " + T("Lbl_Simulated", "simulated") : "");
-Lbl_Size;KabanHMI\Settings\LabelSettingsControl.cs;101;Text;Row(T("Lbl_Size", "Size"), size, x0, y); Row(T("Lbl_Machine", "Machine"), _machine, x0 + c2, y);
-Lbl_Source;KabanHMI\Settings\LabelSettingsControl.cs;190;Text;_recent.Columns.Add(TextCol("source", T("Lbl_Source", "For"), 30));
+Lbl_Size;KabanHMI\Settings\LabelSettingsControl.cs;102;Text;Row(T("Lbl_Size", "Size"), size, x0, y); Row(T("Lbl_Machine", "Machine"), _machine, x0 + c2, y);
+Lbl_Source;KabanHMI\Settings\LabelSettingsControl.cs;192;Text;_recent.Columns.Add(TextCol("source", T("Lbl_Source", "For"), 30));
 Lbl_Speed;Kaban.Machines.FA2010\Screens\HomeScreen.Designer.cs;292;Text;this.speedOverride.TranslationKey = "Lbl_Speed";
 Lbl_Speed;Kaban.Machines.FA2010\Screens\Shared\AxisJogBar.Designer.cs;129;Text;this.speedOverrideHMI1.TranslationKey = "Lbl_Speed";
 Lbl_Speed;Kaban.Machines.MD3020\Screens\Home\HomeJob.Designer.cs;207;Text;this.spdCycle_Speed_Start.TranslationKey = "Lbl_Speed";
@@ -1467,15 +1501,15 @@ Lbl_StructPreview;KabanHMI\Forms\PlcRowEditorForm.cs;327;Text;string.Format(Lang
 Lbl_StructSize;KabanHMI\Forms\StructuredTypesForm.cs;102;Text;var sizeCaption = Caption(right, T("Lbl_StructSize", "Length (devices)"));
 Lbl_StructSizeNote;KabanHMI\Forms\StructuredTypesForm.cs;108;Text;var sizeNote = new Label { Text = T("Lbl_StructSizeNote", "an array's next element starts this far on"), AutoSize = true,
 Lbl_StructUnnamed;KabanHMI\Forms\StructuredTypesForm.cs;270;Text;var caption = _work[i].Name.Length > 0 ? _work[i].Name : T("Lbl_StructUnnamed", "(no name)");
-Lbl_Test;KabanHMI\Settings\LabelSettingsControl.cs;77;Tooltip;var test = UiStyle.ToolButton("🖨", T("Lbl_Test", "Print the label with sample values (on its printer)"), tips, (s, e) => TestPrint());
-Lbl_TestDone;KabanHMI\Settings\LabelSettingsControl.cs;499;Text;Say(r.Ok ? string.Format(T("Lbl_TestDone", "The test label went to {0}."), t.Printer) : r.Message, r.Ok);
-Lbl_TestSource;KabanHMI\Settings\LabelSettingsControl.cs;498;Text;var r = LabelService.PrintNow(t, LabelKeys.Sample(), T("Lbl_TestSource", "Test print (HMI Settings > Labels)"));
-Lbl_Text;KabanHMI\Settings\LabelSettingsControl.cs;139;Text;_fields.Columns.Add(TextCol("text", T("Lbl_Text", "Text (in front)"), 16));
-Lbl_TriggerDefault;KabanHMI\Settings\LabelSettingsControl.cs;528;Text;string note = string.Format(T("Lbl_TriggerDefault", "The machine's: {0} with {1}"), t.DefaultBitText(), t.DefaultValueText());
-Lbl_TriggerNote;KabanHMI\Settings\LabelSettingsControl.cs;172;Text;var w2 = TextCol("note", T("Lbl_TriggerNote", "Note"), 40); w2.ReadOnly = true; _triggers.Columns.Add(w2);
-Lbl_TriggerRecord;KabanHMI\Settings\LabelSettingsControl.cs;529;Text;if (LabelTriggers.HandledElsewhere(t)) note += " - " + T("Lbl_TriggerRecord", "the bit is a record's handshake too: the record turns it off");
-Lbl_Triggers;KabanHMI\Settings\LabelSettingsControl.cs;164;Text;_body.Controls.Add(new Label { Text = T("Lbl_Triggers", "The PLC asks for a label"), Font = UiStyle.Title, AutoSize = true, Location = new Point(12, y) });
-Lbl_TriggersNote;KabanHMI\Settings\LabelSettingsControl.cs;178;Text;Text = T("Lbl_TriggersNote", "On: the PLC sets the bit with the piece's ID (a leftover's length) in its value - the HMI turns the bit off and prints the label on for it. Off unt...
+Lbl_Test;KabanHMI\Settings\LabelSettingsControl.cs;78;Tooltip;var test = UiStyle.ToolButton("🖨", T("Lbl_Test", "Print the label with sample values (on its printer)"), tips, (s, e) => TestPrint());
+Lbl_TestDone;KabanHMI\Settings\LabelSettingsControl.cs;503;Text;Say(r.Ok ? string.Format(T("Lbl_TestDone", "The test label went to {0}."), t.Printer) : r.Message, r.Ok);
+Lbl_TestSource;KabanHMI\Settings\LabelSettingsControl.cs;502;Text;var r = LabelService.PrintNow(t, LabelKeys.Sample(), T("Lbl_TestSource", "Test print (HMI Settings > Labels)"));
+Lbl_Text;KabanHMI\Settings\LabelSettingsControl.cs;141;Text;_fields.Columns.Add(TextCol("text", T("Lbl_Text", "Text (in front)"), 16));
+Lbl_TriggerDefault;KabanHMI\Settings\LabelSettingsControl.cs;532;Text;string note = string.Format(T("Lbl_TriggerDefault", "The machine's: {0} with {1}"), t.DefaultBitText(), t.DefaultValueText());
+Lbl_TriggerNote;KabanHMI\Settings\LabelSettingsControl.cs;174;Text;var w2 = TextCol("note", T("Lbl_TriggerNote", "Note"), 40); w2.ReadOnly = true; _triggers.Columns.Add(w2);
+Lbl_TriggerRecord;KabanHMI\Settings\LabelSettingsControl.cs;533;Text;if (LabelTriggers.HandledElsewhere(t)) note += " - " + T("Lbl_TriggerRecord", "the bit is a record's handshake too: the record turns it off");
+Lbl_Triggers;KabanHMI\Settings\LabelSettingsControl.cs;166;Text;_body.Controls.Add(new Label { Text = T("Lbl_Triggers", "The PLC asks for a label"), Font = UiStyle.Title, AutoSize = true, Location = new Point(12, y) });
+Lbl_TriggersNote;KabanHMI\Settings\LabelSettingsControl.cs;180;Text;Text = T("Lbl_TriggersNote", "On: the PLC sets the bit with the piece's ID (a leftover's length) in its value - the HMI turns the bit off and prints the label on for it. Off unt...
 Lbl_TrnAiRows;KabanHMI\Settings\TranslationsControl.cs;811;Menu;m.Items.Add(new ToolStripMenuItem(string.Format(T("Lbl_TrnAiRows", "The {0} rows shown - {1} with a text missing (the search and the filters choose them)"),
 Lbl_TrnAllOwners;KabanHMI\Settings\TranslationsControl.cs;325;Text;_owner.Items.Add(new Choice(null, T("Lbl_TrnAllOwners", "All")));
 Lbl_TrnCopyCount;KabanHMI\Settings\TranslationLanguageForms.cs;277;Text;_to.Items.Add(new Lang(l, string.Format(T("Lbl_TrnCopyCount", "{0} - {1}: {2} empty cell(s) to fill"), l, AlarmAiPrompt.LanguageName(l), n)),
@@ -1504,21 +1538,21 @@ Lbl_TrnOnlyEdited;KabanHMI\Settings\TranslationsControl.cs;186;Text;_onlyEdited.
 Lbl_TrnPending;KabanHMI\Settings\TranslationsControl.cs;501;Text;if (_pending.Count > 0) text += "  ·  " + string.Format(T("Lbl_TrnPending", "{0} text(s) typed, not saved"), _pending.Count);
 Lbl_TrnProjectNewer;KabanHMI\Settings\TranslationsControl.Import.cs;396;Text;if (!i.Tick) i.Note = T("Lbl_TrnProjectNewer", "not entered on this panel - the project's may be newer");
 Lbl_TrnUndoTexts;KabanHMI\Settings\TranslationsControl.Undo.cs;93;Text;return s.What + " (" + string.Format(T("Lbl_TrnUndoTexts", "{0} text(s)"), s.Cells.Count) + ")";
-Lbl_Type;KabanHMI\Settings\LabelSettingsControl.cs;140;Heading;var typeCol = new DataGridViewComboBoxColumn { Name = "type", HeaderText = T("Lbl_Type", "As"), FillWeight = 11, FlatStyle = FlatStyle.Flat };
-Lbl_Unsaved;KabanHMI\Settings\LabelSettingsControl.cs;296;Message;if (_dirty.IsDirty && !Ask.YesNo(FindForm(), T("Tab_Labels", "Labels"), T("Lbl_Unsaved", "The label's changes are not kept. Throw them away?")))
-Lbl_Use;KabanHMI\Settings\LabelSettingsControl.cs;95;Text;Row(T("Lbl_Name", "Name"), _name, x0, y); Row(T("Lbl_Use", "Printed for"), _use, x0 + c2, y); Row(T("Lbl_On", "On"), _on, x0 + c3, y);
-Lbl_UseLeftover;KabanHMI\Settings\LabelSettingsControl.cs;115;Text;_use.Items.AddRange(new object[] { T("Lbl_UsePiece", "a piece"), T("Lbl_UseLeftover", "a leftover") });
-Lbl_UseLeftover;KabanHMI\Settings\LabelSettingsControl.cs;287;Text;return t.Name + "  (" + (t.Use == LabelUse.Leftover ? LanguageManager.GetString("Lbl_UseLeftover", "a leftover") : LanguageManager.GetString("Lbl_UsePiece", "a piece")) +
-Lbl_UseLeftover;KabanHMI\Settings\LabelSettingsControl.cs;527;Text;string what = (t.Name.Length > 0 ? t.Name : t.ModuleId) + ": " + (t.Use == LabelUse.Leftover ? T("Lbl_UseLeftover", "a leftover") : T("Lbl_UsePiece", "a piece"));
-Lbl_UsePiece;KabanHMI\Settings\LabelSettingsControl.cs;115;Text;_use.Items.AddRange(new object[] { T("Lbl_UsePiece", "a piece"), T("Lbl_UseLeftover", "a leftover") });
-Lbl_UsePiece;KabanHMI\Settings\LabelSettingsControl.cs;287;Text;return t.Name + "  (" + (t.Use == LabelUse.Leftover ? LanguageManager.GetString("Lbl_UseLeftover", "a leftover") : LanguageManager.GetString("Lbl_UsePiece", "a piece")) +
-Lbl_UsePiece;KabanHMI\Settings\LabelSettingsControl.cs;527;Text;string what = (t.Name.Length > 0 ? t.Name : t.ModuleId) + ": " + (t.Use == LabelUse.Leftover ? T("Lbl_UseLeftover", "a leftover") : T("Lbl_UsePiece", "a piece"));
+Lbl_Type;KabanHMI\Settings\LabelSettingsControl.cs;142;Heading;var typeCol = new DataGridViewComboBoxColumn { Name = "type", HeaderText = T("Lbl_Type", "As"), FillWeight = 11, FlatStyle = FlatStyle.Flat };
+Lbl_Unsaved;KabanHMI\Settings\LabelSettingsControl.cs;298;Message;if (_dirty.IsDirty && !Ask.YesNo(FindForm(), T("Tab_Labels", "Labels"), T("Lbl_Unsaved", "The label's changes are not kept. Throw them away?")))
+Lbl_Use;KabanHMI\Settings\LabelSettingsControl.cs;96;Text;Row(T("Lbl_Name", "Name"), _name, x0, y); Row(T("Lbl_Use", "Printed for"), _use, x0 + c2, y); Row(T("Lbl_On", "On"), _on, x0 + c3, y);
+Lbl_UseLeftover;KabanHMI\Settings\LabelSettingsControl.cs;117;Text;_use.Items.AddRange(new object[] { T("Lbl_UsePiece", "a piece"), T("Lbl_UseLeftover", "a leftover") });
+Lbl_UseLeftover;KabanHMI\Settings\LabelSettingsControl.cs;289;Text;return t.Name + "  (" + (t.Use == LabelUse.Leftover ? LanguageManager.GetString("Lbl_UseLeftover", "a leftover") : LanguageManager.GetString("Lbl_UsePiece", "a piece")) +
+Lbl_UseLeftover;KabanHMI\Settings\LabelSettingsControl.cs;531;Text;string what = (t.Name.Length > 0 ? t.Name : t.ModuleId) + ": " + (t.Use == LabelUse.Leftover ? T("Lbl_UseLeftover", "a leftover") : T("Lbl_UsePiece", "a piece"));
+Lbl_UsePiece;KabanHMI\Settings\LabelSettingsControl.cs;117;Text;_use.Items.AddRange(new object[] { T("Lbl_UsePiece", "a piece"), T("Lbl_UseLeftover", "a leftover") });
+Lbl_UsePiece;KabanHMI\Settings\LabelSettingsControl.cs;289;Text;return t.Name + "  (" + (t.Use == LabelUse.Leftover ? LanguageManager.GetString("Lbl_UseLeftover", "a leftover") : LanguageManager.GetString("Lbl_UsePiece", "a piece")) +
+Lbl_UsePiece;KabanHMI\Settings\LabelSettingsControl.cs;531;Text;string what = (t.Name.Length > 0 ? t.Name : t.ModuleId) + ": " + (t.Use == LabelUse.Leftover ? T("Lbl_UseLeftover", "a leftover") : T("Lbl_UsePiece", "a piece"));
 Lbl_Username;KabanHMI\Forms\LoginForm.cs;56;Text;LanguageManager.GetString("Lbl_Username", "Username"), 20, 20, 100);
-Lbl_Value;KabanHMI\Settings\LabelSettingsControl.cs;136;Heading;var keyCol = new DataGridViewComboBoxColumn { Name = "key", HeaderText = T("Lbl_Value", "Value"), FillWeight = 20, FlatStyle = FlatStyle.Flat, DisplayMember = "Text", ValueMembe...
-Lbl_Values;KabanHMI\Settings\LabelSettingsControl.cs;191;Text;_recent.Columns.Add(TextCol("values", T("Lbl_Values", "Values"), 26));
-Lbl_ValueWord;KabanHMI\Settings\LabelSettingsControl.cs;170;Text;_triggers.Columns.Add(TextCol("value", T("Lbl_ValueWord", "Its value"), 10));
-Lbl_W;KabanHMI\Settings\LabelSettingsControl.cs;148;Text;_fields.Columns.Add(TextCol("w", T("Lbl_W", "W mm"), 6));
-Lbl_Yes;KabanHMI\Settings\LabelSettingsControl.cs;150;Text;_fields.Columns.Add(TextCol("yes", T("Lbl_Yes", "Yes / date format"), 12));
+Lbl_Value;KabanHMI\Settings\LabelSettingsControl.cs;138;Heading;var keyCol = new DataGridViewComboBoxColumn { Name = "key", HeaderText = T("Lbl_Value", "Value"), FillWeight = 20, FlatStyle = FlatStyle.Flat, DisplayMember = "Text", ValueMembe...
+Lbl_Values;KabanHMI\Settings\LabelSettingsControl.cs;193;Text;_recent.Columns.Add(TextCol("values", T("Lbl_Values", "Values"), 26));
+Lbl_ValueWord;KabanHMI\Settings\LabelSettingsControl.cs;172;Text;_triggers.Columns.Add(TextCol("value", T("Lbl_ValueWord", "Its value"), 10));
+Lbl_W;KabanHMI\Settings\LabelSettingsControl.cs;150;Text;_fields.Columns.Add(TextCol("w", T("Lbl_W", "W mm"), 6));
+Lbl_Yes;KabanHMI\Settings\LabelSettingsControl.cs;152;Text;_fields.Columns.Add(TextCol("yes", T("Lbl_Yes", "Yes / date format"), 12));
 LCol_Accessory;KabanHMI\Profiles\LibraryEditorForm.cs;544;Text;foreach (var c in new[] { T("LCol_Profile", "Profile"), T("LCol_Group", "Group"), T("LCol_Accessory", "Accessory"), "#", T("LCol_Macro", "Macro"), T("LCol_Status", "Status"), T(...
 LCol_AccGroup;KabanHMI\Profiles\LibraryEditorForm.cs;198;Text;.Lookup("accessory_group_id", T("LCol_AccGroup", "Accessory group"), "SELECT id, name FROM accessory_group ORDER BY name", 200, true)
 LCol_AccType;KabanHMI\Profiles\LibraryEditorForm.cs;211;Text;.Choice("accessory_type", T("LCol_AccType", "Accessory type"), AccessoryTypes, 140, true, "OTHER")
@@ -1815,17 +1849,18 @@ Lvl_Operator;KabanHMI\Settings\UsersPreferencesControl.cs;1047;Text;case Securit
 Machine;Kaban.Core\Helpers\PlcBackup.cs;763;Text;case "Machine": b.Machine = value; break;
 Machine;Kaban.Core\Helpers\PlcManager.cs;168;Text;? LanguageManager.GetString("Sys_Machine", "Machine")
 Machine;Kaban.Core\Helpers\TranslationEdits.cs;94;Text;return main != null && main.Context != null && !string.IsNullOrEmpty(main.Context.ModuleId) ? main.Context.ModuleId : "Machine";
-Machine;Kaban.Core\Labels\LabelTemplate.cs;154;Text;v[UserComment2] = ""; v[UserComment3] = ""; v[LeftOverLength] = "655.0"; v[JobName] = "Sample job"; v[MachineName] = "Machine";
+Machine;Kaban.Core\Labels\LabelTemplate.cs;156;Text;v[UserComment2] = ""; v[UserComment3] = ""; v[LeftOverLength] = "655.0"; v[JobName] = "Sample job"; v[MachineName] = "Machine";
 Machine;Kaban.Machines.MD3020\Screens\Home\HomeJob.Designer.cs;131;Text;this.capMachine.TranslationKey = "Machine";
 Machine;Kaban.Machines.MD3020\Screens\Home\HomeJob.Designer.cs;132;Text;this.capMachine.Text = "Machine";
 Machine;KabanHMI\Dashboard\DashboardConfig.cs;55;Text;string own = Path.Combine(Folder, (string.IsNullOrEmpty(moduleId) ? "Machine" : moduleId) + ".json");
 Machine;KabanHMI\Settings\BarcodeSettingsControl.cs;78;Text;_readers.Columns.Add(Combo("machine", T("Bc_Machine", "Machine"), 12, new[] { "" }.Concat(Kaban.UI.Helpers.MachineLinks.All().Select(m => m.ModuleId)).Distinct().ToArray()));
 Machine;KabanHMI\Settings\HmiManual.cs;220;Text;ch.Append("<table>\r\n<tr><th>").Append(EncWord(Word(lang, "Man_Machine", "Machine"))).Append("</th><th>")
-Machine;KabanHMI\Settings\LabelSettingsControl.cs;101;Text;Row(T("Lbl_Size", "Size"), size, x0, y); Row(T("Lbl_Machine", "Machine"), _machine, x0 + c2, y);
+Machine;KabanHMI\Settings\LabelSettingsControl.cs;102;Text;Row(T("Lbl_Size", "Size"), size, x0, y); Row(T("Lbl_Machine", "Machine"), _machine, x0 + c2, y);
 Machine;KabanHMI\Settings\MaintenancePlanControl.cs;73;Heading;var machine = new DataGridViewComboBoxColumn { Name = "machine", HeaderText = T("Mnt_Machine", "Machine"), FillWeight = 11, FlatStyle = FlatStyle.Flat };
 Machine;KabanHMI\Settings\PlcBackupForms.cs;225;Text;add(T("Lbl_BakMachine", "Machine"), new Label { Text = _machine, Name = "bakMachine" }, 30);
 Machine;KabanHMI\Settings\PlcBackupForms.cs;412;Text;foreach (var c in new[] { new[] { "Date", T("Col_BakDate", "Date"), "140" }, new[] { "Machine", T("Col_BakMachine", "Machine"), "150" },
 Machine;KabanHMI\Settings\PlcBackupSelection.cs;386;Text;foreach (var c in new[] { new[] { "Date", T("Col_BakDate", "Date"), "140" }, new[] { "Machine", T("Col_BakMachine", "Machine"), "150" },
+Machine;KabanHMI\Settings\ProductionControl.cs;83;Text;new[] { "at", T("Prd_At", "Time"), "13" }, new[] { "machine", T("Prd_Machine", "Machine"), "7" }, new[] { "event", T("Prd_Event", "Event"), "10" },
 Machine_FA2010;Kaban.Machines.FA2010\FA2010Module.cs;23;Text;public string DisplayNameKey => "Machine_FA2010";
 Machine_H500;Kaban.Machines.H500\H500Module.cs;20;Text;public string DisplayNameKey { get { return "Machine_H500"; } }
 Machine_H800;Kaban.Machines.H800\H800Module.cs;19;Text;public string DisplayNameKey { get { return "Machine_H800"; } }
@@ -1847,8 +1882,8 @@ Melting;Kaban.Machines.MD3020\Screens\Home\HomeJob.Designer.cs;703;Text;this.cap
 Melting;Kaban.Machines.MD3020\Screens\Home\HomeJob.Designer.cs;704;Text;this.capMelting.Text = "Melting";
 Melting;Kaban.Machines.MK2010\Screens\Home\HomeJob.Designer.cs;485;Text;this.capMelting.TranslationKey = "Melting";
 Melting;Kaban.Machines.MK2010\Screens\Home\HomeJob.Designer.cs;486;Text;this.capMelting.Text = "Melting";
-Milling;Kaban.Machines.FA2010\FA2010Module.cs;228;Text;new Screens.GeneratedPage("Tab_ManualMilling", "Milling", SecurityLevel.Operator, () => new Screens.Manual.ManualMilling()),
-Milling;Kaban.Machines.FA2010\FA2010Module.cs;248;Text;new Screens.GeneratedPage("Tab_ParamMilling", "Milling", SecurityLevel.Maintenance, () => new Screens.Parameters.ParamMilling()),
+Milling;Kaban.Machines.FA2010\FA2010Module.cs;264;Text;new Screens.GeneratedPage("Tab_ManualMilling", "Milling", SecurityLevel.Operator, () => new Screens.Manual.ManualMilling()),
+Milling;Kaban.Machines.FA2010\FA2010Module.cs;284;Text;new Screens.GeneratedPage("Tab_ParamMilling", "Milling", SecurityLevel.Maintenance, () => new Screens.Parameters.ParamMilling()),
 Milling;Kaban.Machines.FA2010\Screens\Manual\ManualYZ_Cross_Rollers.Designer.cs;242;Text;this.unitMilling.TitleTextKey = "Milling";
 Milling;Kaban.Machines.FA2010\Screens\Parameters\ParamOther.Designer.cs;1448;Text;this.numCross_Roller_Milling.DescriptionText = "Milling";
 Milling;Kaban.Machines.FA2010\Screens\Parameters\ParamOther.Designer.cs;1483;Text;this.numCross_Roller_Milling.TranslationKey = "Milling";
@@ -2184,7 +2219,7 @@ Msg_MonPickNow;KabanHMI\Forms\SimulationMonitorForm.cs;2973;Text;_pickText.Text 
 Msg_MonProgramNone;KabanHMI\Forms\SimulationMonitorForm.cs;3075;Message;MessageBox.Show(DialogOwner, string.Format(T("Msg_MonProgramNone", "No page of the program uses a device of {0}."),
 Msg_MonReset;KabanHMI\Forms\SimulationMonitorForm.cs;3516;Text;string question = string.Format(T("Msg_MonReset", "Write 0 into the {0} device(s) of {1} ({2})?"), words.Count, labels, range);
 Msg_MonResetDone;KabanHMI\Forms\SimulationMonitorForm.cs;3538;Status;SetStatus(string.Format(T("Msg_MonResetDone", "{0} device(s) set to 0."), words.Count));
-Msg_MonResetLive;Kaban.Machines.FA2010\Screens\JobsScreen.cs;663;Text;if (!Kaban.UI.Settings.PlcBackupUi.IsSimulator(Station)) question += "\r\n\r\n" + T("Msg_MonResetLive", "This is the machine's PLC: it uses the new values at once.");
+Msg_MonResetLive;Kaban.Machines.FA2010\Screens\JobsScreen.cs;756;Text;if (!Kaban.UI.Settings.PlcBackupUi.IsSimulator(Station)) question += "\r\n\r\n" + T("Msg_MonResetLive", "This is the machine's PLC: it uses the new values at once.");
 Msg_MonResetLive;KabanHMI\Forms\SimulationMonitorForm.Backup.cs;221;Text;if (real) question += "\r\n\r\n" + T("Msg_MonResetLive", "This is the machine's PLC: it uses the new values at once.");
 Msg_MonResetLive;KabanHMI\Forms\SimulationMonitorForm.cs;3520;Text;question += "\r\n\r\n" + T("Msg_MonResetLive", "This is the machine's PLC: it uses the new values at once.");
 Msg_MonResetNotRead;KabanHMI\Forms\SimulationMonitorForm.cs;3518;Text;question += "\r\n\r\n" + string.Format(T("Msg_MonResetNotRead", "{0} bit(s) stay as they are: their word is not read yet."), notRead);
@@ -2232,15 +2267,15 @@ Msg_PlcNotRegistered;Kaban.Core\Helpers\PlcManager.cs;319;Text;return LanguageMa
 Msg_Redone;KabanHMI\Forms\SimulationMonitorForm.cs;1027;Status;SetStatus(string.Format(T("Msg_Redone", "Redone: {0}."), step.What));
 Msg_ResetNeedsLogin;KabanHMI\Helpers\AlarmReset.cs;65;Text;why = LanguageManager.GetString("Msg_ResetNeedsLogin", "sign in as Operator or higher to reset the machine");
 Msg_ResetNoBit;KabanHMI\Helpers\AlarmReset.cs;52;Text;why = LanguageManager.GetString("Msg_ResetNoBit", "no alarm reset bit is set up for this machine yet");
-Msg_ResetNotSent;KabanHMI\Forms\MainForm.cs;2042;Message;string.Format(LanguageManager.GetString("Msg_ResetNotSent",
+Msg_ResetNotSent;KabanHMI\Forms\MainForm.cs;2045;Message;string.Format(LanguageManager.GetString("Msg_ResetNotSent",
 Msg_ResetRefused;KabanHMI\Helpers\AlarmReset.cs;85;Text;why = LanguageManager.GetString("Msg_ResetRefused", "the controller did not accept the write");
-Msg_RestartedOutsideDebugger;KabanHMI\Forms\MainForm.cs;1456;Text;string text = LanguageManager.GetString("Msg_RestartedOutsideDebugger",
-Msg_RestartFailed;KabanHMI\Forms\MainForm.cs;1377;Message;LanguageManager.GetString("Msg_RestartFailed",
-Msg_RestartFailed;KabanHMI\Forms\MainForm.cs;1416;Message;LanguageManager.GetString("Msg_RestartFailed",
-Msg_RestartManually;KabanHMI\Forms\MainForm.cs;1499;Message;LanguageManager.GetString("Msg_RestartManually",
-Msg_RestartNeeded;KabanHMI\Forms\MainForm.cs;1481;Text;? LanguageManager.GetString("Msg_RestartNeeded",
-Msg_RestartNeeded;KabanHMI\Forms\MainForm.cs;1483;Text;: what + "\r\n\r\n" + LanguageManager.GetString("Msg_RestartNeeded",
-Msg_RestartNow;KabanHMI\Forms\MainForm.cs;1487;Message;body + "\r\n\r\n" + LanguageManager.GetString("Msg_RestartNow", "Restart now?"),
+Msg_RestartedOutsideDebugger;KabanHMI\Forms\MainForm.cs;1459;Text;string text = LanguageManager.GetString("Msg_RestartedOutsideDebugger",
+Msg_RestartFailed;KabanHMI\Forms\MainForm.cs;1380;Message;LanguageManager.GetString("Msg_RestartFailed",
+Msg_RestartFailed;KabanHMI\Forms\MainForm.cs;1419;Message;LanguageManager.GetString("Msg_RestartFailed",
+Msg_RestartManually;KabanHMI\Forms\MainForm.cs;1502;Message;LanguageManager.GetString("Msg_RestartManually",
+Msg_RestartNeeded;KabanHMI\Forms\MainForm.cs;1484;Text;? LanguageManager.GetString("Msg_RestartNeeded",
+Msg_RestartNeeded;KabanHMI\Forms\MainForm.cs;1486;Text;: what + "\r\n\r\n" + LanguageManager.GetString("Msg_RestartNeeded",
+Msg_RestartNow;KabanHMI\Forms\MainForm.cs;1490;Message;body + "\r\n\r\n" + LanguageManager.GetString("Msg_RestartNow", "Restart now?"),
 Msg_SheetDelete;KabanHMI\Forms\SimulationMonitorForm.cs;2808;Message;string.Format(T("Msg_SheetDelete", "Delete the tab '{0}' and its {1} row(s)?"), sh.Name, n),
 Msg_SheetNameEmpty;KabanHMI\Forms\SimulationMonitorForm.cs;2855;Text;string problem = n.Length == 0 ? T("Msg_SheetNameEmpty", "Type a name.")
 Msg_SheetNameTaken;KabanHMI\Forms\SimulationMonitorForm.cs;2857;Text;? T("Msg_SheetNameTaken", "This controller already has a tab with that name.") : null;
@@ -2301,7 +2336,7 @@ Name;Kaban.Core\Helpers\AxisMoment.cs;537;Text;{ "Name", s }, { "Html", body },
 Name;Kaban.Core\Helpers\AxisMoment.cs;545;Text;{ "Name", "Manual" }, { "Html", tpl.Phrase("S_Manual", model) },
 Name;Kaban.Core\Helpers\TroubleshootingCatalog.Steps.cs;820;Text;{ "Name", SensorName(s) },
 Name;Kaban.Core\Helpers\TroubleshootingCatalog.Steps.cs;1260;Text;{ "Code", code }, { "Name", name }, { "WantOn", wantOn },
-Name;Kaban.Machines.FA2010\Screens\JobsScreen.cs;146;Text;T("Job_ColName", "Name"), T("Job_ColColour", "Colour") },
+Name;Kaban.Machines.FA2010\Screens\JobsScreen.cs;164;Text;T("Job_ColName", "Name"), T("Job_ColColour", "Colour") },
 Name;Kaban.Machines.FA2010\Screens\SpecialCutsEditor.cs;89;Text;AddText(_recipes, "name", T("Job_RcName", "Name"), 190, false);
 Name;Kaban.Machines.MD3020\Screens\Manual\ManualGeneral.Designer.cs;81;Text;this.hdName.TranslationKey = "Name";
 Name;Kaban.Machines.MD3020\Screens\Manual\ManualGeneral.Designer.cs;82;Text;this.hdName.Text = "Name";
@@ -2393,7 +2428,7 @@ Name;KabanHMI\Screens\NotesPage.cs;1367;Text;if (!ours && pd.Name != "Name" && p
 Name;KabanHMI\Settings\AiChatsEditor.cs;89;Text;_grid.Columns.Add("name", T("AiC_Name", "Name"));
 Name;KabanHMI\Settings\BarcodeSettingsControl.cs;71;Text;_readers.Columns.Add(Col("name", T("Bc_Name", "Name"), 16));
 Name;KabanHMI\Settings\BarcodeSettingsControl.cs;105;Text;_fields.Columns.Add(Col("name", T("Bc_FieldName", "Name"), 22));
-Name;KabanHMI\Settings\LabelSettingsControl.cs;95;Text;Row(T("Lbl_Name", "Name"), _name, x0, y); Row(T("Lbl_Use", "Printed for"), _use, x0 + c2, y); Row(T("Lbl_On", "On"), _on, x0 + c3, y);
+Name;KabanHMI\Settings\LabelSettingsControl.cs;96;Text;Row(T("Lbl_Name", "Name"), _name, x0, y); Row(T("Lbl_Use", "Printed for"), _use, x0 + c2, y); Row(T("Lbl_On", "On"), _on, x0 + c3, y);
 No;Kaban.Core\Helpers\TroubleshootingCatalog.Steps.cs;915;Text;m["Hose" + (i == 0 ? "A" : "B") + "No"] = e(hoseNo[i]);
 No;Kaban.Machines.FA2010\Screens\ProfilesScreen.Notch.cs;63;Heading;_notchGrid.Columns.Add(new DataGridViewTextBoxColumn { Name = "no", HeaderText = T("Prf_ColNo", "No"), ReadOnly = true, Width = 44, SortMode = DataGridViewColumnSortMode.NotSort...
 No;Kaban.Machines.FA2010\Screens\SpecialCutsEditor.cs;88;Text;AddText(_recipes, "no", T("Job_RcNo", "No"), 52, true);
@@ -2406,7 +2441,7 @@ No;Kaban.Machines.SB3015\Screens\Parameters\ParamRobotAxisCalibration.Designer.c
 No;Kaban.Profiles\Jobs\SpecialCuts.cs;453;Text;if (!int.TryParse(f("No"), NumberStyles.Integer, CI, out no)) { problems.Add("a special cut type without its number (No) - left out"); continue; }
 No;Kaban.Profiles\Jobs\SpecialCuts.cs;484;Text;if (!int.TryParse(f("No"), NumberStyles.Integer, CI, out no)) { problems.Add("a recipe without its number (No) - left out"); continue; }
 No;KabanHMI\Forms\PlcPopupForm.cs;95;Text;case "no": return T("Pop_No", "No");
-No;KabanHMI\Settings\LabelSettingsControl.cs;151;Text;_fields.Columns.Add(TextCol("no", T("Lbl_No", "No"), 8));
+No;KabanHMI\Settings\LabelSettingsControl.cs;153;Text;_fields.Columns.Add(TextCol("no", T("Lbl_No", "No"), 8));
 Nts_Accept;KabanHMI\Screens\NotesPage.cs;1550;Text;Act(acts, "✔", T("Nts_Accept", "Accept"), n.Kind == NoteKind.Translation ? T("Nts_TipAcceptText", "Put these texts on the screen")
 Nts_Accept;KabanHMI\Screens\NotesPage.cs;1695;Text;Act(acts, "✔", T("Nts_Accept", "Accept"), n.Kind == NoteKind.Translation ? T("Nts_TipAcceptText", "Put these texts on the screen")
 Nts_AcceptedBy;KabanHMI\Screens\NotesPage.cs;1611;Text;AddText(string.Format(T("Nts_AcceptedBy", "Accepted by {0}, {1}"), n.AcceptedBy, WhenOf(n.AcceptedAt.Value)), false, Color.FromArgb(110, 116, 124));
@@ -2673,8 +2708,8 @@ On;KabanHMI\Controls\CheckBoxHMI.cs;521;Text;string state = Checked ? LanguageMa
 On;KabanHMI\Controls\LampHMI.cs;196;Tooltip;string state = _isOn ? LanguageManager.GetString("Tip_LampOn", "On") : LanguageManager.GetString("Tip_LampOff", "Off");
 On;KabanHMI\Profiles\LibraryEditorForm.cs;199;Text;.Bool("is_enabled", T("LCol_On", "On"), 60, true)));
 On;KabanHMI\Settings\BarcodeSettingsControl.cs;79;Heading;_readers.Columns.Add(new DataGridViewCheckBoxColumn { Name = "on", HeaderText = T("Bc_On", "On"), FillWeight = 5 });
-On;KabanHMI\Settings\LabelSettingsControl.cs;95;Text;Row(T("Lbl_Name", "Name"), _name, x0, y); Row(T("Lbl_Use", "Printed for"), _use, x0 + c2, y); Row(T("Lbl_On", "On"), _on, x0 + c3, y);
-On;KabanHMI\Settings\LabelSettingsControl.cs;167;Heading;_triggers.Columns.Add(new DataGridViewCheckBoxColumn { Name = "on", HeaderText = T("Lbl_On", "On"), FillWeight = 5 });
+On;KabanHMI\Settings\LabelSettingsControl.cs;96;Text;Row(T("Lbl_Name", "Name"), _name, x0, y); Row(T("Lbl_Use", "Printed for"), _use, x0 + c2, y); Row(T("Lbl_On", "On"), _on, x0 + c3, y);
+On;KabanHMI\Settings\LabelSettingsControl.cs;169;Heading;_triggers.Columns.Add(new DataGridViewCheckBoxColumn { Name = "on", HeaderText = T("Lbl_On", "On"), FillWeight = 5 });
 On;KabanHMI\Settings\MaintenancePlanControl.cs;71;Heading;_grid.Columns.Add(new DataGridViewCheckBoxColumn { Name = "on", HeaderText = T("Mnt_On", "On"), FillWeight = 5 });
 On;KabanHMI\Settings\PreferencePreview.cs;594;Text;bool on = _valueOf(ViewPreferences.AlarmSound) == "On";
 On;KabanHMI\Settings\UsersPreferencesControl.cs;737;Text;if (moved && key == ViewPreferences.AlarmSound && hovered == "On")
@@ -2698,7 +2733,7 @@ On/Off;Kaban.Machines.MK2010\Screens\Parameters\ParamSystem2.Designer.cs;883;Tex
 Opt_BakByPoints;KabanHMI\Settings\PlcBackupForms.cs;427;Text;_byPoints.Text = T("Opt_BakByPoints", "Points + Start");
 Opt_BakByRange;KabanHMI\Settings\PlcBackupForms.cs;428;Text;_byRange.Text = T("Opt_BakByRange", "Start + End");
 Other;Kaban.Core\Helpers\AxisMoment.cs;257;Text;default: return "Other";
-Other;Kaban.Machines.FA2010\FA2010Module.cs;231;Text;new Screens.GeneratedPage("Tab_ManualOther", "Other", SecurityLevel.Operator, () => new Screens.Manual.ManualOther()),
+Other;Kaban.Machines.FA2010\FA2010Module.cs;267;Text;new Screens.GeneratedPage("Tab_ManualOther", "Other", SecurityLevel.Operator, () => new Screens.Manual.ManualOther()),
 Other;Kaban.Machines.H800\H800Module.cs;109;Text;new Kaban.UI.Settings.SimplePage("Tab_H800_ManualOther", "Other",
 Other;Kaban.Machines.SB3015\SB3015Module.cs;79;Text;new Kaban.UI.Settings.SimplePage("Tab_SB3015_ManualOther", "Other",
 Other;Kaban.Machines.SB3015\SB3015Module.cs;101;Text;new Kaban.UI.Settings.SimplePage("Tab_SB3015_ParamOther", "Other",
@@ -2764,7 +2799,7 @@ Position;Kaban.Core\Helpers\TroubleshootingCatalog.Steps.cs;1036;Text;_mustOn.Co
 Position;Kaban.Core\Helpers\TroubleshootingCatalog.Steps.cs;1233;Text;list.Add(PartRow("IsMeasure", (string)m["Measure"] + (((string)m["Position"]).Length > 0 ? " &ndash; " + (string)m["Position"] : ""), ""));
 Position;Kaban.Core\Helpers\TroubleshootingCatalog.Steps.cs;1234;Text;else if (((string)m["Position"]).Length > 0)
 Position;Kaban.Core\Helpers\TroubleshootingCatalog.Steps.cs;1235;Text;list.Add(PartRow("IsPosition", (string)m["Position"], ""));
-Position;Kaban.Machines.FA2010\Screens\JobsScreen.cs;150;Text;new[] { "#", T("Job_ColLength", "Length"), T("Job_ColLeft", "Left \u00B0"), T("Job_ColRight", "Right \u00B0"), T("Job_ColPosition", "Position"),
+Position;Kaban.Machines.FA2010\Screens\JobsScreen.cs;168;Text;new[] { "#", T("Job_ColLength", "Length"), T("Job_ColLeft", "Left \u00B0"), T("Job_ColRight", "Right \u00B0"), T("Job_ColPosition", "Position"),
 Position;Kaban.Machines.FA2010\Screens\Parameters\AxisSettings.Designer.cs;90;Text;this.lblHead1.Text = "Position";
 Position;Kaban.Machines.H800\Screens\Parameters\AxisSettings.Designer.cs;55;Text;this.lblHead3.Text = "Position";
 Position;Kaban.Machines.MD3020\Screens\Parameters\ParamAxisCalibration.Designer.cs;115;Text;this.lblHeadPosition.Text = "Position";
@@ -2810,6 +2845,38 @@ Positions;Kaban.Core\Helpers\SimpleMotion.cs;148;Text;I("MotorSpeed", "Motor rot
 Positions;Kaban.Core\Helpers\SimpleMotion.cs;200;Text;new KeyValuePair<string, string>("Positions", "Positions and speeds"),
 Positions;Kaban.Machines.MK2010\Screens\Manual\ManualControl.Designer.cs;147;Text;this.hdPositions.TranslationKey = "Positions";
 Positions;Kaban.Machines.MK2010\Screens\Manual\ManualControl.Designer.cs;148;Text;this.hdPositions.Text = "Positions";
+Prd_AllEvents;KabanHMI\Settings\ProductionControl.cs;54;Text;_kind.Items.Add(T("Prd_AllEvents", "every event"));
+Prd_AllMachines;KabanHMI\Settings\ProductionControl.cs;50;Text;_machine.Items.Add(T("Prd_AllMachines", "every machine"));
+Prd_At;KabanHMI\Settings\ProductionControl.cs;83;Text;new[] { "at", T("Prd_At", "Time"), "13" }, new[] { "machine", T("Prd_Machine", "Machine"), "7" }, new[] { "event", T("Prd_Event", "Event"), "10" },
+Prd_Bar;KabanHMI\Settings\ProductionControl.cs;84;Text;new[] { "job", T("Prd_Job", "Job"), "12" }, new[] { "bar", T("Prd_Bar", "Bar"), "5" }, new[] { "profile", T("Prd_Profile", "Profile"), "10" },
+Prd_BarTime;Kaban.Machines.FA2010\FA2010Module.cs;123;Text;ProductionLog.Counter(new ProductionCounter { Machine = ctx.ModuleId, Key = "Prd_BarTime", Text = "This bar", Station = ctx.Station(1), Address = "D91" });
+Prd_Customer;KabanHMI\Settings\ProductionControl.cs;86;Text;new[] { "customer", T("Prd_Customer", "Customer"), "11" }, new[] { "order", T("Prd_Order", "Order"), "9" }, new[] { "user", T("Prd_User", "User"), "7" },
+Prd_Event;KabanHMI\Settings\ProductionControl.cs;83;Text;new[] { "at", T("Prd_At", "Time"), "13" }, new[] { "machine", T("Prd_Machine", "Machine"), "7" }, new[] { "event", T("Prd_Event", "Event"), "10" },
+Prd_Export;KabanHMI\Settings\ProductionControl.cs;58;Tooltip;var export = UiStyle.ToolButton("📄", T("Prd_Export", "The lines shown as a CSV file (Excel)"), tips, (s, e) => Export());
+Prd_From;KabanHMI\Settings\ProductionControl.cs;60;Text;bar.Controls.Add(cap(T("Prd_From", "From")));
+Prd_Job;KabanHMI\Settings\ProductionControl.cs;84;Text;new[] { "job", T("Prd_Job", "Job"), "12" }, new[] { "bar", T("Prd_Bar", "Bar"), "5" }, new[] { "profile", T("Prd_Profile", "Profile"), "10" },
+Prd_KindFinished;KabanHMI\Settings\ProductionControl.cs;115;Text;case ProductionKind.BarFinished: return T("Prd_KindFinished", "bar finished");
+Prd_KindLeftover;KabanHMI\Settings\ProductionControl.cs;117;Text;case ProductionKind.Leftover: return T("Prd_KindLeftover", "leftover");
+Prd_KindPiece;KabanHMI\Settings\ProductionControl.cs;116;Text;case ProductionKind.Piece: return T("Prd_KindPiece", "piece cut");
+Prd_KindRunEnded;KabanHMI\Settings\ProductionControl.cs;119;Text;default: return T("Prd_KindRunEnded", "automatic run ended");
+Prd_KindRunStarted;KabanHMI\Settings\ProductionControl.cs;118;Text;case ProductionKind.RunStarted: return T("Prd_KindRunStarted", "automatic run started");
+Prd_KindSent;KabanHMI\Settings\ProductionControl.cs;114;Text;case ProductionKind.BarSent: return T("Prd_KindSent", "bar sent");
+Prd_Length;KabanHMI\Settings\ProductionControl.cs;85;Text;new[] { "length", T("Prd_Length", "Length mm"), "7" }, new[] { "pieces", T("Prd_Pieces", "Pieces"), "5" }, new[] { "time", T("Prd_Time", "Time taken"), "7" },
+Prd_Machine;KabanHMI\Settings\ProductionControl.cs;83;Text;new[] { "at", T("Prd_At", "Time"), "13" }, new[] { "machine", T("Prd_Machine", "Machine"), "7" }, new[] { "event", T("Prd_Event", "Event"), "10" },
+Prd_NoCounters;KabanHMI\Settings\ProductionControl.cs;178;Text;_counters.Text = parts.Count > 0 ? string.Join("   |   ", parts) : T("Prd_NoCounters", "No machine of this panel gives its counters.");
+Prd_Note;KabanHMI\Settings\ProductionControl.cs;87;Text;new[] { "note", T("Prd_Note", "Note"), "14" }
+Prd_Order;KabanHMI\Settings\ProductionControl.cs;86;Text;new[] { "customer", T("Prd_Customer", "Customer"), "11" }, new[] { "order", T("Prd_Order", "Order"), "9" }, new[] { "user", T("Prd_User", "User"), "7" },
+Prd_Pieces;KabanHMI\Settings\ProductionControl.cs;85;Text;new[] { "length", T("Prd_Length", "Length mm"), "7" }, new[] { "pieces", T("Prd_Pieces", "Pieces"), "5" }, new[] { "time", T("Prd_Time", "Time taken"), "7" },
+Prd_PowerOn;Kaban.Machines.FA2010\FA2010Module.cs;121;Text;ProductionLog.Counter(new ProductionCounter { Machine = ctx.ModuleId, Key = "Prd_PowerOn", Text = "Power on", Station = ctx.Station(1), Address = "D93" });
+Prd_Profile;KabanHMI\Settings\ProductionControl.cs;84;Text;new[] { "job", T("Prd_Job", "Job"), "12" }, new[] { "bar", T("Prd_Bar", "Bar"), "5" }, new[] { "profile", T("Prd_Profile", "Profile"), "10" },
+Prd_Refresh;KabanHMI\Settings\ProductionControl.cs;57;Tooltip;var refresh = UiStyle.ToolButton("🔄", T("Prd_Refresh", "Read the log again"), tips, (s, e) => Fill());
+Prd_Search;KabanHMI\Settings\ProductionControl.cs;66;Text;bar.Controls.Add(cap(T("Prd_Search", "Find")));
+Prd_Sums;KabanHMI\Settings\ProductionControl.cs;160;Text;_sums.Text = string.Format(T("Prd_Sums", "Bars sent {0}, finished {1} ({2:0.##} m, {3}) - pieces cut {4} - leftovers {5}"),
+Prd_Time;KabanHMI\Settings\ProductionControl.cs;85;Text;new[] { "length", T("Prd_Length", "Length mm"), "7" }, new[] { "pieces", T("Prd_Pieces", "Pieces"), "5" }, new[] { "time", T("Prd_Time", "Time taken"), "7" },
+Prd_TipSearch;KabanHMI\Settings\ProductionControl.cs;71;Tooltip;UiStyle.SetTip(tips, _search, T("Prd_TipSearch", "A customer, an order, a profile, a job or a user"));
+Prd_To;KabanHMI\Settings\ProductionControl.cs;62;Text;bar.Controls.Add(cap(T("Prd_To", "to")));
+Prd_User;KabanHMI\Settings\ProductionControl.cs;86;Text;new[] { "customer", T("Prd_Customer", "Customer"), "11" }, new[] { "order", T("Prd_Order", "Order"), "9" }, new[] { "user", T("Prd_User", "User"), "7" },
+Prd_Working;Kaban.Machines.FA2010\FA2010Module.cs;122;Text;ProductionLog.Counter(new ProductionCounter { Machine = ctx.ModuleId, Key = "Prd_Working", Text = "Working", Station = ctx.Station(1), Address = "D104" });
 Prf_AccAdded;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;526;Status;Status(string.Format(T("Prf_AccAdded", "{0} is on every profile of the group {1}: its placements are worked out - check and confirm them."), code, _current.Group));
 Prf_AccCode;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;58;Heading;_accGrid.Columns.Add(new DataGridViewTextBoxColumn { Name = "code", HeaderText = T("Prf_AccCode", "Accessory"), Width = 130, ReadOnly = true });
 Prf_AccDesc;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;59;Heading;_accGrid.Columns.Add(new DataGridViewTextBoxColumn { Name = "desc", HeaderText = T("Prf_AccDesc", "Description"), Width = 220, ReadOnly = true });
@@ -2829,7 +2896,7 @@ Prf_AllFiles;Kaban.Machines.FA2010\Screens\ProfilesScreen.Program.cs;194;Text;us
 Prf_AskActivate;Kaban.Machines.FA2010\Screens\ProfilesScreen.Details.cs;553;Message;if (!Ask.YesNo(FindForm(), T("Prf_Title", "Profiles"), string.Format(T("Prf_AskActivate", "Take {0} back into use?"), _current.Code))) return;
 Prf_AskConfirmProposed;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;371;Message;string.Format(T("Prf_AskConfirmProposed", "{0} is measured from a reference point nobody has confirmed. Confirm this position anyway (checked on a trial piece)?"), p.Accessory +...
 Prf_AskDeactivate;Kaban.Machines.FA2010\Screens\ProfilesScreen.Details.cs;558;Message;if (!Ask.YesNo(FindForm(), T("Prf_Title", "Profiles"), string.Format(T("Prf_AskDeactivate",
-Prf_AskExamples;Kaban.Machines.FA2010\Screens\JobsScreen.cs;279;Message;T("Prf_AskExamples", "The profile library is new. Load the example catalogue?\r\n\r\n" +
+Prf_AskExamples;Kaban.Machines.FA2010\Screens\JobsScreen.cs;305;Message;T("Prf_AskExamples", "The profile library is new. Load the example catalogue?\r\n\r\n" +
 Prf_AskExamples;Kaban.Machines.FA2010\Screens\ProfileGroupsScreen.cs;225;Message;T("Prf_AskExamples", "The profile library is new. Load the example catalogue?\r\n\r\n" +
 Prf_AskExamples;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;191;Message;T("Prf_AskExamples", "The profile library is new. Load the example catalogue?\r\n\r\n" +
 Prf_AskRemoveAcc;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;553;Message;if (!Ask.YesNo(FindForm(), T("Prf_Title", "Profiles"), string.Format(T("Prf_AskRemoveAcc",
@@ -2950,8 +3017,8 @@ Prf_NewPrompt;Kaban.Machines.FA2010\Screens\ProfilesScreen.Details.cs;506;Messag
 Prf_NewTitle;Kaban.Machines.FA2010\Screens\ProfilesScreen.Details.cs;506;Message;string code = Ask.Text(FindForm(), T("Prf_NewTitle", "New profile"), string.Format(T("Prf_NewPrompt", "Code of the new profile (group {0} - it can be changed in Details):"), gro...
 Prf_NoCorrections;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;442;Menu;if (list.Count == 0) menu.Items.Add(new ToolStripMenuItem(T("Prf_NoCorrections", "No correction reaches this profile.")) { Enabled = false });
 Prf_NoGroups;Kaban.Machines.FA2010\Screens\ProfilesScreen.Details.cs;501;Message;Ask.Tell(FindForm(), T("Prf_Title", "Profiles"), T("Prf_NoGroups", "The library has no group to put a profile in. Add a vendor, a series, a variant and a group first (the librar...
-Prf_NoLibrary;Kaban.Machines.FA2010\Screens\JobsScreen.cs;290;Status;else if (!_libraryOk) Status(T("Prf_NoLibrary", "The profile library could not be opened:") + " " + _libraryWhy, true);
-Prf_NoLibrary;Kaban.Machines.FA2010\Screens\JobsScreen.cs;456;Text;if (!_libraryOk) text += "  " + T("Prf_NoLibrary", "The profile library could not be opened:") + " " + _libraryWhy;
+Prf_NoLibrary;Kaban.Machines.FA2010\Screens\JobsScreen.cs;316;Status;else if (!_libraryOk) Status(T("Prf_NoLibrary", "The profile library could not be opened:") + " " + _libraryWhy, true);
+Prf_NoLibrary;Kaban.Machines.FA2010\Screens\JobsScreen.cs;493;Text;if (!_libraryOk) text += "  " + T("Prf_NoLibrary", "The profile library could not be opened:") + " " + _libraryWhy;
 Prf_NoLibrary;Kaban.Machines.FA2010\Screens\ProfileGroupsScreen.cs;234;Status;if (!_libraryOk) Status(T("Prf_NoLibrary", "The profile library could not be opened:") + " " + _libraryWhy, true);
 Prf_NoLibrary;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;207;Status;if (!_libraryOk) { Status(T("Prf_NoLibrary", "The profile library could not be opened:") + " " + _libraryWhy, true); return; }
 Prf_NoLibrary;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;964;Status;if (_libraryTried) Status(T("Prf_NoLibrary", "The profile library could not be opened:") + " " + _libraryWhy, true);
@@ -3133,7 +3200,7 @@ Prf_TipUseBorder;Kaban.Machines.FA2010\Screens\ProfilesScreen.Drawing.cs;114;Tex
 Prf_TipWholeAccessory;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;131;Tooltip;Kaban.UI.Controls.UiStyle.SetTip(_tips, _chkWholeAccessory, T("Prf_TipWholeAccessory", "The whole accessory moves (a hinge's slot and its holes together), not just this operatio...
 Prf_TipZoomIn;Kaban.Machines.FA2010\Screens\ProfilesScreen.Drawing.cs;71;Text;add(Tool("\uD83D\uDD0D", T("Prf_TipZoomIn", "Zoom in (the wheel zooms too)"), (s, e) => _viewer.ZoomIn()));
 Prf_TipZoomOut;Kaban.Machines.FA2010\Screens\ProfilesScreen.Drawing.cs;72;Text;add(Tool("\uD83D\uDD0E", T("Prf_TipZoomOut", "Zoom out"), (s, e) => _viewer.ZoomOut()));
-Prf_Title;Kaban.Machines.FA2010\Screens\JobsScreen.cs;278;Message;_libraryOk = Library.IsReady || Library.Open(() => Ask.YesNo(FindForm(), T("Prf_Title", "Profiles"),
+Prf_Title;Kaban.Machines.FA2010\Screens\JobsScreen.cs;304;Message;_libraryOk = Library.IsReady || Library.Open(() => Ask.YesNo(FindForm(), T("Prf_Title", "Profiles"),
 Prf_Title;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;370;Message;if (p.Status == "PROPOSED" && !Ask.YesNo(FindForm(), T("Prf_Title", "Profiles"),
 Prf_Title;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;464;Message;if (!Ask.YesNo(FindForm(), T("Prf_Title", "Profiles"), T("Prf_AskRemoveCorrection",
 Prf_Title;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;549;Message;Ask.Tell(FindForm(), T("Prf_Title", "Profiles"), string.Format(T("Prf_AccViaGroupRemove",
@@ -3162,15 +3229,16 @@ Prf_ViewReset;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;906;Status;Status(
 Prf_WholeAccessory;Kaban.Machines.FA2010\Screens\ProfilesScreen.Accessories.cs;130;Text;_chkWholeAccessory = new CheckBox { Text = T("Prf_WholeAccessory", "all its operations"), AutoSize = true, Font = UiStyle.Small, Margin = new Padding(6, 6, 3, 3) };
 Prf_Width;Kaban.Machines.FA2010\Screens\ProfilesScreen.Details.cs;109;Text;_txtWidth = (TextBox)line(T("Prf_Width", "Width (mm) :"), new TextBox { Font = UiStyle.Small, TextAlign = HorizontalAlignment.Right }, _lblWidthCue);
 Profile;Kaban.Core\Barcodes\BarcodeReaders.cs;144;Text;new BarcodeFieldConfig { Name = "Profile", Kind = BarcodeFieldKind.ProfileCode, Start = 1, Length = 10 },
-Profile;Kaban.Machines.FA2010\Screens\JobsScreen.cs;144;Text;new[] { T("Job_ColBar", "Bar"), T("Job_ColProfile", "Profile"), T("Job_ColState", "State"), T("Job_ColPieces", "Pieces"),
+Profile;Kaban.Machines.FA2010\Screens\JobsScreen.cs;162;Text;new[] { T("Job_ColBar", "Bar"), T("Job_ColProfile", "Profile"), T("Job_ColState", "State"), T("Job_ColPieces", "Pieces"),
 Profile;Kaban.Machines.FA2010\Screens\ProfilesScreen.Details.cs;51;Text;var profileTab = new TabPage(T("Prf_TabProfile", "Profile")) { BackColor = Color.White };
 Profile;Kaban.Machines.MD3020\Screens\Home\HomeJob.Designer.cs;629;Text;this.hdProfile.TranslationKey = "Profile";
 Profile;Kaban.Machines.MD3020\Screens\Home\HomeJob.Designer.cs;630;Text;this.hdProfile.Text = "Profile";
 Profile;Kaban.Machines.MK2010\Screens\Home\HomeJob.Designer.cs;426;Text;this.hdProfile.TranslationKey = "Profile";
 Profile;Kaban.Machines.MK2010\Screens\Home\HomeJob.Designer.cs;427;Text;this.hdProfile.Text = "Profile";
-Profile;Kaban.Profiles\Jobs\KbnFile.cs;262;Text;"Profile", Tenths(p.CutLength), Tenths(p.OtherLength), Angle(p.LeftAngle), Angle(p.RightAngle), p.TrolleyName, p.TrolleySection,
+Profile;Kaban.Profiles\Jobs\KbnFile.cs;303;Text;"Profile", Tenths(p.CutLength), Tenths(p.OtherLength), Angle(p.LeftAngle), Angle(p.RightAngle), p.TrolleyName, p.TrolleySection,
 Profile;KabanHMI\Profiles\LibraryEditorForm.cs;532;Text;foreach (var c in new[] { T("LCol_Profile", "Profile"), T("LCol_Group", "Group"), T("LCol_Reference", "Reference"), "Y", "Z", T("LCol_Source", "Found by"), T("LCol_Confidence", ...
 Profile;KabanHMI\Profiles\LibraryEditorForm.cs;544;Text;foreach (var c in new[] { T("LCol_Profile", "Profile"), T("LCol_Group", "Group"), T("LCol_Accessory", "Accessory"), "#", T("LCol_Macro", "Macro"), T("LCol_Status", "Status"), T(...
+Profile;KabanHMI\Settings\ProductionControl.cs;84;Text;new[] { "job", T("Prd_Job", "Job"), "12" }, new[] { "bar", T("Prd_Bar", "Bar"), "5" }, new[] { "profile", T("Prd_Profile", "Profile"), "10" },
 PV_AiAs;KabanHMI\Settings\PreferencePreview.cs;178;Text;return T("PV_AiAs", "How 'Create AI prompt' and 'Ask <AI>' put the prompt on the clipboard: as a file - pasted into the chat (Ctrl+V) it is attached, however long - or as its te...
 PV_AiPaste;KabanHMI\Settings\PreferencePreview.cs;180;Text;return T("PV_AiPaste", "'Ask <AI>' opens the chat and, a few seconds later, presses Ctrl+V in it: the prompt goes in by itself - you check it and send it (Enter).");
 PV_Blink;KabanHMI\Settings\PreferencePreview.cs;168;Text;return T("PV_Blink", "Codes, lamps, borders, the alarm and connection marks on the top bar, the sign-in reminder.");
@@ -3369,8 +3437,8 @@ Right;KabanHMI\Forms\TouchKeyboard.cs;507;Text;case "Right": _kb.Key(KeyRight); 
 Right;KabanHMI\Forms\TouchKeyboard.cs;534;Text;case "Right": return "▶";
 Right;KabanHMI\Forms\TouchKeyboard.cs;565;Text;bool letter = k.Word == null || k.Word == "Back" || k.Word == "Shift" || k.Word == "Enter" || k.Word == "Left" || k.Word == "Right" || k.Word == "Hide";
 Right;KabanHMI\Helpers\AlarmAiPrompt.cs;675;Text;sb.AppendLine("  - " + (s.Side == "A" ? "Left" : "Right") + " button (" + s.Side + ") \"" + name + "\": " + string.Join("; ", parts));
-Robot;Kaban.Machines.FA2010\FA2010Module.cs;226;Text;new Screens.GeneratedPage("Tab_ManualRobot", "Robot", SecurityLevel.Operator, () => new Screens.Manual.ManualRobot()),
-Robot;Kaban.Machines.FA2010\FA2010Module.cs;247;Text;new Screens.GeneratedPage("Tab_ParamRobot", "Robot", SecurityLevel.Maintenance, () => new Screens.Parameters.ParamRobot()),
+Robot;Kaban.Machines.FA2010\FA2010Module.cs;262;Text;new Screens.GeneratedPage("Tab_ManualRobot", "Robot", SecurityLevel.Operator, () => new Screens.Manual.ManualRobot()),
+Robot;Kaban.Machines.FA2010\FA2010Module.cs;283;Text;new Screens.GeneratedPage("Tab_ParamRobot", "Robot", SecurityLevel.Maintenance, () => new Screens.Parameters.ParamRobot()),
 Robot;Kaban.Machines.H800\Screens\ManualDischarge.Designer.cs;54;Text;this.uRobot.TitleTextKey = "Robot";
 Robot;Kaban.Machines.H800\Screens\ManualDischarge.Designer.cs;74;Text;this.uRobot2.TitleTextKey = "Robot";
 Robot;Kaban.Machines.SB3015\SB3015Module.cs;69;Text;new Kaban.UI.Settings.SimplePage("Tab_SB3015_ManualRobot", "Robot",
@@ -3411,9 +3479,9 @@ Set_Logs;KabanHMI\Settings\LogSettingsControl.cs;242;Text;LanguageManager.GetStr
 Set_Logs;KabanHMI\Settings\PlaceholderPages.cs;49;Text;public string TitleKey => "Set_Logs";
 Set_Peck;KabanHMI\Profiles\LibraryEditorForm.cs;472;Text;T("Set_Peck", "Most a tool goes down in one pass (mm)"), T("Set_Breakthrough", "Past the wall when cutting through (mm)"),
 Set_SafeZ;KabanHMI\Profiles\LibraryEditorForm.cs;471;Text;T("Set_SafeZ", "Safe height above the face (mm)"), T("Set_Approach", "Feed through air inside the profile (mm/min)"),
-Set_StationConn;KabanHMI\Forms\MainForm.cs;2118;Text;LanguageManager.GetString("Set_StationConn", "PLC Connection"), LinkIcon(22)) { Name = "connSettings" };
-Set_StationConn;KabanHMI\Forms\MainForm.cs;2140;Text;var settings = FindSettingsWith(kv.Value, "Set_StationConn");
-Set_StationConn;KabanHMI\Forms\MainForm.cs;2143;Text;AsOneStep(() => { LoadScreen(screen); settings.ActivateByKey("Set_StationConn"); });
+Set_StationConn;KabanHMI\Forms\MainForm.cs;2121;Text;LanguageManager.GetString("Set_StationConn", "PLC Connection"), LinkIcon(22)) { Name = "connSettings" };
+Set_StationConn;KabanHMI\Forms\MainForm.cs;2143;Text;var settings = FindSettingsWith(kv.Value, "Set_StationConn");
+Set_StationConn;KabanHMI\Forms\MainForm.cs;2146;Text;AsOneStep(() => { LoadScreen(screen); settings.ActivateByKey("Set_StationConn"); });
 Set_StationConn;KabanHMI\Settings\StationConnectionControl.cs;558;Text;string title = LanguageManager.GetString("Set_StationConn", "PLC Connection");
 Set_StationConn;KabanHMI\Settings\StationConnectionControl.cs;628;Text;public string TitleKey { get { return "Set_StationConn"; } }
 Set_UsersPrefs;KabanHMI\Settings\UsersPreferencesControl.cs;15;Text;public string TitleKey => "Set_UsersPrefs";
@@ -3440,7 +3508,7 @@ St_Proposed;KabanHMI\Profiles\LibraryEditorForm.cs;600;Text;case "PROPOSED": ret
 St_Rejected;KabanHMI\Profiles\LibraryEditorForm.cs;603;Text;case "REJECTED": return T("St_Rejected", "not on this profile");
 Sta_Connected;KabanHMI\Settings\PlcConnectionDiagnostics.cs;101;Text;if (r.Live) r.State = "● " + LanguageManager.GetString("Sta_Connected", "Connected");
 Sta_Failed;Kaban.Core\Helpers\ConnectionMonitor.cs;346;Text;var text = LanguageManager.GetString("Sta_Failed", "Connection failed");
-Sta_Failed;KabanHMI\Forms\MainForm.cs;2092;Text;? LanguageManager.GetString("Sta_Failed", "Connection failed") + suffix
+Sta_Failed;KabanHMI\Forms\MainForm.cs;2095;Text;? LanguageManager.GetString("Sta_Failed", "Connection failed") + suffix
 Sta_NotRegistered;KabanHMI\Settings\PlcConnectionDiagnostics.cs;88;Text;r.Driver = LanguageManager.GetString("Sta_NotRegistered", "not registered");
 Start;Kaban.Core\Helpers\DisplaySettings.cs;136;Text;else if (key.Equals("Start", StringComparison.OrdinalIgnoreCase))
 Start;Kaban.Machines.FA2010\Screens\HomeScreen.Designer.cs;55;Text;this.btnStart.ButtonText = "Start";
@@ -3452,7 +3520,7 @@ Start;Kaban.Machines.MD3020\Screens\Home\HomeJob.Designer.cs;144;Text;this.btnCy
 Start;Kaban.Machines.MD3020\Screens\Home\HomeJob.Designer.cs;145;Text;this.btnCycle_Machine_Start.FallbackText = "Start";
 Start;KabanHMI\Controls\PneumaticPositioningHMI.cs;54;Tooltip;AddSection("Target", "Col_PpTarget", "Target position", "Target", "Tip_PpTarget", "Start", "Tip_PpStart", operatorLevel: true);
 Start;KabanHMI\Screens\MachineHomeScreen.cs;90;Text;cycle.Controls.Add(CycleButton("Start", _spec.StartAddress, bx, 30,
-State;Kaban.Machines.FA2010\Screens\JobsScreen.cs;144;Text;new[] { T("Job_ColBar", "Bar"), T("Job_ColProfile", "Profile"), T("Job_ColState", "State"), T("Job_ColPieces", "Pieces"),
+State;Kaban.Machines.FA2010\Screens\JobsScreen.cs;162;Text;new[] { T("Job_ColBar", "Bar"), T("Job_ColProfile", "Profile"), T("Job_ColState", "State"), T("Job_ColPieces", "Pieces"),
 State;Kaban.Machines.FA2010\Screens\ProfilesScreen.cs;545;Text;case "state": return T("Prf_ColState", "State");
 State;Kaban.Machines.SB3015\Screens\Home\HomeOverview.Designer.cs;325;Text;this.hdState.TranslationKey = "State";
 State;Kaban.Machines.SB3015\Screens\Home\HomeOverview.Designer.cs;326;Text;this.hdState.Text = "State";
@@ -3485,8 +3553,8 @@ Sup_NotFound;KabanHMI\Helpers\RemoteSupport.cs;64;Text;return string.Format(Lang
 Sup_NotStarted;KabanHMI\Helpers\RemoteSupport.cs;70;Text;if (!Start(path)) return string.Format(LanguageManager.GetString("Sup_NotStarted", "{0} could not be started."), path);
 Sys_Code;Kaban.Machines.FA2010\Screens\AlarmScreen.cs;98;Heading;dgvAlarms.Columns["ColCode"].HeaderText = LanguageManager.GetString("Sys_Code", "Code");
 Sys_Code;Kaban.Machines.SB3012\Screens\AlarmScreen.cs;98;Heading;dgvAlarms.Columns["ColCode"].HeaderText = LanguageManager.GetString("Sys_Code", "Code");
-Sys_CommLostBanner;KabanHMI\Forms\MainForm.cs;811;Text;Text = LanguageManager.GetString("Sys_CommLostBanner",
-Sys_CommLostBanner;KabanHMI\Forms\MainForm.cs;817;Text;_lblComm.Text = LanguageManager.GetString("Sys_CommLostBanner",
+Sys_CommLostBanner;KabanHMI\Forms\MainForm.cs;814;Text;Text = LanguageManager.GetString("Sys_CommLostBanner",
+Sys_CommLostBanner;KabanHMI\Forms\MainForm.cs;820;Text;_lblComm.Text = LanguageManager.GetString("Sys_CommLostBanner",
 Sys_ConfirmChange;KabanHMI\Controls\NumericInputHMI.cs;1146;Text;LanguageManager.GetString("Sys_ConfirmChange",
 Sys_ConfirmChangeAddr;KabanHMI\Controls\NumericInputHMI.cs;1140;Text;LanguageManager.GetString("Sys_ConfirmChangeAddr", "Write {0} to {1}?"),
 Sys_ConfirmTitle;KabanHMI\Controls\CheckBoxHMI.cs;189;Message;var answer = MessageBox.Show(FindForm(), q, LanguageManager.GetString("Sys_ConfirmTitle", "Confirm"),
@@ -3503,10 +3571,10 @@ Sys_Disabled;KabanHMI\Settings\SettingsScreen.cs;278;Message;LanguageManager.Get
 Sys_InputTitle;KabanHMI\Controls\NumericInputHMI.cs;1020;Text;LanguageManager.GetString("Sys_InputTitle", "Input"),
 Sys_InputTitle;KabanHMI\Forms\NumpadForm.cs;136;Text;Text = caption ?? LanguageManager.GetString("Sys_InputTitle", "Input");
 Sys_Machine;Kaban.Core\Helpers\PlcManager.cs;168;Text;? LanguageManager.GetString("Sys_Machine", "Machine")
-Sys_NoActiveAlarms;KabanHMI\Forms\MainForm.cs;1987;Text;LanguageManager.GetString("Sys_NoActiveAlarms", "No active alarms")) { Enabled = false });
+Sys_NoActiveAlarms;KabanHMI\Forms\MainForm.cs;1990;Text;LanguageManager.GetString("Sys_NoActiveAlarms", "No active alarms")) { Enabled = false });
 Sys_NoData;KabanHMI\Controls\ButtonHMI.cs;283;Text;return IsPlcBound ? LanguageManager.GetString("Sys_NoData", "Waiting for PLC data.") : "";
-Sys_NotLoggedIn;KabanHMI\Forms\MainForm.cs;1672;Text;? LanguageManager.GetString("Sys_NotLoggedIn", "No user logged")
-Sys_NotLoggedIn;KabanHMI\Forms\MainForm.cs;2533;Text;userPart = LanguageManager.GetString("Sys_NotLoggedIn", "No user logged");
+Sys_NotLoggedIn;KabanHMI\Forms\MainForm.cs;1675;Text;? LanguageManager.GetString("Sys_NotLoggedIn", "No user logged")
+Sys_NotLoggedIn;KabanHMI\Forms\MainForm.cs;2536;Text;userPart = LanguageManager.GetString("Sys_NotLoggedIn", "No user logged");
 Sys_Reason;KabanHMI\Controls\BaseNumericHMI.cs;463;Text;string reason = LanguageManager.GetString("Sys_Reason", "Reason:");
 Sys_Reason;KabanHMI\Controls\NumericInputHMI.cs;327;Text;string reason = LanguageManager.GetString("Sys_Reason", "Reason:");
 Sys_ReqSec;KabanHMI\Controls\BaseNumericHMI.cs;464;Text;string reqSec = LanguageManager.GetString("Sys_ReqSec", "Requires Security Level:");
@@ -3529,7 +3597,9 @@ Sys_WriteRejected;KabanHMI\Controls\NumericInputHMI.cs;1184;Text;: LanguageManag
 Sys_WriteRejectedAddr;KabanHMI\Controls\NumericInputHMI.cs;1183;Text;? string.Format(LanguageManager.GetString("Sys_WriteRejectedAddr", "The PLC rejected the write to {0}."), effAddr)
 Tab_AlarmsActive;KabanHMI\Screens\MachineAlarmScreen.cs;166;Text;new Kaban.UI.Settings.SimplePage("Tab_AlarmsActive", "Active",
 Tab_AlarmsHistory;KabanHMI\Screens\MachineAlarmScreen.cs;168;Text;new Kaban.UI.Settings.SimplePage("Tab_AlarmsHistory", "History",
-Tab_AxisSettings;Kaban.Machines.FA2010\FA2010Module.cs;245;Text;new Screens.GeneratedPage("Tab_AxisSettings", "Axis", SecurityLevel.Maintenance, () => new Screens.Parameters.AxisSettings()),
+Tab_AxisSettings;Kaban.Machines.FA2010\FA2010Module.cs;281;Text;new Screens.GeneratedPage("Tab_AxisSettings", "Axis", SecurityLevel.Maintenance, () => new Screens.Parameters.AxisSettings()),
+Tab_Backup;KabanHMI\Settings\DataBackupControl.cs;34;Message;MessageBox.Show(owner, text, LanguageManager.GetString("Tab_Backup", "Backup"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes;
+Tab_Backup;KabanHMI\Settings\DataBackupControl.cs;171;Text;public string TitleKey { get { return "Tab_Backup"; } }
 Tab_Barcodes;KabanHMI\Settings\BarcodeSettingsControl.cs;360;Text;public string TitleKey { get { return "Tab_Barcodes"; } }
 Tab_FlgCountry;KabanHMI\Settings\TranslationFlagForm.cs;102;Text;var country = new TabPage(T("Tab_FlgCountry", "A country's flag")) { BackColor = Color.White, Padding = new Padding(8), Name = "flagWayCountry" };
 Tab_FlgPattern;KabanHMI\Settings\TranslationFlagForm.cs;124;Text;var pattern = new TabPage(T("Tab_FlgPattern", "Stripes or a cross")) { BackColor = Color.White, Padding = new Padding(8), Name = "flagWayPattern" };
@@ -3538,19 +3608,19 @@ Tab_H500_ManualEntry_Conveyor;Kaban.Machines.H500\H500Module.cs;76;Text;new Kaba
 Tab_H500_ManualHeads;Kaban.Machines.H500\H500Module.cs;78;Text;new Kaban.UI.Settings.SimplePage("Tab_H500_ManualHeads", "Heads",
 Tab_H500_ParamMachine;Kaban.Machines.H500\H500Module.cs;83;Text;new Kaban.UI.Settings.SimplePage("Tab_H500_ParamMachine", "Parameters",
 Tab_HmiSettings;KabanHMI\Settings\HmiSettingsPage.cs;15;Text;public string TitleKey { get { return "Tab_HmiSettings"; } }
-Tab_Labels;KabanHMI\Settings\LabelSettingsControl.cs;296;Message;if (_dirty.IsDirty && !Ask.YesNo(FindForm(), T("Tab_Labels", "Labels"), T("Lbl_Unsaved", "The label's changes are not kept. Throw them away?")))
-Tab_Labels;KabanHMI\Settings\LabelSettingsControl.cs;452;Message;if (!Ask.YesNo(FindForm(), T("Tab_Labels", "Labels"), string.Format(T("Lbl_AskDelete", "Delete the label {0}?"), _currentOldName))) return;
-Tab_Labels;KabanHMI\Settings\LabelSettingsControl.cs;576;Text;public string TitleKey { get { return "Tab_Labels"; } }
+Tab_Labels;KabanHMI\Settings\LabelSettingsControl.cs;298;Message;if (_dirty.IsDirty && !Ask.YesNo(FindForm(), T("Tab_Labels", "Labels"), T("Lbl_Unsaved", "The label's changes are not kept. Throw them away?")))
+Tab_Labels;KabanHMI\Settings\LabelSettingsControl.cs;456;Message;if (!Ask.YesNo(FindForm(), T("Tab_Labels", "Labels"), string.Format(T("Lbl_AskDelete", "Delete the label {0}?"), _currentOldName))) return;
+Tab_Labels;KabanHMI\Settings\LabelSettingsControl.cs;580;Text;public string TitleKey { get { return "Tab_Labels"; } }
 Tab_Maintenance;KabanHMI\Settings\MaintenancePlanControl.cs;244;Text;public string TitleKey { get { return "Tab_Maintenance"; } }
-Tab_ManualClamping_Moulds;Kaban.Machines.FA2010\FA2010Module.cs;232;Text;new Screens.GeneratedPage("Tab_ManualClamping_Moulds", "Clamping Moulds", SecurityLevel.Operator, () => new Screens.Manual.ManualClamping_Moulds()),
-Tab_ManualCutting;Kaban.Machines.FA2010\FA2010Module.cs;229;Text;new Screens.GeneratedPage("Tab_ManualCutting", "Cutting", SecurityLevel.Operator, () => new Screens.Manual.ManualCutting()),
-Tab_ManualEntry_Conveyor;Kaban.Machines.FA2010\FA2010Module.cs;225;Text;new Screens.GeneratedPage("Tab_ManualEntry_Conveyor", "Entry Conveyor", SecurityLevel.Operator, () => new Screens.Manual.ManualEntry_Conveyor()),
-Tab_ManualExit;Kaban.Machines.FA2010\FA2010Module.cs;230;Text;new Screens.GeneratedPage("Tab_ManualExit", "Exit", SecurityLevel.Operator, () => new Screens.Manual.ManualExit()),
-Tab_ManualMilling;Kaban.Machines.FA2010\FA2010Module.cs;228;Text;new Screens.GeneratedPage("Tab_ManualMilling", "Milling", SecurityLevel.Operator, () => new Screens.Manual.ManualMilling()),
-Tab_ManualOther;Kaban.Machines.FA2010\FA2010Module.cs;231;Text;new Screens.GeneratedPage("Tab_ManualOther", "Other", SecurityLevel.Operator, () => new Screens.Manual.ManualOther()),
-Tab_ManualProfile_Recognition;Kaban.Machines.FA2010\FA2010Module.cs;227;Text;new Screens.GeneratedPage("Tab_ManualProfile_Recognition", "Profile Recognition", SecurityLevel.Operator, () => new Screens.Manual.ManualProfile_Recognition()),
-Tab_ManualRobot;Kaban.Machines.FA2010\FA2010Module.cs;226;Text;new Screens.GeneratedPage("Tab_ManualRobot", "Robot", SecurityLevel.Operator, () => new Screens.Manual.ManualRobot()),
-Tab_ManualYZ_Cross_Rollers;Kaban.Machines.FA2010\FA2010Module.cs;233;Text;new Screens.GeneratedPage("Tab_ManualYZ_Cross_Rollers", "YZ Cross Rollers", SecurityLevel.Operator, () => new Screens.Manual.ManualYZ_Cross_Rollers())
+Tab_ManualClamping_Moulds;Kaban.Machines.FA2010\FA2010Module.cs;268;Text;new Screens.GeneratedPage("Tab_ManualClamping_Moulds", "Clamping Moulds", SecurityLevel.Operator, () => new Screens.Manual.ManualClamping_Moulds()),
+Tab_ManualCutting;Kaban.Machines.FA2010\FA2010Module.cs;265;Text;new Screens.GeneratedPage("Tab_ManualCutting", "Cutting", SecurityLevel.Operator, () => new Screens.Manual.ManualCutting()),
+Tab_ManualEntry_Conveyor;Kaban.Machines.FA2010\FA2010Module.cs;261;Text;new Screens.GeneratedPage("Tab_ManualEntry_Conveyor", "Entry Conveyor", SecurityLevel.Operator, () => new Screens.Manual.ManualEntry_Conveyor()),
+Tab_ManualExit;Kaban.Machines.FA2010\FA2010Module.cs;266;Text;new Screens.GeneratedPage("Tab_ManualExit", "Exit", SecurityLevel.Operator, () => new Screens.Manual.ManualExit()),
+Tab_ManualMilling;Kaban.Machines.FA2010\FA2010Module.cs;264;Text;new Screens.GeneratedPage("Tab_ManualMilling", "Milling", SecurityLevel.Operator, () => new Screens.Manual.ManualMilling()),
+Tab_ManualOther;Kaban.Machines.FA2010\FA2010Module.cs;267;Text;new Screens.GeneratedPage("Tab_ManualOther", "Other", SecurityLevel.Operator, () => new Screens.Manual.ManualOther()),
+Tab_ManualProfile_Recognition;Kaban.Machines.FA2010\FA2010Module.cs;263;Text;new Screens.GeneratedPage("Tab_ManualProfile_Recognition", "Profile Recognition", SecurityLevel.Operator, () => new Screens.Manual.ManualProfile_Recognition()),
+Tab_ManualRobot;Kaban.Machines.FA2010\FA2010Module.cs;262;Text;new Screens.GeneratedPage("Tab_ManualRobot", "Robot", SecurityLevel.Operator, () => new Screens.Manual.ManualRobot()),
+Tab_ManualYZ_Cross_Rollers;Kaban.Machines.FA2010\FA2010Module.cs;269;Text;new Screens.GeneratedPage("Tab_ManualYZ_Cross_Rollers", "YZ Cross Rollers", SecurityLevel.Operator, () => new Screens.Manual.ManualYZ_Cross_Rollers())
 Tab_MD3020_ManualCylinders;Kaban.Machines.MD3020\MD3020Module.cs;91;Text;new Kaban.UI.Settings.SimplePage("Tab_MD3020_ManualCylinders", "Cylinders",
 Tab_MD3020_ManualGeneral;Kaban.Machines.MD3020\MD3020Module.cs;86;Text;new Kaban.UI.Settings.SimplePage("Tab_MD3020_ManualGeneral", "General",
 Tab_MD3020_ManualMovement;Kaban.Machines.MD3020\MD3020Module.cs;88;Text;new Kaban.UI.Settings.SimplePage("Tab_MD3020_ManualMovement", "Manual Movement",
@@ -3580,14 +3650,16 @@ Tab_MonSent;KabanHMI\Forms\SimulationMonitorForm.cs;3127;Text;string name = T("T
 Tab_MonSent;KabanHMI\Forms\SimulationMonitorForm.cs;3201;Text;string name = T("Tab_MonSent", "HMI -> PLC");
 Tab_MonTableLabels;KabanHMI\Forms\SimulationMonitorForm.Table.cs;574;Text;sh.TablesPage = new TabPage(T("Tab_MonTableLabels", "Table viewed labels")) { BackColor = Color.White, Name = "tablesPage" };
 Tab_NoStations;KabanHMI\Forms\SimulationMonitorForm.cs;1061;Text;var none = new TabPage(T("Tab_NoStations", "No controllers"));
-Tab_Options;Kaban.Machines.FA2010\FA2010Module.cs;244;Text;new Screens.GeneratedPage("Tab_Options", "Options", SecurityLevel.Maintenance, () => new Screens.Parameters.Options()),
+Tab_Options;Kaban.Machines.FA2010\FA2010Module.cs;280;Text;new Screens.GeneratedPage("Tab_Options", "Options", SecurityLevel.Maintenance, () => new Screens.Parameters.Options()),
 Tab_Options;KabanHMI\Settings\FeaturesControl.cs;201;Text;public string TitleKey { get { return "Tab_Options"; } }
-Tab_ParamConveyor;Kaban.Machines.FA2010\FA2010Module.cs;246;Text;new Screens.GeneratedPage("Tab_ParamConveyor", "Conveyor", SecurityLevel.Maintenance, () => new Screens.Parameters.ParamConveyor()),
-Tab_ParamCutting;Kaban.Machines.FA2010\FA2010Module.cs;249;Text;new Screens.GeneratedPage("Tab_ParamCutting", "Cutting", SecurityLevel.Maintenance, () => new Screens.Parameters.ParamCutting()),
-Tab_ParamEncoders;Kaban.Machines.FA2010\FA2010Module.cs;250;Text;new Screens.GeneratedPage("Tab_ParamEncoders", "Encoders", SecurityLevel.Maintenance, () => new Screens.Parameters.ParamEncoders()),
-Tab_ParamMilling;Kaban.Machines.FA2010\FA2010Module.cs;248;Text;new Screens.GeneratedPage("Tab_ParamMilling", "Milling", SecurityLevel.Maintenance, () => new Screens.Parameters.ParamMilling()),
-Tab_ParamOther;Kaban.Machines.FA2010\FA2010Module.cs;251;Text;new Screens.GeneratedPage("Tab_ParamOther", "Others", SecurityLevel.Maintenance, () => new Screens.Parameters.ParamOther())
-Tab_ParamRobot;Kaban.Machines.FA2010\FA2010Module.cs;247;Text;new Screens.GeneratedPage("Tab_ParamRobot", "Robot", SecurityLevel.Maintenance, () => new Screens.Parameters.ParamRobot()),
+Tab_ParamConveyor;Kaban.Machines.FA2010\FA2010Module.cs;282;Text;new Screens.GeneratedPage("Tab_ParamConveyor", "Conveyor", SecurityLevel.Maintenance, () => new Screens.Parameters.ParamConveyor()),
+Tab_ParamCutting;Kaban.Machines.FA2010\FA2010Module.cs;285;Text;new Screens.GeneratedPage("Tab_ParamCutting", "Cutting", SecurityLevel.Maintenance, () => new Screens.Parameters.ParamCutting()),
+Tab_ParamEncoders;Kaban.Machines.FA2010\FA2010Module.cs;286;Text;new Screens.GeneratedPage("Tab_ParamEncoders", "Encoders", SecurityLevel.Maintenance, () => new Screens.Parameters.ParamEncoders()),
+Tab_ParamMilling;Kaban.Machines.FA2010\FA2010Module.cs;284;Text;new Screens.GeneratedPage("Tab_ParamMilling", "Milling", SecurityLevel.Maintenance, () => new Screens.Parameters.ParamMilling()),
+Tab_ParamOther;Kaban.Machines.FA2010\FA2010Module.cs;287;Text;new Screens.GeneratedPage("Tab_ParamOther", "Others", SecurityLevel.Maintenance, () => new Screens.Parameters.ParamOther())
+Tab_ParamRobot;Kaban.Machines.FA2010\FA2010Module.cs;283;Text;new Screens.GeneratedPage("Tab_ParamRobot", "Robot", SecurityLevel.Maintenance, () => new Screens.Parameters.ParamRobot()),
+Tab_Production;KabanHMI\Settings\ProductionControl.cs;188;Message;catch (Exception ex) { MessageBox.Show(FindForm(), ex.Message, T("Tab_Production", "Production"), MessageBoxButtons.OK, MessageBoxIcon.Warning); }
+Tab_Production;KabanHMI\Settings\ProductionControl.cs;204;Text;public string TitleKey { get { return "Tab_Production"; } }
 Tab_SB3015_ManualCutting;Kaban.Machines.SB3015\SB3015Module.cs;75;Text;new Kaban.UI.Settings.SimplePage("Tab_SB3015_ManualCutting", "Cutting",
 Tab_SB3015_ManualEntryConveyor;Kaban.Machines.SB3015\SB3015Module.cs;67;Text;new Kaban.UI.Settings.SimplePage("Tab_SB3015_ManualEntryConveyor", "Entry Conveyor",
 Tab_SB3015_ManualExit;Kaban.Machines.SB3015\SB3015Module.cs;77;Text;new Kaban.UI.Settings.SimplePage("Tab_SB3015_ManualExit", "Exit",
@@ -3786,8 +3858,8 @@ Tip_MonUp;KabanHMI\Forms\SimulationMonitorForm.cs;640;Tooltip;var btnUp = _btnUp
 Tip_MonUp;KabanHMI\Forms\SimulationMonitorForm.cs;641;Tooltip;keyed(btnUp, Keys.Control | Keys.Up, T("Tip_MonUp", "Move the selected rows up"));
 Tip_MonWriteLog;KabanHMI\Forms\SimulationMonitorForm.cs;4246;Tooltip;tip += "\r\n" + T("Tip_MonWriteLog", "Every HMI write is in the PLC write log: HMI Settings > Log Settings, kind PLC device writes.");
 Tip_MotionParamEdit;KabanHMI\Controls\MotionValueHMI.cs;177;Tooltip;text += "\n" + LanguageManager.GetString("Tip_MotionParamEdit",
-Tip_NavBack;KabanHMI\Forms\MainForm.cs;2853;Tooltip;Helpers.Shortcuts.Set(_btnHistBack, Keys.Alt | Keys.Left, _topTips, LanguageManager.GetString("Tip_NavBack", "Back to the page before"));
-Tip_NavForward;KabanHMI\Forms\MainForm.cs;2854;Tooltip;Helpers.Shortcuts.Set(_btnHistFwd, Keys.Alt | Keys.Right, _topTips, LanguageManager.GetString("Tip_NavForward", "Forward again"));
+Tip_NavBack;KabanHMI\Forms\MainForm.cs;2856;Tooltip;Helpers.Shortcuts.Set(_btnHistBack, Keys.Alt | Keys.Left, _topTips, LanguageManager.GetString("Tip_NavBack", "Back to the page before"));
+Tip_NavForward;KabanHMI\Forms\MainForm.cs;2857;Tooltip;Helpers.Shortcuts.Set(_btnHistFwd, Keys.Alt | Keys.Right, _topTips, LanguageManager.GetString("Tip_NavForward", "Forward again"));
 Tip_NetAddress;KabanHMI\Settings\StationConnectionControl.cs;405;Tooltip;Kaban.UI.Controls.UiStyle.SetTip(tips, address, LanguageManager.GetString("Tip_NetAddress",
 Tip_NoteHelper;KabanHMI\Helpers\NoteHelpers.cs;116;Tooltip;UiStyle.SetTip(UiStyle.Tips(), badge, LanguageManager.GetString("Tip_NoteHelper", "Helpers for this control (from the notes page)") + "\n" +
 Tip_NotMeasuredNow;KabanHMI\Controls\BaseNumericHMI.cs;390;Tooltip;return string.Format(LanguageManager.GetString("Tip_NotMeasuredNow",
@@ -3830,7 +3902,7 @@ Tip_SideClose;KabanHMI\Forms\MainForm.SidePanel.cs;832;Tooltip;_btnClose = Capti
 Tip_SideDockBack;KabanHMI\Forms\MainForm.SidePanel.cs;826;Tooltip;LanguageManager.GetString("Tip_SideDockBack", "Back into the main window's side panel"),
 Tip_SidePopOut;KabanHMI\Forms\MainForm.SidePanel.cs;155;Tooltip;_sidePopOut = HeaderButton(DrawPopOutGlyph, "Pop out", T("Tip_SidePopOut", "Open in a window of its own (for a second screen)"),
 Tip_SideSplitter;KabanHMI\Forms\MainForm.SidePanel.cs;195;Tooltip;Kaban.UI.Controls.UiStyle.SetTip(_sideTips, _sideSplitter, T("Tip_SideSplitter", "Drag to size the side page. Double-click: just wide enough for all of it."));
-Tip_SimMonitor;KabanHMI\Forms\MainForm.cs;3007;Tooltip;Kaban.UI.Controls.UiStyle.SetTip(_topTips, _btnSimMonitor, LanguageManager.GetString("Tip_SimMonitor", "Simulation Monitor (F12)"));
+Tip_SimMonitor;KabanHMI\Forms\MainForm.cs;3010;Tooltip;Kaban.UI.Controls.UiStyle.SetTip(_topTips, _btnSimMonitor, LanguageManager.GetString("Tip_SimMonitor", "Simulation Monitor (F12)"));
 Tip_SpeedSlider;KabanHMI\Controls\SpeedOverrideHMI.cs;111;Tooltip;(_softEnabled ? LanguageManager.GetString("Tip_SpeedSlider", "Drag the slider, or tap the percentage to type it.")
 Tip_StructAddMember;KabanHMI\Forms\StructuredTypesForm.cs;116;Tooltip;_addMember = UiStyle.ToolButton(E(0x2795), T("Tip_StructAddMember", "Add a label after the last one"), _tips);
 Tip_StructBit;KabanHMI\Forms\StructuredTypesForm.cs;143;Heading;_members.Columns.Add(new DataGridViewTextBoxColumn { Name = "Bit", HeaderText = T("Col_StructBit", "Bit"), FillWeight = 9, ToolTipText = T("Tip_StructBit", "A Bit member: its bi...
@@ -3899,10 +3971,10 @@ Tolerance;KabanHMI\Controls\PneumaticPositioningHMI.cs;45;Text;new[] { "Toleranc
 Tolerance;KabanHMI\Controls\PneumaticPositioningHMI.cs;56;Tooltip;AddSection("Tolerance", "Col_PpTolerance", "Positioning tolerance", "Tolerance", "Tip_PpTolerance");
 Tolerance;KabanHMI\Controls\PneumaticPositioningHMI.cs;74;Text;public string PositioningToleranceAddress { get { return FieldAddress("Tolerance"); } set { SetFieldAddress("Tolerance", value); } }
 Tolerance;KabanHMI\Controls\PneumaticPositioningHMI.cs;88;Text;public NumericInputHMI ToleranceField { get { return FieldOf("Tolerance"); } }
-Ttl_ActiveAlarms;KabanHMI\Forms\MainForm.cs;1916;Tooltip;Kaban.UI.Controls.UiStyle.SetTip(_topTips, _btnAlarmReset, LanguageManager.GetString("Ttl_ActiveAlarms", "Active Alarms"));
-Ttl_ActiveAlarms;KabanHMI\Forms\MainForm.cs;1964;Text;LanguageManager.GetString("Ttl_ActiveAlarms", "Active Alarms"))
+Ttl_ActiveAlarms;KabanHMI\Forms\MainForm.cs;1919;Tooltip;Kaban.UI.Controls.UiStyle.SetTip(_topTips, _btnAlarmReset, LanguageManager.GetString("Ttl_ActiveAlarms", "Active Alarms"));
+Ttl_ActiveAlarms;KabanHMI\Forms\MainForm.cs;1967;Text;LanguageManager.GetString("Ttl_ActiveAlarms", "Active Alarms"))
 Ttl_AddDevice;KabanHMI\Forms\PlcRowEditorForm.cs;146;Text;Text = LanguageManager.GetString(isNew ? "Ttl_AddDevice" : "Ttl_EditDevice", isNew ? "Add device" : "Edit device")
-Ttl_AlarmReset;KabanHMI\Forms\MainForm.cs;2044;Text;LanguageManager.GetString("Ttl_AlarmReset", "Alarm reset"),
+Ttl_AlarmReset;KabanHMI\Forms\MainForm.cs;2047;Text;LanguageManager.GetString("Ttl_AlarmReset", "Alarm reset"),
 Ttl_AlarmReset;KabanHMI\Screens\MachineAlarmScreen.cs;106;Message;LanguageManager.GetString("Ttl_AlarmReset", "Alarm reset"),
 Ttl_AxisMonitor;KabanHMI\Forms\MainForm.SidePanel.cs;83;Text;TitleKey = "Ttl_AxisMonitor", TitleFallback = "Axis Monitor",
 Ttl_BakChoose;KabanHMI\Settings\PlcBackupSelection.cs;367;Text;Text = string.Format(T("Ttl_BakChoose", "The backup to write {0} from - {1}"), what, PlcEndpointNaming.Caption(endpoint));
@@ -3914,10 +3986,10 @@ Ttl_CmpFile;KabanHMI\Settings\SettingsCompareForm.cs;64;Text;Text = string.Forma
 Ttl_ColWidths;KabanHMI\Helpers\ColumnChooser.cs;282;Text;Text = T("Ttl_ColWidths", "Column widths");
 Ttl_Compare;KabanHMI\Settings\SettingsCompareForm.cs;49;Message;T("Ttl_Compare", "Compare"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
 Ttl_Confirm;KabanHMI\Controls\ButtonHMI.cs;1546;Message;: MessageBox.Show(QuestionText, LanguageManager.GetString("Ttl_Confirm", "Confirm"), MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-Ttl_ConnFailure;KabanHMI\Forms\MainForm.cs;1832;Text;LanguageManager.GetString("Ttl_ConnFailure", "PLC Connection Failure"));
-Ttl_ConnFailure;KabanHMI\Forms\MainForm.cs;2064;Text;LanguageManager.GetString("Ttl_ConnFailure", "PLC Connection Failure"))
-Ttl_ConnFailure;KabanHMI\Forms\MainForm.cs;2168;Message;LanguageManager.GetString("Ttl_ConnFailure", "PLC Connection Failure"),
-Ttl_ConnFailure;KabanHMI\Forms\MainForm.cs;2190;Message;LanguageManager.GetString("Ttl_ConnFailure", "PLC Connection Failure"),
+Ttl_ConnFailure;KabanHMI\Forms\MainForm.cs;1835;Text;LanguageManager.GetString("Ttl_ConnFailure", "PLC Connection Failure"));
+Ttl_ConnFailure;KabanHMI\Forms\MainForm.cs;2067;Text;LanguageManager.GetString("Ttl_ConnFailure", "PLC Connection Failure"))
+Ttl_ConnFailure;KabanHMI\Forms\MainForm.cs;2171;Message;LanguageManager.GetString("Ttl_ConnFailure", "PLC Connection Failure"),
+Ttl_ConnFailure;KabanHMI\Forms\MainForm.cs;2193;Message;LanguageManager.GetString("Ttl_ConnFailure", "PLC Connection Failure"),
 Ttl_Coupled;KabanHMI\Forms\MainForm.Coupling.cs;52;Tooltip;UiStyle.SetTip(_topTips, _btnCoupled, LanguageManager.GetString("Ttl_Coupled", "Coupled units"));
 Ttl_Coupled;KabanHMI\Forms\MainForm.Coupling.cs;120;Text;menu.Items.Add(UiStyle.MenuHeader(LanguageManager.GetString("Ttl_Coupled", "Coupled units")));
 Ttl_EditDevice;KabanHMI\Forms\PlcRowEditorForm.cs;146;Text;Text = LanguageManager.GetString(isNew ? "Ttl_AddDevice" : "Ttl_EditDevice", isNew ? "Add device" : "Edit device")
@@ -3933,8 +4005,8 @@ Ttl_ImportCsv;KabanHMI\Forms\SimulationMonitorForm.cs;4342;Text;dlg.Title = T("T
 Ttl_ImportSettings;KabanHMI\Settings\ImportSettingsControl.cs;295;Message;if (!Kaban.UI.Profiles.Ask.YesNo(FindForm() ?? (IWin32Window)this, T("Ttl_ImportSettings", "Import settings"),
 Ttl_ImportSettings;KabanHMI\Settings\ImportSettingsControl.cs;314;Message;Kaban.UI.Profiles.Ask.Tell(FindForm() ?? (IWin32Window)this, T("Ttl_ImportSettings", "Import settings"),
 Ttl_IoMonitor;KabanHMI\Forms\MainForm.SidePanel.cs;71;Text;TitleKey = "Ttl_IoMonitor", TitleFallback = "Inputs / Outputs",
-Ttl_Language;KabanHMI\Forms\MainForm.cs;1101;Tooltip;Kaban.UI.Controls.UiStyle.SetTip(_topTips, _btnLang, LanguageManager.GetString("Ttl_Language", "Language / Dil"));
-Ttl_Language;KabanHMI\Forms\MainForm.cs;2343;Text;menu.Items.Add(new ToolStripLabel(LanguageManager.GetString("Ttl_Language", "Language"))
+Ttl_Language;KabanHMI\Forms\MainForm.cs;1104;Tooltip;Kaban.UI.Controls.UiStyle.SetTip(_topTips, _btnLang, LanguageManager.GetString("Ttl_Language", "Language / Dil"));
+Ttl_Language;KabanHMI\Forms\MainForm.cs;2346;Text;menu.Items.Add(new ToolStripLabel(LanguageManager.GetString("Ttl_Language", "Language"))
 Ttl_Login;KabanHMI\Forms\LoginForm.cs;47;Text;this.Text = LanguageManager.GetString("Ttl_Login", "HMI Login");
 Ttl_Magnifier;KabanHMI\Controls\ScaleSlider.cs;123;Text;return LanguageManager.GetString("Ttl_Magnifier", "Screen scale") + ": " + Text + "\n" +
 Ttl_Magnifier;KabanHMI\Forms\MainForm.Magnifier.cs;61;Message;if (MessageBox.Show(this, question, LanguageManager.GetString("Ttl_Magnifier", "Screen scale"),
@@ -3952,9 +4024,9 @@ Ttl_Notes;KabanHMI\Screens\NotesPage.cs;1796;Message;if (!Kaban.UI.Profiles.Ask.
 Ttl_NtsFind;KabanHMI\Screens\NotesFindForm.cs;72;Text;Text = T("Ttl_NtsFind", "Where is it used?") + (string.IsNullOrWhiteSpace(title) ? "" : " - " + title);
 Ttl_OneCopy;KabanHMI\Helpers\SingleInstance.cs;129;Text;Tell(text, LanguageManager.GetString("Ttl_OneCopy", "The HMI is already running"));
 Ttl_PlcBackup;KabanHMI\Settings\PlcBackupForms.cs;28;Message;return MessageBox.Show(owner, text, T("Ttl_PlcBackup", "PLC data"), buttons, icon);
-Ttl_ProgramExit;KabanHMI\Forms\MainForm.cs;1249;Text;_btnClose = win("\u2715", LanguageManager.GetString("Ttl_ProgramExit", "Program Exit"),
-Ttl_ProgramExit;KabanHMI\Forms\MainForm.cs;1286;Text;menu.Items.Add(new ToolStripLabel(LanguageManager.GetString("Ttl_ProgramExit", "Program Exit"))
-Ttl_RestartNeeded;KabanHMI\Forms\MainForm.cs;1479;Text;string title = LanguageManager.GetString("Ttl_RestartNeeded", "Restart needed");
+Ttl_ProgramExit;KabanHMI\Forms\MainForm.cs;1252;Text;_btnClose = win("\u2715", LanguageManager.GetString("Ttl_ProgramExit", "Program Exit"),
+Ttl_ProgramExit;KabanHMI\Forms\MainForm.cs;1289;Text;menu.Items.Add(new ToolStripLabel(LanguageManager.GetString("Ttl_ProgramExit", "Program Exit"))
+Ttl_RestartNeeded;KabanHMI\Forms\MainForm.cs;1482;Text;string title = LanguageManager.GetString("Ttl_RestartNeeded", "Restart needed");
 Ttl_SheetNew;KabanHMI\Forms\SimulationMonitorForm.cs;2768;Text;string name = AskText(T("Ttl_SheetNew", "New tab"), T("Lbl_SheetName", "Name of the tab:"),
 Ttl_SheetRename;KabanHMI\Forms\SimulationMonitorForm.cs;2791;Text;string name = AskText(T("Ttl_SheetRename", "Rename tab"), T("Lbl_SheetName", "Name of the tab:"), sh.Name, mon, sh);
 Ttl_SideMonitor;KabanHMI\Forms\MainForm.SidePanel.cs;102;Text;TitleKey = "Ttl_SideMonitor", TitleFallback = "PLC Monitor",
@@ -4289,7 +4361,7 @@ Value;KabanHMI\Forms\SimulationMonitorForm.cs;4707;Text;try { if (col == "Value"
 Value;KabanHMI\Helpers\HmiAiPrompt.cs;215;Text;lines.Add((num is Kaban.UI.Controls.NumericInputHMI ? "Value to enter" : "Value") + " \"" + Tr(num.DescriptionText).TrimEnd(':') + "\": " + num.Text.Trim() +
 Value;KabanHMI\Screens\NotesPage.cs;316;Text;new Choice("Helper", T("Nts_KindHelper", "Helper")), new Choice("Value", T("Nts_KindValue", "Value")),
 Value;KabanHMI\Screens\NotesPage.cs;1842;Text;case NoteKind.Value: return T("Nts_KindValue", "Value");
-Value;KabanHMI\Settings\LabelSettingsControl.cs;136;Heading;var keyCol = new DataGridViewComboBoxColumn { Name = "key", HeaderText = T("Lbl_Value", "Value"), FillWeight = 20, FlatStyle = FlatStyle.Flat, DisplayMember = "Text", ValueMembe...
+Value;KabanHMI\Settings\LabelSettingsControl.cs;138;Heading;var keyCol = new DataGridViewComboBoxColumn { Name = "key", HeaderText = T("Lbl_Value", "Value"), FillWeight = 20, FlatStyle = FlatStyle.Flat, DisplayMember = "Text", ValueMembe...
 VP_AiAsFile;KabanHMI\Settings\UsersPreferencesControl.cs;1120;Text;case "AiPromptAs.File": return T("VP_AiAsFile", "A file (Ctrl+V attaches it)");
 VP_AiAsText;KabanHMI\Settings\UsersPreferencesControl.cs;1121;Text;case "AiPromptAs.Text": return T("VP_AiAsText", "Its text");
 VP_AiPaste;KabanHMI\Settings\UsersPreferencesControl.cs;1069;Text;case ViewPreferences.AiPaste: return T("VP_AiPaste", "Paste into the chat");
@@ -4364,7 +4436,7 @@ Welding;Kaban.Machines.MK2010\Screens\Home\HomeJob.Designer.cs;525;Text;this.cap
 Welding;Kaban.Machines.MK2010\Screens\Home\HomeJob.Designer.cs;526;Text;this.capWelding.Text = "Welding";
 Why_AdminOnly;KabanHMI\Controls\MotionValueHMI.cs;210;Text;down ? T("Why_PlcDown", "The PLC is not answering") : T("Why_AdminOnly", "For an Admin (sign in as one)")));
 Why_AdminOnly;KabanHMI\Controls\MotionValueHMI.cs;222;Text;if (!SecurityManager.HasAccess(SecurityLevel.Admin)) return T("Why_AdminOnly", "For an Admin (sign in as one)");
-Why_AdminOnly;KabanHMI\Forms\MainForm.cs;2124;Text;LanguageManager.GetString("Why_AdminOnly", "For an Admin (sign in as one)"));
+Why_AdminOnly;KabanHMI\Forms\MainForm.cs;2127;Text;LanguageManager.GetString("Why_AdminOnly", "For an Admin (sign in as one)"));
 Why_AiNoFault;KabanHMI\Controls\AlarmHelpBadge.cs;576;Text;ai == null ? LanguageManager.GetString("Why_AiNoFault", "For a fault: the AI prompt is about what failed") : null);
 Why_AxMonAdminLists;KabanHMI\Screens\AxisMonitorPage.cs;237;Text;_bar.LockLists(!admin, LanguageManager.GetString("Why_AxMonAdminLists", "An Admin chooses what the Axis Monitor shows (sign in as one)"));
 Why_ColNoDefault;KabanHMI\Helpers\ColumnChooser.cs;133;Text;!string.IsNullOrEmpty(DefaultKey), T("Why_ColNoDefault", "This table keeps no default of its own")));

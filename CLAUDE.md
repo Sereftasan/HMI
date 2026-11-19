@@ -173,6 +173,11 @@
   (HMI.MAINT.<id>, a warning), back 4 hours after an acknowledgement while not done. Remote support: the "?" menu (RemoteSupport -
   Supports\KabanSupport.exe / AnyDesk.exe beside the program). FA2010's transfer folder: JobInbox (JobInbox.cfg) - the Jobs page's
   inbox button sets it (Maintenance).
+- The old program analysed as a whole (19 November): docs\KabanMachinesSystem_Analysis.md - every part, where it is now, what is next
+  (the H500 screwing job, waste mode, the machines not brought over). FA2010's bar handshake (JobSender: after a bar L10 "Son Bar Degil",
+  L0 "Is Gonder" off, L1 "Is Geldi" on) and JobRun (the Jobs page's Automatic: L0 while M21 asks for the next bar; D91 the bar's seconds).
+  ProductionLog (ProgramData\KabanHMI\Production\yyyy-MM.csv; HMI Settings > Production, the machines' counters - ProductionLog.Counter),
+  DataBackup (HMI Settings > Backup, DataBackup.cfg), job files' Screw / Hole lines (KbnPiece.Screws), the transfer folder's Archive.
 
 ## Open questions (answer here or in a message)
 (none now)
