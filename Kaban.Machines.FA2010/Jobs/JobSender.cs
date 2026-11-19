@@ -282,8 +282,14 @@ namespace Kaban.Machines.FA2010.Jobs
             public int Blocks, Words;
         }
 
+        // THE BAR'S HANDSHAKE (19 November - the old FA2010's job screen, _ZC2010 ucJobPreparations.SendBar / Check_NextJob, and FA2010's
+        // device list): after the bar's data, "Son Bar Degil" L10 (another bar follows it: 1), "Is Gonder" L0 off (the PLC's request for a bar
+        // answered) and "Is Geldi" L1 on (the bar has come). The PLC sets L0 again when it wants the next bar (JobRun).
+        internal const string NotLastDevice = "L10", AskDevice = "L0", ArrivedDevice = "L1";
+
         /// <summary>The bar into the PLC (the question asked already). Stops at the first write the PLC refuses.</summary>
-        internal static Result Send(BarPlan plan, int station, string jobName, bool trial, KbnJob job = null)
+        /// <param name="moreBars">Another bar follows this one (an automatic run): L10 on; otherwise off - this is the last one.</param>
+        internal static Result Send(BarPlan plan, int station, string jobName, bool trial, KbnJob job = null, bool moreBars = false, bool automatic = false)
         {
             var r = new Result();
             var problems = new List<string>();
@@ -312,7 +318,32 @@ namespace Kaban.Machines.FA2010.Jobs
                     r.Words += b.Words.Length;
                 }
             }
+            // the handshake: another bar after it or not, the request answered, the bar has come
+            using (PlcWriteLog.Source(source + " - the bar has come (L1)"))
+            {
+                foreach (var w in new[] { new KeyValuePair<string, int>(NotLastDevice, moreBars ? 1 : 0), new KeyValuePair<string, int>(AskDevice, 0),
+                                          new KeyValuePair<string, int>(ArrivedDevice, 1) })
+                {
+                    int rc;
+                    try { rc = driver.Write(AddressOf(station, w.Key == NotLastDevice ? "Son_Bar_Degil" : w.Key == AskDevice ? "Is_Gonder" : "Is_Geldi", w.Key), w.Value); }
+                    catch (Exception ex) { rc = -1; r.Message = ex.Message; }
+                    if (rc != 0)
+                    {
+                        r.Message = string.Format(CI, "the bar was written, but the PLC refused {0} = {1} (code {2})", w.Key, w.Value, rc) + (r.Message.Length > 0 ? ": " + r.Message : "");
+                        AuditLogger.Log("[JOB] " + source + ": " + r.Message);
+                        return r;
+                    }
+                }
+            }
             r.Ok = true;
+            // the production log: the bar sent (19 November)
+            ProductionLog.Add(new ProductionEntry
+            {
+                Machine = "FA2010", Kind = ProductionKind.BarSent, Job = jobName ?? "", Bar = plan.Bar.Title, Profile = plan.Bar.Code, LengthMm = plan.Bar.Length,
+                Pieces = plan.Bar.Pieces.Count, User = SecurityManager.CurrentUser, Trial = trial, Automatic = automatic,
+                Customer = string.Join(", ", plan.Bar.Pieces.Select(p => p.Customer).Where(c => c.Length > 0).Distinct()),
+                Order = string.Join(", ", plan.Bar.Pieces.Select(p => p.OrderNo).Where(c => c.Length > 0).Distinct())
+            });
             // the units ask for these operations' steps from now on
             JobMilling.Take(plan, string.Format(CI, "bar {0} of {1} ({2})", plan.Bar.Title, jobName, plan.Bar.Code));
             // its pieces' labels, for when the PLC asks for them by their IDs (17 November)

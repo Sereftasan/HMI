@@ -40,6 +40,8 @@ namespace Kaban.UI.Settings
                 new LabelSettingsPage(),
                 // 17 November (the old Cleaning Settings): the machines' maintenance tasks, a warning when one is due (Operator: Done)
                 new MaintenancePlanPage(),
+                // 19 November (the old Machine Logs: Customer Report, General Information): what was sent, finished and cut, the machines' counters
+                new ProductionPage(),
                 // 30 October: the HMI's optional parts on and off - Industry 4 logging, the touch screen (Admin)
                 new FeaturesPage()
                 // No "Manual" or "About" tab: both are the caption bar's "?" (9 October:

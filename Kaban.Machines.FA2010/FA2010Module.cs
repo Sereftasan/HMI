@@ -84,17 +84,53 @@ namespace Kaban.Machines.FA2010
             Kaban.UI.Helpers.LabelTriggers.Register(new Kaban.UI.Helpers.LabelTrigger
             {
                 ModuleId = ctx.ModuleId, Name = "FA2010", Station = ctx.Station(1), Use = Kaban.Core.Labels.LabelUse.Piece,
-                Bit = "L2", Value = "D386", DoubleWord = true, Divisor = 1, Resolve = Jobs.JobLabels.Piece
+                Bit = "L2", Value = "D386", DoubleWord = true, Divisor = 1,
+                // the piece's values - and the piece cut in the production log (19 November)
+                Resolve = id =>
+                {
+                    var v = Jobs.JobLabels.Piece(id);
+                    ProductionLog.Add(new ProductionEntry
+                    {
+                        Machine = "FA2010", Kind = ProductionKind.Piece, Bar = v != null ? v[Kaban.Core.Labels.LabelKeys.BarNo] : "",
+                        Job = v != null ? v[Kaban.Core.Labels.LabelKeys.JobName] : "", Profile = v != null ? v[Kaban.Core.Labels.LabelKeys.ProfileCode] : "",
+                        LengthMm = v != null ? Num(v[Kaban.Core.Labels.LabelKeys.CutLength]) : 0, Pieces = 1,
+                        Customer = v != null ? v[Kaban.Core.Labels.LabelKeys.Customer] : "", Order = v != null ? v[Kaban.Core.Labels.LabelKeys.OrderNo] : "",
+                        Note = "ID " + id.ToString("0", System.Globalization.CultureInfo.InvariantCulture) + (v == null ? " - not a piece of a bar sent from this HMI" : "")
+                    });
+                    return v;
+                }
             });
             Kaban.UI.Helpers.LabelTriggers.Register(new Kaban.UI.Helpers.LabelTrigger
             {
                 ModuleId = ctx.ModuleId, Name = "FA2010", Station = ctx.Station(1), Use = Kaban.Core.Labels.LabelUse.Leftover,
-                Bit = "L24", Value = "D388", DoubleWord = true, Divisor = 10, Resolve = Jobs.JobLabels.Leftover
+                Bit = "L24", Value = "D388", DoubleWord = true, Divisor = 10,
+                Resolve = len =>
+                {
+                    var v = Jobs.JobLabels.Leftover(len);
+                    ProductionLog.Add(new ProductionEntry
+                    {
+                        Machine = "FA2010", Kind = ProductionKind.Leftover, Job = v[Kaban.Core.Labels.LabelKeys.JobName], Bar = v[Kaban.Core.Labels.LabelKeys.BarNo],
+                        Profile = v[Kaban.Core.Labels.LabelKeys.ProfileCode], LengthMm = len
+                    });
+                    return v;
+                }
             });
+
+            // THE MACHINE'S COUNTERS (19 November - the old General Information page): its time with power on (D93) and its working time
+            // in total (D104), seconds in two words each (the device list: PC_EnerjideKalmaSuresi_Sayac, PC_CalismaSuresi_Toplam)
+            ProductionLog.Counter(new ProductionCounter { Machine = ctx.ModuleId, Key = "Prd_PowerOn", Text = "Power on", Station = ctx.Station(1), Address = "D93" });
+            ProductionLog.Counter(new ProductionCounter { Machine = ctx.ModuleId, Key = "Prd_Working", Text = "Working", Station = ctx.Station(1), Address = "D104" });
+            ProductionLog.Counter(new ProductionCounter { Machine = ctx.ModuleId, Key = "Prd_BarTime", Text = "This bar", Station = ctx.Station(1), Address = "D91" });
 
             // Drivers are registered by the entry point (Program.cs), because only
             // it knows whether this deployment talks to real hardware or the
             // simulator. The module just declares which stations must exist.
+        }
+
+        private static double Num(string s)
+        {
+            double d;
+            return double.TryParse((s ?? "").Replace(',', '.'), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out d) ? d : 0;
         }
 
         public void RegisterConditions(IMachineMountContext ctx)

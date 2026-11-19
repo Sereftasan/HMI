@@ -108,6 +108,7 @@
     <Compile Include="Helpers\ViewPreferences.cs" />
     <Compile Include="Helpers\HmiFeatures.cs" />
     <Compile Include="Helpers\MaintenancePlan.cs" />
+    <Compile Include="Helpers\ProductionLog.cs" />
     <Compile Include="Helpers\SimpleMotion.cs" />
     <Compile Include="Helpers\PlcBackup.cs" />
     <Compile Include="Helpers\PlcBlocks.cs" />

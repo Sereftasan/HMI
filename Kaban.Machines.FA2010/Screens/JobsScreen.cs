@@ -42,6 +42,8 @@ namespace Kaban.Machines.FA2010.Screens
         private readonly ComboBox _cmbRecent = new ComboBox();
         private readonly NumericUpDown _numSaw = Num(0, 20), _numShare = Num(-50, 50), _numSquare = Num(0, 9999), _numLongest = Num(0, 99999), _numVSaws = Num(0, 999);
         private readonly CheckBox _chkTrial = new CheckBox();
+        private readonly CheckBox _chkAuto = new CheckBox { Name = "jobAutomatic" };
+        private Button _btnStopRun;
         private Button _btnSend, _btnOpen, _btnReload, _btnInbox;
         private readonly DataGridView _bars = new DataGridView(), _pieces = new DataGridView(), _steps = new DataGridView();
         private readonly TextBox _notes = new TextBox();
@@ -56,6 +58,8 @@ namespace Kaban.Machines.FA2010.Screens
         internal List<BarPlan> Plans = new List<BarPlan>();
         /// <summary>Bars sent: the job file's path -> bar index -> when.</summary>
         private readonly Dictionary<string, Dictionary<int, DateTime>> _sent = new Dictionary<string, Dictionary<int, DateTime>>(StringComparer.OrdinalIgnoreCase);
+        /// <summary>The bars the machine has finished (the PLC asked for the next one after them - JobRun), by job file.</summary>
+        private readonly Dictionary<string, Dictionary<int, DateTime>> _finished = new Dictionary<string, Dictionary<int, DateTime>>(StringComparer.OrdinalIgnoreCase);
         private readonly List<string> _recent = new List<string>();
         private EventHandler _onUserChanged;
 
@@ -115,6 +119,20 @@ namespace Kaban.Machines.FA2010.Screens
             _tips.SetToolTip(_chkTrial, T("Job_TipTrial",
                 "Send milling positions nobody has confirmed on the Profiles page - for a test piece only (the Maintenance level)"));
             send.Controls.Add(_chkTrial);
+            // 19 November - the old FA2010's job screen: the bars one after the other as the machine asks for them (JobRun)
+            _chkAuto.Text = T("Job_Automatic", "Automatic");
+            _chkAuto.AutoSize = true;
+            _chkAuto.Font = UiStyle.Small;
+            _chkAuto.Margin = new Padding(6, 9, 4, 0);
+            _tips.SetToolTip(_chkAuto, T("Job_TipAutomatic",
+                "Send: the selected bar now, then each next bar of the job not sent yet when the machine asks for it (Is Gonder L0, while Makine Aktif M21 is on)"));
+            send.Controls.Add(_chkAuto);
+            _btnStopRun = UiStyle.TextButton("\u25A0 " + T("Job_StopRun", "Stop automatic"), 0, (s, e) => JobRun.Stop(T("Job_RunStopped", "stopped by the operator")));
+            _btnStopRun.Name = "jobStopRun";
+            _btnStopRun.Width = TextRenderer.MeasureText(_btnStopRun.Text, _btnStopRun.Font).Width + 30;
+            _btnStopRun.Visible = false;
+            _tips.SetToolTip(_btnStopRun, T("Job_TipStopRun", "No further bar is sent: the bar in the machine is its last (L10 off)"));
+            send.Controls.Add(_btnStopRun);
             top.Controls.Add(left);
             top.Controls.Add(send);
 
@@ -214,6 +232,14 @@ namespace Kaban.Machines.FA2010.Screens
             ApplyAccess();
             // the milling units' requests for the steps of the bar sent last - answered from the start, the page shown or not
             JobMilling.Start();
+            // the automatic run's bars sent and finished, what it says (any thread)
+            Action<int> runSent = i => OnUi(() => RunBarSent(i));
+            Action<int, double> runFinished = (i, sec) => OnUi(() => RunBarFinished(i, sec));
+            Action<string, bool> runSaid = (text, bad) => OnUi(() => { Status(T("Job_RunPrefix", "Automatic:") + " " + text, bad); ShowRun(); });
+            JobRun.BarSent += runSent;
+            JobRun.BarFinished += runFinished;
+            JobRun.Said += runSaid;
+            Disposed += (s, e) => { JobRun.BarSent -= runSent; JobRun.BarFinished -= runFinished; JobRun.Said -= runSaid; };
             // the transfer folder watched (its new job files to the top of the list, said in a note)
             Action<string> arrived = path => { try { if (IsHandleCreated && !IsDisposed) BeginInvoke((Action)(() => JobArrived(path))); } catch { } };
             JobInbox.Arrived += arrived;
@@ -466,6 +492,53 @@ namespace Kaban.Machines.FA2010.Screens
             ShowBar();
         }
 
+        private void OnUi(Action a)
+        {
+            try { if (IsHandleCreated && !IsDisposed) BeginInvoke(a); } catch { }
+        }
+
+        /// <summary>The run's bar sent: marked sent here when it is the job shown.</summary>
+        private void RunBarSent(int i)
+        {
+            string path = JobRun.JobPath;
+            Dictionary<int, DateTime> d;
+            if (!_sent.TryGetValue(path, out d)) _sent[path] = d = new Dictionary<int, DateTime>();
+            d[i] = DateTime.Now;
+            SaveState();
+            if (Job != null && string.Equals(Job.Path, path, StringComparison.OrdinalIgnoreCase) && i < _bars.Rows.Count && i < Plans.Count)
+            {
+                StateCell(_bars.Rows[i], Plans[i], d[i]);
+                Status(string.Format(T("Job_RunSent", "Automatic: bar {0} sent - {1} more to go."), Plans[i].Bar.Title, JobRun.Queue.Count));
+            }
+            ShowRun();
+        }
+
+        /// <summary>A bar finished (the machine asked for the next one).</summary>
+        private void RunBarFinished(int i, double seconds)
+        {
+            string path = JobRun.JobPath;
+            Dictionary<int, DateTime> d;
+            if (!_finished.TryGetValue(path, out d)) _finished[path] = d = new Dictionary<int, DateTime>();
+            d[i] = DateTime.Now;
+            SaveState();
+            if (Job != null && string.Equals(Job.Path, path, StringComparison.OrdinalIgnoreCase) && i < _bars.Rows.Count && i < Plans.Count)
+                StateCell(_bars.Rows[i], Plans[i], SentAt(i));
+            ShowRun();
+        }
+
+        /// <summary>The Stop button while a run goes on.</summary>
+        private void ShowRun()
+        {
+            _btnStopRun.Visible = JobRun.On;
+        }
+
+        private DateTime? FinishedAt(int bar)
+        {
+            Dictionary<int, DateTime> d;
+            DateTime t;
+            return Job != null && _finished.TryGetValue(Job.Path, out d) && d.TryGetValue(bar, out t) ? t : (DateTime?)null;
+        }
+
         private DateTime? SentAt(int bar)
         {
             Dictionary<int, DateTime> d;
@@ -504,6 +577,12 @@ namespace Kaban.Machines.FA2010.Screens
             {
                 cell.Value = "\u26A0 " + string.Format(T("Job_StateProblems", "{0} problem(s)"), plan.Problems.Count);
                 cell.Style.ForeColor = Color.FromArgb(180, 40, 40);
+            }
+            else if (FinishedAt(row.Index).HasValue && (!sent.HasValue || FinishedAt(row.Index).Value >= sent.Value))
+            {
+                var f = FinishedAt(row.Index).Value;
+                cell.Value = "\u2714\u2714 " + string.Format(T("Job_StateFinished", "finished {0}"), f.ToString(f.Date == DateTime.Today ? "HH:mm" : "yyyy-MM-dd HH:mm", CI));
+                cell.Style.ForeColor = Color.FromArgb(30, 120, 60);
             }
             else if (sent.HasValue)
             {
@@ -660,8 +739,25 @@ namespace Kaban.Machines.FA2010.Screens
             if (plan.Special.Count > 0)
                 question += "\r\n" + string.Format(T("Job_AskSpecial", "{0} special cut(s): their parameters - the saw gets their steps when it asks (L105)."), plan.Special.Count);
             if (trial) question += "\r\n\r\n" + T("Job_AskTrial", "TRIAL: milling positions nobody has confirmed - for a test piece only.");
+            bool automatic = _chkAuto.Checked;
+            if (automatic)
+                question += "\r\n\r\n" + T("Job_AskAutomatic", "AUTOMATIC: then each next bar of the job not sent yet, when the machine asks for it.");
             if (!Kaban.UI.Settings.PlcBackupUi.IsSimulator(Station)) question += "\r\n\r\n" + T("Msg_MonResetLive", "This is the machine's PLC: it uses the new values at once.");
             if (!Ask.YesNo(FindForm(), title, question)) return false;
+            if (automatic)
+            {
+                Dictionary<int, DateTime> sentOfJob;
+                var skip = _sent.TryGetValue(Job.Path, out sentOfJob) ? sentOfJob.Keys.ToList() : new List<int>();
+                var why = JobRun.Start(Job, Plans, i, skip, Station, CanSet && _chkTrial.Checked);
+                if (why.Length > 0)
+                {
+                    Ask.Tell(FindForm(), title, string.Format(T("Job_SendFailed", "Bar {0} was not sent: {1}"), plan.Bar.Title, why));
+                    Status(string.Format(T("Job_SendFailed", "Bar {0} was not sent: {1}"), plan.Bar.Title, why), true);
+                    return false;
+                }
+                ShowRun();
+                return true;
+            }
             var r = JobSender.Send(plan, Station, Job.Name, trial, Job);
             if (!r.Ok)
             {
@@ -669,6 +765,9 @@ namespace Kaban.Machines.FA2010.Screens
                 Status(string.Format(T("Job_SendFailed", "Bar {0} was not sent: {1}"), plan.Bar.Title, r.Message), true);
                 return false;
             }
+            // watched for its finish (the PLC's request for the next bar) - nothing follows it
+            JobRun.SentByHand(Job, Plans, i, Station);
+            ShowRun();
             Dictionary<int, DateTime> d;
             if (!_sent.TryGetValue(Job.Path, out d)) _sent[Job.Path] = d = new Dictionary<int, DateTime>();
             d[i] = DateTime.Now;
@@ -687,6 +786,7 @@ namespace Kaban.Machines.FA2010.Screens
         {
             _recent.Clear();
             _sent.Clear();
+            _finished.Clear();
             try
             {
                 if (!File.Exists(StatePath)) return;
@@ -703,6 +803,13 @@ namespace Kaban.Machines.FA2010.Screens
                         if (!_sent.TryGetValue(t[1], out d)) _sent[t[1]] = d = new Dictionary<int, DateTime>();
                         d[bar] = at;
                     }
+                    if (t.Length >= 4 && t[0] == "finished" && int.TryParse(t[2], NumberStyles.Integer, CI, out bar) &&
+                        DateTime.TryParseExact(t[3], "yyyy-MM-dd HH:mm:ss", CI, DateTimeStyles.None, out at))
+                    {
+                        Dictionary<int, DateTime> d;
+                        if (!_finished.TryGetValue(t[1], out d)) _finished[t[1]] = d = new Dictionary<int, DateTime>();
+                        d[bar] = at;
+                    }
                 }
             }
             catch (Exception ex) { AuditLogger.Log("[JOB] " + StatePath + " could not be read: " + ex.Message); }
@@ -717,6 +824,9 @@ namespace Kaban.Machines.FA2010.Screens
                 foreach (var kv in _sent.Where(k => _recent.Contains(k.Key, StringComparer.OrdinalIgnoreCase)))
                     foreach (var b in kv.Value.OrderBy(x => x.Key))
                         lines.Add("sent\t" + kv.Key + "\t" + b.Key.ToString(CI) + "\t" + b.Value.ToString("yyyy-MM-dd HH:mm:ss", CI));
+                foreach (var kv in _finished.Where(k => _recent.Contains(k.Key, StringComparer.OrdinalIgnoreCase)))
+                    foreach (var b in kv.Value.OrderBy(x => x.Key))
+                        lines.Add("finished\t" + kv.Key + "\t" + b.Key.ToString(CI) + "\t" + b.Value.ToString("yyyy-MM-dd HH:mm:ss", CI));
                 Directory.CreateDirectory(Path.GetDirectoryName(StatePath));
                 File.WriteAllLines(StatePath, lines);
             }

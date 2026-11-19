@@ -937,3 +937,11 @@ Job_InboxPick;The folder the window software writes the job files (.kbn) into;Pe
 Job_InboxSet;Set the transfer folder...;Transfer klasörünü ayarla...;;;;
 Job_InboxSetDone;Watching {0} for new job files.;{0} yeni iş dosyaları için izleniyor.;;;;
 Job_TipInbox;The transfer folder: the job files the window software writes there come to the top of the list;Transfer klasörü: pencere yazılımının oraya yazdığı iş dosyaları listenin en üstüne gelir;;;;
+Job_AskAutomatic;AUTOMATIC: then each next bar of the job not sent yet, when the machine asks for it.;OTOMATİK: sonra işin henüz gönderilmemiş her sonraki barı, makine istediğinde.;;;;
+Job_RunPrefix;Automatic:;Otomatik:;;;;
+Job_RunSent;Automatic: bar {0} sent - {1} more to go.;Otomatik: bar {0} gönderildi - {1} bar daha var.;;;;
+Job_RunStopped;stopped by the operator;operatör durdurdu;;;;
+Job_StateFinished;finished {0};bitti {0};;;;
+Job_StopRun;Stop automatic;Otomatiği durdur;;;;
+Job_TipAutomatic;Send: the selected bar now, then each next bar of the job not sent yet when the machine asks for it (Is Gonder L0, while Makine Aktif M21 is on);Gönder: seçili bar şimdi, sonra işin henüz gönderilmemiş her sonraki barı makine istediğinde (İş Gönder L0, Makine Aktif M21 açıkken);;;;
+Job_TipStopRun;No further bar is sent: the bar in the machine is its last (L10 off);Başka bar gönderilmez: makinedeki bar sonuncusudur (L10 kapalı);;;;
